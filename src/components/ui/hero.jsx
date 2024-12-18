@@ -19,12 +19,7 @@ export default function Hero() {
           </div>
           
           <p className="text-2xl text-white max-w-4xl animate-fade-in delay-300">
-            Full Stack Developer | SEO Specialist | No-Code Advocate
-          </p>
-          
-          <p className="text-gray-300 max-w-4xl text-xl leading-relaxed animate-fade-in delay-400">
-            I am a digital creator passionate about building innovative solutions 
-            and sharing knowledge with the developer community.
+            Full Stack Developer | SEO Specialist | No-Code Developer
           </p>
 
           <div className="flex gap-6 pt-6 animate-fade-in delay-500">
@@ -32,7 +27,7 @@ export default function Hero() {
               Contact Me
             </Button>
             <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-black text-lg px-8 py-6">
-              LinkedIn
+              About Me
             </Button>
           </div>
         </div>
