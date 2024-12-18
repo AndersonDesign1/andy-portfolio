@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const ExperienceCard = ({ logo, title, description, period, technologies }) => {
+const ExperienceCard = ({ logo, title, role, description, period, technologies }) => {
   return (
     <div className="bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors duration-300 bg-opacity-50 backdrop-filter backdrop-blur-sm rounded-2xl p-6 mb-6 border border-[#333333] hover:border-[#4A4A4A]">
       <div className="flex items-center mb-4">
@@ -14,6 +14,7 @@ const ExperienceCard = ({ logo, title, description, period, technologies }) => {
         />
         <div>
           <h3 className="text-2xl font-bold text-[#E5E7EB] font-montserrat">{title}</h3>
+          <p className="text-lg font-normal text-[#E5E7EB] font-montserrat">{role}</p>
           <p className="text-sm text-[#9CA3AF]">{period}</p>
         </div>
       </div>
@@ -132,41 +133,6 @@ export function Experience() {
     },
   ];
 
-  const studyExperiences = [
-    {
-      institution: "Edobits ICT Academy",
-      degree: "Diploma in Web Development",
-      period: "Sep 2020 - Sep 2021",
-      description: "Comprehensive web development training focusing on modern frameworks and technologies.",
-      logo: "/placeholder.svg",
-      technologies: []
-    },
-    {
-      institution: "Coursera",
-      degree: "Introduction to Google SEO",
-      period: "2023",
-      description: "Developed expertise in search engine optimization fundamentals and best practices.",
-      logo: "/placeholder.svg",
-      technologies: []
-    },
-    {
-      institution: "Coursera",
-      degree: "Google SEO Fundamentals",
-      period: "2023",
-      description: "Focused on advanced SEO techniques to boost website visibility and rankings.",
-      logo: "/placeholder.svg",
-      technologies: []
-    },
-    {
-      institution: "NABTEB",
-      degree: "Diploma in Computer Science",
-      period: "2021",
-      description: "Gained foundational knowledge in computer science, algorithms, and system design.",
-      logo: "/placeholder.svg",
-      technologies: []
-    },
-  ];
-
   return (
     <section className="bg-[#0a0a0a] text-[#ededed] font-cal py-16 flex items-center justify-center">
       <div className="container mx-auto px-4 flex flex-col items-center">
@@ -192,18 +158,7 @@ export function Experience() {
                 key={index}
                 logo={exp.logo}
                 title={exp.company}
-                description={exp.description}
-                period={exp.period}
-                technologies={exp.technologies}
-              />
-            ))}
-          </TabsContent>
-          <TabsContent value="studies">
-            {studyExperiences.map((exp, index) => (
-              <ExperienceCard
-                key={index}
-                logo={exp.logo}
-                title={exp.institution}
+                role={exp.role}
                 description={exp.description}
                 period={exp.period}
                 technologies={exp.technologies}
