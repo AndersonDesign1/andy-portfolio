@@ -14,7 +14,7 @@ const ExperienceCard = ({ logo, title, role, description, period, technologies }
         />
         <div>
           <h3 className="text-2xl font-bold text-[#E5E7EB] font-montserrat">{title}</h3>
-          <p className="text-lg font-normal text-[#E5E7EB] font-montserrat">{role}</p>
+          {role && <p className="text-lg font-normal text-[#E5E7EB] font-montserrat">{role}</p>}
           <p className="text-sm text-[#9CA3AF]">{period}</p>
         </div>
       </div>
@@ -100,36 +100,40 @@ export function Experience() {
       technologies: ["Wix", "Velo", "JavaScript", "HTML", "CSS"],
       logo: "/placeholder.svg"
     },
+  ];
+
+  const studyExperiences = [
     {
-      company: "Book Tutors",
-      role: "SEO Specialist",
-      period: "2021 - 2022",
-      description: `
-        - Improved Google rankings for top pages, driving a notable surge in traffic.
-        - Designed content strategies targeting tutoring-related keywords.
-      `,
-      technologies: ["Google Analytics", "SEMrush", "WordPress"],
-      logo: "/placeholder.svg"
+      institution: "Edobits ICT Academy",
+      degree: "Diploma in Web Development",
+      period: "Sep 2020 - Sep 2021",
+      description: "Comprehensive web development training focusing on modern frameworks and technologies.",
+      logo: "/placeholder.svg",
+      technologies: []
     },
     {
-      company: "EdoJobs",
-      role: "Web Development Trainer",
-      period: "2021 - 2022",
-      description: `
-        - Taught HTML, CSS, and React to over 50 students, enabling them to create functional websites.
-      `,
-      technologies: ["React", "HTML", "CSS", "JavaScript"],
-      logo: "/placeholder.svg"
+      institution: "Coursera",
+      degree: "Introduction to Google SEO",
+      period: "2023",
+      description: "Developed expertise in search engine optimization fundamentals and best practices.",
+      logo: "/placeholder.svg",
+      technologies: []
     },
     {
-      company: "IOM UN",
-      role: "Skills Trainer",
-      period: "2021 - 2022",
-      description: `
-        - Delivered ICT and graphic design training to underserved populations in rural areas.
-      `,
-      technologies: ["Adobe Photoshop", "CorelDraw", "Microsoft Office"],
-      logo: "/placeholder.svg"
+      institution: "Coursera",
+      degree: "Google SEO Fundamentals",
+      period: "2023",
+      description: "Focused on advanced SEO techniques to boost website visibility and rankings.",
+      logo: "/placeholder.svg",
+      technologies: []
+    },
+    {
+      institution: "NABTEB",
+      degree: "Diploma in Computer Science",
+      period: "2021",
+      description: "Gained foundational knowledge in computer science, algorithms, and system design.",
+      logo: "/placeholder.svg",
+      technologies: []
     },
   ];
 
@@ -159,6 +163,18 @@ export function Experience() {
                 logo={exp.logo}
                 title={exp.company}
                 role={exp.role}
+                description={exp.description}
+                period={exp.period}
+                technologies={exp.technologies}
+              />
+            ))}
+          </TabsContent>
+          <TabsContent value="studies">
+            {studyExperiences.map((exp, index) => (
+              <ExperienceCard
+                key={index}
+                logo={exp.logo}
+                title={exp.institution}
                 description={exp.description}
                 period={exp.period}
                 technologies={exp.technologies}
