@@ -12,9 +12,9 @@ const SkillCard = ({ title, description, skills }) => {
             key={skill.name}
             src={skill.icon}
             alt={skill.name}
-            width={32}
-            height={32}
-            className="rounded-xl hover:scale-110 transition-transform duration-300"
+            width={40}
+            height={40}
+            className={`rounded-lg hover:scale-110 transition-transform duration-300 ${skill.customClass || ''}`}
           />
         ))}
       </div>
