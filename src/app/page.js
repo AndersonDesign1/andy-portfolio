@@ -5,7 +5,6 @@ import ProjectSection from "@/components/ui/project-overview";
 import CaseStudy from '@/components/ui/case-study';
 
 async function getProjects() {
-  // In a real application, you would fetch this data from an API or database
   return [
     {
       id: 1,
