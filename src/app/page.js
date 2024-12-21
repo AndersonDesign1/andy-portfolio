@@ -2,7 +2,6 @@ import Hero from '@/components/ui/hero'
 import Skills from '@/components/ui/skills';
 import { Experience } from '@/components/ui/experience'
 import ProjectSection from "@/components/ui/project-overview";
-import CaseStudy from '@/components/ui/case-study';
 
 async function getProjects() {
   return [
@@ -37,12 +36,6 @@ export default async function Home() {
       <Experience />
       <Skills />
       <ProjectSection />
-      <section className="container mx-auto px-4 py-8">
-        <h2 className="text-4xl font-bold mb-8 text-[#ededed]">Case Studies</h2>
-        {projects.map((project) => (
-          <CaseStudy key={project.id} project={project} />
-        ))}
-      </section>
     </main>
   );
 }
