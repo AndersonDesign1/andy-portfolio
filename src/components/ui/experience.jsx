@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -10,7 +11,7 @@ const ExperienceCard = ({ logo, title, role, description, period, technologies }
         <img
           src={logo}
           alt={title}
-          className="w-12 h-12 rounded-xl mr-4 bg-[#2A2A2A]"
+          className="w-12 h-12 rounded-xl mr-4 bg-[#2A2A2A] object-contain"
         />
         <div>
           <h3 className="text-2xl font-bold text-[#E5E7EB] font-montserrat">{title}</h3>
@@ -51,7 +52,7 @@ export function Experience() {
         - Created SEO-friendly content resulting in a 55% increase in click-through rates.
       `,
       technologies: ["Google Analytics", "SEMrush", "Ahrefs", "Google Search Console"],
-      logo: "/placeholder.svg"
+      logo: "/welup-logo.png"
     },
     {
       company: "Welup Digital",
@@ -63,7 +64,7 @@ export function Experience() {
         - Redesigned platforms for enhanced usability, aesthetics, and SEO.
       `,
       technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
-      logo: "/placeholder.svg"
+      logo: "/welup-logo.png"
     },
     {
       company: "Prompt Earn",
@@ -75,7 +76,7 @@ export function Experience() {
         - Trained interns on Affiliate SEO best practices and strategies.
       `,
       technologies: ["Google Analytics", "SEMrush", "MailChimp", "Social Media Tools"],
-      logo: "/placeholder.svg"
+      logo: "/promptearn-logo.png"
     },
     {
       company: "The Wealthy Post",
@@ -87,7 +88,7 @@ export function Experience() {
         - Enhanced website performance by reducing loading time from 12 to 2.4 seconds, ensuring a seamless user experience.
       `,
       technologies: ["WordPress", "Elementor", "PHP", "CSS", "JavaScript"],
-      logo: "/placeholder.svg"
+      logo: "/thewealthypost-logo.png"
     },
     {
       company: "Eng4Careers",
@@ -98,7 +99,7 @@ export function Experience() {
         - Collaborated with design and marketing teams to implement SEO strategies, boosting site traffic and visibility.
       `,
       technologies: ["Wix", "Velo", "JavaScript", "HTML", "CSS"],
-      logo: "/placeholder.svg"
+      logo: "/eng4careers-logo.avif"
     },
   ];
 

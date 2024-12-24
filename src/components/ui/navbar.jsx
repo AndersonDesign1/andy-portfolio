@@ -13,10 +13,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="relative py-4 z-50">
+    <nav className="fixed top-0 left-0 right-0 py-4 z-50 bg-black/10 backdrop-blur-sm">
       <div className="flex justify-center items-center max-w-6xl mx-auto">
         {/* Menu Container with Rounded Edges */}
-        <div className="bg-zinc-950/90 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40">
+        <div className="bg-zinc-950 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-white/20">
           {/* Logo */}
           <div className="text-2xl font-bold text-white mr-24">Logo</div>
 
@@ -46,7 +46,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mx-4 mt-2 bg-zinc-950/90 text-white flex flex-col gap-4 py-6 px-6 z-50 shadow-lg md:hidden rounded-3xl backdrop-blur-sm">
+        <div className="absolute top-full left-0 right-0 mx-4 mt-2 bg-zinc-950 text-white flex flex-col gap-4 py-6 px-6 z-50 shadow-lg md:hidden rounded-3xl border border-white/10 backdrop-blur-sm">
           {menuItems.map(({ label, link }) => (
             <a
               key={label}
