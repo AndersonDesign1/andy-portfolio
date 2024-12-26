@@ -2,93 +2,107 @@ const ProjectSection = () => {
   const projects = [
     {
       name: "My Supply Co.",
-      slug: "my-supply-co", // Add this field
+      slug: "my-supply-co",
       description:
         "D2C & B2B eCommerce site and blog with elegant solutions for a complex codebase and customer journey.",
       tech: ["PHP", "MySQL", "JavaScript", "jQuery", "WooCommerce", "WordPress", "SCSS", "GitHub"],
       image: "/images/mysupplyco.png",
       projectLink: "https://www.mysupplyco.com",
-      caseStudyLink: "/case-study/my-supply-co", // Update with slug-based path
+      caseStudyLink: "/case-study/my-supply-co",
     },
     {
       name: "Welup Digital",
-      slug: "welup-digital", // Add this field
+      slug: "welup-digital",
       description:
         "Responsive websites ensuring usability, design consistency, and modern SEO techniques.",
       tech: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
       image: "/images/wellupdigital.png",
       projectLink: "https://wellupdigital.com",
-      caseStudyLink: "/case-study/welup-digital", // Update with slug-based path
+      caseStudyLink: "/case-study/welup-digital",
     },
     {
       name: "Prompt Earn",
-      slug: "prompt-earn", // Add this field
+      slug: "prompt-earn",
       description:
         "Comprehensive SEO campaigns achieving 40% increase in traffic and affiliate earnings.",
       tech: ["Google Analytics", "SEMRush", "MailChimp", "Social Media Tools"],
       image: "/images/promptearn.png",
       projectLink: "#",
-      caseStudyLink: "/case-study/prompt-earn", // Update with slug-based path
+      caseStudyLink: "/case-study/prompt-earn",
     },
   ];
 
-
   return (
-    <section className="bg-[#0A0A0A] text-[#EDEDED] py-16">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-12 text-center font-montserrat">
+    <section className="w-full bg-black text-white relative overflow-hidden py-16">
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `linear-gradient(#333 1px, transparent 1px),
+              linear-gradient(to right, #333 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+          }}
+        />
+        
+        <div className="absolute -inset-[10px] opacity-50">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-blob" />
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
+        <h2 className="text-6xl font-bold mb-12 text-center text-gray-200">
           Featured Projects
         </h2>
+        
         <div className="grid grid-cols-1 gap-8">
           {projects.map((project, index) => (
             <div
               key={index}
-              className="bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-[#333333] hover:border-[#4A4A4A] rounded-2xl transition-all duration-300 overflow-hidden shadow-md"
+              className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300"
             >
-              <div className="p-6 flex flex-col md:flex-row gap-6">
-                {/* Project Image */}
-                <div className="w-full md:w-1/3">
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="w-full md:w-1/3 relative rounded-2xl overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-teal-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <img
                     src={project.image}
                     alt={project.name}
-                    className="w-full h-48 md:h-full object-cover rounded-xl bg-[#2A2A2A]"
+                    className="w-full h-64 md:h-full object-cover"
                   />
                 </div>
 
-                {/* Project Content */}
-                <div className="w-full md:w-2/3">
-                  <h3 className="text-2xl font-bold mb-4 text-[#EDEDED] font-montserrat">
+                <div className="w-full md:w-2/3 space-y-6">
+                  <h3 className="text-2xl font-semibold text-gray-200">
                     {project.name}
                   </h3>
-                  <p className="text-[#9CA3AF] mb-4 font-montserrat leading-relaxed">
+                  <p className="text-gray-400 leading-relaxed">
                     {project.description}
                   </p>
 
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-3 mb-4">
+                  <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech, i) => (
                       <span
                         key={i}
-                        className="px-3 py-1 bg-[#2A2A2A] text-xs rounded-full text-[#EDEDED] hover:bg-[#3A3A3A] transition-colors duration-300"
+                        className="px-3 py-1 bg-zinc-800/50 text-xs rounded-full text-gray-300 hover:bg-zinc-700/50 transition-all duration-300"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
 
-                  {/* Links */}
-                  <div className="flex gap-6">
+                  <div className="flex gap-6 pt-4">
                     <a
                       href={project.projectLink}
                       rel="noopener noreferrer"
-                      className="text-[#EDEDED] hover:text-[#BBBBBB] transition-colors duration-300 flex items-center gap-2"
+                      className="text-white hover:text-gray-300 transition-colors duration-300 flex items-center gap-2"
                     >
                       View Project <span className="text-lg">→</span>
                     </a>
                     <a
                       href={project.caseStudyLink}
                       rel="noopener noreferrer"
-                      className="text-[#EDEDED] hover:text-[#BBBBBB] transition-colors duration-300 flex items-center gap-2"
+                      className="text-white hover:text-gray-300 transition-colors duration-300 flex items-center gap-2"
                     >
                       Case Study <span className="text-lg">→</span>
                     </a>

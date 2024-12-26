@@ -4,42 +4,6 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const ExperienceCard = ({ logo, title, role, description, period, technologies }) => {
-  return (
-    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <img
-            src={logo}
-            alt={title}
-            className="w-12 h-12 rounded-xl object-contain"
-          />
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-200">{title}</h2>
-            {role && <p className="text-gray-400">{role}</p>}
-            <p className="text-sm text-gray-500">{period}</p>
-          </div>
-        </div>
-
-        <p className="text-gray-400 leading-relaxed whitespace-pre-line">
-          {description}
-        </p>
-        {technologies.length > 0 && (
-          <div className="flex flex-wrap gap-2.5 mt-4">
-            {technologies.map((tech, index) => (
-              <div
-                key={index}
-                className="bg-zinc-800/50 rounded-full px-4 py-1.5 text-sm text-gray-300 hover:bg-zinc-700 transition-all duration-300"
-              >
-                {tech}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
 
 export function Experience() {
   const [activeTab, setActiveTab] = useState("work");
@@ -55,7 +19,8 @@ export function Experience() {
         - Created SEO-friendly content resulting in a 55% increase in click-through rates.
       `,
       technologies: ["Google Analytics", "SEMrush", "Ahrefs", "Google Search Console"],
-      logo: "/welup-logo.png"
+      logo: "/welup-logo.png",
+      website: "https://welupdigital.com"
     },
     {
       company: "Welup Digital",
@@ -67,7 +32,8 @@ export function Experience() {
         - Redesigned platforms for enhanced usability, aesthetics, and SEO.
       `,
       technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
-      logo: "/welup-logo.png"
+      logo: "/welup-logo.png",
+      website: "https://welupdigital.com"
     },
     {
       company: "Prompt Earn",
@@ -79,7 +45,8 @@ export function Experience() {
         - Trained interns on Affiliate SEO best practices and strategies.
       `,
       technologies: ["Google Analytics", "SEMrush", "MailChimp", "Social Media Tools"],
-      logo: "/promptearn-logo.png"
+      logo: "/promptearn-logo.png",
+      website: "https://promptearn.com"
     },
     {
       company: "The Wealthy Post",
@@ -91,7 +58,8 @@ export function Experience() {
         - Enhanced website performance by reducing loading time from 12 to 2.4 seconds, ensuring a seamless user experience.
       `,
       technologies: ["WordPress", "Elementor", "PHP", "CSS", "JavaScript"],
-      logo: "/thewealthypost-logo.png"
+      logo: "/thewealthypost-logo.png",
+      website: "https://thewealthypost.com"
     },
     {
       company: "Eng4Careers",
@@ -102,7 +70,8 @@ export function Experience() {
         - Collaborated with design and marketing teams to implement SEO strategies, boosting site traffic and visibility.
       `,
       technologies: ["Wix", "Velo", "JavaScript", "HTML", "CSS"],
-      logo: "/eng4careers-logo.avif"
+      logo: "/eng4careers-logo.avif",
+      website: "https://eng4careers.org"
     },
   ];
 
@@ -112,35 +81,38 @@ export function Experience() {
       degree: "Diploma in Web Development",
       period: "Sep 2020 - Sep 2021",
       description: "Comprehensive web development training focusing on modern frameworks and technologies.",
-      logo: "/placeholder.svg",
-      technologies: []
+      logo: "/edobits-logo.webp",
+      technologies: [],
+      certificate: ""
     },
     {
       institution: "Coursera",
       degree: "Introduction to Google SEO",
       period: "2023",
       description: "Developed expertise in search engine optimization fundamentals and best practices.",
-      logo: "/placeholder.svg",
-      technologies: []
+      logo: "/coursera-logo.png",
+      technologies: [],
+      certificate: "https://www.coursera.org/account/accomplishments/certificate/XYZ123"
     },
     {
       institution: "Coursera",
       degree: "Google SEO Fundamentals",
       period: "2023",
       description: "Focused on advanced SEO techniques to boost website visibility and rankings.",
-      logo: "/placeholder.svg",
-      technologies: []
+      logo: "/coursera-logo.png",
+      technologies: [],
+      certificate: "https://www.coursera.org/account/accomplishments/certificate/ABC456"
     },
     {
       institution: "NABTEB",
       degree: "Diploma in Computer Science",
       period: "2021",
       description: "Gained foundational knowledge in computer science, algorithms, and system design.",
-      logo: "/placeholder.svg",
-      technologies: []
+      logo: "/nabteb-logo.png",
+      technologies: [],
+      certificate: ""
     },
   ];
-
   return (
     <section className="bg-[#0a0a0a] text-[#ededed] font-cal py-16 flex items-center justify-center">
       <div className="container mx-auto px-4 flex flex-col items-center">
@@ -179,9 +151,11 @@ export function Experience() {
                 key={index}
                 logo={exp.logo}
                 title={exp.institution}
+                role={exp.degree}
                 description={exp.description}
                 period={exp.period}
                 technologies={exp.technologies}
+                website={exp.certificate}
               />
             ))}
           </TabsContent>
@@ -191,4 +165,53 @@ export function Experience() {
   );
 }
 
-export default Experience;
+const ExperienceCard = ({ logo, title, role, description, period, technologies, website }) => {
+  return (
+    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <img
+            src={logo}
+            alt={title}
+            className="w-12 h-12 rounded-xl object-contain"
+          />
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-200">
+              {title}
+            </h2>
+            {role && <p className="text-gray-400">{role}</p>}
+            <p className="text-sm text-gray-500">{period}</p>
+          </div>
+        </div>
+
+        <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+          {description}
+        </p>
+        {technologies.length > 0 && (
+          <div className="flex flex-wrap gap-2.5 mt-4">
+            {technologies.map((tech, index) => (
+              <div
+                key={index}
+                className="bg-zinc-800/50 rounded-full px-4 py-1.5 text-sm text-gray-300 hover:bg-zinc-700 transition-all duration-300"
+              >
+                {tech}
+              </div>
+            ))}
+          </div>
+        )}
+        {website && (
+          <div className="mt-4">
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-zinc-800/50 rounded-full px-4 py-1.5 text-sm text-gray-300 hover:bg-zinc-700 transition-all duration-300"
+            >
+              View Certificate
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
