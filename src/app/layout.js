@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
+import "@/app/animations.css";
 
 // Font configurations
 const geistSans = Geist({
@@ -14,17 +15,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Metadata for SEO
 export const metadata = {
-  metadataBase: new URL("https://yoursite.com"),
-  title: {
-    template: "%s | Your Site",
-    default: "Your Site",
-  },
-  description: "Your site description",
-  openGraph: {
-    // OpenGraph metadata here
-  },
+  title: "My Website",
+  description: "A detailed description of the website for SEO purposes.",
 };
 
 export default function RootLayout({ children }) {
@@ -34,7 +27,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar />
-        {children}
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

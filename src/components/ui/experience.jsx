@@ -6,34 +6,37 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const ExperienceCard = ({ logo, title, role, description, period, technologies }) => {
   return (
-    <div className="bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors duration-300 bg-opacity-50 backdrop-filter backdrop-blur-sm rounded-2xl p-6 mb-6 border border-[#333333] hover:border-[#4A4A4A]">
-      <div className="flex items-center mb-4">
-        <img
-          src={logo}
-          alt={title}
-          className="w-12 h-12 rounded-xl mr-4 bg-[#2A2A2A] object-contain"
-        />
-        <div>
-          <h3 className="text-2xl font-bold text-[#E5E7EB] font-montserrat">{title}</h3>
-          {role && <p className="text-lg font-normal text-[#E5E7EB] font-montserrat">{role}</p>}
-          <p className="text-sm text-[#9CA3AF]">{period}</p>
+    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <img
+            src={logo}
+            alt={title}
+            className="w-12 h-12 rounded-xl object-contain"
+          />
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-200">{title}</h2>
+            {role && <p className="text-gray-400">{role}</p>}
+            <p className="text-sm text-gray-500">{period}</p>
+          </div>
         </div>
+
+        <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+          {description}
+        </p>
+        {technologies.length > 0 && (
+          <div className="flex flex-wrap gap-2.5 mt-4">
+            {technologies.map((tech, index) => (
+              <div
+                key={index}
+                className="bg-zinc-800/50 rounded-full px-4 py-1.5 text-sm text-gray-300 hover:bg-zinc-700 transition-all duration-300"
+              >
+                {tech}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      <p className="text-[#9CA3AF] mb-4 font-montserrat whitespace-pre-line leading-relaxed">
-        {description}
-      </p>
-      {technologies.length > 0 && (
-        <div className="flex flex-wrap gap-3">
-          {technologies.map((tech, index) => (
-            <span
-              key={index}
-              className="px-3 py-1 bg-[#2A2A2A] text-xs rounded-full text-[#E5E7EB] hover:bg-[#3A3A3A] transition-colors duration-300"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
