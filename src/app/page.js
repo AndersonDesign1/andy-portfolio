@@ -1,7 +1,7 @@
-import Hero from '@/components/ui/hero'
+import Hero from '@/components/ui/hero';
 import Skills from '@/components/ui/skills';
-import { Experience } from '@/components/ui/experience'
-import ProjectSection from "@/components/ui/project-overview";
+import { Experience } from '@/components/ui/experience';
+import ProjectSection from '@/components/ui/project-overview';
 
 async function getProjects() {
   return [
@@ -12,7 +12,7 @@ async function getProjects() {
       imageUrl: "/images/my-supply-co.jpg",
       technologies: ["PHP", "MySQL", "JavaScript", "jQuery", "WooCommerce", "WordPress", "SCSS", "GitHub"],
       projectUrl: "/projects/my-supply-co",
-      slug: "my-supply-co"
+      slug: "my-supply-co",
     },
     {
       id: 2,
@@ -21,9 +21,8 @@ async function getProjects() {
       imageUrl: "/images/welup-digital.jpg",
       technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
       projectUrl: "/projects/welup-digital",
-      slug: "welup-digital"
+      slug: "welup-digital",
     },
-    // Add more projects as needed
   ];
 }
 

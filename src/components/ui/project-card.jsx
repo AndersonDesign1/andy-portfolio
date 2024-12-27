@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { ExternalLink, Github } from 'lucide-react'
 import { Project } from '@/types/project'
 
-export default function ProjectCard({ title, description, type, links, technologies }: Project) {
+export default function ProjectCard({ title, description, type, links, technologies }) {
   return (
     <Card className="group relative overflow-hidden border-0 bg-black/20 backdrop-blur-sm transition-all hover:bg-black/40 hover:scale-105 duration-300 ease-in-out">
       <CardHeader className="space-y-1">
@@ -54,4 +54,3 @@ export default function ProjectCard({ title, description, type, links, technolog
     </Card>
   )
 }
-

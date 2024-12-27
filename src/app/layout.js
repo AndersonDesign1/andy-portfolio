@@ -2,22 +2,24 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
-import "@/app/animations.css";
+// import "@/animations.css";
 
 // Font configurations
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  fallback: ["Arial", "sans-serif"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  fallback: ["Courier New", "monospace"],
 });
 
 export const metadata = {
   title: "My Website",
-  description: "A detailed description of the website for SEO purposes.",
+  description: "Discover My Website: A platform offering detailed insights and modern solutions.",
 };
 
 export default function RootLayout({ children }) {
