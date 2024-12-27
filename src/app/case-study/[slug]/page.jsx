@@ -63,9 +63,8 @@ async function getProject(slug) {
         "Developed a custom WordPress theme and WooCommerce extensions for a tailored user experience"
       ],
       outcomes: "The project resulted in a 30% increase in customer satisfaction scores, a 25% reduction in cart abandonment rates, and a 40% improvement in site performance metrics.",
-      technologies: ["PHP", "MySQL", "JavaScript", "jQuery", "WooCommerce", "WordPress", "SCSS", "GitHub"]
-    },
-    "welup-digital": {
+      technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"]
+    }, "welup-digital": {
       title: "Welup Digital",
       description: "Responsive websites ensuring usability, design consistency, and modern SEO techniques.",
       imageUrl: "/placeholder.svg?height=400&width=600",
@@ -126,12 +125,16 @@ export default async function CaseStudyDetail({ params }) {
             <h2 className="text-2xl font-semibold mb-4 font-montserrat text-white">Technologies Used</h2>
             <div className="flex flex-wrap gap-3">
               {project.technologies.map((tech, index) => (
-                <span key={index} className="px-4 py-2 bg-white text-black border border-white rounded-full text-sm font-inter hover:bg-gray-200 transition-colors duration-300">
+                <span
+                  key={index}
+                  className="px-4 py-2 bg-zinc-800/50 text-sm rounded-full text-gray-300 hover:bg-zinc-700/50 transition-all duration-300"
+                >
                   {tech}
                 </span>
               ))}
             </div>
           </section>
+
           <section>
             <h2 className="text-2xl font-semibold mb-4 font-montserrat text-white">Challenges</h2>
             <ul className="list-none pl-0 space-y-3">
