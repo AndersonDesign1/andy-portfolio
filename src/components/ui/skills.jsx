@@ -1,5 +1,5 @@
 import React from 'react';
-import SkillCard from './skillcard';
+import SkillCard from '@/components/ui/skillcard';
 
 const skillsData = [
   {
@@ -22,15 +22,11 @@ const skillsData = [
       { name: 'Express', icon: '/Express.svg' },
       { name: 'MongoDB', icon: '/mongodb.svg' },
       { name: 'Postman', icon: '/postman.svg' },
-      { name: 'Redis', icon: '/redis.svg' },
-      { name: 'Cloudflare', icon: '/cloudflare.svg' },
-      { name: 'Google Cloud', icon: '/Google Cloud.svg' },
-      { name: 'Firebase', icon: '/firebase.svg' },
     ],
   },
   {
-    title: 'SEO & Digital Marketing',
-    description: 'I specialize in optimizing websites for search engines and driving organic traffic growth through modern SEO strategies and techniques.',
+    title: 'SEO Tools',
+    description: 'I use various SEO tools to improve website visibility and ranking.',
     skills: [
       // { name: 'Search Console', icon: '/google-search-console.svg', customClass: 'large-icon' },
       { name: 'Ahrefs', icon: '/Ahrefs.svg', customClass: 'large-icon' },
@@ -50,24 +46,27 @@ const skillsData = [
     ],
   },
 ];
+
 const Skills = () => {
   return (
     <section className="py-16 relative">
       <div className="absolute inset-0 bg-[#0a0a0a] opacity-90"></div>
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-4xl font-bold text-center text-[#ededed] font-display mb-12">Skills</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {skillsData.map((skill) => (
-            <div className="transform skew-x-[-12deg]" key={skill.title}>
-              <SkillCard
-                title={skill.title}
-                description={skill.description}
-                skills={skill.skills}
-              />
+        {skillsData.map((category, index) => (
+          <div key={index} className="mb-12">
+            <h2 className="text-3xl font-semibold text-white mb-4">{category.title}</h2>
+            <p className="text-gray-400 mb-6">{category.description}</p>
+            <div className="flex flex-wrap gap-4">
+              {category.skills.map((skill, idx) => (
+                <div key={idx} className={`flex items-center ${skill.customClass || ''}`}>
+                  <img src={skill.icon} alt={skill.name} className="w-8 h-8 mr-2" />
+                  <span className="text-gray-300">{skill.name}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   );

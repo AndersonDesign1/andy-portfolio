@@ -4,8 +4,7 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-
-export function Experience() {
+const Experience = () => {
   const [activeTab, setActiveTab] = useState("work");
 
   const workExperiences = [
@@ -215,3 +214,5 @@ const ExperienceCard = ({ logo, title, role, description, period, technologies, 
     </div>
   );
 };
+
+export { Experience, ExperienceCard };

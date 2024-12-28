@@ -1,4 +1,4 @@
-import ProjectCard from '@/components/ui/project-card'
+import ProjectCard from '@/components/project-card'
 import { Code } from 'lucide-react'
 
 const projects = {
@@ -183,4 +183,3 @@ export default function ProjectsPage() {
     </div>
   )
 }
-

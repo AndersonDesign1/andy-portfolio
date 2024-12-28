@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ExternalLink, Github } from 'lucide-react'
-import { Project } from '@/types/project'
 
 export default function ProjectCard({ title, description, type, links, technologies }) {
   return (
@@ -34,6 +33,7 @@ export default function ProjectCard({ title, description, type, links, technolog
               href={links.github}
               className="inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <Github className="h-4 w-4" />
               Source
@@ -44,6 +44,7 @@ export default function ProjectCard({ title, description, type, links, technolog
               href={links.demo}
               className="inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <ExternalLink className="h-4 w-4" />
               Demo
@@ -54,3 +55,4 @@ export default function ProjectCard({ title, description, type, links, technolog
     </Card>
   )
 }
+

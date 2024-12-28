@@ -1,6 +1,6 @@
 import Hero from '@/components/ui/hero';
 import Skills from '@/components/ui/skills';
-import { Experience } from '@/components/ui/experience';
+import  Experience  from '@/components/ui/experience';
 import ProjectSection from '@/components/ui/project-overview';
 
 async function getProjects() {
