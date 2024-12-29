@@ -1,9 +1,9 @@
 import Hero from '@/components/ui/hero';
 import Skills from '@/components/ui/skills';
-import  Experience  from '@/components/ui/experience';
+import Experience  from '@/components/ui/experience';
 import ProjectSection from '@/components/ui/project-overview';
 
-async function getProjects() {
+function getProjects() {
   return [
     {
       id: 1,
@@ -26,8 +26,7 @@ async function getProjects() {
   ];
 }
 
-export default async function Home() {
-  const projects = await getProjects();
+export default function Home() {
 
   return (
     <main>

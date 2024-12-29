@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   return (
@@ -33,5 +33,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }
