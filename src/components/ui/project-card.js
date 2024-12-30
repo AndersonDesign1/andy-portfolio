@@ -1,0 +1,65 @@
+export default function ProjectCard({ 
+  title, 
+  description, 
+  imageUrl, 
+  technologies,
+  projectUrl,
+  slug,
+  // Adding type and links with default values to maintain compatibility
+  type = "Project", // Default value
+  links = {
+    demo: projectUrl, // Use projectUrl as demo link
+    github: null // Can be added later if needed
+  }
+}) {
+  return (
+    <Card className="group relative overflow-hidden border-0 bg-black/20 backdrop-blur-sm transition-all hover:bg-black/40 hover:scale-105 duration-300 ease-in-out">
+      <CardHeader className="space-y-1">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-bold text-zinc-100 group-hover:text-white">{title}</h3>
+          <Badge variant="secondary" className="bg-zinc-800/50 text-zinc-400 group-hover:bg-zinc-800 group-hover:text-zinc-300">
+            {type}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-zinc-400 group-hover:text-zinc-300">{description}</p>
+        <div className="flex flex-wrap gap-2">
+          {technologies.map((tech) => (
+            <Badge
+              key={tech}
+              variant="outline"
+              className="bg-zinc-800/50 text-zinc-400 group-hover:bg-zinc-800 group-hover:text-zinc-300"
+            >
+              {tech}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex gap-4">
+          {links.github && (
+            <Link
+              href={links.github}
+              className="inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Github className="h-4 w-4" />
+              Source
+            </Link>
+          )}
+          {links.demo && (
+            <Link
+              href={links.demo}
+              className="inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Demo
+            </Link>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}

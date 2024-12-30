@@ -1,8 +1,7 @@
 import Hero from '@/components/ui/hero';
 import Skills from '@/components/ui/skills';
-import Experience  from '@/components/ui/experience';
-import ProjectSection from '@/components/ui/project-overview';
-
+import Experience from '@/components/ui/experience';
+import ProjectCard from '@/components/ui/project-card'
 function getProjects() {
   return [
     {
@@ -26,14 +25,30 @@ function getProjects() {
   ];
 }
 
-export default function Home() {
+// Updated ProjectSection Component
+function ProjectSection() {
+  const projects = getProjects();
 
+  return (
+    <section className="projects-section">
+      <h2 className="text-2xl font-bold mb-4">Projects</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {projects.map((project) => (
+          <ProjectCard key={project.id} {...project} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Main Home Component
+export default function Home() {
   return (
     <main>
       <Hero />
       <Experience />
       <Skills />
-      <ProjectSection />
+      <ProjectSection /> {/* Updated and included ProjectSection */}
     </main>
   );
 }

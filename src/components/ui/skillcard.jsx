@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-const SkillCard = ({ title, description, skills }) => {
+const SkillCard = ({ title, description, skills = [] }) => {  // Set default value for skills
   return (
     <div className="bg-zinc-900/50 rounded-3xl p-6 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300">
       <div className="space-y-4">
@@ -25,15 +25,12 @@ const SkillCard = ({ title, description, skills }) => {
           {skills.map((skill) => (
             <div 
               key={skill.name} 
-
               className="bg-zinc-800/50 rounded-xl p-2 hover:bg-zinc-700 transition-all duration-300 border border-gray-700/30 hover:border-gray-600"
               title={skill.name}
             >
               <Image
                 src={skill.icon}
                 alt={skill.name}
-
-
                 width={25}
                 height={25}
                 className="rounded-lg hover:scale-110 transition-transform duration-300"
