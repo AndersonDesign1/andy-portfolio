@@ -2,6 +2,7 @@ import Hero from '@/components/ui/hero';
 import Skills from '@/components/ui/skills';
 import Experience from '@/components/ui/experience';
 import ProjectCard from '@/components/ui/project-card'
+// Mock data function
 function getProjects() {
   return [
     {
