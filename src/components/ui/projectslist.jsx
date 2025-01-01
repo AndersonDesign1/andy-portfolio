@@ -43,15 +43,15 @@ export default function ProjectList({ category, projects }) {
                     GitHub
                   </Link>
                 )}
-                {project.demo && (
+                {project.website && (
                   <Link
-                    href={project.demo}
+                    href={project.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors"
                   >
                     <BiLinkExternal className="text-xl" />
-                    Demo
+                    Website
                   </Link>
                 )}
               </div>
