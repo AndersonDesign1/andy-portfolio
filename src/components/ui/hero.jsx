@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function Hero() {
   return (
@@ -13,8 +14,8 @@ export default function Hero() {
             <h1 className="text-6xl md:text-8xl font-bold text-white animate-slide-up">
               Anderson Joseph.
             </h1>
-            <p className="text-4xl md:text-6xl text-gray-300 font-light animate-slide-up delay-200">
-              I design and build meaningful experiences.
+            <p className="text-2xl md:text-4xl text-gray-300 font-light animate-slide-up delay-200">
+            Your brand needs visibility and optimization to generate more revenue that's where I come in.
             </p>
           </div>
           
@@ -23,12 +24,16 @@ export default function Hero() {
           </p>
 
           <div className="flex gap-6 pt-6 animate-fade-in delay-500">
-            <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6">
-              Contact Me
-            </Button>
-            <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-black text-lg px-8 py-6">
-              About Me
-            </Button>
+            <Link href="/contact">
+              <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6">
+                Contact Me
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-black text-lg px-8 py-6">
+                About Me
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

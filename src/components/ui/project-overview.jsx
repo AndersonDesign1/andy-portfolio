@@ -1,36 +1,38 @@
+import Image from "next/image";
 const ProjectSection = () => {
   const projects = [
     {
-      name: "My Supply Co.",
-      slug: "my-supply-co", // Add this field
+      name: "Kyrus Recycling",
+      slug: "kyrus-recycling", 
       description:
-        "D2C & B2B eCommerce site and blog with elegant solutions for a complex codebase and customer journey.",
-      tech: ["PHP", "MySQL", "JavaScript", "jQuery", "WooCommerce", "WordPress", "SCSS", "GitHub"],
-      image: "/images/mysupplyco.png",
-      projectLink: "https://www.mysupplyco.com",
-      caseStudyLink: "/case-study/my-supply-co", // Update with slug-based path
+        "A web application incentivizing users to recycle waste by offering monetary rewards, promoting environmental awareness and sustainable practices.",
+      tech: ["React", "Node.js", "MongoDB", "CSS", "HTML", "JavaScript", "GitHub"],
+      image: "/kyrus-recycling.webp",
+      projectLink: "http://trashpoint.africa/", 
+      caseStudyLink: "/case-study/kyrus-recycling", // Update with slug-based path
     },
     {
       name: "Welup Digital",
-      slug: "welup-digital", // Add this field
+      slug: "welup-digital", 
       description:
         "Responsive websites ensuring usability, design consistency, and modern SEO techniques.",
       tech: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
-      image: "/images/wellupdigital.png",
-      projectLink: "https://wellupdigital.com",
-      caseStudyLink: "/case-study/welup-digital", // Update with slug-based path
+      image: "/welup-digital.webp",
+      projectLink: "https://welupdigital.com",
+      caseStudyLink: "/case-study/welup-digital", 
     },
     {
       name: "Prompt Earn",
-      slug: "prompt-earn", // Add this field
+      slug: "prompt-earn", 
       description:
-        "Comprehensive SEO campaigns achieving 40% increase in traffic and affiliate earnings.",
+        "Comprehensive SEO campaigns achieving a 40% increase in traffic and affiliate earnings.",
       tech: ["Google Analytics", "SEMRush", "MailChimp", "Social Media Tools"],
-      image: "/images/promptearn.png",
-      projectLink: "#",
-      caseStudyLink: "/case-study/prompt-earn", // Update with slug-based path
+      image: "/promptearn.webp",
+      projectLink: "https://promptearn.com/", 
+      caseStudyLink: "/case-study/prompt-earn",
     },
   ];
+  
 
 
   return (
@@ -47,11 +49,12 @@ const ProjectSection = () => {
             >
               <div className="p-6 flex flex-col md:flex-row gap-6">
                 {/* Project Image */}
-                <div className="w-full md:w-1/3">
-                  <img
+                <div className="w-full md:w-1/3 relative h-48 md:h-[300px]">
+                  <Image
                     src={project.image}
                     alt={project.name}
-                    className="w-full h-48 md:h-full object-cover rounded-xl bg-[#2A2A2A]"
+                    fill
+                    className="object-cover rounded-xl bg-[#2A2A2A]"
                   />
                 </div>
 
@@ -80,6 +83,7 @@ const ProjectSection = () => {
                   <div className="flex gap-6">
                     <a
                       href={project.projectLink}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#EDEDED] hover:text-[#BBBBBB] transition-colors duration-300 flex items-center gap-2"
                     >
@@ -87,6 +91,7 @@ const ProjectSection = () => {
                     </a>
                     <a
                       href={project.caseStudyLink}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#EDEDED] hover:text-[#BBBBBB] transition-colors duration-300 flex items-center gap-2"
                     >
@@ -102,5 +107,4 @@ const ProjectSection = () => {
     </section>
   );
 };
-
 export default ProjectSection;

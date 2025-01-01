@@ -46,24 +46,23 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ..
 Button.displayName = "Button";
 
 async function getProject(slug) {
-  // In a real application, you would fetch this data from an API or database
   const projects = {
-    "my-supply-co": {
-      title: "My Supply Co.",
-      description: "D2C & B2B eCommerce site and blog with elegant solutions for a complex codebase and customer journey.",
+    "kyrus-recycling": {
+      title: "Kyrus Recycling",
+      description: "A web application incentivizing users to recycle waste by offering monetary rewards, promoting environmental awareness and sustainable practices.",
       imageUrl: "/placeholder.svg?height=400&width=600",
       challenges: [
-        "Complex integration of D2C and B2B systems",
-        "Large, legacy codebase requiring modernization",
-        "Need for improved customer journey and user experience"
+        "Encouraging user engagement and sign-ups for a niche recycling incentive program",
+        "Building a scalable web application within tight deadlines",
+        "Ensuring seamless functionality and user experience across devices"
       ],
       solutions: [
-        "Implemented a microservices architecture to separate D2C and B2B concerns",
-        "Gradually refactored the codebase, introducing modern PHP practices and design patterns",
-        "Developed a custom WordPress theme and WooCommerce extensions for a tailored user experience"
+        "Designed and developed the web application using modern full-stack development practices, ensuring scalability and reliability",
+        "Integrated a user-friendly interface with responsive design for optimal usability",
+        "Implemented robust backend systems to track recycling activities and rewards"
       ],
-      outcomes: "The project resulted in a 30% increase in customer satisfaction scores, a 25% reduction in cart abandonment rates, and a 40% improvement in site performance metrics.",
-      technologies: ["PHP", "MySQL", "JavaScript", "jQuery", "WooCommerce", "WordPress", "SCSS", "GitHub"]
+      outcomes: "The project resulted in over 500 user sign-ups within the first month, raised environmental awareness, and significantly boosted waste recycling efforts in the community.",
+      technologies: ["React", "Node.js", "MongoDB", "CSS", "HTML", "JavaScript", "GitHub"]
     },
     "welup-digital": {
       title: "Welup Digital",
@@ -86,6 +85,7 @@ async function getProject(slug) {
 
   return projects[slug] || null;
 }
+
 
 export default async function CaseStudyDetail({ params }) {
   const project = await getProject(params.slug);
