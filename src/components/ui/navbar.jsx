@@ -20,8 +20,8 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt="Logo"
-              width={80}
-              height={30}
+              width={50}
+              height={20}
               className="object-contain"
               priority
             />
