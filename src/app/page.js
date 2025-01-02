@@ -1,9 +1,9 @@
 import Hero from '@/components/ui/hero';
 import Skills from '@/components/ui/skills';
-import { Experience } from '@/components/ui/experience'
+import Experience  from '@/components/ui/experience'
 import ProjectSection from "@/components/ui/project-overview";
 
-export default async function Home() {
+export default function Home() {
   return (
     <main>
       <Hero />
