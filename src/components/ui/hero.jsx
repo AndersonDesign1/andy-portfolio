@@ -15,7 +15,7 @@ export default function Hero() {
               Anderson Joseph.
             </h1>
             <p className="text-2xl md:text-4xl text-gray-300 font-light animate-slide-up delay-200">
-            Your brand needs visibility and optimization to generate more revenue that's where I come in.
+              I help brands get more visibility and optimise their websites to generate more revenue
             </p>
           </div>
           

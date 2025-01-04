@@ -1,55 +1,59 @@
 import React from 'react';
-import SkillCard from './skillcard';
+import SkillCard from '@/components/ui/skillcard';
+import { FaReact, FaHtml5, FaCss3Alt, FaBootstrap, FaNodeJs, FaWordpress, FaWix, FaCloudflare } from 'react-icons/fa';
+import { SiTailwindcss, SiJavascript, SiExpress, SiMongodb, SiPostman, SiRedis, SiGooglecloud, SiFirebase, SiSemrush, SiWebflow, SiBubble, SiFramer } from 'react-icons/si';
+import { TbSeo } from 'react-icons/tb';
+import SvgIcon from '@components/ui/svg-icon';
 
 const skillsData = [
   {
     title: 'Frontend Development',
     description: "I'm passionate about creating visually appealing, interactive, and responsive websites using modern frontend technologies. My focus is on delivering seamless user experiences.",
     skills: [
-      { name: 'React', icon: '/react.svg' },
-      { name: 'Tailwind CSS', icon: '/Tailwind CSS.svg' },
-      { name: 'JavaScript', icon: '/javascript.svg' },
-      { name: 'HTML5', icon: '/html.svg' },
-      { name: 'CSS3', icon: '/css.svg' },
-      { name: 'Bootstrap', icon: '/Bootstrap.svg' },
+      { name: 'React', icon: <FaReact className="w-8 h-8" /> },
+      { name: 'Tailwind CSS', icon: <SiTailwindcss className="w-8 h-8" /> },
+      { name: 'JavaScript', icon: <SiJavascript className="w-8 h-8" /> },
+      { name: 'HTML5', icon: <FaHtml5 className="w-8 h-8" /> },
+      { name: 'CSS3', icon: <FaCss3Alt className="w-8 h-8" /> },
+      { name: 'Bootstrap', icon: <FaBootstrap className="w-8 h-8" /> },
     ],
   },
   {
     title: 'Backend Development',
     description: 'I enjoy problem-solving and building reliable, secure, and scalable backend systems, using modern frameworks and languages to power applications efficiently.',
     skills: [
-      { name: 'Node.js', icon: '/Node.js.svg' },
-      { name: 'Express', icon: '/Express.svg' },
-      { name: 'MongoDB', icon: '/mongodb.svg' },
-      { name: 'Postman', icon: '/postman.svg' },
-      { name: 'Redis', icon: '/redis.svg' },
-      { name: 'Cloudflare', icon: '/cloudflare.svg' },
-      { name: 'Google Cloud', icon: '/Google Cloud.svg' },
-      { name: 'Firebase', icon: '/firebase.svg' },
+      { name: 'Node.js', icon: <FaNodeJs className="w-8 h-8" /> },
+      { name: 'Express', icon: <SiExpress className="w-8 h-8" /> },
+      { name: 'MongoDB', icon: <SiMongodb className="w-8 h-8" /> },
+      { name: 'Postman', icon: <SiPostman className="w-8 h-8" /> },
+      { name: 'Redis', icon: <SiRedis className="w-8 h-8" /> },
+      { name: 'Cloudflare', icon: <FaCloudflare className="w-8 h-8" /> },
+      { name: 'Google Cloud', icon: <SiGooglecloud className="w-8 h-8" /> },
+      { name: 'Firebase', icon: <SiFirebase className="w-8 h-8" /> },
     ],
   },
   {
     title: 'SEO & Digital Marketing',
     description: 'I specialize in optimizing websites for search engines and driving organic traffic growth through modern SEO strategies and techniques.',
     skills: [
-      // { name: 'Search Console', icon: '/google-search-console.svg', customClass: 'large-icon' },
-      { name: 'Ahrefs', icon: '/Ahrefs.svg', customClass: 'large-icon' },
-      { name: 'AiOseo', icon: '/AiOseo.svg', customClass: 'large-icon' },
-      { name: 'SEMrush', icon: '/Semrush.svg' },
+      { name: 'Technical SEO', icon: <TbSeo className="w-8 h-8" /> },
+      { name: 'Custom SVG', icon: <SvgIcon className="w-8 h-8" /> },
+      { name: 'SEMrush', icon: <SiSemrush className="w-8 h-8" /> },
     ],
   },
   {
     title: 'No-code Development',
     description: 'I leverage no-code tools to build functional websites and prototypes quickly, making it accessible to businesses and startups.',
     skills: [
-      { name: 'WordPress', icon: '/WordPress.svg' },
-      { name: 'Wix', icon: '/Wix.com.svg' },
-      { name: 'Webflow', icon: '/Webflow.svg' },
-      { name: 'Bubble', icon: '/Bubble.io.svg' },
-      { name: 'Framer', icon: '/Framer.svg' },
+      { name: 'WordPress', icon: <FaWordpress className="w-8 h-8" /> },
+      { name: 'Wix', icon: <FaWix className="w-8 h-8" /> },
+      { name: 'Webflow', icon: <SiWebflow className="w-8 h-8" /> },
+      { name: 'Bubble', icon: <SiBubble className="w-8 h-8" /> },
+      { name: 'Framer', icon: <SiFramer className="w-8 h-8" /> },
     ],
   },
 ];
+
 const Skills = () => {
   return (
     <section className="py-16 relative">

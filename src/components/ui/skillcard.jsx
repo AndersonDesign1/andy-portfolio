@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 const SkillCard = ({ title, description, skills = [] }) => {  // Set default value for skills
   return (
@@ -20,22 +19,16 @@ const SkillCard = ({ title, description, skills = [] }) => {  // Set default val
         </div>
         
         <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
-        
-        <div className="flex flex-wrap gap-3">
-          {skills.map((skill) => (
+
+        {/* Skills Grid */}
+        <div className="grid grid-cols-2 gap-2 mt-4">
+          {skills.map((skill, index) => (
             <div 
-              key={skill.name} 
-              className="bg-zinc-800/50 rounded-xl p-2 hover:bg-zinc-700 transition-all duration-300 border border-gray-700/30 hover:border-gray-600"
-              title={skill.name}
+              key={index}
+              className="flex items-center gap-2 bg-zinc-800/50 px-4 py-2 rounded-lg hover:bg-zinc-700/50 transition-colors duration-300"
             >
-              <Image
-                src={skill.icon}
-                alt={skill.name}
-                width={25}
-                height={25}
-                className="rounded-lg hover:scale-110 transition-transform duration-300"
-                priority={true}
-              />
+              {skill.icon}
+              <span className="text-gray-300 text-sm">{skill.name}</span>
             </div>
           ))}
         </div>

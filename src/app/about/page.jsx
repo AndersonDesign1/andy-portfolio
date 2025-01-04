@@ -49,12 +49,14 @@ export default function About() {
           <div className="relative rounded-3xl overflow-hidden group h-[700px]">
             <div className="absolute inset-0 bg-gradient-to-r from-teal-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Image
-              src="/Anderson Joseph.webp"
+              src="/Anderson Joseph.jpg"
               alt="Profile"
-              width={800}
-              height={750}
+              width={1200}          // Increased from 800
+              height={1400}         // Increased from 750
+              quality={100}         // Added quality parameter
+              priority              // Added priority loading
               className="w-full h-full object-cover"
-              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 50vw"  // Added responsive sizes
             />
           </div>
 
