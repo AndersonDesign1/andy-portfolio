@@ -1,7 +1,25 @@
+'use client'
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { sendEmail } from '../actions/sendEmail';
 
 export default function Contact() {
+  const [formStatus, setFormStatus] = useState(null);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    try {
+      await sendEmail(formData);
+      setFormStatus({ success: true, message: 'Email sent successfully!' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      setFormStatus({ success: false, message: 'Failed to send email. Please try again later.' });
+    }
+  }
+
   return (
     <section className="w-full min-h-screen bg-black text-white relative overflow-hidden pt-24">
       {/* Animated background pattern */}
@@ -29,7 +47,7 @@ export default function Contact() {
           {/* Contact Form */}
           <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10 md:col-span-2">
             <h2 className="text-2xl font-semibold mb-6 font-poppins">Send a Message</h2>
-            <form action="https://formspree.io/f/your-form-id" method="POST">
+            <form onSubmit={handleSubmit}>
               <div className="mb-6">
                 <label htmlFor="name" className="block text-sm font-medium mb-2 font-outfit">Name</label>
                 <input 
@@ -67,6 +85,11 @@ export default function Contact() {
                 Send Message
               </button>
             </form>
+            {formStatus && (
+              <div className={`mt-4 p-2 rounded ${formStatus.success ? 'bg-green-600' : 'bg-red-600'}`}>
+                {formStatus.message}
+              </div>
+            )}
           </div>
 
           {/* Social Links */}

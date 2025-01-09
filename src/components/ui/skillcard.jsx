@@ -1,21 +1,20 @@
 import React from 'react';
-import Image from 'next/image';
 
 const SkillCard = ({ title, description, skills }) => {
   return (
-    <div className="bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors duration-300 bg-opacity-50 backdrop-filter backdrop-blur-sm rounded-2xl p-6 mb-6 border border-[#333333] hover:border-[#4A4A4A]">
-      <h3 className="text-2xl font-bold mb-2 text-[#E5E7EB] font-montserrat">{title}</h3>
-      <p className="text-[#9CA3AF] mb-4 font-montserrat">{description}</p>
-      <div className="flex flex-wrap gap-3">
-        {skills.map((skill) => (
-          <Image
-            key={skill.name}
-            src={skill.icon}
-            alt={skill.name}
-            width={40}
-            height={40}
-            className={`rounded-lg hover:scale-110 transition-transform duration-300 ${skill.customClass || ''}`}
-          />
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h3 className="text-2xl font-semibold mb-4">{title}</h3>
+      <p className="mb-4">{description}</p>
+      <div className="flex flex-wrap">
+        {skills.map((skill, index) => (
+          <div key={index} className="flex items-center mr-4 mb-4">
+            {skill.icon && (typeof skill.icon === 'string' ? (
+              skill.icon ? <img src={skill.icon} alt={skill.name} className="w-6 h-6" /> : null
+            ) : (
+              skill.icon
+            ))}
+            <span className="ml-2">{skill.name}</span>
+          </div>
         ))}
       </div>
     </div>

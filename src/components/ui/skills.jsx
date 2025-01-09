@@ -1,55 +1,57 @@
 import React from 'react';
 import SkillCard from './skillcard';
+import { FaReact, FaCss3Alt, FaHtml5, FaJs, FaBootstrap, FaNodeJs, FaGoogle, FaWordpress, FaWix, FaCloudflare } from 'react-icons/fa';
+import { SiTailwindcss, SiExpress, SiMongodb, SiPostman, SiRedis, SiFirebase, SiWebflow, SiFramer, SiSemrush } from 'react-icons/si';
 
 const skillsData = [
   {
     title: 'Frontend Development',
     description: "I'm passionate about creating visually appealing, interactive, and responsive websites using modern frontend technologies. My focus is on delivering seamless user experiences.",
     skills: [
-      { name: 'React', icon: '/react.svg' },
-      { name: 'Tailwind CSS', icon: '/Tailwind CSS.svg' },
-      { name: 'JavaScript', icon: '/javascript.svg' },
-      { name: 'HTML5', icon: '/html.svg' },
-      { name: 'CSS3', icon: '/css.svg' },
-      { name: 'Bootstrap', icon: '/Bootstrap.svg' },
+      { name: 'React', icon: <FaReact /> },
+      { name: 'Tailwind CSS', icon: <SiTailwindcss /> },
+      { name: 'JavaScript', icon: <FaJs /> },
+      { name: 'HTML5', icon: <FaHtml5 /> },
+      { name: 'CSS3', icon: <FaCss3Alt /> },
+      { name: 'Bootstrap', icon: <FaBootstrap /> },
     ],
   },
   {
     title: 'Backend Development',
     description: 'I enjoy problem-solving and building reliable, secure, and scalable backend systems, using modern frameworks and languages to power applications efficiently.',
     skills: [
-      { name: 'Node.js', icon: '/Node.js.svg' },
-      { name: 'Express', icon: '/Express.svg' },
-      { name: 'MongoDB', icon: '/mongodb.svg' },
-      { name: 'Postman', icon: '/postman.svg' },
-      { name: 'Redis', icon: '/redis.svg' },
-      { name: 'Cloudflare', icon: '/cloudflare.svg' },
-      { name: 'Google Cloud', icon: '/Google Cloud.svg' },
-      { name: 'Firebase', icon: '/firebase.svg' },
+      { name: 'Node.js', icon: <FaNodeJs /> },
+      { name: 'Express', icon: <SiExpress /> },
+      { name: 'MongoDB', icon: <SiMongodb /> },
+      { name: 'Postman', icon: <SiPostman /> },
+      { name: 'Redis', icon: <SiRedis /> },
+      { name: 'Cloudflare', icon: <FaCloudflare /> },
+      { name: 'Google Cloud', icon: <FaGoogle /> },
+      { name: 'Firebase', icon: <SiFirebase /> },
     ],
   },
   {
     title: 'SEO & Digital Marketing',
     description: 'I specialize in optimizing websites for search engines and driving organic traffic growth through modern SEO strategies and techniques.',
     skills: [
-      // { name: 'Search Console', icon: '/google-search-console.svg', customClass: 'large-icon' },
-      { name: 'Ahrefs', icon: '/Ahrefs.svg', customClass: 'large-icon' },
-      { name: 'AiOseo', icon: '/AiOseo.svg', customClass: 'large-icon' },
-      { name: 'SEMrush', icon: '/Semrush.svg' },
+      { name: 'Ahrefs', icon: <img src="/Ahrefs.svg" alt="Ahrefs" className="w-6 h-6" /> }, // SVG icon
+      { name: 'AiOseo', icon: <img src="/AiOseo.svg" alt="AiOseo" className="w-6 h-6" /> }, // SVG icon
+      { name: 'SEMrush', icon: <SiSemrush /> },
     ],
   },
   {
     title: 'No-code Development',
     description: 'I leverage no-code tools to build functional websites and prototypes quickly, making it accessible to businesses and startups.',
     skills: [
-      { name: 'WordPress', icon: '/WordPress.svg' },
-      { name: 'Wix', icon: '/Wix.com.svg' },
-      { name: 'Webflow', icon: '/Webflow.svg' },
-      { name: 'Bubble', icon: '/Bubble.io.svg' },
-      { name: 'Framer', icon: '/Framer.svg' },
+      { name: 'WordPress', icon: <FaWordpress /> },
+      { name: 'Wix', icon: <FaWix /> },
+      { name: 'Webflow', icon: <SiWebflow /> },
+      { name: 'Bubble', icon: <img src="/Bubble.io.svg" alt="Bubble" className="w-6 h-6" /> }, // SVG icon
+      { name: 'Framer', icon: <SiFramer /> },
     ],
   },
 ];
+
 const Skills = () => {
   return (
     <section className="py-16 relative">
