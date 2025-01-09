@@ -2,9 +2,9 @@ import React from 'react';
 
 const SkillCard = ({ title, description, skills }) => {
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h3 className="text-2xl font-semibold mb-4">{title}</h3>
-      <p className="mb-4">{description}</p>
+    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6 transform skew-x-[-12deg]">
+      <h3 className="text-2xl font-semibold text-gray-200 mb-4">{title}</h3>
+      <p className="text-gray-400 mb-4">{description}</p>
       <div className="flex flex-wrap">
         {skills.map((skill, index) => (
           <div key={index} className="flex items-center mr-4 mb-4">
@@ -13,7 +13,7 @@ const SkillCard = ({ title, description, skills }) => {
             ) : (
               skill.icon
             ))}
-            <span className="ml-2">{skill.name}</span>
+            <span className="ml-2 text-gray-300">{skill.name}</span>
           </div>
         ))}
       </div>
