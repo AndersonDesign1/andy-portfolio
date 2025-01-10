@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -142,8 +141,17 @@ export function Experience() {
   ];
 
   return (
-    <section className="bg-[#0a0a0a] text-[#ededed] font-cal py-16 flex items-center justify-center">
-      <div className="container mx-auto px-4 flex flex-col items-center">
+    <section className="bg-[#0a0a0a] text-[#ededed] font-cal py-16 flex items-center justify-center relative overflow-hidden">
+      {/* Animated Blobs Background */}
+      <div className="absolute -inset-[10px] opacity-50">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-blob" />
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
+      </div>
+
+      {/* Grid Background */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+      <div className="container mx-auto px-4 flex flex-col items-center relative z-10">
         <h2 className="text-3xl font-bold mb-6 text-center">Experience</h2>
         <Tabs defaultValue="work" className="w-full max-w-3xl flex flex-col items-center" onValueChange={setActiveTab}>
           <TabsList className="bg-[#1a1a1a] p-1 rounded-full inline-flex w-96 h-16 mb-6">
@@ -194,4 +202,6 @@ export function Experience() {
       </div>
     </section>
   );
-}export default Experience;
+}
+
+export default Experience;

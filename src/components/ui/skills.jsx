@@ -54,7 +54,7 @@ const skillsData = [
 
 const Skills = () => {
   return (
-    <section className="py-16 relative">
+    <section className="py-16 relative overflow-hidden">
       <div className="absolute inset-0 bg-[#0a0a0a] opacity-90"></div>
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       <div className="container mx-auto px-4 relative z-10">
