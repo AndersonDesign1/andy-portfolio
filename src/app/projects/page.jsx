@@ -1,5 +1,15 @@
 import ProjectList from '@/components/ui/projectslist'
 import { projects, projectCategories } from '@/data/projects'
+
+export async function generateMetadata() {
+  return {
+    title: 'Projects by Anderson Joseph | Web Development & SEO',
+    description: "Explore Anderson Joseph's impactful projects, showcasing expertise in building responsive websites, implementing SEO strategies, and delivering exceptional business results.",
+    url: 'https://andersonjoseph.com/projects',
+    content: 'Projects by Anderson Joseph | Web Development, SEO Campaigns, and Digital Transformations.',
+    keywords: 'Anderson Joseph Projects, Web Development Portfolio, SEO Campaigns, Responsive Websites, Digital Solutions',    
+  };
+}
 export default function ProjectsPage() {
   return (
     <section className="w-full min-h-screen bg-black text-white relative overflow-hidden">

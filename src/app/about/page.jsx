@@ -3,9 +3,12 @@ import Skills from '@/components/ui/skills';
 
 export async function generateMetadata() {
   return {
-    title: 'About Me',
-    description: 'Discover my expertise in SEO, web development, and digital marketing, driving results for brands worldwide.',
-    keywords: ['SEO', 'Web Development', 'Digital Marketing', 'Full Stack Development', 'User Engagement'],
+    title: "About Anderson Joseph | Web Development & SEO Expertise",
+    description: "Learn about Anderson Joseph, a skilled web developer and SEO specialist with a proven track record of boosting website performance, traffic, and revenue for businesses.",
+    url: "https://andersonjoseph.com/about",
+    content: "About Anderson Joseph | Full Stack Web Developer, SEO Specialist, and Digital Strategist.",
+    keywords: "About Anderson Joseph, Full Stack Developer, SEO Expert, Digital Marketing Strategist, Web Performance",
+    
   };
 }
 

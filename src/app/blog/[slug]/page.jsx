@@ -19,12 +19,8 @@ export default async function BlogPostPage({ params }) {
       <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Post not found</h1>
-          <Link 
-            href="/blog" 
-            className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-2"
-          >
-            <ArrowLeft size={20} />
-            Back to blog
+          <Link href="/blog">
+            <a className="text-blue-500 hover:underline">Go back to blog</a>
           </Link>
         </div>
       </div>
@@ -32,41 +28,38 @@ export default async function BlogPostPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white">
-      <div 
-        className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]"
-        aria-hidden="true"
-      />
+    <div className="relative overflow-hidden min-h-screen bg-zinc-900 text-white">
+      {/* Animated Blobs Background */}
+      <div className="absolute -inset-[10px] opacity-50">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-blob" />
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
+      </div>
 
-      <article className="relative container mx-auto px-4 py-16">
-        <div className="max-w-3xl mx-auto">
-          <Link 
-            href="/blog" 
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white mb-8 transition-colors"
-          >
-            <ArrowLeft size={20} />
-            Back to blog
-          </Link>
+      {/* Grid Background */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
 
-          <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-            <time 
-              dateTime={post._createdAt}
-              className="text-zinc-400"
-            >
-              {new Date(post._createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </time>
-          </header>
-
-          <div className="prose prose-invert max-w-none prose-lg prose-p:text-zinc-300 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-headings:text-white">
+      <div className="container mx-auto px-6 py-24 md:py-40 relative z-10">
+        <Link href="/blog">
+          <a className="flex items-center text-blue-500 hover:underline mb-8">
+            <ArrowLeft className="mr-2" />
+            Back to Blog
+          </a>
+        </Link>
+        <article className="max-w-4xl mx-auto space-y-6">
+          <h1 className="text-4xl md:text-6xl font-bold">{post.title}</h1>
+          <p className="text-gray-400">
+            {new Date(post._createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </p>
+          <div className="prose prose-invert">
             <PortableText value={post.content} />
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
     </div>
   )
 }

@@ -18,8 +18,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "My Website",
-  description: "Discover My Website: A platform offering detailed insights and modern solutions.",
+  title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+  description: "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+  url: "https://andersonjoseph.com",
+  content: "Anderson Joseph | Web Developer, Web Performance, SEO Specialist and No-code Developer.",
+  keywords: "Anderson Joseph, Web Developer, SEO Specialist, Web Performance, No-code Developer,",
 };
 
 export default function RootLayout({ children }) {
