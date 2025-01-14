@@ -11,24 +11,25 @@ export async function sendEmail(formData) {
 
   try {
     const data = await resend.emails.send({
-      from: 'Your Name <hello@andersonjoseph.com>', // Updated from address
-      to: ['josanderson25@gmail.com'], // Updated to address
-      subject: `New message from ${name}`,
+      from: 'Anderson Joseph <hello@andersonjoseph.com>',
+      to: ['josanderson25@gmail.com'],
+      reply_to: email,
+      subject: `Portfolio Contact: ${name}`,
       text: `
         Name: ${name}
         Email: ${email}
         Message: ${message}
       `,
       html: `
-        <p>Name: ${name}</p>
-        <p>Email: ${email}</p>
-        <p>Message: ${message}</p>
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong> ${message}</p>
       `
     });
-    console.log(data);
     return { success: true, message: 'Email sent successfully!' }
   } catch (error) {
     console.error('Error sending email:', error);
-    return { success: false, message: 'Failed to send email. Please try again.' }
+    throw new Error('Failed to send email')
   }
 }
