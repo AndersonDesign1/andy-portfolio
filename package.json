@@ -16,6 +16,8 @@
     "@sanity/image-url": "^1.1.0",
     "@sanity/studio-secrets": "^3.0.1",
     "@sanity/vision": "^3.69.0",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",
