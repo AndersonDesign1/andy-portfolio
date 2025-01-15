@@ -7,9 +7,9 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Experience />
       <Skills />
-      <ProjectSection /> {/* Updated and included ProjectSection */}
+      <ProjectSection /> 
+      <Experience />
     </main>
   );
 }
