@@ -1,6 +1,7 @@
+
 const postSchema = {
   name: 'post',
-  title: 'Blog Post',
+  title: 'Post',
   type: 'document',
   fields: [
     {
@@ -88,56 +89,20 @@ const postSchema = {
       title: 'Body',
       type: 'array',
       of: [
-        {
-          type: 'block',
-          styles: [
-            {title: 'Normal', value: 'normal'},
-            {title: 'H2', value: 'h2'},
-            {title: 'H3', value: 'h3'},
-            {title: 'H4', value: 'h4'},
-            {title: 'Quote', value: 'blockquote'}
-          ],
-          marks: {
-            decorators: [
-              {title: 'Strong', value: 'strong'},
-              {title: 'Emphasis', value: 'em'},
-              {title: 'Code', value: 'code'}
-            ],
-            annotations: [
-              {
-                name: 'link',
-                type: 'object',
-                title: 'URL',
-                fields: [
-                  {
-                    title: 'URL',
-                    name: 'href',
-                    type: 'url',
-                    validation: Rule => Rule.uri({
-                      scheme: ['http', 'https', 'mailto', 'tel']
-                    })
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          type: 'image',
-          fields: [
-            {
-              name: 'alt',
-              type: 'string',
-              title: 'Alternative text',
-              description: 'Important for SEO and accessibility.',
-              validation: Rule => Rule.required()
-            }
-          ]
-        },
+        {type: 'block'},
+        {type: 'image'},
         {
           type: 'code',
           options: {
-            withFilename: true
+            withFilename: true,
+            language: 'javascript',
+            languageAlternatives: [
+              {title: 'Javascript', value: 'javascript'},
+              {title: 'HTML', value: 'html'},
+              {title: 'CSS', value: 'css'},
+              {title: 'TypeScript', value: 'typescript'},
+              {title: 'Python', value: 'python'}
+            ]
           }
         }
       ]
@@ -152,4 +117,3 @@ const postSchema = {
 }
 
 export default postSchema
-

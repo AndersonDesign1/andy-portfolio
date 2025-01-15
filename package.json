@@ -13,6 +13,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.2",
     "@sanity/client": "^6.24.1",
+    "@sanity/code-input": "^5.1.2",
     "@sanity/image-url": "^1.1.0",
     "@sanity/studio-secrets": "^3.0.1",
     "@sanity/vision": "^3.69.0",
