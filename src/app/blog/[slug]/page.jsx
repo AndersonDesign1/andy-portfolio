@@ -1,75 +1,190 @@
-import { PortableText } from '@portabletext/react'
-import { client } from '@/sanity/lib/client'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { PortableText } from '@portabletext/react';
+import { client } from '@/sanity/lib/client';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { urlFor } from '@/sanity/lib/image';
+import Image from 'next/image';
 
 async function getPost(slug) {
-  return client.fetch(`*[_type == "post" && slug.current == $slug][0]{
-    title,
-    content,
-    _createdAt
-  }`, { slug })
+  return client.fetch(
+    `*[_type == "post" && slug.current == $slug][0]{
+      title,
+      body,
+      _createdAt,
+      mainImage{
+        asset->,
+        alt,
+        caption
+      }
+    }`,
+    { slug }
+  );
 }
 
-export default async function BlogPostPage({ params }) {
-  const post = await getPost(params.slug)
+const components = {
+  types: {
+    image: ({ value }) => (
+      <figure className="my-10">
+        <div className="relative w-full h-[500px] border-4 border-zinc-700">
+          <Image
+            src={urlFor(value).url() || "/placeholder.svg"}
+            alt={value.alt || "Blog post image"}
+            fill
+            className="object-cover rounded-lg"
+            priority
+          />
+        </div>
+        {value.caption && (
+          <figcaption className="mt-4 text-center text-sm text-gray-400 italic">
+            {value.caption}
+          </figcaption>
+        )}
+      </figure>
+    ),
+    code: ({ value }) => (
+      <pre className="bg-zinc-800 p-4 rounded-lg overflow-x-auto">
+        <code className="text-sm font-mono text-gray-200">{value.code}</code>
+      </pre>
+    )
+  },
+  block: {
+    h1: ({ children }) => (
+      <h1 className="text-4xl font-bold mt-8 mb-4 text-white">{children}</h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="text-3xl font-bold mt-8 mb-4 text-white">{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-2xl font-bold mt-6 mb-3 text-white">{children}</h3>
+    ),
+    normal: ({ children }) => (
+      <p className="text-gray-300 leading-relaxed mb-6">{children}</p>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-4 border-blue-500 pl-4 italic my-6 text-gray-300">
+        {children}
+      </blockquote>
+    ),
+  },
+  marks: {
+    link: ({ children, value }) => {
+      const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined;
+      return (
+        <a 
+          href={value.href} 
+          rel={rel} 
+          className="text-blue-400 hover:text-blue-300 transition-colors"
+        >
+          {children}
+        </a>
+      );
+    },
+    code: ({ children }) => (
+      <code className="bg-zinc-800 px-1.5 py-0.5 rounded text-gray-200 font-mono text-sm">
+        {children}
+      </code>
+    ),
+    strong: ({ children }) => (
+      <strong className="font-bold text-white">{children}</strong>
+    ),
+    em: ({ children }) => (
+      <em className="italic text-gray-300">{children}</em>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc list-inside space-y-2 mb-6 text-gray-300 pl-4">
+        {children}
+      </ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal list-inside space-y-2 mb-6 text-gray-300 pl-4">
+        {children}
+      </ol>
+    ),
+  },
+};
 
-  if (!post) {
+export default async function BlogPostPage({ params }) {
+  try {
+    const post = await getPost(params.slug);
+
+    if (!post) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-black text-white">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-6">Post not found</h1>
+            <Link href="/blog" className="text-gray-400 hover:text-gray-300">Back to blog</Link>
+          </div>
+        </div>
+      );
+    }
+
     return (
-      <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Post not found</h1>
-          <Link href="/blog">
-            <a className="text-blue-500 hover:underline">Go back to blog</a>
+      <div className="relative min-h-screen bg-black text-white">
+        <div className="container mx-auto px-6 py-24 md:py-36 relative">
+          <Link href="/blog" className="inline-flex items-center text-gray-400 hover:text-gray-300 font-medium mb-10">
+            <ArrowLeft className="mr-2 h-5 w-5" />
+            Back to Blog
           </Link>
+
+          <article className="max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">{post.title}</h1>
+
+            <p className="text-gray-400 text-lg mb-8">
+              {new Date(post._createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+
+            {post.mainImage && (
+              <figure className="mb-10">
+                <div className="relative aspect-video overflow-hidden rounded-xl border-4 border-zinc-700">
+                  <Image
+                    src={urlFor(post.mainImage).url() || "/placeholder.svg"}
+                    alt={post.mainImage.alt || post.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+                {post.mainImage.caption && (
+                  <figcaption className="mt-4 text-center text-sm text-gray-400 italic">
+                    {post.mainImage.caption}
+                  </figcaption>
+                )}
+              </figure>
+            )}
+
+            <div className="prose prose-invert prose-lg max-w-none">
+              <PortableText value={post.body} components={components} />
+            </div>
+          </article>
         </div>
       </div>
-    )
+    );
+  } catch (error) {
+    console.error('Error loading post:', error);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-6">Error loading post</h1>
+          <Link href="/blog" className="text-gray-400 hover:text-gray-300">Back to blog</Link>
+        </div>
+      </div>
+    );
   }
-
-  return (
-    <div className="relative overflow-hidden min-h-screen bg-zinc-900 text-white">
-      {/* Animated Blobs Background */}
-      <div className="absolute -inset-[10px] opacity-50">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-blob" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
-      </div>
-
-      {/* Grid Background */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
-
-      <div className="container mx-auto px-6 py-24 md:py-40 relative z-10">
-        <Link href="/blog">
-          <a className="flex items-center text-blue-500 hover:underline mb-8">
-            <ArrowLeft className="mr-2" />
-            Back to Blog
-          </a>
-        </Link>
-        <article className="max-w-4xl mx-auto space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold">{post.title}</h1>
-          <p className="text-gray-400">
-            {new Date(post._createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </p>
-          <div className="prose prose-invert">
-            <PortableText value={post.content} />
-          </div>
-        </article>
-      </div>
-    </div>
-  )
 }
 
 export async function generateStaticParams() {
   const posts = await client.fetch(`*[_type == "post"]{
     slug
-  }`)
+  }`);
 
   return posts.map((post) => ({
-    slug: post.slug.current
-  }))
+    slug: post.slug.current,
+  }));
 }
+

@@ -34,6 +34,12 @@ const postSchema = {
           title: 'Alternative text',
           description: 'Important for SEO and accessibility.',
           validation: Rule => Rule.required()
+        },
+        {
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+          description: 'Text displayed below the image'
         }
       ]
     },
