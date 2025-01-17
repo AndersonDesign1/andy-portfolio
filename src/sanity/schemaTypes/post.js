@@ -96,7 +96,27 @@ const postSchema = {
       type: 'array',
       of: [
         {type: 'block'},
-        {type: 'image'},
+        {
+          type: 'image',
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative text',
+              description: 'Important for SEO and accessibility.',
+              validation: Rule => Rule.required()
+            },
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+              description: 'Text displayed below the image'
+            }
+          ],
+          options: {
+            hotspot: true
+          }
+        },
         {
           type: 'code',
           options: {
@@ -113,8 +133,7 @@ const postSchema = {
         }
       ]
     }
-  ],
-  preview: {
+  ],  preview: {
     select: {
       title: 'title',
       media: 'mainImage'
