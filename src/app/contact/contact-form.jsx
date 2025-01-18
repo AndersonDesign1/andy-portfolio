@@ -105,12 +105,6 @@ export default function ContactForm() {
             <h2 className="text-2xl font-semibold mb-6 font-poppins">Connect with Me</h2>
             <div className="space-y-6">
               <SocialLink
-                href="mailto:hello@andersonjoseph.com"
-                icon={<FaEnvelope className="w-6 h-6" />}
-                platform="Email"
-                username="hello@andersonjoseph.com"
-              />
-              <SocialLink
                 href="https://www.linkedin.com/in/anderson-josh/"
                 icon={<FaLinkedin className="w-6 h-6" />}
                 platform="LinkedIn"
@@ -133,6 +127,12 @@ export default function ContactForm() {
                 icon={<FaInstagram className="w-6 h-6" />}
                 platform="Instagram"
                 username="josephandy_official"
+              />
+                <SocialLink
+                href="mailto:hello@andersonjoseph.com"
+                icon={<FaEnvelope className="w-6 h-6" />}
+                platform="Email"
+                username="hello@andersonjoseph.com"
               />
             </div>
           </div>

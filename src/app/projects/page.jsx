@@ -12,7 +12,7 @@ export async function generateMetadata() {
 }
 export default function ProjectsPage() {
   return (
-    <section className="w-full min-h-screen bg-black text-white relative overflow-hidden">
+    <section className="w-full min-h-screen bg-black text-white relative overflow-hidden pt-24">
       {/* Animated background pattern */}
       <div className="absolute inset-0 z-0">
         {/* Grid pattern */}
@@ -34,7 +34,7 @@ export default function ProjectsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <h1 className="text-4xl font-bold mb-8 text-center text-gray-200">Projects</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-200">Projects I've worked or contributed to</h1>
         {projectCategories.map(category => (
           <ProjectList key={category} category={category} projects={projects.filter(p => p.category === category)} />
         ))}

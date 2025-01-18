@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { FaLinkedin, FaGithub, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaTwitter, FaInstagram,FaEnvelope } from 'react-icons/fa';
 import { sendEmail } from '@/app/actions/sendEmail';
 
 export default function Contact() {
@@ -41,43 +41,43 @@ export default function Contact() {
       <div className="container mx-auto px-4 py-16 relative z-10">
         <h1 className="text-4xl font-bold mb-8 font-poppins">Let's Connect</h1>
 
-        <div className="grid md:grid-cols-3 gap-12">
-          <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10 md:col-span-2">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-24">
+          <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10 md:w-[calc(100%+50px)]">
             <h2 className="text-2xl font-semibold mb-6 font-poppins">Send a Message</h2>
             <form onSubmit={handleSubmit}>
-              <div className="mb-6">
+              <div className="mb-4">
                 <label htmlFor="name" className="block text-sm font-medium mb-2 font-outfit">Name</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   required
-                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 />
               </div>
-              <div className="mb-6">
+              <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium mb-2 font-outfit">Email</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 />
               </div>
-              <div className="mb-6">
+              <div className="mb-4">
                 <label htmlFor="message" className="block text-sm font-medium mb-2 font-outfit">Message</label>
                 <textarea
                   id="message"
                   name="message"
-                  rows="4"
+                  rows="3"
                   required
-                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 ></textarea>
               </div>
               <button
                 type="submit"
-                className="w-full bg-neutral-900 hover:bg-black text-white font-bold py-3 px-6 rounded-lg transition duration-300 font-outfit border border-white/10"
+                className="w-full bg-neutral-900 hover:bg-black text-white font-bold py-2 px-4 rounded-lg transition duration-300 font-outfit border border-white/10"
               >
                 Send Message
               </button>
@@ -89,32 +89,38 @@ export default function Contact() {
             )}
           </div>
 
-          <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10">
+          <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10 w-full md:w-[calc(100%-50px)]">
             <h2 className="text-2xl font-semibold mb-6 font-poppins">Connect with Me</h2>
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
               <SocialLink
                 href="https://www.linkedin.com/in/anderson-josh/"
-                icon={<FaLinkedin className="w-6 h-6" />}
+                icon={<FaLinkedin className="w-7 h-7" />}
                 platform="LinkedIn"
                 username="Anderson Joseph"
               />
               <SocialLink
                 href="https://github.com/AndersonDesign1"
-                icon={<FaGithub className="w-6 h-6" />}
+                icon={<FaGithub className="w-7 h-7" />}
                 platform="GitHub"
                 username="AndersonDesign1"
               />
               <SocialLink
                 href="https://x.com/WebDev_Anderson"
-                icon={<FaTwitter className="w-6 h-6" />}
+                icon={<FaTwitter className="w-7 h-7" />}
                 platform="Twitter"
                 username="WebDev_Anderson"
               />
               <SocialLink
                 href="https://www.instagram.com/josephandy_official/"
-                icon={<FaInstagram className="w-6 h-6" />}
+                icon={<FaInstagram className="w-7 h-7" />}
                 platform="Instagram"
                 username="josephandy_official"
+              />
+              <SocialLink
+                href="mailto:hello@andersonjoseph.com"
+                icon={<FaEnvelope className="w-7 h-7" />}
+                platform="Email"
+                username="hello@andersonjoseph.com"
               />
             </div>
           </div>
@@ -128,10 +134,10 @@ function SocialLink({ href, icon, platform, username }) {
   return (
     <Link
       href={href}
-      className="flex items-center space-x-3 p-3 rounded-lg bg-black/20 hover:bg-black/40 text-gray-300 hover:text-white transition duration-300 font-outfit border border-white/5 hover:border-white/20"
+      className="flex items-center space-x-3 p-4 rounded-lg bg-black/20 hover:bg-black/40 text-gray-300 hover:text-white transition duration-300 font-outfit border border-white/5 hover:border-white/20"
     >
       {icon}
-      <span>{platform}: @{username}</span>
+      <span className="truncate">{platform}: @{username}</span>
     </Link>
   );
 }

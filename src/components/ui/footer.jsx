@@ -37,7 +37,7 @@
               {/* Back-to-Top Button */}
               <button
                   onClick={scrollToTop}
-                  className="fixed bottom-8 right-8 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#ededed] px-4 py-2 rounded-full shadow-sm transition-all"
+                  className="fixed bottom-8 right-8 z-50 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#ededed] px-4 py-2 rounded-full shadow-sm transition-all"
               >
                   Back to Top
               </button>

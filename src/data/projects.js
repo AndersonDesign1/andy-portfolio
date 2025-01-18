@@ -1,8 +1,7 @@
 export const projectCategories = [
   "Current Focus",
-  "Full Stack",
-  "SEO",
-  "Web Design"
+  "Websites",
+  "SEO"
 ];
 
 export const projects = [
@@ -17,9 +16,9 @@ export const projects = [
   {
       id: 7,
       name: "Personal Portfolio",
-      description: "Designed and developed a modern, responsive portfolio website to showcase my projects, skills and a blog section. Implemented dynamic content loading, SEO, and optimized performance achieving 95+ scores in Lighthouse metrics.",
+      description: "Designed and developed a modern, full stack, responsive portfolio website to showcase my projects, skills and a blog section. Implemented dynamic content loading, SEO, and optimized performance achieving 95+ scores in Lighthouse metrics.",
       category: "Current Focus",
-      technologies: ["React", "Next.js", "Tailwind CSS", "Framer Motion", "Prismic CMS"],
+      technologies: ["React", "Next.js", "Tailwind CSS", "Framer Motion", "Sanity CMS"],
       website: "https://andersonjoseph.com/",
     },
   
@@ -27,7 +26,7 @@ export const projects = [
     id: 2,
     name: "Welup Digital",
     description: "Developed and optimized the website over a 3-year period, achieving a 40% increase in user engagement and a 30% growth in overall traffic through responsive design and effective SEO strategies.",
-    category: "Full Stack",
+    category: "Websites",
     technologies: ["WordPress", "JavaScript", "PHP"],
     website: "https://welupdigital.com",
   },
@@ -51,7 +50,7 @@ export const projects = [
     id: 5,
     name: "TheWealthyPost",
     description: "Revamped a WordPress website for The Wealthy Post, reducing loading time from 15 seconds to 3 seconds and boosting user engagement by 40%. Enhanced organic traffic by 200% within three months by implementing responsive design and intuitive navigation.",
-    category: "Web Design",
+    category: "Websites",
     technologies: ["WordPress", "PHP", "SEO Tools"],
     website: "https://thewealthypost.com/",
   },
@@ -59,7 +58,7 @@ export const projects = [
     id: 6,
     name: "Eng4Careers",
     description: "Redesigned a corporate website using Wix, achieving a 40% increase in session duration, a 30% reduction in bounce rates, and improving page load speed to 2.4 seconds through a streamlined UI/UX design.",
-    category: "Web Design",
+    category: "Websites",
     technologies: ["Wix", "SEO"],
     website: "https://eng4careers.org",
   },

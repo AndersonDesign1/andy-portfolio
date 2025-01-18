@@ -72,6 +72,7 @@ const ProjectSection = () => {
                     src={project.image}
                     alt={project.name}
                     fill
+                    priority
                     className="object-cover rounded-xl bg-[#2A2A2A]"
                   />
                 </div>
