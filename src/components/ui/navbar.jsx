@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const menuItems = [
-  { label: 'Home', link: '/' },
-  { label: 'About', link: '/about' },
-  { label: 'Projects', link: '/projects' },
-  { label: 'Blog', link: '/blog' },
-  { label: 'Contact', link: '/contact' },
+  { label: "Home", link: "/" },
+  { label: "About", link: "/about" },
+  { label: "Portfolio", link: "/projects" },
+  { label: "Blog", link: "/blog" },
+  { label: "Contact", link: "/contact" }
 ];
 
 export default function Navbar() {
@@ -18,8 +18,10 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 py-4 z-50 bg-black/10 backdrop-blur-sm">
       <div className="flex justify-center items-center max-w-6xl mx-auto">
-        <div className="bg-zinc-950 rounded-full px-8 py-2 shadow-md flex items-center justify-between mx-auto z-40 border border-white/20 w-[90%] relative">
-          <Link href="/" className="text-2xl font-bold text-white">
+        {/* Menu Container with Rounded Edges */}
+        <div className="bg-zinc-950 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-white/20">
+          {/* Logo */}
+          <Link href="/" className="text-2xl font-bold text-white mr-12">
             <Image
               src="/logo.png"
               alt="Logo"
@@ -29,54 +31,45 @@ export default function Navbar() {
               priority
             />
           </Link>
-
-          {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-6">
+          {/* Navigation Links */}
+          <ul className="hidden md:flex gap-4">
             {menuItems.map(({ label, link }) => (
               <li key={label}>
-                <Link
+                <a
                   href={link}
                   className="text-white hover:text-yellow-400 transition duration-300"
                 >
                   {label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
 
-          {/* Hamburger Button */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-white p-2"
-            aria-label="Toggle menu"
+            className="md:hidden text-white text-2xl focus:outline-none"
           >
-            <div className="w-6 h-5 flex flex-col justify-between">
-              <span className={`w-full h-0.5 bg-white transform transition-transform duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />
-              <span className={`w-full h-0.5 bg-white transition-opacity duration-300 ${isOpen ? 'opacity-0' : ''}`} />
-              <span className={`w-full h-0.5 bg-white transform transition-transform duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-            </div>
+            ☰
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-[90%] mt-2 md:hidden">
-            <ul className="bg-zinc-950 rounded-2xl shadow-lg border border-white/20 py-4 px-6">
-              {menuItems.map(({ label, link }) => (
-                <li key={label} className="py-2">
-                  <Link
-                    href={link}
-                    className="text-white hover:text-yellow-400 transition duration-300 block"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mx-4 mt-2 bg-zinc-950 text-white flex flex-col gap-4 py-6 px-6 z-50 shadow-lg md:hidden rounded-3xl border border-white/10 backdrop-blur-sm">
+          {menuItems.map(({ label, link }) => (
+            <a
+              key={label}
+              href={link}
+              className="hover:text-yellow-400 transition duration-300"
+              onClick={() => setIsOpen(false)}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
