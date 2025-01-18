@@ -13,15 +13,20 @@ export default function ContactForm() {
     event.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(event.target);
+    
     try {
-      await sendEmail(formData);
-      setFormStatus({ success: true, message: 'Email sent successfully!' });
-      if (formStatus.success) {
+      const response = await sendEmail(formData);
+      setFormStatus(response);
+      
+      if (response.success) {
         event.target.reset();
       }
     } catch (error) {
       console.error('Error sending email:', error);
-      setFormStatus({ success: false, message: 'Failed to send email. Please try again later.' });
+      setFormStatus({ 
+        success: false, 
+        message: 'Failed to send email. Please try again later.' 
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -96,42 +101,42 @@ export default function ContactForm() {
               </div>
             )}
           </div>
-            <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10">
-              <h2 className="text-2xl font-semibold mb-6 font-poppins">Connect with Me</h2>
-              <div className="space-y-6">
-                <SocialLink
-                  href="mailto:hello@andersonjoseph.com"
-                  icon={<FaEnvelope className="w-6 h-6" />}
-                  platform="Email"
-                  username="hello@andersonjoseph.com"
-                />
-                <SocialLink
-                  href="https://www.linkedin.com/in/anderson-josh/"
-                  icon={<FaLinkedin className="w-6 h-6" />}
-                  platform="LinkedIn"
-                  username="Anderson Joseph"
-                />
-                <SocialLink
-                  href="https://github.com/AndersonDesign1"
-                  icon={<FaGithub className="w-6 h-6" />}
-                  platform="GitHub"
-                  username="AndersonDesign1"
-                />
-                <SocialLink
-                  href="https://x.com/WebDev_Anderson"
-                  icon={<FaTwitter className="w-6 h-6" />}
-                  platform="Twitter"
-                  username="WebDev_Anderson"
-                />
-                <SocialLink
-                  href="https://www.instagram.com/josephandy_official/"
-                  icon={<FaInstagram className="w-6 h-6" />}
-                  platform="Instagram"
-                  username="josephandy_official"
-                />
-              </div>
+          <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10">
+            <h2 className="text-2xl font-semibold mb-6 font-poppins">Connect with Me</h2>
+            <div className="space-y-6">
+              <SocialLink
+                href="mailto:hello@andersonjoseph.com"
+                icon={<FaEnvelope className="w-6 h-6" />}
+                platform="Email"
+                username="hello@andersonjoseph.com"
+              />
+              <SocialLink
+                href="https://www.linkedin.com/in/anderson-josh/"
+                icon={<FaLinkedin className="w-6 h-6" />}
+                platform="LinkedIn"
+                username="Anderson Joseph"
+              />
+              <SocialLink
+                href="https://github.com/AndersonDesign1"
+                icon={<FaGithub className="w-6 h-6" />}
+                platform="GitHub"
+                username="AndersonDesign1"
+              />
+              <SocialLink
+                href="https://x.com/WebDev_Anderson"
+                icon={<FaTwitter className="w-6 h-6" />}
+                platform="Twitter"
+                username="WebDev_Anderson"
+              />
+              <SocialLink
+                href="https://www.instagram.com/josephandy_official/"
+                icon={<FaInstagram className="w-6 h-6" />}
+                platform="Instagram"
+                username="josephandy_official"
+              />
             </div>
           </div>
+        </div>
       </div>
     </section>
   );

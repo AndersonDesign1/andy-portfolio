@@ -37,7 +37,7 @@ export default function Navbar() {
               <li key={label}>
                 <a
                   href={link}
-                  className="text-white hover:text-yellow-400 transition duration-300"
+                  className="text-white hover:text-white relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-white after:left-0 after:-bottom-1 after:rounded-full after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ease-out"
                 >
                   {label}
                 </a>
@@ -62,7 +62,7 @@ export default function Navbar() {
             <a
               key={label}
               href={link}
-              className="hover:text-yellow-400 transition duration-300"
+              className="text-white hover:text-white relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-white after:left-0 after:-bottom-1 after:rounded-full after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ease-out"
               onClick={() => setIsOpen(false)}
             >
               {label}
