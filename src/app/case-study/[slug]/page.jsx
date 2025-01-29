@@ -68,7 +68,7 @@ export default function CaseStudyDetail({ params }) {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-8 mt-24">
+    <div className="min-h-screen bg-black text-white p-4 sm:p-8 mt-24">
       {/* Inject JSON-LD into the head for SEO */}
       <Script
         id="case-study-schema"
@@ -77,16 +77,16 @@ export default function CaseStudyDetail({ params }) {
       />
       
       <div className="max-w-3xl mx-auto">
-        <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold mb-8 font-montserrat">{project.title}</h1>
-          <Button variant="default"  size="lg" asChild>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 font-montserrat">{project.title}</h1>
+          <Button variant="default" size="lg" className="rounded-full w-full sm:w-auto px-4 py-2 sm:px-8 sm:py-3" asChild>
             <Link href={project.website} target="_blank" rel="noopener noreferrer">
               View Live Project
             </Link>
-          </Button >
+          </Button>
         </div>
 
-        <div className="mb-8 relative h-64 md:h-96">
+        <div className="mb-8 relative h-48 sm:h-64 md:h-96">
           <Image
             src={project.imageUrl || '/placeholder.svg'}
             alt={`${project.title} - Case Study Project Screenshot`}
@@ -95,18 +95,18 @@ export default function CaseStudyDetail({ params }) {
             priority
           />
         </div>
-        <div className="space-y-12">
+        <div className="space-y-8 sm:space-y-12">
           <section>
             <h2 className="text-2xl font-semibold mb-4 font-montserrat text-white">Project Overview</h2>
             <p className="font-inter text-lg leading-relaxed">{project.description}</p>
           </section>
           <section>
             <h2 className="text-2xl font-semibold mb-4 font-montserrat text-white">Technologies Used</h2>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {project.technologies.map((tech, index) => (
                 <span
                   key={index}
-                  className="px-4 py-2 bg-zinc-800/50 text-sm rounded-full text-gray-300 hover:bg-zinc-700/50 transition-all duration-300"
+                  className="px-3 py-1 sm:px-4 sm:py-2 bg-zinc-800/50 text-sm rounded-full text-gray-300 hover:bg-zinc-700/50 transition-all duration-300"
                 >
                   {tech}
                 </span>
@@ -116,10 +116,10 @@ export default function CaseStudyDetail({ params }) {
 
           <section>
             <h2 className="text-2xl font-semibold mb-4 font-montserrat text-white">Challenges</h2>
-            <ul className="list-none pl-0 space-y-3">
+            <ul className="list-none pl-0 space-y-2 sm:space-y-3">
               {project.challenges.map((challenge, index) => (
                 <li key={index} className="flex items-start font-inter text-lg">
-                  <span className="text-white mr-3">▹</span>
+                  <span className="text-white mr-2 sm:mr-3">▹</span>
                   {challenge}
                 </li>
               ))}
@@ -127,10 +127,10 @@ export default function CaseStudyDetail({ params }) {
           </section>
           <section>
             <h2 className="text-2xl font-semibold mb-4 font-montserrat text-white">Solutions</h2>
-            <ul className="list-none pl-0 space-y-3">
+            <ul className="list-none pl-0 space-y-2 sm:space-y-3">
               {project.solutions.map((solution, index) => (
                 <li key={index} className="flex items-start font-inter text-lg">
-                  <span className="text-white mr-3">▹</span>
+                  <span className="text-white mr-2 sm:mr-3">▹</span>
                   {solution}
                 </li>
               ))}
@@ -141,8 +141,8 @@ export default function CaseStudyDetail({ params }) {
             <p className="font-inter text-lg leading-relaxed">{project.outcomes}</p>
           </section>
         </div>
-        <div className="mt-12">
-          <Button variant="default" size="default" asChild>
+        <div className="mt-8 sm:mt-12">
+          <Button variant="default" size="default" className="rounded-full" asChild>
             <Link href="/">
               <span className="mr-2">←</span>
               Back to Case Studies
