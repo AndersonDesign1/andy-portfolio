@@ -9,7 +9,7 @@ const ProjectSection = () => {
       tech: ["React", "Node.js", "MongoDB", "CSS", "HTML", "JavaScript", "GitHub"],
       image: "/kyrus-recycling.webp",
       projectLink: "http://trashpoint.africa/", 
-      caseStudyLink: "/case-study/kyrus-recycling", // Update with slug-based path
+      caseStudyLink: "/case-study/kyrus-recycling", 
     },
     {
       name: "Welup Digital",
@@ -107,7 +107,6 @@ const ProjectSection = () => {
                     </a>
                     <a
                       href={project.caseStudyLink}
-                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-white hover:text-gray-300 transition-colors duration-300 flex items-center gap-2"
                     >

@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { notFound } from 'next/navigation';
+import caseStudies from '@/data/case-studies.json';
+import { Button } from '@/components/ui/button';
+import { cva } from "class-variance-authority"
+import Script from 'next/script';
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -16,7 +17,8 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        tab: "inline-flex items-center justify-center whitespace-nowrap rounded-full h-10 px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+        tab: "inline-flex items-center justify-center whitespace-nowrap rounded-full h-10 px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+        custom: "bg-[#3498db] text-white hover:bg-[#2980b9]",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-full",
@@ -29,89 +31,65 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-);
+  },
+)
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button";
-  return (
-    <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
-      ref={ref}
-      {...props}
-    />
-  );
-});
-
-Button.displayName = "Button";
-
-async function getProject(slug) {
-  const projects = {
-    "kyrus-recycling": {
-      title: "Kyrus Recycling",
-      description: "A web application incentivizing users to recycle waste by offering monetary rewards, promoting environmental awareness and sustainable practices.",
-      imageUrl: "/placeholder.svg?height=400&width=600",
-      challenges: [
-        "Encouraging user engagement and sign-ups for a niche recycling incentive program",
-        "Building a scalable web application within tight deadlines",
-        "Ensuring seamless functionality and user experience across devices"
-      ],
-      solutions: [
-        "Designed and developed the web application using modern full-stack development practices, ensuring scalability and reliability",
-        "Integrated a user-friendly interface with responsive design for optimal usability",
-        "Implemented robust backend systems to track recycling activities and rewards"
-      ],
-      outcomes: "The project resulted in over 500 user sign-ups within the first month, raised environmental awareness, and significantly boosted waste recycling efforts in the community.",
-      technologies: ["React", "Node.js", "MongoDB", "CSS", "HTML", "JavaScript", "GitHub"]
-    },
-    "welup-digital": {
-      title: "Welup Digital",
-      description: "Responsive websites ensuring usability, design consistency, and modern SEO techniques.",
-      imageUrl: "/placeholder.svg?height=400&width=600",
-      challenges: [
-        "Ensuring consistent design across various devices and screen sizes",
-        "Implementing modern SEO techniques without compromising user experience",
-        "Balancing performance with rich, interactive features"
-      ],
-      solutions: [
-        "Developed a responsive design system using modern CSS techniques and media queries",
-        "Implemented server-side rendering and dynamic meta tags for improved SEO",
-        "Utilized code splitting and lazy loading to optimize performance without sacrificing functionality"
-      ],
-      outcomes: "The project led to a 50% increase in mobile traffic, a 40% improvement in search engine rankings, and a 35% increase in user engagement metrics.",
-      technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"]
-    }
-  };
-
-  return projects[slug] || null;
+export async function generateStaticParams() {
+  return caseStudies.map((caseStudy) => ({
+    slug: caseStudy.slug,
+  }));
 }
 
-
-export default async function CaseStudyDetail({ params }) {
-  const project = await getProject(params.slug);
+export default function CaseStudyDetail({ params }) {
+  const project = caseStudies.find((p) => p.slug === params.slug);
 
   if (!project) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] p-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Case Study Not Found</h1>
-          <p className="mb-8">Sorry, we couldn't find the case study you're looking for.</p>
-          <Button variant="default" size="default" asChild>
-            <Link href="/">Return to Home</Link>
-          </Button>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
+  // Define the JSON-LD schema for SEO
+  const schemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'CaseStudy',
+    name: project.title,
+    description: project.description,
+    image: project.imageUrl,
+    url: project.website,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://andersonjoseph.com/case-study/${project.slug}`
+    },
+    author: {
+      '@type': 'Person',
+      name: 'Anderson Joseph',
+      url: 'https://andersonjoseph.com'
+    },
+    datePublished: '2024-09-01'
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white p-8">
+    <div className="min-h-screen bg-black text-white p-8 mt-24">
+      {/* Inject JSON-LD into the head for SEO */}
+      <Script
+        id="case-study-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      />
+      
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 font-montserrat">{project.title}</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-4xl font-bold mb-8 font-montserrat">{project.title}</h1>
+          <Button variant="default"  size="lg" asChild>
+            <Link href={project.website} target="_blank" rel="noopener noreferrer">
+              View Live Project
+            </Link>
+          </Button >
+        </div>
+
         <div className="mb-8 relative h-64 md:h-96">
           <Image
-            src={project.imageUrl}
-            alt={project.title}
+            src={project.imageUrl || '/placeholder.svg'}
+            alt={`${project.title} - Case Study Project Screenshot`}
             fill
             className="object-cover rounded-lg shadow-xl"
             priority

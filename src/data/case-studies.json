@@ -1,0 +1,60 @@
+[
+    {
+      "slug": "kyrus-recycling",
+      "title": "Kyrus Recycling",
+      "description": "A web application incentivizing users to recycle waste by offering monetary rewards, promoting environmental sustainability.",
+      "imageUrl": "/kyrus-recycling.webp",
+      "challenges": [
+        "Encouraging user engagement and sign-ups for a niche recycling incentive program.",
+        "Building a scalable web application within a strict three-month timeline.",
+        "Ensuring seamless collaboration and deployment while maintaining a high user experience."
+      ],
+      "solutions": [
+        "Designed and developed a full-stack web application with React and Node.js, ensuring efficiency and scalability.",
+        "Implemented a responsive, user-friendly interface to maximize accessibility and engagement.",
+        "Developed a robust backend system for tracking recycling activities and rewarding users."
+      ],
+      "outcomes": "Successfully launched within three months, attracting over 500 user sign-ups in the first month and contributing to greater environmental awareness and waste recycling efforts.",
+      "technologies": ["React", "Node.js", "MongoDB", "CSS", "HTML", "JavaScript", "GitHub"],
+      "website": "https://kyrusrecycling.com"
+    },
+    {
+      "slug": "welup-digital",
+      "title": "Welup Digital",
+      "description": "Implemented high-impact SEO and web development strategies to boost traffic, improve engagement, and optimize web performance.",
+      "imageUrl": "/welup-digital.webp",
+      "challenges": [
+        "Enhancing website traffic and search engine visibility.",
+        "Optimizing for Core Web Vitals and ensuring fast load times.",
+        "Implementing SEO-friendly content while maintaining great UX."
+      ],
+      "solutions": [
+        "Executed an SEO strategy that increased website traffic by 300% and improved search engine rankings significantly.",
+        "Conducted keyword research and competitive analysis, identifying over 200 high-value keywords.",
+        "Created and published multiple top-ranking blogs, generating over 20,000 monthly visitors."
+      ],
+      "outcomes": "Achieved a 15-fold increase in search visibility, improved user engagement by 40%, and boosted CTR by 25% within six months.",
+      "technologies": ["SEO", "WordPress", "Google Analytics", "SEMRush", "Search Console"],
+      "website": "https://welupdigital.com"
+    },
+    {
+      "slug": "prompt-earn",
+      "title": "Prompt Earn",
+      "description": "Executed a data-driven SEO and affiliate marketing campaign that significantly boosted website traffic and sales revenue.",
+      "imageUrl": "/promptearn.webp",
+      "challenges": [
+        "Expanding the affiliate network and increasing organic search visibility.",
+        "Optimizing Google Core Web Vitals to enhance performance.",
+        "Reducing bounce rates and improving engagement for better conversions."
+      ],
+      "solutions": [
+        "Implemented an SEO campaign that increased organic traffic by 250% within six months.",
+        "Expanded the affiliate network from 40,000 to over 93,000 partners, driving a 132% increase in referral traffic.",
+        "Optimized Core Web Vitals, achieving a 35-point improvement and reducing bounce rates by 50%."
+      ],
+      "outcomes": "Resulted in a 45% revenue uplift, significant search engine ranking improvements, and an overall increase in platform engagement.",
+      "technologies": ["Google Analytics", "SEMRush", "MailChimp", "Affiliate Marketing Tools"],
+      "website": "https://promptearn.com"
+    }
+  ]
+  
