@@ -20,20 +20,19 @@
 
                   {/* Social Media Links */}
                   <div className="flex justify-center space-x-6 mb-6">
-                      <a href="https://github.com/AndersonDesign1" target="_blank" rel="noopener noreferrer">
+                      <a href="https://github.com/AndersonDesign1" target="_blank" rel="noopener noreferrer" aria-label="Visit Anderson's GitHub profile">
                           <FaGithub className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
                       </a>
-                      <a href="https://www.linkedin.com/in/anderson-josh/" target="_blank" rel="noopener noreferrer">
+                      <a href="https://www.linkedin.com/in/anderson-josh/" target="_blank" rel="noopener noreferrer" aria-label="Visit Anderson's LinkedIn profile">
                           <FaLinkedin className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
                       </a>
-                      <a href="https://x.com/WebDev_Anderson" target="_blank" rel="noopener noreferrer">
+                      <a href="https://x.com/WebDev_Anderson" target="_blank" rel="noopener noreferrer" aria-label="Visit Anderson's Twitter profile">
                           <FaTwitter className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
                       </a>
-                      <a href="https://www.instagram.com/josephandy_official/" target="_blank" rel="noopener noreferrer">
+                      <a href="https://www.instagram.com/josephandy_official/" target="_blank" rel="noopener noreferrer" aria-label="Visit Anderson's Instagram profile">
                           <FaInstagram className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
                       </a>
-                  </div>
-              </div>
+                  </div>              </div>
               {/* Back-to-Top Button */}
               <button
                   onClick={scrollToTop}
