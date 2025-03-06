@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
+    "preinstall": "npx only-allow pnpm",
+    "dev": "pnpm run next dev",
+    "build": "pnpm run next build",
+    "start": "pnpm run next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -47,5 +48,13 @@
   },
   "overrides": {
     "@types/react": "19.0.10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@vercel/speed-insights",
+      "esbuild",
+      "scrollmirror",
+      "sharp"
+    ]
   }
 }
