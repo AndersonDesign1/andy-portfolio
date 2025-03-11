@@ -5,7 +5,7 @@ import { ExternalLink, Github } from 'lucide-react'
 
 export default function ProjectCard({ id, title, description, imageUrl, technologies, projectUrl, slug }) {
   return (
-    <Card className="group relative overflow-hidden border-0 bg-black/20 backdrop-blur-sm transition-all hover:bg-black/40 hover:scale-105 duration-300 ease-in-out">
+    <Card className="group relative overflow-hidden border-0 bg-black/20 backdrop-blur-xs transition-all hover:bg-black/40 hover:scale-105 duration-300 ease-in-out">
       <CardHeader className="space-y-1">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold text-zinc-100 group-hover:text-white">{title}</h3>

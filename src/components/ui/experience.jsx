@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const ExperienceCard = ({ logo, title, role, description, period, technologies }) => {
   return (
-    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
+    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <img

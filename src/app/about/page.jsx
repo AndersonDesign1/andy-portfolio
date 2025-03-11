@@ -50,7 +50,7 @@ export default function About() {
         <div className="grid md:grid-cols-2 gap-8 mt-16">
           {/* Image Section */}
           <div className="relative rounded-3xl overflow-hidden group h-[700px]">
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-linear-to-r from-teal-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Image
               src="/Anderson Joseph.jpg"
               alt="Profile"
@@ -66,7 +66,7 @@ export default function About() {
           {/* Cards Section */}
           <div className="space-y-8">
             {/* Softskills Card */}
-            <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300">
+            <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300">
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
                   <svg
@@ -88,7 +88,7 @@ export default function About() {
             </div>
 
             {/* Research Card */}
-            <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300">
+            <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300">
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
                   <svg
@@ -135,7 +135,7 @@ export default function About() {
         </div>
 
         {/* Skills Component */}
-        <div className="mt-16 bg-transparent [&_*]:bg-transparent">
+        <div className="mt-16 bg-transparent **:bg-transparent">
           <Skills />
         </div>
       </div>

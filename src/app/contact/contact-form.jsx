@@ -64,7 +64,7 @@ export default function ContactForm() {
                   id="name"
                   name="name"
                   required
-                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
+                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 />
               </div>
               <div className="mb-6">
@@ -74,7 +74,7 @@ export default function ContactForm() {
                   id="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
+                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 />
               </div>
               <div className="mb-6">
@@ -84,7 +84,7 @@ export default function ContactForm() {
                   name="message"
                   rows="4"
                   required
-                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
+                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 ></textarea>
               </div>
               <button

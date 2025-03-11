@@ -8,7 +8,7 @@
       };
 
       return (
-          <footer className="bg-gradient-to-r from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-[#ededed] py-6 text-center relative font-cal">
+          <footer className="bg-linear-to-r from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-[#ededed] py-6 text-center relative font-cal">
               {/* Subtle Pattern */}
               <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
 
@@ -36,7 +36,7 @@
               {/* Back-to-Top Button */}
               <button
                   onClick={scrollToTop}
-                  className="fixed bottom-8 right-8 z-50 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#ededed] px-4 py-2 rounded-full shadow-sm transition-all"
+                  className="fixed bottom-8 right-8 z-50 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#ededed] px-4 py-2 rounded-full shadow-xs transition-all"
               >
                   Back to Top
               </button>

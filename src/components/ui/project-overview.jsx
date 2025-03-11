@@ -63,7 +63,7 @@ const ProjectSection = () => {
           {projects.map((project, index) => (
             <div
               key={index}
-              className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300"
+              className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300"
             >
               <div className="p-6 flex flex-col md:flex-row gap-6">
                 {/* Project Image */}

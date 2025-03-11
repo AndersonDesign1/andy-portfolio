@@ -13,7 +13,7 @@ export default function ProjectList({ category, projects }) {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="rounded-3xl p-8 backdrop-blur-sm border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300"
+              className="rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300"
             >
               <h3 className="text-2xl font-semibold text-gray-200 mb-4">
                 {project.name}
