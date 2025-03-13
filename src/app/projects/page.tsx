@@ -1,16 +1,23 @@
-import ProjectList from '@/components/ui/projectslist'
-import { projects, projectCategories } from '@/data/projects'
+import type React from "react"
+import ProjectList from "@/components/ui/projectslist"
+import { projects, projectCategories } from "@/data/projects"
+import type { Project, ProjectCategory } from "@/types/index"
+import type { Metadata } from "next"
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Projects by Anderson Joseph | Web Development & SEO',
-    description: "Explore Anderson Joseph's impactful projects, showcasing expertise in building responsive websites, implementing SEO strategies, and delivering exceptional business results.",
-    url: 'https://andersonjoseph.com/projects',
-    content: 'Projects by Anderson Joseph | Web Development, SEO Campaigns, and Digital Transformations.',
-    keywords: 'Anderson Joseph Projects, Web Development Portfolio, SEO Campaigns, Responsive Websites, Digital Solutions',    
-  };
+    title: "Projects by Anderson Joseph | Web Development & SEO",
+    description:
+      "Explore Anderson Joseph's impactful projects, showcasing expertise in building responsive websites, implementing SEO strategies, and delivering exceptional business results.",
+    openGraph: {
+      url: "https://andersonjoseph.com/projects",
+    },
+    keywords:
+      "Anderson Joseph Projects, Web Development Portfolio, SEO Campaigns, Responsive Websites, Digital Solutions",
+  }
 }
-export default function ProjectsPage() {
+
+export default function ProjectsPage(): React.ReactElement {
   return (
     <section className="w-full min-h-screen bg-black text-white relative overflow-hidden pt-24">
       {/* Animated background pattern */}
@@ -21,7 +28,7 @@ export default function ProjectsPage() {
           style={{
             backgroundImage: `linear-gradient(#333 1px, transparent 1px),
               linear-gradient(to right, #333 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
+            backgroundSize: "50px 50px",
           }}
         />
 
@@ -35,10 +42,15 @@ export default function ProjectsPage() {
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-200">Projects I've worked or contributed to</h1>
-        {projectCategories.map(category => (
-          <ProjectList key={category} category={category} projects={projects.filter(p => p.category === category)} />
+        {projectCategories.map((category: ProjectCategory) => (
+          <ProjectList
+            key={category}
+            category={category}
+            projects={projects.filter((p: Project) => p.category === category)}
+          />
         ))}
       </div>
     </section>
   )
 }
+

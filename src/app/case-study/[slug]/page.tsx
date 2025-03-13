@@ -1,10 +1,37 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import caseStudies from '@/data/case-studies.json';
-import { Button } from '@/components/ui/button';
+import type React from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import caseStudies from "@/data/case-studies.json"
+import type { CaseStudy } from "@/types/index"
+import { Button } from "@/components/ui/button"
 import { cva } from "class-variance-authority"
-import Script from 'next/script';
+import Script from "next/script"
+
+interface PageParams {
+  params: {
+    slug: string
+  }
+}
+
+interface SchemaData {
+  "@context": string
+  "@type": string
+  name: string
+  description: string
+  image: string
+  url: string
+  mainEntityOfPage: {
+    "@type": string
+    "@id": string
+  }
+  author: {
+    "@type": string
+    name: string
+    url: string
+  }
+  datePublished: string
+}
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -34,38 +61,38 @@ const buttonVariants = cva(
   },
 )
 
-export async function generateStaticParams() {
-  return caseStudies.map((caseStudy) => ({
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  return (caseStudies as CaseStudy[]).map((caseStudy) => ({
     slug: caseStudy.slug,
-  }));
+  }))
 }
 
-export default function CaseStudyDetail({ params }) {
-  const project = caseStudies.find((p) => p.slug === params.slug);
+export default function CaseStudyDetail({ params }: PageParams): React.ReactElement {
+  const project = (caseStudies as CaseStudy[]).find((p) => p.slug === params.slug)
 
   if (!project) {
-    notFound();
+    notFound()
   }
 
   // Define the JSON-LD schema for SEO
-  const schemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'CaseStudy',
+  const schemaData: SchemaData = {
+    "@context": "https://schema.org",
+    "@type": "CaseStudy",
     name: project.title,
     description: project.description,
     image: project.imageUrl,
     url: project.website,
     mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `https://andersonjoseph.com/case-study/${project.slug}`
+      "@type": "WebPage",
+      "@id": `https://andersonjoseph.com/case-study/${project.slug}`,
     },
     author: {
-      '@type': 'Person',
-      name: 'Anderson Joseph',
-      url: 'https://andersonjoseph.com'
+      "@type": "Person",
+      name: "Anderson Joseph",
+      url: "https://andersonjoseph.com",
     },
-    datePublished: '2024-09-01'
-  };
+    datePublished: "2024-09-01",
+  }
 
   return (
     <div className="min-h-screen bg-black text-white p-4 sm:p-8 mt-24">
@@ -75,11 +102,16 @@ export default function CaseStudyDetail({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
-      
+
       <div className="max-w-3xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 font-montserrat">{project.title}</h1>
-          <Button variant="default" size="lg" className="rounded-full w-full sm:w-auto px-4 py-2 sm:px-8 sm:py-3" asChild>
+          <Button
+            variant="default"
+            size="lg"
+            className="rounded-full w-full sm:w-auto px-4 py-2 sm:px-8 sm:py-3"
+            asChild
+          >
             <Link href={project.website} target="_blank" rel="noopener noreferrer">
               View Live Project
             </Link>
@@ -88,7 +120,7 @@ export default function CaseStudyDetail({ params }) {
 
         <div className="mb-8 relative h-48 sm:h-64 md:h-96">
           <Image
-            src={project.imageUrl || '/placeholder.svg'}
+            src={project.imageUrl || "/placeholder.svg"}
             alt={`${project.title} - Case Study Project Screenshot`}
             fill
             className="object-cover rounded-lg shadow-xl"
@@ -151,5 +183,6 @@ export default function CaseStudyDetail({ params }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
+

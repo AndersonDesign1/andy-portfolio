@@ -1,28 +1,7 @@
-/**
- * Type definition for project categories
- */
-export type ProjectCategory = "Current Focus" | "Websites" | "SEO"
+import type { Project, ProjectCategory } from "@/types/index"
 
-/**
- * Array of available project categories
- */
 export const projectCategories: ProjectCategory[] = ["Current Focus", "Websites", "SEO"]
 
-/**
- * Interface defining the structure of a project
- */
-export interface Project {
-  id: number
-  name: string
-  description: string
-  category: ProjectCategory
-  technologies: string[]
-  website: string
-}
-
-/**
- * Array of project data
- */
 export const projects: Project[] = [
   {
     id: 1,

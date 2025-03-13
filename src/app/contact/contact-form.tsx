@@ -1,34 +1,47 @@
-'use client'
+"use client"
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { FaLinkedin, FaEnvelope, FaGithub, FaTwitter, FaInstagram } from 'react-icons/fa';
-import { sendEmail } from '@/app/actions/sendEmail';
+import type React from "react"
+import { useState } from "react"
+import Link from "next/link"
+import { FaLinkedin, FaEnvelope, FaGithub, FaTwitter, FaInstagram } from "react-icons/fa"
+import { sendEmail } from "@/app/actions/sendEmail"
 
-export default function ContactForm() {
-  const [formStatus, setFormStatus] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+interface FormStatus {
+  success: boolean
+  message: string
+}
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    const formData = new FormData(event.target);
-    
+interface SocialLinkProps {
+  href: string
+  icon: React.ReactNode
+  platform: string
+  username: string
+}
+
+export default function ContactForm(): React.ReactElement {
+  const [formStatus, setFormStatus] = useState<FormStatus | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault()
+    setIsSubmitting(true)
+    const formData = new FormData(event.currentTarget)
+
     try {
-      const response = await sendEmail(formData);
-      setFormStatus(response);
-      
-      if (response.success) {
-        event.target.reset();
+      const response = await sendEmail(formData)
+      setFormStatus(response as FormStatus)
+
+      if ((response as FormStatus).success) {
+        event.currentTarget.reset()
       }
     } catch (error) {
-      console.error('Error sending email:', error);
-      setFormStatus({ 
-        success: false, 
-        message: 'Failed to send email. Please try again later.' 
-      });
+      console.error("Error sending email:", error)
+      setFormStatus({
+        success: false,
+        message: "Failed to send email. Please try again later.",
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
   }
 
@@ -40,7 +53,7 @@ export default function ContactForm() {
           style={{
             backgroundImage: `linear-gradient(#333 1px, transparent 1px),
               linear-gradient(to right, #333 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
+            backgroundSize: "50px 50px",
           }}
         />
         <div className="absolute -inset-[10px] opacity-50">
@@ -58,7 +71,9 @@ export default function ContactForm() {
             <h2 className="text-2xl font-semibold mb-6 font-poppins">Send a Message</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <label htmlFor="name" className="block text-sm font-medium mb-2 font-outfit">Name</label>
+                <label htmlFor="name" className="block text-sm font-medium mb-2 font-outfit">
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -68,7 +83,9 @@ export default function ContactForm() {
                 />
               </div>
               <div className="mb-6">
-                <label htmlFor="email" className="block text-sm font-medium mb-2 font-outfit">Email</label>
+                <label htmlFor="email" className="block text-sm font-medium mb-2 font-outfit">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -78,11 +95,13 @@ export default function ContactForm() {
                 />
               </div>
               <div className="mb-6">
-                <label htmlFor="message" className="block text-sm font-medium mb-2 font-outfit">Message</label>
+                <label htmlFor="message" className="block text-sm font-medium mb-2 font-outfit">
+                  Message
+                </label>
                 <textarea
                   id="message"
                   name="message"
-                  rows="4"
+                  rows={4}
                   required
                   className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 ></textarea>
@@ -92,11 +111,11 @@ export default function ContactForm() {
                 disabled={isSubmitting}
                 className="w-full bg-neutral-900 hover:bg-black text-white font-bold py-3 px-6 rounded-lg transition duration-300 font-outfit border border-white/10"
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
             {formStatus && (
-              <div className={`mt-4 p-2 rounded ${formStatus.success ? 'bg-green-600' : 'bg-red-600'}`}>
+              <div className={`mt-4 p-2 rounded ${formStatus.success ? "bg-green-600" : "bg-red-600"}`}>
                 {formStatus.message}
               </div>
             )}
@@ -128,7 +147,7 @@ export default function ContactForm() {
                 platform="Instagram"
                 username="josephandy_official"
               />
-                <SocialLink
+              <SocialLink
                 href="mailto:hello@andersonjoseph.com"
                 icon={<FaEnvelope className="w-6 h-6" />}
                 platform="Email"
@@ -139,10 +158,10 @@ export default function ContactForm() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-function SocialLink({ href, icon, platform, username }) {
+function SocialLink({ href, icon, platform, username }: SocialLinkProps): React.ReactElement {
   return (
     <Link
       href={href}
@@ -151,7 +170,10 @@ function SocialLink({ href, icon, platform, username }) {
       className="flex items-center space-x-3 p-3 rounded-lg bg-black/20 hover:bg-black/40 text-gray-300 hover:text-white transition duration-300 font-outfit border border-white/5 hover:border-white/20"
     >
       {icon}
-      <span>{platform}: @{username}</span>
+      <span>
+        {platform}: @{username}
+      </span>
     </Link>
-  );
+  )
 }
+
