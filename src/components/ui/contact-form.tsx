@@ -1,22 +1,50 @@
-'use client'
+"use client"
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { FaLinkedin, FaGithub, FaTwitter, FaInstagram,FaEnvelope } from 'react-icons/fa';
-import { sendEmail } from '@/app/actions/sendEmail';
+import type React from "react"
 
-export default function Contact() {
-  const [formStatus, setFormStatus] = useState(null);
+import { useState } from "react"
+import Link from "next/link"
+import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaEnvelope } from "react-icons/fa"
+import { sendEmail } from "@/app/actions/sendEmail"
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
+interface FormStatus {
+  success: boolean
+  message: string
+}
+
+interface SocialLinkProps {
+  href: string
+  icon: React.ReactNode
+  platform: string
+  username: string
+}
+
+function SocialLink({ href, icon, platform, username }: SocialLinkProps) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center space-x-3 p-4 rounded-lg bg-black/20 hover:bg-black/40 text-gray-300 hover:text-white transition duration-300 font-outfit border border-white/5 hover:border-white/20"
+    >
+      {icon}
+      <span className="truncate">
+        {platform}: @{username}
+      </span>
+    </Link>
+  )
+}
+
+const Contact: React.FC = () => {
+  const [formStatus, setFormStatus] = useState<FormStatus | null>(null)
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
     try {
-      await sendEmail(formData);
-      setFormStatus({ success: true, message: 'Email sent successfully!' });
+      await sendEmail(formData)
+      setFormStatus({ success: true, message: "Email sent successfully!" })
     } catch (error) {
-      console.error('Error sending email:', error);
-      setFormStatus({ success: false, message: 'Failed to send email. Please try again later.' });
+      console.error("Error sending email:", error)
+      setFormStatus({ success: false, message: "Failed to send email. Please try again later." })
     }
   }
 
@@ -28,7 +56,7 @@ export default function Contact() {
           style={{
             backgroundImage: `linear-gradient(#333 1px, transparent 1px),
               linear-gradient(to right, #333 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
+            backgroundSize: "50px 50px",
           }}
         />
         <div className="absolute -inset-[10px] opacity-50">
@@ -46,7 +74,9 @@ export default function Contact() {
             <h2 className="text-2xl font-semibold mb-6 font-poppins">Send a Message</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="name" className="block text-sm font-medium mb-2 font-outfit">Name</label>
+                <label htmlFor="name" className="block text-sm font-medium mb-2 font-outfit">
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -56,7 +86,9 @@ export default function Contact() {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium mb-2 font-outfit">Email</label>
+                <label htmlFor="email" className="block text-sm font-medium mb-2 font-outfit">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -66,11 +98,13 @@ export default function Contact() {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="message" className="block text-sm font-medium mb-2 font-outfit">Message</label>
+                <label htmlFor="message" className="block text-sm font-medium mb-2 font-outfit">
+                  Message
+                </label>
                 <textarea
                   id="message"
                   name="message"
-                  rows="3"
+                  rows={3}
                   required
                   className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-white/50 focus:border-transparent font-outfit"
                 ></textarea>
@@ -83,7 +117,7 @@ export default function Contact() {
               </button>
             </form>
             {formStatus && (
-              <div className={`mt-4 p-2 rounded ${formStatus.success ? 'bg-green-600' : 'bg-red-600'}`}>
+              <div className={`mt-4 p-2 rounded ${formStatus.success ? "bg-green-600" : "bg-red-600"}`}>
                 {formStatus.message}
               </div>
             )}
@@ -127,17 +161,8 @@ export default function Contact() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-function SocialLink({ href, icon, platform, username }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center space-x-3 p-4 rounded-lg bg-black/20 hover:bg-black/40 text-gray-300 hover:text-white transition duration-300 font-outfit border border-white/5 hover:border-white/20"
-    >
-      {icon}
-      <span className="truncate">{platform}: @{username}</span>
-    </Link>
-  );
-}
+export default Contact
+

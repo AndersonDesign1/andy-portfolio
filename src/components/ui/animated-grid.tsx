@@ -1,26 +1,48 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
+import type React from "react"
 
-export default function AnimatedGrid() {
-  const canvasRef = useRef(null)
+import { useEffect, useRef } from "react"
+
+const AnimatedGrid: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    let animationFrameId
+    if (!canvas) return
 
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    let animationFrameId: number
+
+    const resize = (): void => {
+      if (canvas) {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+      }
     }
 
-    const dots = []
+    interface Dot {
+      x: number
+      y: number
+      vx: number
+      vy: number
+      move(): void
+    }
+
+    const dots: Dot[] = []
     const dotsCount = 100
     const connectionDistance = 150
     const moveSpeed = 0.2
 
+    // Change to class Dot implements Dot (remove the interface implementation)
     class Dot {
+      x: number
+      y: number
+      vx: number
+      vy: number
+
       constructor() {
         this.x = Math.random() * canvas.width
         this.y = Math.random() * canvas.height
@@ -28,7 +50,7 @@ export default function AnimatedGrid() {
         this.vy = (Math.random() - 0.5) * moveSpeed
       }
 
-      move() {
+      move(): void {
         this.x += this.vx
         this.y += this.vy
 
@@ -37,18 +59,20 @@ export default function AnimatedGrid() {
       }
     }
 
-    const init = () => {
+    const init = (): void => {
       resize()
       for (let i = 0; i < dotsCount; i++) {
         dots.push(new Dot())
       }
     }
 
-    const animate = () => {
+    const animate = (): void => {
+      if (!ctx || !canvas) return
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      
+
       // Draw grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)'
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.03)"
       const gridSize = 30
       for (let x = 0; x < canvas.width; x += gridSize) {
         ctx.beginPath()
@@ -64,16 +88,16 @@ export default function AnimatedGrid() {
       }
 
       // Update dots
-      dots.forEach(dot => dot.move())
+      dots.forEach((dot) => dot.move())
 
       // Draw connections
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)'
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.03)"
       dots.forEach((dot1, i) => {
-        dots.slice(i + 1).forEach(dot2 => {
+        dots.slice(i + 1).forEach((dot2) => {
           const dx = dot1.x - dot2.x
           const dy = dot1.y - dot2.y
           const distance = Math.sqrt(dx * dx + dy * dy)
-          
+
           if (distance < connectionDistance) {
             ctx.beginPath()
             ctx.moveTo(dot1.x, dot1.y)
@@ -84,8 +108,8 @@ export default function AnimatedGrid() {
       })
 
       // Draw dots
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
-      dots.forEach(dot => {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.05)"
+      dots.forEach((dot) => {
         ctx.beginPath()
         ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2)
         ctx.fill()
@@ -97,18 +121,16 @@ export default function AnimatedGrid() {
     init()
     animate()
 
-    window.addEventListener('resize', resize)
+    window.addEventListener("resize", resize)
 
     return () => {
-      window.removeEventListener('resize', resize)
+      window.removeEventListener("resize", resize)
       cancelAnimationFrame(animationFrameId)
     }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 -z-10 h-full w-full bg-black"
-    />
-  )
+  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 h-full w-full bg-black" />
 }
+
+export default AnimatedGrid
+

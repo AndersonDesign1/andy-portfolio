@@ -1,9 +1,28 @@
-import Link from 'next/link'
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge' 
-import { ExternalLink, Github } from 'lucide-react'
+import type React from "react"
+import Link from "next/link"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ExternalLink } from "lucide-react"
 
-export default function ProjectCard({ id, title, description, imageUrl, technologies, projectUrl, slug }) {
+interface ProjectCardProps {
+  id: number
+  title: string
+  description: string
+  imageUrl?: string
+  technologies: string[]
+  projectUrl: string
+  slug?: string
+}
+
+const ProjectCard: React.FC<ProjectCardProps> = ({
+  id,
+  title,
+  description,
+  imageUrl,
+  technologies,
+  projectUrl,
+  slug,
+}) => {
   return (
     <Card className="group relative overflow-hidden border-0 bg-black/20 backdrop-blur-xs transition-all hover:bg-black/40 hover:scale-105 duration-300 ease-in-out">
       <CardHeader className="space-y-1">
@@ -15,8 +34,8 @@ export default function ProjectCard({ id, title, description, imageUrl, technolo
         <p className="text-sm text-zinc-400 group-hover:text-zinc-300">{description}</p>
         <div className="flex flex-wrap gap-2">
           {technologies.map((tech) => (
-            <Badge 
-              key={tech} 
+            <Badge
+              key={tech}
               variant="outline"
               className="bg-zinc-800/50 text-zinc-400 group-hover:bg-zinc-800 group-hover:text-zinc-300"
             >
@@ -37,3 +56,6 @@ export default function ProjectCard({ id, title, description, imageUrl, technolo
     </Card>
   )
 }
+
+export default ProjectCard
+

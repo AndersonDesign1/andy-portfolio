@@ -1,39 +1,47 @@
-import Image from "next/image";
-const ProjectSection = () => {
-  const projects = [
+import type React from "react"
+import Image from "next/image"
+
+interface Project {
+  name: string
+  slug: string
+  description: string
+  tech: string[]
+  image: string
+  projectLink: string
+  caseStudyLink: string
+}
+
+const ProjectSection: React.FC = () => {
+  const projects: Project[] = [
     {
       name: "Kyrus Recycling",
-      slug: "kyrus-recycling", 
+      slug: "kyrus-recycling",
       description:
         "A web application incentivizing users to recycle waste by offering monetary rewards, promoting environmental awareness and sustainable practices.",
       tech: ["React", "Node.js", "MongoDB", "CSS", "HTML", "JavaScript", "GitHub"],
       image: "/kyrus-recycling.webp",
-      projectLink: "http://trashpoint.africa/", 
-      caseStudyLink: "/case-study/kyrus-recycling", 
+      projectLink: "http://trashpoint.africa/",
+      caseStudyLink: "/case-study/kyrus-recycling",
     },
     {
       name: "Welup Digital",
-      slug: "welup-digital", 
-      description:
-        "Responsive websites ensuring usability, design consistency, and modern SEO techniques.",
+      slug: "welup-digital",
+      description: "Responsive websites ensuring usability, design consistency, and modern SEO techniques.",
       tech: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
       image: "/welup-digital.webp",
       projectLink: "https://welupdigital.com",
-      caseStudyLink: "/case-study/welup-digital", 
+      caseStudyLink: "/case-study/welup-digital",
     },
     {
       name: "Prompt Earn",
-      slug: "prompt-earn", 
-      description:
-        "Comprehensive SEO campaigns achieving a 40% increase in traffic and affiliate earnings.",
+      slug: "prompt-earn",
+      description: "Comprehensive SEO campaigns achieving a 40% increase in traffic and affiliate earnings.",
       tech: ["Google Analytics", "SEMRush", "MailChimp", "Social Media Tools"],
       image: "/promptearn.webp",
-      projectLink: "https://promptearn.com/", 
+      projectLink: "https://promptearn.com/",
       caseStudyLink: "/case-study/prompt-earn",
     },
-  ];
-  
-
+  ]
 
   return (
     <section className="w-full bg-black text-white relative overflow-hidden py-16">
@@ -43,10 +51,10 @@ const ProjectSection = () => {
           style={{
             backgroundImage: `linear-gradient(#333 1px, transparent 1px),
               linear-gradient(to right, #333 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
+            backgroundSize: "50px 50px",
           }}
         />
-        
+
         <div className="absolute -inset-[10px] opacity-50">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-blob" />
           <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
@@ -55,10 +63,8 @@ const ProjectSection = () => {
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <h2 className="text-6xl font-bold mb-12 text-center text-gray-200">
-          Featured Projects
-        </h2>
-        
+        <h2 className="text-6xl font-bold mb-12 text-center text-gray-200">Featured Projects</h2>
+
         <div className="grid grid-cols-1 gap-8">
           {projects.map((project, index) => (
             <div
@@ -69,7 +75,7 @@ const ProjectSection = () => {
                 {/* Project Image */}
                 <div className="w-full md:w-1/3 relative h-48 md:h-[300px]">
                   <Image
-                    src={project.image}
+                    src={project.image || "/placeholder.svg"}
                     alt={project.name}
                     fill
                     priority
@@ -78,12 +84,8 @@ const ProjectSection = () => {
                 </div>
 
                 <div className="w-full md:w-2/3 space-y-6">
-                  <h3 className="text-2xl font-semibold text-gray-200">
-                    {project.name}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {project.description}
-                  </p>
+                  <h3 className="text-2xl font-semibold text-gray-200">{project.name}</h3>
+                  <p className="text-gray-400 leading-relaxed">{project.description}</p>
 
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech, i) => (
@@ -120,6 +122,8 @@ const ProjectSection = () => {
         </div>
       </div>
     </section>
-  );
-};
-export default ProjectSection;
+  )
+}
+
+export default ProjectSection
+

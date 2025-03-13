@@ -1,18 +1,27 @@
-'use client';
-import Image from 'next/image';
-import React, { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+"use client"
+import type React from "react"
+import { useState } from "react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
-const ExperienceCard = ({ logo, title, role, description, period, technologies }) => {
+interface Technology {
+  name: string
+}
+
+interface ExperienceCardProps {
+  logo: string
+  title: string
+  role?: string
+  description: string
+  period: string
+  technologies: string[]
+}
+
+const ExperienceCard: React.FC<ExperienceCardProps> = ({ logo, title, role, description, period, technologies }) => {
   return (
     <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <img
-            src={logo}
-            alt={title}
-            className="w-12 h-12 rounded-xl object-contain"
-          />
+          <img src={logo || "/placeholder.svg"} alt={title} className="w-12 h-12 rounded-xl object-contain" />
           <div>
             <h2 className="text-2xl font-semibold text-gray-200">{title}</h2>
             {role && <p className="text-gray-400">{role}</p>}
@@ -20,9 +29,7 @@ const ExperienceCard = ({ logo, title, role, description, period, technologies }
           </div>
         </div>
 
-        <p className="text-gray-400 leading-relaxed whitespace-pre-line">
-          {description}
-        </p>
+        <p className="text-gray-400 leading-relaxed whitespace-pre-line">{description}</p>
         {technologies.length > 0 && (
           <div className="flex flex-wrap gap-2.5 mt-4">
             {technologies.map((tech, index) => (
@@ -37,13 +44,31 @@ const ExperienceCard = ({ logo, title, role, description, period, technologies }
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export function Experience() {
-  const [activeTab, setActiveTab] = useState("work");
+interface WorkExperience {
+  company: string
+  role: string
+  period: string
+  description: string
+  technologies: string[]
+  logo: string
+}
 
-  const workExperiences = [
+interface StudyExperience {
+  institution: string
+  degree: string
+  period: string
+  description: string
+  logo: string
+  technologies: string[]
+}
+
+export const Experience: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>("work")
+
+  const workExperiences: WorkExperience[] = [
     {
       company: "Welup Digital",
       role: "SEO Specialist",
@@ -54,7 +79,7 @@ export function Experience() {
         - Created SEO-friendly content resulting in a 55% increase in click-through rates.
       `,
       technologies: ["Google Analytics", "SEMrush", "Ahrefs", "Google Search Console"],
-      logo: "/welup-logo.png"
+      logo: "/welup-logo.png",
     },
     {
       company: "Welup Digital",
@@ -66,7 +91,7 @@ export function Experience() {
         - Redesigned platforms for enhanced usability, aesthetics, and SEO.
       `,
       technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
-      logo: "/welup-logo.png"
+      logo: "/welup-logo.png",
     },
     {
       company: "Prompt Earn",
@@ -78,7 +103,7 @@ export function Experience() {
         - Trained interns on Affiliate SEO best practices and strategies.
       `,
       technologies: ["Google Analytics", "SEMrush", "MailChimp", "Social Media Tools"],
-      logo: "/promptearn-logo.png"
+      logo: "/promptearn-logo.png",
     },
     {
       company: "The Wealthy Post",
@@ -90,7 +115,7 @@ export function Experience() {
         - Enhanced website performance by reducing loading time from 12 to 2.4 seconds, ensuring a seamless user experience.
       `,
       technologies: ["WordPress", "Elementor", "PHP", "CSS", "JavaScript"],
-      logo: "/thewealthypost-logo.png"
+      logo: "/thewealthypost-logo.png",
     },
     {
       company: "Eng4Careers",
@@ -101,18 +126,18 @@ export function Experience() {
         - Collaborated with design and marketing teams to implement SEO strategies, boosting site traffic and visibility.
       `,
       technologies: ["Wix", "Velo", "JavaScript", "HTML", "CSS"],
-      logo: "/eng4careers-logo.avif"
+      logo: "/eng4careers-logo.avif",
     },
-  ];
+  ]
 
-  const studyExperiences = [
+  const studyExperiences: StudyExperience[] = [
     {
       institution: "Edobits ICT Academy",
       degree: "Diploma in Web Development",
       period: "Sep 2020 - Sep 2021",
       description: "Comprehensive web development training focusing on modern frameworks and technologies.",
       logo: "/edobits-logo.webp",
-      technologies: []
+      technologies: [],
     },
     {
       institution: "Coursera",
@@ -120,7 +145,7 @@ export function Experience() {
       period: "2023",
       description: "Developed expertise in search engine optimization fundamentals and best practices.",
       logo: "/coursera-logo.png",
-      technologies: []
+      technologies: [],
     },
     {
       institution: "Coursera",
@@ -128,7 +153,7 @@ export function Experience() {
       period: "2023",
       description: "Focused on advanced SEO techniques to boost website visibility and rankings.",
       logo: "/coursera-logo.png",
-      technologies: []
+      technologies: [],
     },
     {
       institution: "NABTEB",
@@ -136,9 +161,9 @@ export function Experience() {
       period: "2021",
       description: "Gained foundational knowledge in computer science, algorithms, and system design.",
       logo: "/nabteb-logo.webp",
-      technologies: []
+      technologies: [],
     },
-  ];
+  ]
 
   return (
     <section className="bg-[#0a0a0a] text-[#ededed] font-cal py-16 flex items-center justify-center relative overflow-hidden">
@@ -157,13 +182,13 @@ export function Experience() {
           <TabsList className="bg-[#1a1a1a] p-1 rounded-full inline-flex w-96 h-16 mb-6">
             <TabsTrigger
               value="work"
-              className={`px-8 py-4 rounded-full text-lg transition-all flex-1 h-14 ${activeTab === 'work' ? 'bg-[#ededed] text-[#0a0a0a]' : 'text-[#ededed]'}`}
+              className={`px-8 py-4 rounded-full text-lg transition-all flex-1 h-14 ${activeTab === "work" ? "bg-[#ededed] text-[#0a0a0a]" : "text-[#ededed]"}`}
             >
               Work
             </TabsTrigger>
             <TabsTrigger
               value="studies"
-              className={`px-8 py-4 rounded-full text-lg transition-all flex-1 h-14 ${activeTab === 'studies' ? 'bg-[#ededed] text-[#0a0a0a]' : 'text-[#ededed]'}`}
+              className={`px-8 py-4 rounded-full text-lg transition-all flex-1 h-14 ${activeTab === "studies" ? "bg-[#ededed] text-[#0a0a0a]" : "text-[#ededed]"}`}
             >
               Studies
             </TabsTrigger>
@@ -201,7 +226,8 @@ export function Experience() {
         </a>
       </div>
     </section>
-  );
+  )
 }
 
-export default Experience;
+export default Experience
+

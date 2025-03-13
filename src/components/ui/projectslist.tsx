@@ -1,10 +1,25 @@
-'use client';
+"use client"
 
-import Link from 'next/link';
-import { FaGithub } from 'react-icons/fa';
-import { BiLinkExternal } from 'react-icons/bi';
+import type React from "react"
+import Link from "next/link"
+import { FaGithub } from "react-icons/fa"
+import { BiLinkExternal } from "react-icons/bi"
 
-export default function ProjectList({ category, projects }) {
+interface Project {
+  id: number
+  name: string
+  description: string
+  technologies: string[]
+  github?: string
+  website?: string
+}
+
+interface ProjectListProps {
+  category: string
+  projects: Project[]
+}
+
+const ProjectList: React.FC<ProjectListProps> = ({ category, projects }) => {
   return (
     <section className="text-[#ededed] font-cal py-16">
       <div className="container mx-auto px-4">
@@ -15,12 +30,8 @@ export default function ProjectList({ category, projects }) {
               key={project.id}
               className="rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300"
             >
-              <h3 className="text-2xl font-semibold text-gray-200 mb-4">
-                {project.name}
-              </h3>
-              <p className="text-gray-400 leading-relaxed mb-6">
-                {project.description}
-              </p>
+              <h3 className="text-2xl font-semibold text-gray-200 mb-4">{project.name}</h3>
+              <p className="text-gray-400 leading-relaxed mb-6">{project.description}</p>
               <div className="flex flex-wrap gap-2.5 mb-6">
                 {project.technologies.map((tech) => (
                   <span
@@ -60,5 +71,8 @@ export default function ProjectList({ category, projects }) {
         </div>
       </div>
     </section>
-  );
+  )
 }
+
+export default ProjectList
+

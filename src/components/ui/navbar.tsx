@@ -1,19 +1,25 @@
-"use client";
+"use client"
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import type React from "react"
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
 
-const menuItems = [
+interface MenuItem {
+  label: string
+  link: string
+}
+
+const menuItems: MenuItem[] = [
   { label: "Home", link: "/" },
   { label: "About", link: "/about" },
   { label: "Portfolio", link: "/projects" },
   { label: "Blog", link: "/blog" },
-  { label: "Contact", link: "/contact" }
-];
+  { label: "Contact", link: "/contact" },
+]
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+const Navbar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   return (
     <nav className="fixed top-0 left-0 right-0 py-4 z-50 bg-black/10 backdrop-blur-xs">
@@ -22,14 +28,7 @@ export default function Navbar() {
         <div className="bg-zinc-950 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-white/20">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-white mr-12">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={50}
-              height={20}
-              className="object-contain"
-              priority
-            />
+            <Image src="/logo.png" alt="Logo" width={50} height={20} className="object-contain" priority />
           </Link>
           {/* Navigation Links */}
           <ul className="hidden md:flex gap-4">
@@ -46,10 +45,7 @@ export default function Navbar() {
           </ul>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-white text-2xl focus:outline-hidden"
-          >
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white text-2xl focus:outline-hidden">
             ☰
           </button>
         </div>
@@ -71,5 +67,8 @@ export default function Navbar() {
         </div>
       )}
     </nav>
-  );
+  )
 }
+
+export default Navbar
+
