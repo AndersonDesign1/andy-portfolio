@@ -64,7 +64,7 @@ export default function ContactForm(): React.ReactElement {
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <h1 className="text-4xl font-bold mb-8 font-poppins">Let's Connect</h1>
+        <h1 className="text-4xl font-bold mb-8 font-poppins">Let&apos;s Connect</h1>
 
         <div className="grid md:grid-cols-3 gap-12">
           <div className="backdrop-blur-md bg-black/30 p-8 rounded-xl border border-white/10 md:col-span-2">

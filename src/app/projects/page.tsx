@@ -41,7 +41,7 @@ export default function ProjectsPage(): React.ReactElement {
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <h1 className="text-4xl font-bold mb-8 text-center text-gray-200">Projects I've worked or contributed to</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-200">Projects I&apos;ve worked or contributed to</h1>
         {projectCategories.map((category: ProjectCategory) => (
           <ProjectList
             key={category}
