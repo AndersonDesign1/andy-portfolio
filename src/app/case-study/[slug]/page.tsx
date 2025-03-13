@@ -8,10 +8,8 @@ import { Button } from "@/components/ui/button"
 import { cva } from "class-variance-authority"
 import Script from "next/script"
 
-interface PageParams {
-  params: {
-    slug: string
-  }
+interface PageProps {
+  params: Promise<{ slug: string }>
 }
 
 interface SchemaData {
@@ -67,8 +65,9 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }))
 }
 
-export default function CaseStudyDetail({ params }: PageParams): React.ReactElement {
-  const project = (caseStudies as CaseStudy[]).find((p) => p.slug === params.slug)
+export default async function CaseStudyDetail({ params }: PageProps): Promise<React.ReactElement> {
+  const { slug } = await params
+  const project = (caseStudies as CaseStudy[]).find((p) => p.slug === slug)
 
   if (!project) {
     notFound()
