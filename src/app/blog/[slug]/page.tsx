@@ -112,13 +112,9 @@ const components: PortableTextComponents = {
   },
 }
 
-type Props = {
-  params: { slug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPost(params.slug)
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await props.params
+  const post = await getPost(slug)
 
   if (!post) {
     return {
@@ -138,9 +134,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function BlogPostPage({ params }: Props): Promise<React.ReactElement> {
+export default async function BlogPostPage(props: { params: Promise<{ slug: string }> }): Promise<React.ReactElement> {
   try {
-    const post = await getPost(params.slug)
+    const { slug } = await props.params
+    const post = await getPost(slug)
 
     if (!post) {
       return (
