@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react"
 import { urlFor } from "@/sanity/lib/image"
 import Image from "next/image"
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types"
+import type { Metadata } from "next"
 
 interface SanityImage {
   asset: {
@@ -23,7 +24,7 @@ interface SanityPost {
   mainImage?: SanityImage
 }
 
-interface PageParams {
+interface PageProps {
   params: {
     slug: string
   }
@@ -117,7 +118,28 @@ const components: PortableTextComponents = {
   },
 }
 
-export default async function BlogPostPage({ params }: PageParams): Promise<React.ReactElement> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const post = await getPost(params.slug)
+
+  if (!post) {
+    return {
+      title: "Post Not Found",
+      description: "The requested blog post could not be found",
+    }
+  }
+
+  return {
+    title: `${post.title} | Anderson Joseph's Blog`,
+    description: post.body?.[0]?.children?.[0]?.text || "Read this insightful blog post by Anderson Joseph",
+    openGraph: {
+      title: post.title,
+      description: post.body?.[0]?.children?.[0]?.text || "Read this insightful blog post",
+      images: post.mainImage ? [urlFor(post.mainImage as SanityImageSource).url()] : undefined,
+    },
+  }
+}
+
+export default async function BlogPostPage({ params }: PageProps): Promise<React.ReactElement> {
   try {
     const post = await getPost(params.slug)
 
