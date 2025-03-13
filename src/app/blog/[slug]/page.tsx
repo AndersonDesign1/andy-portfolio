@@ -24,12 +24,6 @@ interface SanityPost {
   mainImage?: SanityImage
 }
 
-interface PageProps {
-  params: {
-    slug: string
-  }
-}
-
 interface PortableTextImageValue {
   _type: string
   asset: {
@@ -118,7 +112,12 @@ const components: PortableTextComponents = {
   },
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+type Props = {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost(params.slug)
 
   if (!post) {
@@ -139,7 +138,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function BlogPostPage({ params }: PageProps): Promise<React.ReactElement> {
+export default async function BlogPostPage({ params }: Props): Promise<React.ReactElement> {
   try {
     const post = await getPost(params.slug)
 
