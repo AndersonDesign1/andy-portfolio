@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useRef } from "react"
 
 const AnimatedGrid: React.FC = () => {
@@ -17,26 +16,16 @@ const AnimatedGrid: React.FC = () => {
     let animationFrameId: number
 
     const resize = (): void => {
-      if (canvas) {
-        canvas.width = window.innerWidth
-        canvas.height = window.innerHeight
-      }
+      if (!canvas) return
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
     }
 
-    interface Dot {
-      x: number
-      y: number
-      vx: number
-      vy: number
-      move(): void
-    }
-
-    const dots: Dot[] = []
     const dotsCount = 100
     const connectionDistance = 150
     const moveSpeed = 0.2
 
-    // Change to class Dot implements Dot (remove the interface implementation)
+    // Define the Dot class
     class Dot {
       x: number
       y: number
@@ -44,13 +33,20 @@ const AnimatedGrid: React.FC = () => {
       vy: number
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        if (!canvas) {
+          this.x = 0
+          this.y = 0
+        } else {
+          this.x = Math.random() * canvas.width
+          this.y = Math.random() * canvas.height
+        }
         this.vx = (Math.random() - 0.5) * moveSpeed
         this.vy = (Math.random() - 0.5) * moveSpeed
       }
 
       move(): void {
+        if (!canvas) return
+
         this.x += this.vx
         this.y += this.vy
 
@@ -59,8 +55,11 @@ const AnimatedGrid: React.FC = () => {
       }
     }
 
+    const dots: Dot[] = []
+
     const init = (): void => {
       resize()
+      dots.length = 0 // Clear existing dots
       for (let i = 0; i < dotsCount; i++) {
         dots.push(new Dot())
       }
