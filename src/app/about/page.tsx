@@ -1,24 +1,22 @@
-import Image from 'next/image';
-import Skills from '@/components/ui/skills';
+import type React from "react"
+import Image from "next/image"
+import Skills from "@/components/ui/skills"
+import type { Metadata } from "next"
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "About Anderson Joseph | Web Development & SEO Expertise",
-    description: "Learn about Anderson Joseph, a skilled web developer and SEO specialist with a proven track record of boosting website performance, traffic, and revenue for businesses.",
-    url: "https://andersonjoseph.com/about",
-    content: "About Anderson Joseph | Full Stack Web Developer, SEO Specialist, and Digital Strategist.",
+    description:
+      "Learn about Anderson Joseph, a skilled web developer and SEO specialist with a proven track record of boosting website performance, traffic, and revenue for businesses.",
+    openGraph: {
+      url: "https://andersonjoseph.com/about",
+    },
     keywords: "About Anderson Joseph, Full Stack Developer, SEO Expert, Digital Marketing Strategist, Web Performance",
-    
-  };
+  }
 }
 
-export default function About() {
-  const researchSkills = [
-    'SEO Strategy',
-    'Content Optimization',
-    'Performance Analysis',
-    'Digital Marketing',
-  ];
+export default function About(): React.ReactNode {
+  const researchSkills: string[] = ["SEO Strategy", "Content Optimization", "Performance Analysis", "Digital Marketing"]
 
   return (
     <section className="w-full min-h-screen bg-black text-white relative overflow-hidden pt-24">
@@ -29,7 +27,7 @@ export default function About() {
           style={{
             backgroundImage: `linear-gradient(#333 1px, transparent 1px),
               linear-gradient(to right, #333 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
+            backgroundSize: "50px 50px",
           }}
         />
         <div className="absolute -inset-[10px] opacity-50">
@@ -43,7 +41,9 @@ export default function About() {
         <div className="text-center space-y-8 mb-16">
           <h1 className="text-6xl font-bold text-gray-200 mb-12">About Me</h1>
           <p className="max-w-4xl mx-auto text-gray-400 font-mono leading-relaxed text-lg">
-            I am a results-driven professional with expertise in SEO, web development, and digital marketing. Over the years, I have helped businesses achieve up to 300% increases in website traffic, top Google rankings, and higher engagement metrics by crafting strategies that work.
+            I am a results-driven professional with expertise in SEO, web development, and digital marketing. Over the
+            years, I have helped businesses achieve up to 300% increases in website traffic, top Google rankings, and
+            higher engagement metrics by crafting strategies that work.
           </p>
         </div>
 
@@ -54,12 +54,12 @@ export default function About() {
             <Image
               src="/Anderson Joseph.jpg"
               alt="Profile"
-              width={1200}          // Increased from 800
-              height={1400}         // Increased from 750
-              quality={100}         // Added quality parameter
-              priority              // Added priority loading
+              width={1200} // Increased from 800
+              height={1400} // Increased from 750
+              quality={100} // Added quality parameter
+              priority // Added priority loading
               className="w-full h-full object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"  // Added responsive sizes
+              sizes="(max-width: 768px) 100vw, 50vw" // Added responsive sizes
             />
           </div>
 
@@ -82,7 +82,9 @@ export default function About() {
                   <h2 className="text-2xl font-semibold text-gray-200">Softskills that drive success</h2>
                 </div>
                 <p className="text-gray-400 leading-relaxed">
-                  Beyond technical expertise, I excel in leadership, time management, and collaboration—skills honed through leading projects and training over 1000 aspiring tech enthusiasts in various tech skills. My passion for empowering others fuels my dedication to creating impactful solutions.
+                  Beyond technical expertise, I excel in leadership, time management, and collaboration—skills honed
+                  through leading projects and training over 1000 aspiring tech enthusiasts in various tech skills. My
+                  passion for empowering others fuels my dedication to creating impactful solutions.
                 </p>
               </div>
             </div>
@@ -104,7 +106,9 @@ export default function About() {
                   <h2 className="text-2xl font-semibold text-gray-200">Research and strategy</h2>
                 </div>
                 <p className="text-gray-400 leading-relaxed">
-                  From in-depth keyword research to crafting targeted SEO strategies, I thrive in planning and executing projects that elevate brands. My expertise spans performance optimization, content strategy, and user engagement techniques.
+                  From in-depth keyword research to crafting targeted SEO strategies, I thrive in planning and executing
+                  projects that elevate brands. My expertise spans performance optimization, content strategy, and user
+                  engagement techniques.
                 </p>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   {researchSkills.map((skill) => (
@@ -140,5 +144,6 @@ export default function About() {
         </div>
       </div>
     </section>
-  );
+  )
 }
+
