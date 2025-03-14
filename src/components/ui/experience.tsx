@@ -219,7 +219,7 @@ export const Experience: React.FC = () => {
             ))}
           </TabsContent>
         </Tabs>
-        <a href="/resume.pdf" download className="mt-8">
+        <a href="/Anderson Joseph Resume.pdf" download className="mt-8">
           <button className="px-8 py-2 rounded-full border border-[#ededed] text-[#ededed] hover:bg-[#ededed] hover:text-[#0a0a0a] transition-all duration-300">
             Download Resume
           </button>
