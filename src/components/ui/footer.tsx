@@ -1,6 +1,7 @@
 "use client"
 import type React from "react"
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGithub, faLinkedin, faInstagram, faXTwitter } from "@fortawesome/free-brands-svg-icons"
 
 const Footer: React.FC = () => {
   const scrollToTop = (): void => {
@@ -24,7 +25,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             aria-label="Visit Anderson's GitHub profile"
           >
-            <FaGithub className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
+            <FontAwesomeIcon icon={faGithub} className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
           </a>
           <a
             href="https://www.linkedin.com/in/anderson-josh/"
@@ -32,15 +33,15 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             aria-label="Visit Anderson's LinkedIn profile"
           >
-            <FaLinkedin className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
+            <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
           </a>
           <a
             href="https://x.com/WebDev_Anderson"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Visit Anderson's Twitter profile"
+            aria-label="Visit Anderson's X profile"
           >
-            <FaTwitter className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
+            <FontAwesomeIcon icon={faXTwitter} className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
           </a>
           <a
             href="https://www.instagram.com/josephandy_official/"
@@ -48,7 +49,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             aria-label="Visit Anderson's Instagram profile"
           >
-            <FaInstagram className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
+            <FontAwesomeIcon icon={faInstagram} className="w-6 h-6 hover:opacity-80 transition-opacity text-white" />
           </a>
         </div>
       </div>
