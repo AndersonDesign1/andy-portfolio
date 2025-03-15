@@ -80,7 +80,7 @@ interface ProductItemProps {
 
 export const ProductItem: React.FC<ProductItemProps> = ({ title, description, href, src }) => {
   return (
-    <Link href={href} className="flex space-x-2">
+    <Link href={href} prefetch={true} className="flex space-x-2">
       <Image
         src={src || "/placeholder.svg"}
         width={140}
@@ -104,7 +104,7 @@ interface HoveredLinkProps {
 
 export const HoveredLink: React.FC<HoveredLinkProps> = ({ children, ...rest }) => {
   return (
-    <Link {...rest} className="text-neutral-700 dark:text-neutral-200 hover:text-black">
+    <Link {...rest} prefetch={true} className="text-neutral-700 dark:text-neutral-200 hover:text-black">
       {children}
     </Link>
   )
