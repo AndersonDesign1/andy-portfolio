@@ -27,7 +27,7 @@ export const projects: Project[] = [
     description:
       "Developed and optimized the website over a 3-year period, achieving a 40% increase in user engagement and a 30% growth in overall traffic through responsive design and effective SEO strategies.",
     category: "Websites",
-    technologies: ["WordPress", "JavaScript", "PHP"],
+    technologies: ["Javascript", "Next.js", "MongoDB", "Express.js"],
     website: "https://welupdigital.com",
   },
   {
