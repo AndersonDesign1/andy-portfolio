@@ -69,7 +69,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
                 href={certificationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-2 text-sm text-white-400 hover:underline"
+                className="inline-flex items-center gap-2 mt-2 text-sm text-blue-400 hover:underline"
               >
                 View Certification
                 <ExternalLink size={16} />
@@ -108,6 +108,47 @@ const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
     </div>
   )
 );
+ExperienceCard.displayName = "ExperienceCard";
+
+const WorkCard: React.FC<WorkExperience> = React.memo(
+  ({ logo, company, role, description, period, technologies }) => (
+    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
+      <div className="space-y-6">
+        <div className="flex items-start gap-4">
+          <Image
+            src={logo || "/placeholder.svg"}
+            alt={company}
+            width={48}
+            height={48}
+            className="w-12 h-12 rounded-xl object-contain"
+            loading="lazy"
+          />
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-200">{company}</h2>
+            {role && <p className="text-gray-400">{role}</p>}
+            <p className="text-sm text-gray-500">{period}</p>
+          </div>
+        </div>
+        <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+          {description}
+        </p>
+        {technologies.length > 0 && (
+          <div className="flex flex-wrap gap-2.5 mt-4">
+            {technologies.map((tech, index) => (
+              <div
+                key={index}
+                className="bg-zinc-800/50 rounded-full px-4 py-1.5 text-sm text-gray-300 hover:bg-zinc-700 transition-all duration-300"
+              >
+                {tech}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+);
+WorkCard.displayName = "WorkCard";
 
 export const Experience: React.FC = () => {
   const workExperiences = experienceData.work as WorkExperience[];
@@ -146,15 +187,7 @@ export const Experience: React.FC = () => {
           </TabsList>
           <TabsContent value="work">
             {workExperiences.map((exp) => (
-              <ExperienceCard
-                key={exp.company + exp.role + exp.period}
-                logo={exp.logo}
-                title={exp.company}
-                role={exp.role}
-                description={exp.description}
-                period={exp.period}
-                technologies={exp.technologies}
-              />
+              <WorkCard key={exp.company + exp.role + exp.period} {...exp} />
             ))}
           </TabsContent>
           <TabsContent value="certifications">
