@@ -1,35 +1,97 @@
-"use client"
-import type React from "react"
-import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+"use client";
 
-interface Technology {
-  name: string
+import React from "react";
+import experienceData from "@/data/experience.json";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
+import Image from "next/image";
+
+interface WorkExperience {
+  company: string;
+  role: string;
+  period: string;
+  description: string;
+  technologies: string[];
+  logo: string;
+}
+
+interface Certification {
+  institution: string;
+  degree: string;
+  period: string;
+  description: string;
+  logo: string;
+  technologies: string[];
+  certificationUrl?: string;
+  skills?: string[];
 }
 
 interface ExperienceCardProps {
-  logo: string
-  title: string
-  role?: string
-  description: string
-  period: string
-  technologies: string[]
+  logo: string;
+  title: string;
+  role?: string;
+  description: string;
+  period: string;
+  technologies: string[];
+  certificationUrl?: string;
+  skills?: string[];
 }
 
-const ExperienceCard: React.FC<ExperienceCardProps> = ({ logo, title, role, description, period, technologies }) => {
-  return (
+const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
+  ({
+    logo,
+    title,
+    role,
+    description,
+    period,
+    technologies,
+    certificationUrl,
+    skills,
+  }) => (
     <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <img src={logo || "/placeholder.svg"} alt={title} className="w-12 h-12 rounded-xl object-contain" />
+        <div className="flex items-start gap-4">
+          <Image
+            src={logo || "/placeholder.svg"}
+            alt={title}
+            width={48}
+            height={48}
+            className="w-12 h-12 rounded-xl object-contain"
+            loading="lazy"
+          />
           <div>
             <h2 className="text-2xl font-semibold text-gray-200">{title}</h2>
             {role && <p className="text-gray-400">{role}</p>}
             <p className="text-sm text-gray-500">{period}</p>
+            {certificationUrl && (
+              <a
+                href={certificationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 mt-2 text-sm text-white-400 hover:underline"
+              >
+                View Certification
+                <ExternalLink size={16} />
+              </a>
+            )}
           </div>
         </div>
-
-        <p className="text-gray-400 leading-relaxed whitespace-pre-line">{description}</p>
+        <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+          {description}
+        </p>
+        {skills && skills.length > 0 && (
+          <div className="flex flex-wrap gap-2.5 mt-4">
+            {skills.map((skill, index) => (
+              <div
+                key={index}
+                className="bg-zinc-800/50 rounded-full px-4 py-1.5 text-sm text-gray-300 hover:bg-zinc-700 transition-all duration-300"
+              >
+                {skill}
+              </div>
+            ))}
+          </div>
+        )}
         {technologies.length > 0 && (
           <div className="flex flex-wrap gap-2.5 mt-4">
             {technologies.map((tech, index) => (
@@ -45,158 +107,47 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ logo, title, role, desc
       </div>
     </div>
   )
-}
-
-interface WorkExperience {
-  company: string
-  role: string
-  period: string
-  description: string
-  technologies: string[]
-  logo: string
-}
-
-interface StudyExperience {
-  institution: string
-  degree: string
-  period: string
-  description: string
-  logo: string
-  technologies: string[]
-}
+);
 
 export const Experience: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("work")
-
-  const workExperiences: WorkExperience[] = [
-    {
-      company: "Welup Digital",
-      role: "SEO Specialist",
-      period: "Sep 2021 - Present",
-      description: `
-        - Increased organic website traffic by 500% through SEO optimisation and targeted campaigns.
-        - Improved keyword rankings for 5 critical keywords via audits and data-driven strategies.
-        - Created SEO-friendly content resulting in a 55% increase in click-through rates.
-      `,
-      technologies: ["Google Analytics", "SEMrush", "Ahrefs", "Google Search Console"],
-      logo: "/welup-logo.png",
-    },
-    {
-      company: "Welup Digital",
-      role: "Frontend Web Developer",
-      period: "Sep 2021 - Present",
-      description: `
-        - Developed and maintained responsive websites, ensuring speed, usability, and design consistency.
-        - Created over 10 websites for various companies and helped them rank online by applying modern SEO techniques.
-        - Redesigned platforms for enhanced usability, aesthetics, and SEO.
-      `,
-      technologies: ["React", "Next.js", "TailwindCSS", "JavaScript", "HTML", "CSS"],
-      logo: "/welup-logo.png",
-    },
-    {
-      company: "Prompt Earn",
-      role: "SEO Specialist",
-      period: "May 2024 - Oct 2024",
-      description: `
-        - Spearheaded a comprehensive marketing campaign utilising email, social media, and affiliate marketing strategies, resulting in a 40% increase in affiliates over 8 weeks.
-        - Quadrupled monthly website traffic from 10,000 to 40,000 visitors within three months through affiliate SEO techniques.
-        - Trained interns on Affiliate SEO best practices and strategies.
-      `,
-      technologies: ["Google Analytics", "SEMrush", "MailChimp", "Social Media Tools"],
-      logo: "/promptearn-logo.png",
-    },
-    {
-      company: "The Wealthy Post",
-      role: "WordPress Developer",
-      period: "Dec 2023 - Mar 2024",
-      description: `
-        - Redesigned the website using Elementor, delivering a modern and unique look tailored to the client vision.
-        - Optimized the website and blogs for SEO, achieving a 40% increase in monthly traffic within two months.
-        - Enhanced website performance by reducing loading time from 12 to 2.4 seconds, ensuring a seamless user experience.
-      `,
-      technologies: ["WordPress", "Elementor", "PHP", "CSS", "JavaScript"],
-      logo: "/thewealthypost-logo.png",
-    },
-    {
-      company: "Eng4Careers",
-      role: "Wix Developer",
-      period: "May 2024 - Jul 2024",
-      description: `
-        - Developed and customised Wix websites to enhance user experience and functionality, achieving high client satisfaction.
-        - Collaborated with design and marketing teams to implement SEO strategies, boosting site traffic and visibility.
-      `,
-      technologies: ["Wix", "Velo", "JavaScript", "HTML", "CSS"],
-      logo: "/eng4careers-logo.avif",
-    },
-  ]
-
-  const studyExperiences: StudyExperience[] = [
-    {
-      institution: "Edobits ICT Academy",
-      degree: "Diploma in Web Development",
-      period: "Sep 2020 - Sep 2021",
-      description: "Comprehensive web development training focusing on modern frameworks and technologies.",
-      logo: "/edobits-logo.webp",
-      technologies: [],
-    },
-    {
-      institution: "Coursera",
-      degree: "Introduction to Google SEO",
-      period: "2023",
-      description: "Developed expertise in search engine optimization fundamentals and best practices.",
-      logo: "/coursera-logo.png",
-      technologies: [],
-    },
-    {
-      institution: "Coursera",
-      degree: "Google SEO Fundamentals",
-      period: "2023",
-      description: "Focused on advanced SEO techniques to boost website visibility and rankings.",
-      logo: "/coursera-logo.png",
-      technologies: [],
-    },
-    {
-      institution: "NABTEB",
-      degree: "Diploma in Computer Science",
-      period: "2021",
-      description: "Gained foundational knowledge in computer science, algorithms, and system design.",
-      logo: "/nabteb-logo.webp",
-      technologies: [],
-    },
-  ]
+  const workExperiences = experienceData.work as WorkExperience[];
+  const certifications = experienceData.certifications as Certification[];
 
   return (
     <section className="bg-[#0a0a0a] text-[#ededed] font-cal py-16 flex items-center justify-center relative overflow-hidden">
       {/* Animated Blobs Background */}
-      <div className="absolute -inset-[10px] opacity-50">
+      <div className="absolute -inset-[10px] opacity-50 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-blob" />
         <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
       </div>
 
       {/* Grid Background */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none"></div>
       <div className="container mx-auto px-4 flex flex-col items-center relative z-10">
         <h2 className="text-3xl font-bold mb-6 text-center">Experience</h2>
-        <Tabs defaultValue="work" className="w-full max-w-3xl flex flex-col items-center" onValueChange={setActiveTab}>
+        <Tabs
+          defaultValue="work"
+          className="w-full max-w-3xl flex flex-col items-center"
+        >
           <TabsList className="bg-[#1a1a1a] p-1 rounded-full inline-flex w-96 h-16 mb-6">
             <TabsTrigger
               value="work"
-              className={`px-8 py-4 rounded-full text-lg transition-all flex-1 h-14 ${activeTab === "work" ? "bg-[#ededed] text-[#0a0a0a]" : "text-[#ededed]"}`}
+              className="px-8 py-4 rounded-full text-lg flex-1 h-14 transition-all data-[state=active]:bg-[#ededed] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow"
             >
               Work
             </TabsTrigger>
             <TabsTrigger
-              value="studies"
-              className={`px-8 py-4 rounded-full text-lg transition-all flex-1 h-14 ${activeTab === "studies" ? "bg-[#ededed] text-[#0a0a0a]" : "text-[#ededed]"}`}
+              value="certifications"
+              className="px-8 py-4 rounded-full text-lg flex-1 h-14 transition-all data-[state=active]:bg-[#ededed] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow"
             >
-              Studies
+              Certifications
             </TabsTrigger>
           </TabsList>
           <TabsContent value="work">
-            {workExperiences.map((exp, index) => (
+            {workExperiences.map((exp) => (
               <ExperienceCard
-                key={index}
+                key={exp.company + exp.role + exp.period}
                 logo={exp.logo}
                 title={exp.company}
                 role={exp.role}
@@ -206,28 +157,33 @@ export const Experience: React.FC = () => {
               />
             ))}
           </TabsContent>
-          <TabsContent value="studies">
-            {studyExperiences.map((exp, index) => (
+          <TabsContent value="certifications">
+            {certifications.map((exp) => (
               <ExperienceCard
-                key={index}
+                key={exp.institution + exp.degree + exp.period}
                 logo={exp.logo}
                 title={exp.institution}
+                role={exp.degree}
                 description={exp.description}
                 period={exp.period}
                 technologies={exp.technologies}
+                certificationUrl={exp.certificationUrl}
+                skills={exp.skills}
               />
             ))}
           </TabsContent>
         </Tabs>
         <a href="/Anderson Joseph Resume.pdf" download className="mt-8">
-          <button className="px-8 py-2 rounded-full border border-[#ededed] text-[#ededed] hover:bg-[#ededed] hover:text-[#0a0a0a] transition-all duration-300">
+          <Button
+            variant="outline"
+            className="px-8 py-2 rounded-full border border-[#ededed] text-[#ededed] hover:bg-[#ededed] hover:text-[#0a0a0a] transition-all duration-300"
+          >
             Download Resume
-          </button>
+          </Button>
         </a>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Experience
-
+export default Experience;
