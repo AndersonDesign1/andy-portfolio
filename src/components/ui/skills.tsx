@@ -69,28 +69,8 @@ const skillsData: SkillCategory[] = [
     description:
       "I specialize in optimizing websites for search engines and driving organic traffic growth through modern SEO strategies and techniques.",
     skills: [
-      {
-        name: "Ahrefs",
-        icon: (
-          <img
-            src="/Ahrefs.svg"
-            alt="Ahrefs"
-            className="w-6 h-6"
-            aria-hidden="true"
-          />
-        ),
-      },
-      {
-        name: "AiOseo",
-        icon: (
-          <img
-            src="/AiOseo.svg"
-            alt="AiOseo"
-            className="w-6 h-6"
-            aria-hidden="true"
-          />
-        ),
-      },
+      { name: "Ahrefs", icon: "/Ahrefs.svg" },
+      { name: "AiOseo", icon: "/AiOseo.svg" },
       { name: "SEMrush", icon: <SiSemrush /> },
     ],
   },
@@ -102,17 +82,7 @@ const skillsData: SkillCategory[] = [
       { name: "WordPress", icon: <FaWordpress /> },
       { name: "Wix", icon: <FaWix /> },
       { name: "Webflow", icon: <SiWebflow /> },
-      {
-        name: "Bubble",
-        icon: (
-          <img
-            src="/Bubble.io.svg"
-            alt="Bubble"
-            className="w-6 h-6"
-            aria-hidden="true"
-          />
-        ),
-      },
+      { name: "Bubble", icon: "/Bubble.io.svg" },
       { name: "Framer", icon: <SiFramer /> },
     ],
   },
