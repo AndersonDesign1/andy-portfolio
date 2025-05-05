@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface Skill {
   name: string;
@@ -20,9 +21,11 @@ const SkillCard: React.FC<SkillCardProps> = React.memo(
         {skills.map((skill) => (
           <div key={skill.name} className="flex items-center mr-4 mb-4">
             {typeof skill.icon === "string" ? (
-              <img
+              <Image
                 src={skill.icon || "/placeholder.svg"}
                 alt={skill.name}
+                width={24}
+                height={24}
                 className="w-6 h-6"
                 aria-hidden="true"
               />
