@@ -52,7 +52,7 @@ export default function About(): React.ReactNode {
           <div className="relative rounded-3xl overflow-hidden group h-[700px]">
             <div className="absolute inset-0 bg-linear-to-r from-teal-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Image
-              src="/Anderson Joseph.jpg"
+              src="/Anderson Joseph.avif"
               alt="Profile"
               width={1200} // Increased from 800
               height={1400} // Increased from 750

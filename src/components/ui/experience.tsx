@@ -38,7 +38,7 @@ interface ExperienceCardProps {
   skills?: string[];
 }
 
-const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
+const ExperienceCard = React.memo(
   ({
     logo,
     title,
@@ -48,10 +48,10 @@ const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
     technologies,
     certificationUrl,
     skills,
-  }) => (
-    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
+  }: ExperienceCardProps) => (
+    <div className="bg-zinc-900/50 rounded-3xl py-8 px-6 w-full h-full flex flex-col justify-between backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 min-h-[340px]">
       <div className="space-y-6">
-        <div className="flex items-start gap-4">
+        <div className="flex flex-col items-start gap-4">
           <Image
             src={logo || "/placeholder.svg"}
             alt={title}
@@ -61,7 +61,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
             loading="lazy"
           />
           <div>
-            <h2 className="text-2xl font-semibold text-gray-200">{title}</h2>
+            <h2 className="text-2xl font-bold text-gray-200">{title}</h2>
             {role && <p className="text-gray-400">{role}</p>}
             <p className="text-sm text-gray-500">{period}</p>
             {certificationUrl && (
@@ -110,21 +110,28 @@ const ExperienceCard: React.FC<ExperienceCardProps> = React.memo(
 );
 ExperienceCard.displayName = "ExperienceCard";
 
-const WorkCard: React.FC<WorkExperience> = React.memo(
-  ({ logo, company, role, description, period, technologies }) => (
-    <div className="bg-zinc-900/50 rounded-3xl p-8 backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 mb-6">
+const WorkCard = React.memo(
+  ({
+    logo,
+    company,
+    role,
+    description,
+    period,
+    technologies,
+  }: WorkExperience) => (
+    <div className="bg-zinc-900/50 rounded-3xl py-8 px-6 w-full h-full flex flex-col justify-between backdrop-blur-xs border border-gray-800/50 hover:border-white/50 hover:bg-zinc-800/50 transition-all duration-300 min-h-[340px]">
       <div className="space-y-6">
-        <div className="flex items-start gap-4">
+        <div className="flex flex-col items-start gap-4">
           <Image
             src={logo || "/placeholder.svg"}
             alt={company}
             width={48}
             height={48}
-            className="w-12 h-12 rounded-xl object-contain"
+            className="w-20 h-20 rounded-xl object-contain"
             loading="lazy"
           />
           <div>
-            <h2 className="text-2xl font-semibold text-gray-200">{company}</h2>
+            <h2 className="text-2xl font-bold text-gray-200">{company}</h2>
             {role && <p className="text-gray-400">{role}</p>}
             <p className="text-sm text-gray-500">{period}</p>
           </div>
@@ -165,12 +172,9 @@ export const Experience: React.FC = () => {
 
       {/* Grid Background */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none"></div>
-      <div className="container mx-auto px-4 flex flex-col items-center relative z-10">
+      <div className="container mx-auto px-4 flex flex-col items-center relative z-10 max-w-6xl">
         <h2 className="text-3xl font-bold mb-6 text-center">Experience</h2>
-        <Tabs
-          defaultValue="work"
-          className="w-full max-w-3xl flex flex-col items-center"
-        >
+        <Tabs defaultValue="work" className="w-full flex flex-col items-center">
           <TabsList className="bg-[#1a1a1a] p-1 rounded-full inline-flex w-96 h-16 mb-6">
             <TabsTrigger
               value="work"
@@ -186,24 +190,28 @@ export const Experience: React.FC = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="work">
-            {workExperiences.map((exp) => (
-              <WorkCard key={exp.company + exp.role + exp.period} {...exp} />
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+              {workExperiences.map((exp) => (
+                <WorkCard key={exp.company + exp.role + exp.period} {...exp} />
+              ))}
+            </div>
           </TabsContent>
           <TabsContent value="certifications">
-            {certifications.map((exp) => (
-              <ExperienceCard
-                key={exp.institution + exp.degree + exp.period}
-                logo={exp.logo}
-                title={exp.institution}
-                role={exp.degree}
-                description={exp.description}
-                period={exp.period}
-                technologies={exp.technologies}
-                certificationUrl={exp.certificationUrl}
-                skills={exp.skills}
-              />
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+              {certifications.map((exp) => (
+                <ExperienceCard
+                  key={exp.institution + exp.degree + exp.period}
+                  logo={exp.logo}
+                  title={exp.institution}
+                  role={exp.degree}
+                  description={exp.description}
+                  period={exp.period}
+                  technologies={exp.technologies}
+                  certificationUrl={exp.certificationUrl}
+                  skills={exp.skills}
+                />
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
         <a href="/Anderson Joseph Resume.pdf" download className="mt-8">
