@@ -1,5 +1,5 @@
-import type React from "react"
-import SkillCard from "./skillcard"
+import type React from "react";
+import SkillCard from "./skillcard";
 import {
   FaReact,
   FaCss3Alt,
@@ -11,7 +11,7 @@ import {
   FaWordpress,
   FaWix,
   FaCloudflare,
-} from "react-icons/fa"
+} from "react-icons/fa";
 import {
   SiTailwindcss,
   SiExpress,
@@ -22,17 +22,17 @@ import {
   SiWebflow,
   SiFramer,
   SiSemrush,
-} from "react-icons/si"
+} from "react-icons/si";
 
 interface Skill {
-  name: string
-  icon: React.ReactNode
+  name: string;
+  icon: React.ReactNode;
 }
 
 interface SkillCategory {
-  title: string
-  description: string
-  skills: Skill[]
+  title: string;
+  description: string;
+  skills: Skill[];
 }
 
 const skillsData: SkillCategory[] = [
@@ -69,8 +69,28 @@ const skillsData: SkillCategory[] = [
     description:
       "I specialize in optimizing websites for search engines and driving organic traffic growth through modern SEO strategies and techniques.",
     skills: [
-      { name: "Ahrefs", icon: <img src="/Ahrefs.svg" alt="Ahrefs" className="w-6 h-6" /> }, // SVG icon
-      { name: "AiOseo", icon: <img src="/AiOseo.svg" alt="AiOseo" className="w-6 h-6" /> }, // SVG icon
+      {
+        name: "Ahrefs",
+        icon: (
+          <img
+            src="/Ahrefs.svg"
+            alt="Ahrefs"
+            className="w-6 h-6"
+            aria-hidden="true"
+          />
+        ),
+      },
+      {
+        name: "AiOseo",
+        icon: (
+          <img
+            src="/AiOseo.svg"
+            alt="AiOseo"
+            className="w-6 h-6"
+            aria-hidden="true"
+          />
+        ),
+      },
       { name: "SEMrush", icon: <SiSemrush /> },
     ],
   },
@@ -82,11 +102,21 @@ const skillsData: SkillCategory[] = [
       { name: "WordPress", icon: <FaWordpress /> },
       { name: "Wix", icon: <FaWix /> },
       { name: "Webflow", icon: <SiWebflow /> },
-      { name: "Bubble", icon: <img src="/Bubble.io.svg" alt="Bubble" className="w-6 h-6" /> }, // SVG icon
+      {
+        name: "Bubble",
+        icon: (
+          <img
+            src="/Bubble.io.svg"
+            alt="Bubble"
+            className="w-6 h-6"
+            aria-hidden="true"
+          />
+        ),
+      },
       { name: "Framer", icon: <SiFramer /> },
     ],
   },
-]
+];
 
 const Skills: React.FC = () => {
   return (
@@ -94,18 +124,22 @@ const Skills: React.FC = () => {
       <div className="absolute inset-0 bg-[#0a0a0a] opacity-90"></div>
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-4xl font-bold text-center text-[#ededed] font-display mb-12">Skills</h2>
+        <h2 className="text-4xl font-bold text-center text-[#ededed] font-display mb-12">
+          Skills
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {skillsData.map((skill) => (
-            <div className="transform skew-x-[-12deg]" key={skill.title}>
-              <SkillCard title={skill.title} description={skill.description} skills={skill.skills} />
-            </div>
+            <SkillCard
+              key={skill.title}
+              title={skill.title}
+              description={skill.description}
+              skills={skill.skills}
+            />
           ))}
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Skills
-
+export default Skills;
