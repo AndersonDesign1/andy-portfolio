@@ -136,10 +136,10 @@ export default function ContactForm(): React.ReactElement {
                 username="AndersonDesign1"
               />
               <SocialLink
-                href="https://x.com/WebDev_Anderson"
+                href="https://x.com/HeyItsAndersonJ"
                 icon={<FaTwitter className="w-6 h-6" />}
                 platform="Twitter"
-                username="WebDev_Anderson"
+                username="HeyItsAndersonJ"
               />
               <SocialLink
                 href="https://www.instagram.com/josephandy_official/"

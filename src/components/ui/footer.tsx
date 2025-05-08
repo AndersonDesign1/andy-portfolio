@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
         label: "Visit Anderson's LinkedIn profile",
       },
       {
-        href: "https://x.com/WebDev_Anderson",
+        href: "https://x.com/HeyItsAndersonJ",
         icon: faXTwitter,
         label: "Visit Anderson's X profile",
       },
