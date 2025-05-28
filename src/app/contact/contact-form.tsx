@@ -176,4 +176,3 @@ function SocialLink({ href, icon, platform, username }: SocialLinkProps): React.
     </Link>
   )
 }
-
