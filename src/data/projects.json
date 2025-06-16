@@ -1,0 +1,64 @@
+{
+  "projects": [
+    {
+      "id": "1",
+      "type": "case-study",
+      "title": "E-commerce Platform Redesign",
+      "description": "Complete redesign and development of a multi-vendor e-commerce platform serving 50,000+ users. Implemented advanced search, real-time inventory management, and seamless payment processing.",
+      "thumbnail": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Stripe", "PostgreSQL", "Redis"],
+      "links": {
+        "live": "https://ecommerce-demo.com",
+        "github": "https://github.com/username/ecommerce-platform",
+        "caseStudy": "/case-studies/ecommerce-platform"
+      },
+      "metrics": {
+        "performance": "+40% faster load times",
+        "conversion": "+25% conversion rate",
+        "users": "50,000+ active users"
+      }
+    },
+    {
+      "id": "2",
+      "type": "case-study", 
+      "title": "SaaS Analytics Dashboard",
+      "description": "Built a comprehensive analytics dashboard for a B2B SaaS platform. Features real-time data visualization, custom reporting, and advanced filtering capabilities for enterprise clients.",
+      "thumbnail": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "techStack": ["React", "D3.js", "Node.js", "MongoDB", "WebSocket", "Docker"],
+      "links": {
+        "live": "https://analytics-dashboard.com",
+        "github": "https://github.com/username/analytics-dashboard",
+        "caseStudy": "/case-studies/analytics-dashboard"
+      },
+      "metrics": {
+        "dataPoints": "1M+ data points processed",
+        "responseTime": "<200ms query response",
+        "clients": "100+ enterprise clients"
+      }
+    },
+    {
+      "id": "3",
+      "type": "standard",
+      "title": "Portfolio Website",
+      "description": "A minimalist portfolio website showcasing projects and skills with a clean, responsive design and smooth animations.",
+      "thumbnail": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      "links": {
+        "live": "https://portfolio-demo.com",
+        "github": "https://github.com/username/portfolio"
+      }
+    },
+    {
+      "id": "4",
+      "type": "standard",
+      "title": "Task Management App", 
+      "description": "A collaborative task management application with real-time updates, team collaboration features, and intuitive drag-and-drop interface.",
+      "thumbnail": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "techStack": ["Vue.js", "Firebase", "Vuetify", "PWA"],
+      "links": {
+        "live": "https://taskmanager-demo.com",
+        "github": "https://github.com/username/task-manager"
+      }
+    }
+  ]
+}

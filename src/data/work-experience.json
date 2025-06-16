@@ -1,0 +1,61 @@
+{
+  "workExperience": [
+    {
+      "id": "techflow-senior-dev",
+      "company": "TechFlow Solutions",
+      "position": "Senior Full Stack Developer",
+      "location": "San Francisco, CA",
+      "startDate": "2023-01-15",
+      "endDate": null,
+      "current": true,
+      "description": "Lead development of enterprise-scale web applications serving 100,000+ users. Architect scalable solutions and mentor junior developers while driving technical excellence across multiple product teams.",
+      "achievements": [
+        "Reduced application load times by 60% through performance optimization and caching strategies",
+        "Led migration from monolithic to microservices architecture, improving system scalability by 300%",
+        "Mentored 5 junior developers, improving team productivity by 40% and reducing onboarding time",
+        "Implemented CI/CD pipelines reducing deployment time from 4 hours to 15 minutes",
+        "Architected real-time notification system handling 1M+ daily events with 99.9% uptime"
+      ],
+      "technologies": ["React", "Node.js", "TypeScript", "AWS", "Docker", "PostgreSQL"],
+      "companyUrl": "https://techflow.com"
+    },
+    {
+      "id": "dataviz-frontend-dev",
+      "company": "DataViz Analytics",
+      "position": "Frontend Developer",
+      "location": "Austin, TX",
+      "startDate": "2021-06-01",
+      "endDate": "2022-12-31",
+      "current": false,
+      "description": "Developed interactive data visualization dashboards for enterprise clients. Collaborated with UX designers to create intuitive user interfaces that transformed complex data into actionable insights.",
+      "achievements": [
+        "Built real-time analytics dashboard processing 1M+ data points daily with sub-200ms response times",
+        "Improved user engagement by 85% through comprehensive UX/UI redesign and user research",
+        "Developed reusable component library used across 15+ projects, reducing development time by 50%",
+        "Reduced bug reports by 70% through comprehensive testing implementation and code quality standards",
+        "Led accessibility improvements achieving WCAG 2.1 AA compliance across all products"
+      ],
+      "technologies": ["Vue.js", "D3.js", "Python", "MongoDB", "Redis"],
+      "companyUrl": "https://dataviz.com"
+    },
+    {
+      "id": "startuplab-junior-dev",
+      "company": "StartupLab Inc",
+      "position": "Junior Web Developer",
+      "location": "Remote",
+      "startDate": "2020-08-01",
+      "endDate": "2021-05-31",
+      "current": false,
+      "description": "Developed responsive web applications for early-stage startups. Worked closely with founders to translate business requirements into technical solutions while maintaining high code quality standards.",
+      "achievements": [
+        "Delivered 8 MVP applications within tight deadlines, enabling startups to secure $2M+ in funding",
+        "Implemented responsive designs improving mobile conversion rates by 45% across all projects",
+        "Collaborated with cross-functional teams of 3-5 members using Agile methodologies",
+        "Maintained 99.5% uptime across all deployed applications through proactive monitoring",
+        "Contributed to open-source projects, gaining 500+ GitHub stars for utility libraries"
+      ],
+      "technologies": ["React", "Express.js", "MySQL", "Heroku"],
+      "companyUrl": "https://startuplab.com"
+    }
+  ]
+}

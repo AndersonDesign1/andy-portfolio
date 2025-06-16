@@ -1,0 +1,244 @@
+{
+  "projects": [
+    {
+      "id": "ecommerce-platform",
+      "title": "E-commerce Platform Redesign",
+      "description": "Complete redesign and development of a multi-vendor e-commerce platform serving 50,000+ users with advanced search and real-time inventory management.",
+      "category": "Full Stack",
+      "technologies": ["Next.js", "TypeScript", "Tailwind CSS", "Stripe", "PostgreSQL", "Redis", "Docker", "AWS"],
+      "image": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://ecommerce-demo.com",
+      "github": "https://github.com/username/ecommerce-platform",
+      "completionDate": "2024-03-15",
+      "keyFeatures": [
+        "Real-time inventory management across vendors",
+        "Advanced search with filters and sorting",
+        "Secure payment processing with Stripe",
+        "Mobile-optimized responsive design",
+        "Admin dashboard with analytics"
+      ],
+      "type": "case-study",
+      "caseStudySlug": "ecommerce-platform",
+      "metrics": {
+        "performance": "75% faster load times",
+        "conversion": "+217% conversion rate",
+        "users": "50,000+ active users"
+      }
+    },
+    {
+      "id": "analytics-dashboard",
+      "title": "SaaS Analytics Dashboard",
+      "description": "Built a comprehensive analytics dashboard for a B2B SaaS platform with real-time data visualization processing 1M+ data points daily.",
+      "category": "Full Stack",
+      "technologies": ["React", "D3.js", "Node.js", "MongoDB", "WebSocket", "Docker", "Kubernetes", "AWS"],
+      "image": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://analytics-dashboard.com",
+      "github": "https://github.com/username/analytics-dashboard",
+      "completionDate": "2024-01-20",
+      "keyFeatures": [
+        "Real-time data streaming with WebSocket",
+        "Custom chart builder with D3.js",
+        "White-label customization options",
+        "Sub-200ms query response times",
+        "Enterprise-grade security compliance"
+      ],
+      "type": "case-study",
+      "caseStudySlug": "analytics-dashboard",
+      "metrics": {
+        "performance": "99% faster query response",
+        "capacity": "10x user capacity",
+        "dataPoints": "1M+ data points processed daily"
+      }
+    },
+    {
+      "id": "restaurant-website",
+      "title": "Fine Dining Restaurant Website",
+      "description": "Elegant restaurant website with online reservations, menu showcase, and immersive visual storytelling experience.",
+      "category": "Web Design",
+      "technologies": ["Next.js", "Framer Motion", "Tailwind CSS", "Sanity CMS"],
+      "image": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://restaurant-demo.com",
+      "github": "https://github.com/username/restaurant-website",
+      "completionDate": "2024-02-10",
+      "keyFeatures": [
+        "Immersive parallax scrolling effects",
+        "Online reservation system integration",
+        "Dynamic menu with CMS integration",
+        "Mobile-first responsive design",
+        "High-performance image optimization"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "local-seo-campaign",
+      "title": "Local Business SEO Campaign",
+      "description": "Comprehensive SEO strategy for local service business resulting in 340% increase in organic traffic and top 3 rankings.",
+      "category": "SEO",
+      "technologies": ["Google Analytics", "Search Console", "Ahrefs", "Schema Markup"],
+      "image": "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://localbusiness-demo.com",
+      "github": null,
+      "completionDate": "2023-12-05",
+      "keyFeatures": [
+        "Local keyword research and optimization",
+        "Google My Business optimization",
+        "Schema markup implementation",
+        "Citation building and NAP consistency",
+        "Monthly performance reporting"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "portfolio-website",
+      "title": "Creative Portfolio Website",
+      "description": "Minimalist portfolio showcasing creative work with smooth animations and intuitive navigation for enhanced user experience.",
+      "category": "Web Design",
+      "technologies": ["Next.js", "TypeScript", "Framer Motion", "Tailwind CSS"],
+      "image": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://portfolio-demo.com",
+      "github": "https://github.com/username/creative-portfolio",
+      "completionDate": "2024-01-08",
+      "keyFeatures": [
+        "Smooth page transitions and animations",
+        "Interactive project galleries",
+        "Dark/light theme toggle",
+        "Optimized for Core Web Vitals",
+        "Contact form with email integration"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "task-management-app",
+      "title": "Collaborative Task Manager",
+      "description": "Real-time task management application with team collaboration features and intuitive drag-and-drop interface.",
+      "category": "Full Stack",
+      "technologies": ["Vue.js", "Firebase", "Vuetify", "PWA"],
+      "image": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://taskmanager-demo.com",
+      "github": "https://github.com/username/task-manager",
+      "completionDate": "2023-11-22",
+      "keyFeatures": [
+        "Real-time collaboration with multiple users",
+        "Drag-and-drop task organization",
+        "Progressive Web App capabilities",
+        "Offline functionality with sync",
+        "Team performance analytics"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "ecommerce-seo-audit",
+      "title": "E-commerce SEO Audit & Recovery",
+      "description": "Technical SEO audit and recovery for e-commerce site, improving Core Web Vitals and achieving 95+ PageSpeed scores.",
+      "category": "SEO",
+      "technologies": ["PageSpeed Insights", "GTmetrix", "Screaming Frog", "Google Analytics"],
+      "image": "https://images.pexels.com/photos/270637/pexels-photo-270637.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://ecommerce-seo-demo.com",
+      "github": null,
+      "completionDate": "2024-02-28",
+      "keyFeatures": [
+        "Comprehensive technical SEO audit",
+        "Core Web Vitals optimization",
+        "Site speed improvements (3x faster)",
+        "Mobile-first indexing optimization",
+        "Structured data implementation"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "agency-website",
+      "title": "Digital Agency Website",
+      "description": "Modern agency website with case studies showcase, team profiles, and lead generation forms optimized for conversions.",
+      "category": "Web Design",
+      "technologies": ["Astro", "React", "Tailwind CSS", "Netlify Forms"],
+      "image": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://agency-demo.com",
+      "github": "https://github.com/username/agency-website",
+      "completionDate": "2023-10-15",
+      "keyFeatures": [
+        "Interactive case studies showcase",
+        "Team member profiles with animations",
+        "Lead generation form optimization",
+        "Blog with CMS integration",
+        "Performance-optimized with Astro"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "weather-app",
+      "title": "Advanced Weather Application",
+      "description": "Feature-rich weather app with location-based forecasts, interactive maps, and severe weather alerts for users.",
+      "category": "Full Stack",
+      "technologies": ["React Native", "Node.js", "OpenWeather API", "MongoDB"],
+      "image": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://weather-app-demo.com",
+      "github": "https://github.com/username/weather-app",
+      "completionDate": "2023-09-30",
+      "keyFeatures": [
+        "Real-time weather data integration",
+        "Interactive weather maps",
+        "Severe weather alert notifications",
+        "7-day detailed forecasts",
+        "Location-based recommendations"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "content-seo-strategy",
+      "title": "Content SEO Strategy Implementation",
+      "description": "Comprehensive content strategy resulting in 400% organic traffic increase through keyword research and optimization.",
+      "category": "SEO",
+      "technologies": ["SEMrush", "Ahrefs", "Google Trends", "Content Management"],
+      "image": "https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://content-seo-demo.com",
+      "github": null,
+      "completionDate": "2024-01-12",
+      "keyFeatures": [
+        "Comprehensive keyword research strategy",
+        "Content gap analysis and planning",
+        "On-page optimization implementation",
+        "Internal linking structure optimization",
+        "Performance tracking and reporting"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "fitness-app",
+      "title": "Personal Fitness Tracker",
+      "description": "Mobile fitness application with workout tracking, nutrition logging, and social features for fitness enthusiasts.",
+      "category": "Full Stack",
+      "technologies": ["React Native", "Express.js", "PostgreSQL", "AWS S3"],
+      "image": "https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://fitness-app-demo.com",
+      "github": "https://github.com/username/fitness-tracker",
+      "completionDate": "2023-08-20",
+      "keyFeatures": [
+        "Workout tracking with exercise library",
+        "Nutrition logging with calorie counting",
+        "Social features and community challenges",
+        "Progress tracking with visual charts",
+        "Wearable device integration"
+      ],
+      "type": "standard"
+    },
+    {
+      "id": "startup-landing",
+      "title": "SaaS Startup Landing Page",
+      "description": "High-converting landing page for SaaS startup with A/B tested elements and optimized conversion funnels.",
+      "category": "Web Design",
+      "technologies": ["Next.js", "Tailwind CSS", "Framer Motion", "Analytics"],
+      "image": "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "liveDemo": "https://startup-landing-demo.com",
+      "github": "https://github.com/username/startup-landing",
+      "completionDate": "2023-12-18",
+      "keyFeatures": [
+        "A/B tested conversion elements",
+        "Interactive product demonstrations",
+        "Social proof and testimonials",
+        "Mobile-optimized design",
+        "Analytics and heat mapping integration"
+      ],
+      "type": "standard"
+    }
+  ]
+}

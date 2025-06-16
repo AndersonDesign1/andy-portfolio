@@ -1,0 +1,68 @@
+{
+  "education": [
+    {
+      "id": "uc-berkeley-cs",
+      "institution": "University of California, Berkeley",
+      "degree": "Bachelor of Science",
+      "field": "Computer Science",
+      "location": "Berkeley, CA",
+      "startDate": "2016-08-15",
+      "endDate": "2020-05-15",
+      "gpa": "3.8/4.0",
+      "honors": [
+        "Magna Cum Laude",
+        "Dean's List (6 semesters)",
+        "CS Department Honors",
+        "Outstanding Senior Project Award"
+      ],
+      "relevantCourses": [
+        "Data Structures & Algorithms",
+        "Software Engineering",
+        "Database Systems",
+        "Web Development",
+        "Machine Learning",
+        "Computer Networks",
+        "Operating Systems",
+        "Computer Graphics",
+        "Artificial Intelligence",
+        "Human-Computer Interaction"
+      ],
+      "projects": [
+        "Built distributed chat application serving 1000+ concurrent users using WebSocket and Redis",
+        "Developed machine learning model for stock price prediction achieving 85% accuracy",
+        "Created web-based project management tool used by 200+ students with real-time collaboration",
+        "Implemented compiler for custom programming language with full lexical and syntax analysis"
+      ],
+      "institutionUrl": "https://berkeley.edu"
+    },
+    {
+      "id": "codecademy-fullstack",
+      "institution": "Codecademy",
+      "degree": "Professional Certificate",
+      "field": "Full Stack Web Development",
+      "location": "Online",
+      "startDate": "2020-01-01",
+      "endDate": "2020-06-30",
+      "honors": [
+        "Top 5% of cohort",
+        "Perfect attendance",
+        "Peer mentor recognition"
+      ],
+      "relevantCourses": [
+        "Advanced React Development",
+        "Node.js & Express",
+        "Database Design",
+        "API Development",
+        "DevOps Fundamentals",
+        "Test-Driven Development",
+        "Agile Methodologies"
+      ],
+      "projects": [
+        "E-commerce platform with payment integration using Stripe and inventory management",
+        "Real-time chat application with WebSocket, user authentication, and file sharing",
+        "RESTful API with authentication, authorization, and comprehensive documentation"
+      ],
+      "institutionUrl": "https://codecademy.com"
+    }
+  ]
+}
