@@ -1,46 +1,30 @@
 import { notFound } from "next/navigation";
-import caseStudiesData from "@/data/case-studies.json";
+import caseStudiesDataJson from "@/data/case-studies.json";
 import CaseStudyPage from "@/components/case-study-page";
+import type { CaseStudiesData, CaseStudy } from "@/types/case-study";
 
-interface CaseStudyPageProps {
-  params: {
-    slug: string;
-  };
-}
+const caseStudiesData: CaseStudiesData = caseStudiesDataJson;
 
 export async function generateStaticParams() {
-  return Object.keys(caseStudiesData.caseStudies).map((slug) => ({
-    slug,
-  }));
+  return Object.keys(caseStudiesData.caseStudies).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: CaseStudyPageProps) {
-  const caseStudy =
-    caseStudiesData.caseStudies[
-      params.slug as keyof typeof caseStudiesData.caseStudies
-    ];
-
-  if (!caseStudy) {
-    return {
-      title: "Case Study Not Found",
-    };
-  }
-
-  return {
-    title: `${caseStudy.hero.title} - Case Study`,
-    description: caseStudy.hero.overview,
-  };
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[params.slug];
+  return cs
+    ? {
+        title: `${cs.hero.title} - Case Study`,
+        description: cs.hero.overview,
+      }
+    : { title: "Case Study Not Found" };
 }
 
-export default function CaseStudy({ params }: CaseStudyPageProps) {
-  const caseStudy =
-    caseStudiesData.caseStudies[
-      params.slug as keyof typeof caseStudiesData.caseStudies
-    ];
-
-  if (!caseStudy) {
-    notFound();
-  }
-
-  return <CaseStudyPage caseStudy={caseStudy} />;
+export default function CaseStudy({ params }: { params: { slug: string } }) {
+  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[params.slug];
+  if (!cs) notFound();
+  return <CaseStudyPage caseStudy={cs} />;
 }

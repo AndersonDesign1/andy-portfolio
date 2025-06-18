@@ -1,366 +1,339 @@
 {
   "caseStudies": {
-    "ecommerce-platform": {
-      "id": "ecommerce-platform",
+    "prompt-earn": {
+      "id": "prompt-earn",
       "hero": {
-        "title": "E-commerce Platform Redesign",
-        "client": "TechMart Solutions",
+        "title": "SEO Growth for PromptEarn",
+        "client": "PromptEarn",
         "duration": "6 months",
-        "overview": "Complete redesign and development of a multi-vendor e-commerce platform serving 50,000+ users. Transformed a legacy system into a modern, scalable platform with advanced search capabilities, real-time inventory management, and seamless payment processing.",
-        "heroImage": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "technologies": ["Next.js", "TypeScript", "Tailwind CSS", "Stripe", "PostgreSQL", "Redis", "Docker", "AWS"]
+        "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic, top 5 keyword rankings, and a 45% uplift in sales through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
+        "heroImage": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "technologies": [
+          "Ahrefs",
+          "Google Search Console",
+          "Google Analytics",
+          "Screaming Frog",
+          "PageSpeed Insights",
+          "Mailchimp"
+        ]
       },
       "challenge": {
-        "problem": "The existing e-commerce platform was built on outdated technology, resulting in slow load times, poor user experience, and limited scalability. The platform struggled with high traffic volumes during peak shopping seasons, leading to lost sales and frustrated customers.",
+        "problem": "PromptEarn needed to boost organic traffic and affiliate-driven sales in a competitive market. The site suffered from slow load times, suboptimal SEO, and a stagnant affiliate network.",
         "constraints": [
-          "Zero downtime migration requirement",
-          "Integration with 15+ existing third-party services",
-          "Support for 10,000+ concurrent users",
-          "Compliance with PCI DSS standards"
+          "Aggressive 6-month timeline",
+          "Large legacy affiliate base",
+          "Need for measurable, rapid results"
         ],
-        "context": "The e-commerce industry was experiencing rapid growth, with mobile commerce accounting for 54% of total sales. Customer expectations for fast, seamless shopping experiences were at an all-time high.",
+        "context": "Affiliate marketing and SEO are highly competitive in the Nigerian fintech space. PromptEarn aimed to outpace rivals by improving technical SEO and expanding its affiliate network.",
         "metrics": [
-          "Page load times: 8-12 seconds",
-          "Conversion rate: 1.2%",
-          "Cart abandonment: 78%",
-          "Mobile bounce rate: 65%"
+          "Organic traffic: 10,000/month",
+          "Affiliate partners: 40,000",
+          "Average PageSpeed score: 45",
+          "Bounce rate: 70%"
         ]
       },
       "goals": {
         "primary": [
-          "Reduce page load times by 70% to under 3 seconds",
-          "Increase conversion rate to 3.5% or higher",
-          "Achieve 99.9% uptime during peak traffic periods",
-          "Improve mobile user experience and reduce bounce rate by 50%",
-          "Implement real-time inventory management across all vendors"
+          "Increase organic traffic by 200%+",
+          "Expand affiliate network to 90,000+",
+          "Improve PageSpeed score by 30+ points",
+          "Achieve top 5 rankings for target keywords"
         ],
         "stakeholder": [
-          "Seamless user experience across all devices",
-          "Advanced analytics and reporting capabilities",
-          "Scalable architecture for future growth",
-          "Enhanced security and fraud prevention"
+          "Higher affiliate engagement",
+          "Improved user experience",
+          "Increased sales from organic and referral channels"
         ],
         "success": [
-          "Sub-3 second page load times",
-          "Conversion rate above 3%",
-          "Customer satisfaction score above 4.5/5",
-          "Zero security incidents"
+          "250% organic traffic growth",
+          "Affiliate network doubled",
+          "Bounce rate reduced by 50%",
+          "45% increase in sales"
         ]
       },
       "approach": {
-        "methodology": "Agile development with 2-week sprints, focusing on user-centered design and iterative improvements",
+        "methodology": "Agile, data-driven SEO and affiliate marketing with weekly sprints and continuous measurement.",
         "phases": [
           {
-            "name": "Discovery & Research",
-            "duration": "3 weeks",
+            "name": "SEO Audit & Quick Wins",
+            "duration": "2 weeks",
             "activities": [
-              "User interviews and surveys with 200+ customers",
-              "Competitive analysis of 15 leading e-commerce platforms",
-              "Technical audit of existing infrastructure",
-              "Stakeholder workshops and requirement gathering"
+              "Technical SEO audit",
+              "Core Web Vitals optimization",
+              "On-page SEO improvements"
             ]
           },
           {
-            "name": "Design & Prototyping",
+            "name": "Affiliate Network Expansion",
             "duration": "4 weeks",
             "activities": [
-              "User journey mapping and persona development",
-              "Wireframing and interactive prototyping",
-              "Design system creation with 50+ components",
-              "Usability testing with 50 participants"
+              "Targeted email campaigns",
+              "Affiliate onboarding improvements",
+              "Referral incentives"
             ]
           },
           {
-            "name": "Development & Integration",
-            "duration": "16 weeks",
+            "name": "Content & Link Building",
+            "duration": "6 weeks",
             "activities": [
-              "Frontend development with Next.js and TypeScript",
-              "Backend API development and database optimization",
-              "Third-party service integrations",
-              "Performance optimization and caching implementation"
+              "Keyword research",
+              "Content optimization",
+              "Outreach for backlinks"
             ]
           },
           {
-            "name": "Testing & Launch",
+            "name": "Performance & Reporting",
             "duration": "4 weeks",
             "activities": [
-              "Comprehensive testing across devices and browsers",
-              "Load testing with simulated traffic",
-              "Security audits and penetration testing",
-              "Gradual rollout and monitoring"
+              "Monitor rankings and traffic",
+              "A/B test landing pages",
+              "Monthly stakeholder reports"
             ]
           }
         ],
         "keyDecisions": [
           {
-            "decision": "Chose Next.js over traditional React SPA",
-            "rationale": "Better SEO performance and faster initial page loads critical for e-commerce conversion"
+            "decision": "Prioritized Core Web Vitals",
+            "rationale": "Improved rankings and reduced bounce rate"
           },
           {
-            "decision": "Implemented Redis caching layer",
-            "rationale": "Reduced database load by 60% and improved response times for frequently accessed data"
-          },
-          {
-            "decision": "Adopted headless architecture",
-            "rationale": "Enabled future flexibility for mobile apps and third-party integrations"
+            "decision": "Automated affiliate onboarding",
+            "rationale": "Enabled rapid network growth"
           }
         ],
         "research": [
-          "User behavior analysis revealed 73% of users abandoned carts due to slow checkout process",
-          "A/B testing showed 23% improvement in conversion with simplified navigation",
-          "Mobile users preferred one-page checkout over multi-step process"
+          "Competitor analysis for top keywords",
+          "User feedback on site speed and navigation"
         ],
-        "wireframes": [
-          "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
-          "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800"
-        ],
-        "collaboration": "Weekly stakeholder reviews, daily standups with development team, and bi-weekly user testing sessions",
+        "collaboration": "Weekly syncs with marketing and dev teams, monthly reviews with stakeholders.",
         "iterations": [
-          "Simplified checkout process based on user feedback reduced steps from 6 to 3",
-          "Redesigned product search after discovering 40% of users couldn't find desired items",
-          "Optimized mobile navigation following usability testing insights"
+          "Refined landing pages based on bounce rate data",
+          "Streamlined affiliate sign-up flow"
         ],
-        "userFeedback": "Continuous feedback collection through in-app surveys, user interviews, and analytics tracking led to 15 major design improvements during development"
+        "userFeedback": "Affiliate partners and users reported improved site speed and easier navigation."
       },
       "results": {
         "beforeAfter": [
           {
-            "metric": "Page Load Time",
-            "before": "8-12 seconds",
-            "after": "2.1 seconds",
-            "improvement": "75% faster"
+            "metric": "Organic Traffic",
+            "before": "10,000/month",
+            "after": "35,000/month",
+            "improvement": "+250%"
           },
           {
-            "metric": "Conversion Rate",
-            "before": "1.2%",
-            "after": "3.8%",
-            "improvement": "+217%"
+            "metric": "Affiliate Partners",
+            "before": "40,000",
+            "after": "93,000",
+            "improvement": "+132%"
           },
           {
-            "metric": "Mobile Bounce Rate",
-            "before": "65%",
-            "after": "28%",
-            "improvement": "-57%"
+            "metric": "PageSpeed Score",
+            "before": "45",
+            "after": "80",
+            "improvement": "+35 points"
           },
           {
-            "metric": "Cart Abandonment",
-            "before": "78%",
-            "after": "45%",
-            "improvement": "-42%"
+            "metric": "Bounce Rate",
+            "before": "70%",
+            "after": "35%",
+            "improvement": "-50%"
           }
         ],
         "metrics": [
-          "40% increase in average order value",
-          "25% improvement in customer retention",
-          "60% reduction in support tickets",
-          "99.98% uptime achieved during Black Friday"
-        ],
-        "testimonials": [
-          {
-            "name": "Sarah Johnson",
-            "role": "CEO, TechMart Solutions",
-            "quote": "The new platform exceeded all our expectations. We saw immediate improvements in sales and customer satisfaction. The team's attention to detail and user experience was exceptional."
-          },
-          {
-            "name": "Mike Chen",
-            "role": "Head of E-commerce",
-            "quote": "The performance improvements were game-changing. Our customers can now find and purchase products effortlessly, leading to a significant boost in our conversion rates."
-          }
+          "45% increase in sales",
+          "60% improvement in user engagement",
+          "Top 5 ranking for key keywords"
         ],
         "deliverables": [
-          "Fully responsive e-commerce platform",
-          "Admin dashboard with real-time analytics",
-          "Mobile-optimized checkout process",
-          "Comprehensive design system",
-          "API documentation and integration guides"
+          "SEO audit report",
+          "Affiliate onboarding flow",
+          "Optimized landing pages"
         ],
         "achievements": [
-          "Reduced infrastructure costs by 30% through optimization",
-          "Improved SEO rankings for 500+ product pages",
-          "Successfully handled 10x traffic increase during sales events",
-          "Zero security incidents since launch"
+          "Doubled affiliate network",
+          "250% organic traffic growth",
+          "Bounce rate halved"
         ]
       }
     },
-    "analytics-dashboard": {
-      "id": "analytics-dashboard",
+    "welup-digital": {
+      "id": "welup-digital",
       "hero": {
-        "title": "SaaS Analytics Dashboard",
-        "client": "DataFlow Analytics",
-        "duration": "4 months",
-        "overview": "Built a comprehensive analytics dashboard for a B2B SaaS platform serving enterprise clients. Created real-time data visualization, custom reporting capabilities, and advanced filtering systems that process over 1 million data points daily.",
-        "heroImage": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "technologies": ["React", "D3.js", "Node.js", "MongoDB", "WebSocket", "Docker", "Kubernetes", "AWS"]
+        "title": "Modernizing Welup Digital’s Web Platform",
+        "client": "Welup Digital",
+        "duration": "Ongoing",
+        "overview": "Leading the ongoing rewrite of Welup Digital’s website from static HTML to Next.js, building a scalable CMS with Sanity for blogs and landing pages, and delivering major SEO, performance, and reliability improvements for the company and its clients.",
+        "heroImage": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "technologies": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Sanity",
+          "Vercel",
+          "Cloudflare",
+          "Ahrefs",
+          "Google Search Console",
+          "PageSpeed Insights"
+        ]
       },
       "challenge": {
-        "problem": "Enterprise clients needed a powerful analytics platform to visualize complex data sets and generate actionable insights. The existing solution was limited, slow, and couldn't handle the scale required by large organizations.",
+        "problem": "Welup Digital’s original site was static HTML/CSS/JS, limiting SEO, scalability, and content management. The business needed a modern, dynamic platform to support growth, content, and client delivery, while also withstanding DDoS attacks.",
         "constraints": [
-          "Real-time data processing requirements",
-          "Support for custom white-label branding",
-          "GDPR and SOC 2 compliance",
-          "Integration with 20+ data sources"
+          "Legacy static site migration",
+          "Solo developer for rewrite and CMS",
+          "Zero downtime during migration",
+          "Security and DDoS resilience"
         ],
-        "context": "The business intelligence market was rapidly evolving, with enterprises demanding more sophisticated analytics tools that could handle big data and provide real-time insights.",
+        "context": "As Welup Digital grew, the need for a scalable, SEO-first, and content-driven platform became critical for both the agency and its clients.",
         "metrics": [
-          "Query response time: 15-30 seconds",
-          "Data refresh rate: Every 6 hours",
-          "Concurrent users: Limited to 50",
-          "Custom report generation: 24-48 hours"
+          "Static site: no CMS, poor SEO",
+          "Manual content updates",
+          "Downtime risk from DDoS",
+          "No blog or landing page system"
         ]
       },
       "goals": {
         "primary": [
-          "Achieve sub-200ms query response times",
-          "Enable real-time data streaming and visualization",
-          "Support 500+ concurrent users",
-          "Implement drag-and-drop report builder",
-          "Provide white-label customization options"
+          "Migrate to Next.js for performance and SEO",
+          "Build a CMS for blogs and landing pages",
+          "Ensure 99.9% uptime and DDoS protection",
+          "Deliver scalable solutions for clients"
         ],
         "stakeholder": [
-          "Intuitive interface for non-technical users",
-          "Advanced filtering and segmentation capabilities",
-          "Automated report scheduling and delivery",
-          "Mobile-responsive design for executives"
+          "Seamless migration with no downtime",
+          "Easy content management for non-devs",
+          "Consistent, high-quality UX"
         ],
         "success": [
-          "Query performance under 200ms",
-          "99.9% uptime for enterprise clients",
-          "User adoption rate above 80%",
-          "Customer satisfaction score above 4.5/5"
+          "Zero downtime during migration",
+          "CMS launched for blogs and landing pages",
+          "Top 5 SEO rankings for key terms",
+          "Multiple client sites delivered and optimized"
         ]
       },
       "approach": {
-        "methodology": "Design thinking approach with rapid prototyping and continuous user feedback integration",
+        "methodology": "Incremental migration and feature delivery, focusing on performance, SEO, and content flexibility.",
         "phases": [
           {
-            "name": "User Research & Analysis",
+            "name": "Audit & Planning",
             "duration": "2 weeks",
             "activities": [
-              "Interviews with 30+ enterprise users",
-              "Analysis of existing analytics workflows",
-              "Competitive benchmarking study",
-              "Technical requirements gathering"
+              "SEO and performance audit",
+              "Migration roadmap",
+              "Requirements gathering"
             ]
           },
           {
-            "name": "Architecture & Design",
-            "duration": "3 weeks",
+            "name": "Next.js Rewrite",
+            "duration": "Ongoing",
             "activities": [
-              "System architecture design for scalability",
-              "UI/UX design with focus on data visualization",
-              "Interactive prototyping and user testing",
-              "Design system development"
+              "Rebuilding site in Next.js",
+              "Integrating Tailwind CSS and TypeScript",
+              "Setting up Vercel for CI/CD"
             ]
           },
           {
-            "name": "Development & Integration",
-            "duration": "12 weeks",
+            "name": "CMS & Content",
+            "duration": "Ongoing",
             "activities": [
-              "Frontend development with React and D3.js",
-              "Backend API development with Node.js",
-              "Real-time data pipeline implementation",
-              "Third-party integrations and data connectors"
+              "Implementing Sanity CMS",
+              "Developing blog and landing page system",
+              "Enabling non-dev content editing"
             ]
           },
           {
-            "name": "Testing & Optimization",
-            "duration": "3 weeks",
+            "name": "Security & Uptime",
+            "duration": "Ongoing",
             "activities": [
-              "Performance testing with large datasets",
-              "User acceptance testing with beta clients",
-              "Security audits and compliance verification",
-              "Load testing and optimization"
+              "Cloudflare DDoS protection",
+              "Monitoring and maintaining 99.9% uptime"
+            ]
+          },
+          {
+            "name": "SEO & Client Delivery",
+            "duration": "Ongoing",
+            "activities": [
+              "Technical SEO optimization",
+              "Launching and optimizing client websites",
+              "Continuous performance and UX improvements"
             ]
           }
         ],
         "keyDecisions": [
           {
-            "decision": "Implemented WebSocket connections for real-time updates",
-            "rationale": "Essential for live data streaming and collaborative dashboard viewing"
+            "decision": "Migrated to Next.js and server components",
+            "rationale": "Boosted performance, SEO, and maintainability"
           },
           {
-            "decision": "Used D3.js for custom visualizations",
-            "rationale": "Provided flexibility for complex, interactive charts that standard libraries couldn't support"
+            "decision": "Built CMS with Sanity",
+            "rationale": "Enabled scalable, flexible content management"
           },
           {
-            "decision": "Adopted microservices architecture",
-            "rationale": "Enabled independent scaling of different dashboard components based on usage patterns"
+            "decision": "Adopted Cloudflare for security",
+            "rationale": "Mitigated DDoS attacks and ensured uptime"
           }
         ],
         "research": [
-          "User studies revealed that 85% of users needed custom chart types not available in existing tools",
-          "Performance analysis showed that real-time updates were critical for 70% of use cases",
-          "Accessibility testing identified key improvements for users with visual impairments"
+          "Benchmarked SEO and performance against top digital agencies",
+          "Analyzed user feedback for navigation and speed"
         ],
-        "wireframes": [
-          "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800",
-          "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800"
-        ],
-        "collaboration": "Close partnership with data science team, weekly client feedback sessions, and agile development with 1-week sprints",
+        "collaboration": "Working with founders and content team; leading all web, CMS, and SEO initiatives.",
         "iterations": [
-          "Redesigned chart builder interface after initial user testing showed confusion",
-          "Optimized data aggregation algorithms reducing load times by 60%",
-          "Added keyboard shortcuts and accessibility features based on user feedback"
+          "Continuous SEO and performance tuning",
+          "Refining CMS and UX based on analytics and feedback"
         ],
-        "userFeedback": "Beta testing with 10 enterprise clients provided crucial insights that shaped the final product, resulting in 95% user satisfaction"
+        "userFeedback": "Team and clients praise the new CMS, site speed, and improved search visibility."
       },
       "results": {
         "beforeAfter": [
           {
-            "metric": "Query Response Time",
-            "before": "15-30 seconds",
-            "after": "150ms average",
-            "improvement": "99% faster"
+            "metric": "Site Uptime",
+            "before": "Frequent downtime risk",
+            "after": "99.99% uptime",
+            "improvement": "Resilient to DDoS"
           },
           {
-            "metric": "Data Refresh Rate",
-            "before": "Every 6 hours",
-            "after": "Real-time",
-            "improvement": "Instant updates"
+            "metric": "SEO Ranking",
+            "before": "Unranked",
+            "after": "Top 5 for key terms",
+            "improvement": "Major SEO gains"
           },
           {
-            "metric": "Concurrent Users",
-            "before": "50 users",
-            "after": "500+ users",
-            "improvement": "10x capacity"
+            "metric": "Content Management",
+            "before": "Manual, dev-only",
+            "after": "Sanity CMS for all content",
+            "improvement": "Full flexibility"
           },
           {
-            "metric": "Report Generation",
-            "before": "24-48 hours",
-            "after": "Instant",
-            "improvement": "Real-time generation"
+            "metric": "Client Sites Delivered",
+            "before": "0",
+            "after": "5+ launched",
+            "improvement": "Full delivery"
           }
         ],
         "metrics": [
-          "1M+ data points processed daily",
-          "95% reduction in support tickets",
-          "300% increase in user engagement",
-          "50% reduction in time-to-insight for clients"
+          "99.99% uptime during DDoS",
+          "Top 5 SEO rankings",
+          "5+ client sites delivered",
+          "CMS for blogs and landing pages"
         ],
         "testimonials": [
           {
-            "name": "Jennifer Martinez",
-            "role": "VP of Analytics, Fortune 500 Company",
-            "quote": "This dashboard transformed how our team analyzes data. The real-time capabilities and intuitive interface have made us significantly more efficient and data-driven."
-          },
-          {
-            "name": "David Kim",
-            "role": "Data Director, TechCorp",
-            "quote": "The custom visualization options and performance improvements have been game-changing. We can now provide insights to stakeholders in real-time rather than waiting hours for reports."
+            "name": "Adaeze Nwosu",
+            "role": "CEO, Welup Digital",
+            "quote": "Andy is leading our web platform’s transformation—our new CMS and site are fast, reliable, and easy for the whole team. Our SEO and client delivery have never been stronger."
           }
         ],
         "deliverables": [
-          "Real-time analytics dashboard",
-          "Drag-and-drop report builder",
-          "White-label customization system",
-          "Mobile-responsive interface",
-          "API documentation and SDKs"
+          "Modern Next.js web platform",
+          "Sanity CMS for content",
+          "DDoS-resilient infrastructure",
+          "Multiple client websites"
         ],
         "achievements": [
-          "Processed over 100TB of data without performance degradation",
-          "Achieved 99.98% uptime across all enterprise clients",
-          "Reduced client onboarding time from weeks to days",
-          "Enabled self-service analytics for 90% of use cases"
+          "Zero downtime migration",
+          "Major SEO and client delivery wins",
+          "CMS and content system for the team"
         ]
       }
     }

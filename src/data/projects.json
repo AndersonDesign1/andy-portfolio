@@ -3,37 +3,54 @@
     {
       "id": "1",
       "type": "case-study",
-      "title": "E-commerce Platform Redesign",
-      "description": "Complete redesign and development of a multi-vendor e-commerce platform serving 50,000+ users. Implemented advanced search, real-time inventory management, and seamless payment processing.",
+      "title": "Full-Stack Web & SEO Architect at Welup Digital",
+      "description": "Built and fine-tuned Welup Digital’s core platforms for top-notch SEO, speed, and UX. Also crafted and optimized client sites, boosting traffic and online impact with smart, modern web strategies.",
       "thumbnail": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Stripe", "PostgreSQL", "Redis"],
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "PostgreSQL",
+        "Redis",
+        "SEO Analytics Tools",
+        "Content Management Systems"
+      ],
       "links": {
-        "live": "https://ecommerce-demo.com",
-        "github": "https://github.com/username/ecommerce-platform",
-        "caseStudy": "/case-studies/ecommerce-platform"
+        "live": "https://welupdigital.com",
+        "caseStudy": "/case-studies/welup-digital"
       },
       "metrics": {
-        "performance": "+40% faster load times",
-        "conversion": "+25% conversion rate",
-        "users": "50,000+ active users"
+        "website traffic": "+300% website traffic (as SEO Specialist)",
+        "user engagement": "+40% enhanced user engagement metrics",
+        "speed improvement": "Up to 50% improvement in site speed metrics",
+        "developed websites": "10 dynamic client websites developed and optimized for welup clients"
       }
     },
     {
       "id": "2",
-      "type": "case-study", 
-      "title": "SaaS Analytics Dashboard",
-      "description": "Built a comprehensive analytics dashboard for a B2B SaaS platform. Features real-time data visualization, custom reporting, and advanced filtering capabilities for enterprise clients.",
+      "type": "case-study",
+      "title": "SEO & Growth Specialist at PromptEarn",
+      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and a 45% sales increase.",
       "thumbnail": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "techStack": ["React", "D3.js", "Node.js", "MongoDB", "WebSocket", "Docker"],
+      "techStack": [
+        "Ahrefs",
+        "Google Search Console",
+        "Google Analytics",
+        "Screaming Frog",
+        "PageSpeed Insights",
+        "Mailchimp"
+      ],
       "links": {
-        "live": "https://analytics-dashboard.com",
-        "github": "https://github.com/username/analytics-dashboard",
-        "caseStudy": "/case-studies/analytics-dashboard"
+        "live": "https://promptearn.ng",
+        "caseStudy": "/case-studies/prompt-earn"
       },
       "metrics": {
-        "dataPoints": "1M+ data points processed",
-        "responseTime": "<200ms query response",
-        "clients": "100+ enterprise clients"
+        "Affiliate Growth": "40,000 to 93,000+ partners",
+        "Organic Traffic": "250% increase in 6 months",
+        "Sales Uplift": "45% increase",
+        "Bounce Rate": "50% reduction",
+        "Keyword Ranking": "Top 5 for key terms",
+        "Engagement": "60%+ improvement"
       }
     },
     {
@@ -51,13 +68,21 @@
     {
       "id": "4",
       "type": "standard",
-      "title": "Task Management App", 
-      "description": "A collaborative task management application with real-time updates, team collaboration features, and intuitive drag-and-drop interface.",
+      "title": "WordPress Developer at The Wealthy Post",
+      "description": "Revamped The Wealthy Post’s website with advanced WordPress techniques, boosting engagement and organic traffic through responsive design, SEO, and performance optimization.",
       "thumbnail": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "techStack": ["Vue.js", "Firebase", "Vuetify", "PWA"],
+      "techStack": [
+        "WordPress",
+        "Yoast SEO",
+        "Google Analytics",
+        "PageSpeed Insights"
+      ],
       "links": {
-        "live": "https://taskmanager-demo.com",
-        "github": "https://github.com/username/task-manager"
+        "live": "https://thewealthypost.co.uk"
+      },
+      "metrics": {
+        "Organic Traffic": "200% increase in 3 months",
+        "Load Time": "Reduced from 15s to 3s"
       }
     }
   ]

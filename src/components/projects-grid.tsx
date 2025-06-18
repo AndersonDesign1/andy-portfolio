@@ -114,7 +114,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
         </p>
 
         {/* Metrics for Case Studies */}
-        {isCaseStudy && project.metrics && (
+        {project.metrics && (
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading transition-colors duration-300">
               Key Results
