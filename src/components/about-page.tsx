@@ -82,7 +82,7 @@ const AboutPage: React.FC = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       {/* Theme Toggle */}
       <div className="absolute top-6 right-6 z-50">
         <ThemeToggle />

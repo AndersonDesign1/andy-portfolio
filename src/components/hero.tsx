@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { motion } from "framer-motion";
 
 const socialLinks = [
@@ -108,11 +107,7 @@ const itemVariants = {
 
 const Hero: React.FC = () => {
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300 relative min-h-[60vh] flex items-center">
-      {/* Theme Toggle */}
-      <div className="absolute top-6 right-6 z-50">
-        <ThemeToggle />
-      </div>
+    <section className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 relative min-h-[60vh] flex items-center">
 
       <div className="max-w-screen-xl mx-auto px-6 md:px-[150px] w-full">
         <motion.div

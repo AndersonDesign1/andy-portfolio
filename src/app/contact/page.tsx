@@ -90,7 +90,7 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="flex min-h-screen items-center justify-center bg-light-bg dark:bg-dark-bg transition-colors duration-300 py-16">
+    <section className="pt-36 flex min-h-screen items-center justify-center bg-light-bg dark:bg-dark-bg transition-colors duration-300 py-16">
       <div className="w-full max-w-lg mx-auto">
         {/* Header */}
         <motion.div

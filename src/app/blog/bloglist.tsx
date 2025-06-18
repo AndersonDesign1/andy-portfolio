@@ -36,7 +36,7 @@ const cardVariants = {
 
 export default function BlogList({ posts }: { posts: SanityPost[] }) {
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300 min-h-screen">
+    <section className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 min-h-screen">
       <div className="max-w-2xl mx-auto px-4">
         <motion.div
           initial="hidden"

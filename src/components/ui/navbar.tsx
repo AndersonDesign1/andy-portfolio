@@ -1,9 +1,9 @@
 "use client";
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface MenuItem {
   label: string;
@@ -108,6 +108,10 @@ const Navbar: React.FC = () => {
           </Link>
           {/* Navigation Links */}
           <ul className="hidden md:flex gap-4">{renderedMenuItems}</ul>
+          {/* Theme Toggle */}
+          <div className="ml-6">
+            <ThemeToggle />
+          </div>
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMenu}
