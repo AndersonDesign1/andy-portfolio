@@ -1,90 +1,45 @@
-"use server"
+"use server";
 
-import { Resend } from "resend"
+import { Resend } from "resend";
 
-/**
- * Interface for the response from the email sending function
- */
-interface EmailResponse {
-  success: boolean
-  message: string
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-/**
- * Initialize Resend client with API key
- */
-const resend = new Resend(process.env.RESEND_API_KEY)
+export async function sendEmail(
+  formData: FormData
+): Promise<{ success: boolean; message: string }> {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const subject = formData.get("subject") as string;
+  const message = formData.get("message") as string;
 
-/**
- * Server action to send an email using Resend
- * @param formData - Form data containing name, email, and message
- * @returns Response object with success status and message
- */
-export async function sendEmail(formData: FormData): Promise<EmailResponse> {
-  console.log("Server action started") // Added logging
+  if (!name || !email || !message) {
+    return { success: false, message: "All fields are required." };
+  }
+
   try {
-    const name = formData.get("name") as string | null
-    const email = formData.get("email") as string | null
-    const message = formData.get("message") as string | null
-
-    console.log("Form data received:", { name, email, message }) // Added logging
-
-    // Validate inputs
-    if (!name || !email || !message) {
-      return {
-        success: false,
-        message: "All fields are required",
-      }
-    }
-
-    // Check if API key is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not configured")
-      return {
-        success: false,
-        message: "Email service is not properly configured",
-      }
-    }
-
-    console.log("Attempting to send email...") // Added logging
-    const data = await resend.emails.send({
-      from: "Anderson Joseph <hello@andersonjoseph.com>", // This is the sender
-      to: ["hello@andersonjoseph.com"], // Changed to your desired recipient
-      replyTo: email, // Changed from reply_to to replyTo
-      subject: `Portfolio Contact: ${name}`,
-      text: `
-        Name: ${name}
-        Email: ${email}
-        Message: ${message}
-      `,
+    await resend.emails.send({
+      from: "Contact Form <contact@andersonjoseph.com>", // must be a verified sender/domain
+      to: ["josanderson25@gmail.com"], // your receiving email
+      subject: subject || "New Contact Form Submission",
+      replyTo: email, // <-- correct property for Resend
       html: `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong> ${message}</p>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Subject:</b> ${subject}</p>
+        <p><b>Message:</b><br/>${message.replace(/\n/g, "<br/>")}</p>
       `,
-    })
-
-    console.log("Resend response:", data) // Added logging
-
-    if ("error" in data && data.error) {
-      console.error("Resend error:", data.error) // Added logging
-      return {
-        success: false,
-        message: data.error.message || "Failed to send email",
-      }
-    }
-
+    });
     return {
       success: true,
-      message: "Email sent successfully!",
-    }
-  } catch (error: unknown) {
-    console.error("Error sending email:", error)
-    const errorMessage = error instanceof Error ? error.message : "Failed to send email"
+      message: "Message sent! I'll get back to you soon.",
+    };
+  } catch (error) {
+    // Optionally log the error for debugging
+    console.error("Resend error:", error);
     return {
       success: false,
-      message: errorMessage,
-    }
+      message: "Failed to send email. Please try again later.",
+    };
   }
 }

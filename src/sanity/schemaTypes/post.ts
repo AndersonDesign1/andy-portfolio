@@ -1,5 +1,12 @@
-import type { Rule } from "sanity"
-import type { DocumentSchema, SchemaField, SlugField, ImageField, ArrayField, CodeField } from "../lib/types"
+import type { Rule } from "sanity";
+import type {
+  DocumentSchema,
+  SchemaField,
+  SlugField,
+  ImageField,
+  ArrayField,
+  CodeField,
+} from "../lib/types";
 
 /**
  * Post schema definition
@@ -53,7 +60,12 @@ const postSchema: DocumentSchema = {
       name: "categories",
       title: "Categories",
       type: "array",
-      of: [{ type: "string" }],
+      of: [
+        {
+          type: "reference",
+          to: [{ type: "category" }],
+        },
+      ],
       options: {
         layout: "tags",
       },
@@ -146,7 +158,6 @@ const postSchema: DocumentSchema = {
       media: "mainImage",
     },
   },
-}
+};
 
-export default postSchema
-
+export default postSchema;

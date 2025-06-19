@@ -1,17 +1,15 @@
-import type { ReactElement } from "react"
-import Hero from "@/components/ui/hero"
-import Skills from "@/components/ui/skills"
-import Experience from "@/components/ui/experience"
-import ProjectSection from "@/components/ui/project-overview"
+import Hero from '@/components/hero';
+import ProjectsGrid from '@/components/projects-grid';
+import WorkHistory from '@/components/work-history';
+import SkillsSection from '@/components/skills-section';
 
-export default function Home(): ReactElement {
+export default function Home() {
   return (
     <main>
       <Hero />
-      <Skills />
-      <ProjectSection />
-      <Experience />
+      <ProjectsGrid />
+       <WorkHistory />
+      <SkillsSection />
     </main>
-  )
+  );
 }
-
