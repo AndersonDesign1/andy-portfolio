@@ -2,6 +2,7 @@
 import type React from "react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import {
   faGithub,
   faLinkedin,
@@ -67,24 +68,7 @@ const Footer: React.FC = () => {
           ))}
         </div>
       </div>
-      <button
-        onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 z-50
-          bg-light-bg text-dark-bg border border-light-mini/30
-          dark:bg-dark-bg dark:text-light-bg dark:border-dark-mini/30
-          px-4 py-2 rounded-full shadow transition-all duration-300
-          hover:bg-light-mini hover:text-dark-bg hover:border-light-mini/60
-          dark:hover:bg-dark-mini dark:hover:text-light-bg dark:hover:border-dark-mini/60
-          ${
-            showButton
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10 pointer-events-none"
-          }`}
-        aria-label="Back to top"
-        title="Back to top"
-      >
-        Back to Top
-      </button>
+      <SpotifyNowPlaying />
     </footer>
   );
 };
