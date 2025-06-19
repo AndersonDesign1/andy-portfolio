@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
 
 
   const logoSrc =
-    currentTheme === "dark" ? "/logo.png" : "/logo-dark.png";
+    currentTheme === "dark" ? "/logo.png" : "/logo-black.png";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
