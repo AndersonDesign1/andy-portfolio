@@ -443,7 +443,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
                           ))}
                         </div>
                         <p className="text-light-text dark:text-dark-text mb-4 italic">
-                          "{t.quote}"
+                          &quot;{t.quote}&quot;
                         </p>
                         <div>
                           <p className="font-medium text-light-heading dark:text-dark-heading">

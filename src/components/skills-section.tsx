@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import { motion } from "framer-motion";
 import {
@@ -319,7 +320,7 @@ const SkillsSection: React.FC = () => {
                             whileHover={{ rotate: [0, -3, 3, 0] }}
                             transition={{ duration: 0.18 }}
                           >
-                            <img
+                            <Image
                               src={skill.icon}
                               alt={skill.name}
                               className="w-6 h-6 object-contain filter group-hover:brightness-110 transition-all duration-200"

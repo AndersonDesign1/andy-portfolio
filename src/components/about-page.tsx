@@ -340,7 +340,7 @@ const AboutPage: React.FC = () => (
             variants={fadeInUp}
             className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
-            Let's Build Something Amazing Together
+            Let&apos;s Build Something Amazing Together
           </motion.h2>
           <motion.p
             variants={fadeInUp}

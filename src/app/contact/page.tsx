@@ -85,8 +85,8 @@ export default function ContactPage() {
             variants={itemVariants}
             className="text-base text-light-text dark:text-dark-text leading-relaxed max-w-2xl text-center mx-auto"
           >
-            Have a project in mind or want to collaborate? I'd love to hear from
-            you. Let's discuss how we can bring your ideas to life.
+            Have a project in mind or want to collaborate? I&apos;d love to hear from
+            you. Let&apos;s discuss how we can bring your ideas to life.
           </motion.p>
         </motion.div>
         <motion.form
