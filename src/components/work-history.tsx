@@ -28,7 +28,15 @@ const WorkHistory: React.FC = () => {
 
   return (
     <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div
+        className="
+          max-w-screen-xl mx-auto
+          px-4
+          sm:px-8
+          md:px-16
+          lg:px-[150px]
+        "
+      >
         {/* Header & Toggle */}
         <div className="mb-16">
           <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
@@ -79,19 +87,19 @@ const WorkHistory: React.FC = () => {
               {workExperience.map((job, idx) => (
                 <motion.div
                   key={job.id}
-                  className="relative flex gap-6"
+                  className="relative flex flex-col sm:flex-row gap-6"
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.32, ease: [0.25, 0.25, 0, 1] }}
                   viewport={{ once: true, amount: 0.2 }}
                 >
-                  {/* Timeline Line */}
+                  {/* Timeline Line - hidden on mobile */}
                   {idx < workExperience.length - 1 && (
-                    <div className="absolute left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20" />
+                    <div className="absolute left-6 sm:left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20 hidden sm:block" />
                   )}
                   {/* Timeline Dot */}
                   <motion.div
-                    className="relative flex-shrink-0"
+                    className="relative flex-shrink-0 mx-auto sm:mx-0"
                     whileHover={{ scale: 1.08 }}
                   >
                     <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
@@ -106,9 +114,9 @@ const WorkHistory: React.FC = () => {
                     )}
                   </motion.div>
                   {/* Content */}
-                  <div className="flex-1 space-y-4">
+                  <div className="flex-1 space-y-4 min-w-0">
                     <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div>
                           <motion.h3
                             className="text-lg font-semibold text-light-heading dark:text-dark-heading"
@@ -117,7 +125,7 @@ const WorkHistory: React.FC = () => {
                           >
                             {job.position}
                           </motion.h3>
-                          <div className="flex items-center gap-2 text-light-text dark:text-dark-text">
+                          <div className="flex items-center gap-2 text-light-text dark:text-dark-text flex-wrap">
                             <span className="font-medium">{job.company}</span>
                             {job.companyUrl && (
                               <motion.a
@@ -133,7 +141,7 @@ const WorkHistory: React.FC = () => {
                           </div>
                         </div>
                         {job.current && (
-                          <span className="px-3 py-1 text-xs font-medium bg-light-heading/10 dark:bg-dark-heading/10 text-light-heading dark:text-dark-heading rounded-full">
+                          <span className="px-3 py-1 text-xs font-medium bg-light-heading/10 dark:bg-dark-heading/10 text-light-heading dark:text-dark-heading rounded-full mt-2 sm:mt-0">
                             Current
                           </span>
                         )}
@@ -214,19 +222,19 @@ const WorkHistory: React.FC = () => {
               {education.map((edu, idx) => (
                 <motion.div
                   key={edu.id}
-                  className="relative flex gap-6"
+                  className="relative flex flex-col sm:flex-row gap-6"
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.32, ease: [0.25, 0.25, 0, 1] }}
                   viewport={{ once: true, amount: 0.2 }}
                 >
-                  {/* Timeline Line */}
+                  {/* Timeline Line - hidden on mobile */}
                   {idx < education.length - 1 && (
-                    <div className="absolute left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20" />
+                    <div className="absolute left-6 sm:left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20 hidden sm:block" />
                   )}
                   {/* Timeline Dot */}
                   <motion.div
-                    className="relative flex-shrink-0"
+                    className="relative flex-shrink-0 mx-auto sm:mx-0"
                     whileHover={{ scale: 1.08 }}
                   >
                     <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
@@ -234,9 +242,9 @@ const WorkHistory: React.FC = () => {
                     </div>
                   </motion.div>
                   {/* Content */}
-                  <div className="flex-1 space-y-4">
+                  <div className="flex-1 space-y-4 min-w-0">
                     <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div>
                           <motion.h3
                             className="text-lg font-semibold text-light-heading dark:text-dark-heading"
@@ -245,7 +253,7 @@ const WorkHistory: React.FC = () => {
                           >
                             {edu.degree} in {edu.field}
                           </motion.h3>
-                          <div className="flex items-center gap-2 text-light-text dark:text-dark-text">
+                          <div className="flex items-center gap-2 text-light-text dark:text-dark-text flex-wrap">
                             <span className="font-medium">
                               {edu.institution}
                             </span>
@@ -263,7 +271,7 @@ const WorkHistory: React.FC = () => {
                           </div>
                         </div>
                         {edu.gpa && (
-                          <span className="px-3 py-1 text-xs font-medium bg-light-heading/10 dark:bg-dark-heading/10 text-light-heading dark:text-dark-heading rounded-full">
+                          <span className="px-3 py-1 text-xs font-medium bg-light-heading/10 dark:bg-dark-heading/10 text-light-heading dark:text-dark-heading rounded-full mt-2 sm:mt-0">
                             GPA: {edu.gpa}
                           </span>
                         )}
@@ -313,7 +321,7 @@ const WorkHistory: React.FC = () => {
                         <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
                           Relevant Coursework
                         </h4>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {edu.relevantCourses.map((course) => (
                             <div
                               key={course}

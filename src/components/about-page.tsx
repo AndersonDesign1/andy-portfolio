@@ -55,7 +55,7 @@ const funFacts = [
 const AboutPage: React.FC = () => (
   <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
     {/* Back Navigation */}
-    <div className="max-w-screen-xl mx-auto px-[150px] pt-8">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] pt-8">
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -73,7 +73,7 @@ const AboutPage: React.FC = () => (
 
     {/* Hero Section */}
     <section className="py-16">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -82,13 +82,13 @@ const AboutPage: React.FC = () => (
         >
           <motion.h1
             variants={fadeInUp}
-            className="text-4xl font-bold text-light-heading dark:text-dark-heading"
+            className="text-3xl sm:text-4xl font-bold text-light-heading dark:text-dark-heading"
           >
             About Me
           </motion.h1>
           <motion.p
             variants={fadeInUp}
-            className="text-lg text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
+            className="text-base sm:text-lg text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
           >
             I&apos;m a passionate full-stack developer with expertise in SEO and
             infrastructure. My journey started after winning a scholarship to
@@ -103,7 +103,7 @@ const AboutPage: React.FC = () => (
 
     {/* Professional Journey */}
     <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -113,7 +113,7 @@ const AboutPage: React.FC = () => (
         >
           <motion.h2
             variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Professional Journey
           </motion.h2>
@@ -174,7 +174,7 @@ const AboutPage: React.FC = () => (
 
     {/* Technical Expertise */}
     <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -184,7 +184,7 @@ const AboutPage: React.FC = () => (
         >
           <motion.h2
             variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Technical Expertise
           </motion.h2>
@@ -227,7 +227,7 @@ const AboutPage: React.FC = () => (
 
     {/* Personal Touch */}
     <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -237,7 +237,7 @@ const AboutPage: React.FC = () => (
         >
           <motion.h2
             variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             The Person Behind the Code
           </motion.h2>
@@ -281,7 +281,7 @@ const AboutPage: React.FC = () => (
 
     {/* Fun Facts */}
     <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -291,7 +291,7 @@ const AboutPage: React.FC = () => (
         >
           <motion.h2
             variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Fun Facts About Me
           </motion.h2>
@@ -328,7 +328,7 @@ const AboutPage: React.FC = () => (
 
     {/* Call to Action */}
     <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -338,7 +338,7 @@ const AboutPage: React.FC = () => (
         >
           <motion.h2
             variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Let&apos;s Build Something Amazing Together
           </motion.h2>

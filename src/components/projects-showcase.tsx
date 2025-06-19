@@ -88,17 +88,18 @@ const ProjectsShowcase: React.FC = () => {
   return (
     <div className="pt-28 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       {/* Header */}
-      <div className="max-w-screen-xl mx-auto px-[150px] pt-8">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] pt-8">
         <h1 className="text-3xl font-semibold text-light-heading dark:text-dark-heading mb-4">
           Projects
         </h1>
-        <div className="flex gap-3 mb-8">
+        {/* Responsive, single-line, scrollable category selector */}
+        <div className="flex gap-1 sm:gap-3 mb-8 overflow-x-auto whitespace-nowrap">
           {categories.map((category) => (
             <Button
               key={category}
               variant="ghost"
               onClick={() => setActiveCategory(category)}
-              className={`text-sm shadow-none transition-colors duration-200
+              className={`text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 shadow-none transition-colors duration-200
                 ${
                   activeCategory === category
                     ? "font-bold text-light-heading dark:text-dark-heading"
@@ -110,6 +111,7 @@ const ProjectsShowcase: React.FC = () => {
                 background: "none",
                 border: "none",
                 boxShadow: "none",
+                minWidth: "70px",
               }}
             >
               {category}
@@ -120,18 +122,18 @@ const ProjectsShowcase: React.FC = () => {
 
       {/* Projects Grid with AnimatePresence */}
       <section className="pb-20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeCategory} // Key changes to re-trigger AnimatePresence for category transitions
-              className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16"
+              key={activeCategory}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16"
               variants={gridVariants}
               initial="initial"
               animate="animate"
               exit="exit"
             >
               {filteredProjects.map((project, index) => (
-                <motion.div // Apply main card animation
+                <motion.div
                   key={project.id}
                   className="group space-y-6"
                   initial={{ opacity: 0, y: 24 }}
@@ -139,12 +141,12 @@ const ProjectsShowcase: React.FC = () => {
                   transition={{
                     duration: 0.32,
                     ease: [0.25, 0.25, 0, 1],
-                    delay: index * 0.06, // Use index for staggered delay
+                    delay: index * 0.06,
                   }}
                   viewport={{ once: true, amount: 0.2 }}
                 >
                   {/* Project Image */}
-                  <motion.div // Apply image hover animation
+                  <motion.div
                     className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
                     whileHover={{ scale: 1.025 }}
                     transition={{ type: "spring", stiffness: 200, damping: 18 }}
@@ -155,7 +157,6 @@ const ProjectsShowcase: React.FC = () => {
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
-                      // priority prop from original ProjectCard component, useful for LCP
                       priority={index < 2 && activeCategory === "All"}
                     />
                     <div
@@ -165,17 +166,17 @@ const ProjectsShowcase: React.FC = () => {
                   </motion.div>
                   {/* Project Content */}
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <motion.h3 // Apply title hover animation
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                      <motion.h3
                         className="text-lg font-medium text-light-heading dark:text-dark-heading transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400"
                         whileHover={{ x: 2 }}
                         transition={{ duration: 0.18, ease: "easeOut" }}
                       >
                         {project.title}
                       </motion.h3>
-                      <div className="flex gap-4 flex-shrink-0">
+                      <div className="flex gap-4 flex-shrink-0 flex-wrap">
                         {project.links.github && (
-                          <motion.a // Apply GitHub link hover animation
+                          <motion.a
                             href={project.links.github}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -187,7 +188,7 @@ const ProjectsShowcase: React.FC = () => {
                           </motion.a>
                         )}
                         {project.links.live && (
-                          <motion.a // Apply Live link hover animation
+                          <motion.a
                             href={project.links.live}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -199,7 +200,7 @@ const ProjectsShowcase: React.FC = () => {
                           </motion.a>
                         )}
                         {project.links.caseStudy && (
-                          <motion.div // Apply Case Study link hover animation
+                          <motion.div
                             whileHover={{ x: 2 }}
                             transition={{ duration: 0.18 }}
                           >
@@ -244,7 +245,7 @@ const ProjectsShowcase: React.FC = () => {
                       <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading transition-colors duration-300">
                         Tech Stack
                       </h4>
-                      <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300">
+                      <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300 break-words">
                         {project.techStack.join(" / ")}
                       </p>
                     </div>

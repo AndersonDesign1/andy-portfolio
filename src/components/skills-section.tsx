@@ -241,7 +241,15 @@ const titleVariants = {
 const SkillsSection: React.FC = () => {
   return (
     <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div
+        className="
+          max-w-screen-xl mx-auto
+          px-4
+          sm:px-8
+          md:px-16
+          lg:px-[150px]
+        "
+      >
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -294,9 +302,17 @@ const SkillsSection: React.FC = () => {
                       </h3>
                     </div>
 
-                    {/* Skills Grid */}
+                    {/* Skills Grid - responsive columns */}
                     <motion.div
-                      className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4"
+                      className="
+                        grid
+                        grid-cols-3
+                        sm:grid-cols-4
+                        md:grid-cols-6
+                        lg:grid-cols-8
+                        xl:grid-cols-10
+                        gap-4
+                      "
                       variants={containerVariants}
                     >
                       {categoryData.skills.map((skill, skillIndex) => (
@@ -322,9 +338,8 @@ const SkillsSection: React.FC = () => {
                             <img
                               src={skill.icon}
                               alt={skill.name}
-                              // Add these crucial props!
-                              width={24} // Corresponds to w-6 (6 * 4px = 24px)
-                              height={24} // Corresponds to h-6 (6 * 4px = 24px)
+                              width={24}
+                              height={24}
                               className="w-6 h-6 object-contain filter group-hover:brightness-110 transition-all duration-200"
                               loading="lazy"
                               onError={(e) => {
@@ -332,16 +347,15 @@ const SkillsSection: React.FC = () => {
                                 target.style.display = "none";
                                 const parent = target.parentElement;
                                 if (parent) {
-                                  parent.innerHTML = `<div class="w-6 h-6 bg-light-mini/20 dark:bg-dark-mini/20 rounded-md flex items-center justify-center text-light-mini dark:text-dark-mini text-xs font-medium">${skill.name.charAt(
+                                  parent.innerHTML = `<div class='w-6 h-6 bg-light-mini/20 dark:bg-dark-mini/20 rounded-md flex items-center justify-center text-light-mini dark:text-dark-mini text-xs font-medium'>${skill.name.charAt(
                                     0
                                   )}</div>`;
                                 }
                               }}
                             />
                           </motion.div>
-
-                          {/* Skill Name (no link) */}
-                          <span className="text-xs font-medium text-light-text dark:text-dark-text text-center leading-tight group-hover:text-light-heading dark:group-hover:text-dark-heading transition-colors duration-200">
+                          {/* Skill Name */}
+                          <span className="text-xs font-medium text-light-text dark:text-dark-text text-center leading-tight group-hover:text-light-heading dark:group-hover:text-dark-heading transition-colors duration-200 break-words">
                             {skill.name}
                           </span>
                         </motion.div>

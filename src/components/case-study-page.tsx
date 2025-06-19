@@ -46,7 +46,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
   return (
     <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       {/* Back Navigation */}
-      <div className="max-w-screen-xl mx-auto px-[150px] pt-8">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] pt-8">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -64,17 +64,17 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
 
       {/* Hero Section */}
       <section className="py-16">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={stagger}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
           >
             <motion.div variants={fadeInUp} className="space-y-6">
               <div className="space-y-4">
                 <motion.h1
-                  className="text-4xl font-bold text-light-heading dark:text-dark-heading transition-colors duration-300"
+                  className="text-3xl sm:text-4xl font-bold text-light-heading dark:text-dark-heading transition-colors duration-300"
                   variants={fadeInUp}
                 >
                   {caseStudy.hero.title}
@@ -119,7 +119,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
             </motion.div>
             <motion.div
               variants={fadeInUp}
-              className="relative aspect-[4/3] rounded-lg overflow-hidden"
+              className="relative aspect-[4/3] rounded-lg overflow-hidden min-h-[200px] h-full"
             >
               <Image
                 src={caseStudy.hero.heroImage}
@@ -136,7 +136,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
 
       {/* Challenge & Context */}
       <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -150,7 +150,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
             >
               Challenge & Context
             </motion.h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
               <motion.div variants={fadeInUp} className="space-y-6">
                 <div>
                   <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-3">
@@ -211,7 +211,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
 
       {/* Project Goals */}
       <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -225,7 +225,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
             >
               Project Goals
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               {["primary", "stakeholder", "success"].map((key) => (
                 <motion.div key={key} variants={fadeInUp} className="space-y-4">
                   <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
@@ -255,7 +255,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
 
       {/* Approach & Process */}
       <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -337,7 +337,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
 
       {/* Results & Impact */}
       <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -355,7 +355,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
               <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
                 Before vs After
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {caseStudy.results.beforeAfter.map((m: any, i: number) => (
                   <motion.div
                     key={i}
@@ -365,24 +365,24 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
                     transition={{ duration: 0.4, delay: i * 0.1 }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-light-bg via-light-bg to-light-bg/50 dark:from-dark-bg dark:via-dark-bg dark:to-dark-bg/50 rounded-xl" />
-                    <div className="relative bg-light-bg dark:bg-dark-bg rounded-xl p-8 backdrop-blur-sm group-hover:shadow-md transition-all duration-300">
-                      <h4 className="text-xl font-semibold text-light-heading dark:text-dark-heading mb-6">
+                    <div className="relative bg-light-bg dark:bg-dark-bg rounded-xl p-6 md:p-8 backdrop-blur-sm group-hover:shadow-md transition-all duration-300">
+                      <h4 className="text-lg md:text-xl font-semibold text-light-heading dark:text-dark-heading mb-4 md:mb-6">
                         {m.metric}
                       </h4>
-                      <div className="space-y-4 mb-6">
+                      <div className="space-y-4 mb-4 md:mb-6">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-light-mini dark:text-dark-mini">
+                          <span className="text-xs md:text-sm font-medium text-light-mini dark:text-dark-mini">
                             Before:
                           </span>
-                          <span className="text-lg font-mono text-light-text dark:text-dark-text">
+                          <span className="text-base md:text-lg font-mono text-light-text dark:text-dark-text">
                             {m.before}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-light-mini dark:text-dark-mini">
+                          <span className="text-xs md:text-sm font-medium text-light-mini dark:text-dark-mini">
                             After:
                           </span>
-                          <span className="text-lg font-mono text-light-heading dark:text-dark-heading font-semibold">
+                          <span className="text-base md:text-lg font-mono text-light-heading dark:text-dark-heading font-semibold">
                             {m.after}
                           </span>
                         </div>
@@ -464,7 +464,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
 
       {/* Back to Projects */}
       <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px] text-center">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

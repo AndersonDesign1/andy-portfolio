@@ -68,7 +68,7 @@ export default function ContactPage() {
 
   return (
     <section className="pt-36 flex min-h-screen items-center justify-center bg-light-bg dark:bg-dark-bg transition-colors duration-300 py-16">
-      <div className="w-full max-w-lg mx-auto">
+      <div className="w-full max-w-lg mx-auto px-4 sm:px-8">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -77,7 +77,7 @@ export default function ContactPage() {
         >
           <motion.h1
             variants={itemVariants}
-            className="text-3xl font-semibold text-light-heading dark:text-dark-heading mb-4 text-center"
+            className="text-2xl sm:text-3xl font-semibold text-light-heading dark:text-dark-heading mb-4 text-center"
           >
             Get In Touch
           </motion.h1>
@@ -85,8 +85,8 @@ export default function ContactPage() {
             variants={itemVariants}
             className="text-base text-light-text dark:text-dark-text leading-relaxed max-w-2xl text-center mx-auto"
           >
-            Have a project in mind or want to collaborate? I&apos;d love to hear from
-            you. Let&apos;s discuss how we can bring your ideas to life.
+            Have a project in mind or want to collaborate? I&apos;d love to hear
+            from you. Let&apos;s discuss how we can bring your ideas to life.
           </motion.p>
         </motion.div>
         <motion.form

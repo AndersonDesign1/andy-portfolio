@@ -62,7 +62,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
       {/* Project Content */}
       <div className="space-y-4">
         {/* Project Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
           <motion.h3
             className="text-lg font-medium text-light-heading dark:text-dark-heading transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400"
             whileHover={{ x: 2 }}
@@ -70,7 +70,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
           >
             {project.title}
           </motion.h3>
-          <div className="flex gap-4 flex-shrink-0">
+          <div className="flex gap-4 flex-shrink-0 flex-wrap">
             {project.links.github && (
               <motion.a
                 href={project.links.github}
@@ -163,7 +163,15 @@ const ProjectsGrid: React.FC = () => {
 
   return (
     <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div className="max-w-screen-xl mx-auto px-[150px]">
+      <div
+        className="
+          max-w-screen-xl mx-auto
+          px-4
+          sm:px-8
+          md:px-16
+          lg:px-[150px]
+        "
+      >
         {/* Section Header */}
         <div className="text-left mb-16">
           <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading transition-colors duration-300">
@@ -177,7 +185,7 @@ const ProjectsGrid: React.FC = () => {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
           {projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}

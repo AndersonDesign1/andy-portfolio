@@ -37,7 +37,7 @@ const cardVariants = {
 export default function BlogList({ posts }: { posts: SanityPost[] }) {
   return (
     <section className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 min-h-screen">
-      <div className="max-w-2xl mx-auto px-4">
+      <div className="max-w-2xl mx-auto px-4 sm:px-8">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -52,7 +52,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
           }}
         >
           <motion.div
-            className="text-left mb-16"
+            className="text-left mb-12 sm:mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.25, 0.25, 0, 1] }}
@@ -65,7 +65,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
               design, and business.
             </p>
           </motion.div>
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-8 sm:gap-12">
             {posts.map((post, i) => (
               <motion.div
                 key={post.slug.current}
@@ -92,7 +92,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                           <Link
                             key={cat._id}
                             href={`/blog/category/${cat.slug.current}`}
-                            className="inline-block bg-blue-900 text-blue-200 px-3 py-1 rounded-full text-xs font-medium hover:bg-blue-800 transition"
+                            className="inline-block bg-blue-900 text-blue-200 px-2 sm:px-3 py-0.5 rounded-full text-xs font-medium hover:bg-blue-800 transition"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {cat.title}
@@ -100,7 +100,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                         ))}
                     </div>
                   )}
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
                     <h3 className="text-2xl font-bold text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                       {post.title}
                     </h3>
