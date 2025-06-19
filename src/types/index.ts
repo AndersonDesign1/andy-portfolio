@@ -1,26 +1,15 @@
-// Project types
-export type ProjectCategory = "Current Focus" | "Websites" | "SEO"
+import type { SchemaTypeDefinition } from "sanity";
+import post from "./post";
+import category from "./category";
 
-export interface Project {
-  id: number
-  name: string
-  description: string
-  category: ProjectCategory
-  technologies: string[]
-  website: string
-  github?: string
-}
+/**
+ * Array of all schema types
+ */
+export const schemaTypes: SchemaTypeDefinition[] = [post, category];
 
-// Case Study types
-export interface CaseStudy {
-  slug: string
-  title: string
-  description: string
-  imageUrl: string
-  challenges: string[]
-  solutions: string[]
-  outcomes: string
-  technologies: string[]
-  website: string
-}
-
+/**
+ * Schema configuration object
+ */
+export const schema = {
+  types: schemaTypes,
+};

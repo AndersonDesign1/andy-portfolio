@@ -1,5 +1,5 @@
-import type { Rule } from "sanity"
-import type { DocumentSchema, SlugField, SchemaField } from "../lib/types"
+import type { Rule } from "sanity";
+import type { DocumentSchema, SlugField, SchemaField } from "../lib/types";
 
 /**
  * Category schema definition
@@ -32,7 +32,6 @@ const category: DocumentSchema = {
       type: "text",
     } as SchemaField,
   ],
-}
+};
 
-export default category
-
+export default category;
