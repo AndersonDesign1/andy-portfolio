@@ -13,54 +13,28 @@ import {
 import workExperienceData from "@/data/work-experience.json";
 import educationData from "@/data/education.json";
 
-interface WorkExperience {
-  id: string;
-  company: string;
-  position: string;
-  location: string;
-  startDate: string;
-  endDate?: string | null;
-  current?: boolean;
-  description: string;
-  achievements: string[];
-  technologies?: string[];
-  companyUrl?: string;
-}
-
-interface Education {
-  id: string;
-  institution: string;
-  degree: string;
-  field: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  gpa?: string;
-  honors?: string[];
-  relevantCourses?: string[];
-  projects?: string[];
-  institutionUrl?: string;
-}
-
 const TABS = ["work", "education"] as const;
 type Tab = (typeof TABS)[number];
 
+const tabIcons = {
+  work: <BriefcaseIcon className="w-4 h-4" />,
+  education: <AcademicCapIcon className="w-4 h-4" />,
+};
+
 const WorkHistory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("work");
-
-  const workExperience: WorkExperience[] = workExperienceData.workExperience;
-  const education: Education[] = educationData.education;
+  const workExperience = workExperienceData.workExperience;
+  const education = educationData.education;
 
   return (
     <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       <div className="max-w-screen-xl mx-auto px-[150px]">
-        {/* Section Header with Toggle */}
-        <div className="text-left mb-16">
-          <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading transition-colors duration-300">
+        {/* Header & Toggle */}
+        <div className="mb-16">
+          <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
             Professional Background
           </h2>
-          {/* Toggle Switch */}
-          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full backdrop-blur-sm">
+          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full">
             {TABS.map((tab) => (
               <motion.button
                 key={tab}
@@ -75,17 +49,8 @@ const WorkHistory: React.FC = () => {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
               >
-                {tab === "work" ? (
-                  <>
-                    <BriefcaseIcon className="w-4 h-4" />
-                    Experience
-                  </>
-                ) : (
-                  <>
-                    <AcademicCapIcon className="w-4 h-4" />
-                    Education
-                  </>
-                )}
+                {tabIcons[tab]}
+                {tab === "work" ? "Experience" : "Education"}
               </motion.button>
             ))}
             {/* Active Tab Background */}
@@ -96,11 +61,7 @@ const WorkHistory: React.FC = () => {
                 left: activeTab === "work" ? "4px" : "50%",
                 right: activeTab === "work" ? "50%" : "4px",
               }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
           </div>
         </div>
@@ -115,7 +76,7 @@ const WorkHistory: React.FC = () => {
               animate="visible"
               exit="hidden"
             >
-              {workExperience.map((job, index) => (
+              {workExperience.map((job, idx) => (
                 <motion.div
                   key={job.id}
                   className="relative flex gap-6"
@@ -125,14 +86,13 @@ const WorkHistory: React.FC = () => {
                   viewport={{ once: true, amount: 0.2 }}
                 >
                   {/* Timeline Line */}
-                  {index < workExperience.length - 1 && (
+                  {idx < workExperience.length - 1 && (
                     <div className="absolute left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20" />
                   )}
                   {/* Timeline Dot */}
                   <motion.div
                     className="relative flex-shrink-0"
                     whileHover={{ scale: 1.08 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
                     <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
                       <BriefcaseIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
@@ -151,7 +111,7 @@ const WorkHistory: React.FC = () => {
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <motion.h3
-                            className="text-lg font-semibold text-light-heading dark:text-dark-heading transition-colors duration-300"
+                            className="text-lg font-semibold text-light-heading dark:text-dark-heading"
                             whileHover={{ x: 2 }}
                             transition={{ duration: 0.18 }}
                           >
@@ -164,7 +124,7 @@ const WorkHistory: React.FC = () => {
                                 href={job.companyUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading"
                                 whileHover={{ scale: 1.1 }}
                               >
                                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />
@@ -184,19 +144,13 @@ const WorkHistory: React.FC = () => {
                           <span>
                             {new Date(job.startDate).toLocaleDateString(
                               "en-US",
-                              {
-                                month: "short",
-                                year: "numeric",
-                              }
+                              { month: "short", year: "numeric" }
                             )}{" "}
                             -{" "}
                             {job.endDate
                               ? new Date(job.endDate).toLocaleDateString(
                                   "en-US",
-                                  {
-                                    month: "short",
-                                    year: "numeric",
-                                  }
+                                  { month: "short", year: "numeric" }
                                 )
                               : "Present"}
                           </span>
@@ -216,13 +170,13 @@ const WorkHistory: React.FC = () => {
                         Key Achievements
                       </h4>
                       <ul className="space-y-2">
-                        {job.achievements.map((achievement, achIndex) => (
+                        {job.achievements.map((ach, i) => (
                           <li
-                            key={achIndex}
+                            key={i}
                             className="flex items-start gap-3 text-sm text-light-text dark:text-dark-text"
                           >
                             <CheckIcon className="w-4 h-4 text-light-mini dark:text-dark-mini mt-0.5 flex-shrink-0" />
-                            {achievement}
+                            {ach}
                           </li>
                         ))}
                       </ul>
@@ -257,7 +211,7 @@ const WorkHistory: React.FC = () => {
               animate="visible"
               exit="hidden"
             >
-              {education.map((edu, index) => (
+              {education.map((edu, idx) => (
                 <motion.div
                   key={edu.id}
                   className="relative flex gap-6"
@@ -267,14 +221,13 @@ const WorkHistory: React.FC = () => {
                   viewport={{ once: true, amount: 0.2 }}
                 >
                   {/* Timeline Line */}
-                  {index < education.length - 1 && (
+                  {idx < education.length - 1 && (
                     <div className="absolute left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20" />
                   )}
                   {/* Timeline Dot */}
                   <motion.div
                     className="relative flex-shrink-0"
                     whileHover={{ scale: 1.08 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
                     <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
                       <AcademicCapIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
@@ -286,7 +239,7 @@ const WorkHistory: React.FC = () => {
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <motion.h3
-                            className="text-lg font-semibold text-light-heading dark:text-dark-heading transition-colors duration-300"
+                            className="text-lg font-semibold text-light-heading dark:text-dark-heading"
                             whileHover={{ x: 2 }}
                             transition={{ duration: 0.18 }}
                           >
@@ -301,7 +254,7 @@ const WorkHistory: React.FC = () => {
                                 href={edu.institutionUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading"
                                 whileHover={{ scale: 1.1 }}
                               >
                                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />
@@ -321,10 +274,7 @@ const WorkHistory: React.FC = () => {
                           <span>
                             {new Date(edu.startDate).toLocaleDateString(
                               "en-US",
-                              {
-                                month: "short",
-                                year: "numeric",
-                              }
+                              { month: "short", year: "numeric" }
                             )}{" "}
                             -{" "}
                             {new Date(edu.endDate).toLocaleDateString("en-US", {
@@ -382,9 +332,9 @@ const WorkHistory: React.FC = () => {
                           Notable Projects
                         </h4>
                         <ul className="space-y-2">
-                          {edu.projects.map((project, projIndex) => (
+                          {edu.projects.map((project, i) => (
                             <li
-                              key={projIndex}
+                              key={i}
                               className="flex items-start gap-3 text-sm text-light-text dark:text-dark-text"
                             >
                               <CheckIcon className="w-4 h-4 text-light-mini dark:text-dark-mini mt-0.5 flex-shrink-0" />

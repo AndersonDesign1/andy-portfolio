@@ -1,494 +1,376 @@
-"use client"
+"use client";
 
-import React from "react"
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { 
-  ArrowLeftIcon,
+import React from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import {
   CodeBracketIcon,
   ChartBarIcon,
   ServerIcon,
-  LightBulbIcon,
-  HeartIcon,
-  SparklesIcon
-} from "@heroicons/react/24/outline"
-import { ThemeToggle } from "@/components/theme-toggle"
+  SparklesIcon,
+  ArrowLeftIcon,
+} from "@heroicons/react/24/outline";
 
-const AboutPage: React.FC = () => {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] }
-    }
-  }
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+  },
+};
 
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  }
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+};
 
-  const slideInLeft = {
-    hidden: { opacity: 0, x: -30 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
-  }
+const funFacts = [
+  {
+    icon: CodeBracketIcon,
+    title: "Teaching & Mentorship",
+    description:
+      "I love sharing what I know—I've taught and mentored over 1,000 students (and counting), helping others break into tech and level up their skills.",
+  },
+  {
+    icon: ChartBarIcon,
+    title: "Accidental SEO Enthusiast",
+    description:
+      "I learned SEO because my boss told me to. I started watching YouTube tutorials just to keep my job, but ended up falling in love with the challenge and creativity of search optimization.",
+  },
+  {
+    icon: ServerIcon,
+    title: "Modern Infrastructure Explorer",
+    description:
+      "I'm obsessed with how modern infrastructure works. I spend hours reading docs, case studies, and exploring how big tech companies build and scale their systems.",
+  },
+  {
+    icon: SparklesIcon,
+    title: "Driven by Doubt",
+    description:
+      "I've spent a lot of my life proving people wrong about how I am or how I would end up. It's the reason I'm obsessed with building perfect solutions.",
+  },
+];
 
-  const iconVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      transition: { duration: 0.4, ease: "easeOut" }
-    },
-    hover: {
-      scale: 1.1,
-      rotate: 5,
-      transition: { duration: 0.2, ease: "easeOut" }
-    }
-  }
-
-  const funFacts = [
-    {
-      icon: CodeBracketIcon,
-      title: "Coffee-Powered Coding",
-      description: "I've calculated that I've consumed over 2,847 cups of coffee while debugging code. Each cup represents a problem solved!"
-    },
-    {
-      icon: ChartBarIcon,
-      title: "SEO Detective",
-      description: "I once spent 3 days tracking down why a client's site wasn't ranking, only to discover a single missing meta tag that boosted their traffic by 340%."
-    },
-    {
-      icon: ServerIcon,
-      title: "Infrastructure Enthusiast",
-      description: "I have a home lab with 6 Raspberry Pis running different services. My friends call it overkill, I call it 'research'."
-    },
-    {
-      icon: SparklesIcon,
-      title: "Midnight Eureka Moments",
-      description: "My best solutions come at 2 AM. I keep a notebook by my bed because inspiration doesn't follow business hours."
-    }
-  ]
-
-  return (
-    <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      {/* Theme Toggle */}
-      <div className="absolute top-6 right-6 z-50">
-        <ThemeToggle />
-      </div>
-
-      {/* Back Navigation */}
-      <div className="max-w-screen-xl mx-auto px-[150px] pt-8">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
+const AboutPage: React.FC = () => (
+  <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    {/* Back Navigation */}
+    <div className="max-w-screen-xl mx-auto px-[150px] pt-8">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
         >
-          <Link 
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+          <ArrowLeftIcon className="w-4 h-4" />
+          Back to Home
+        </Link>
+      </motion.div>
+    </div>
+
+    {/* Hero Section */}
+    <section className="py-16">
+      <div className="max-w-screen-xl mx-auto px-[150px]">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+          className="space-y-8"
+        >
+          <motion.h1
+            variants={fadeInUp}
+            className="text-4xl font-bold text-light-heading dark:text-dark-heading"
           >
-            <ArrowLeftIcon className="w-4 h-4" />
-            Back to Home
-          </Link>
+            About Me
+          </motion.h1>
+          <motion.p
+            variants={fadeInUp}
+            className="text-lg text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
+          >
+            I&apos;m a passionate full-stack developer with expertise in SEO and
+            infrastructure. My journey started after winning a scholarship to
+            learn a tech skill for a year—choosing development because of a
+            childhood obsession with computers and how things work. Now, I
+            create digital experiences that look beautiful and perform
+            exceptionally well.
+          </motion.p>
         </motion.div>
       </div>
+    </section>
 
-      {/* Hero Section */}
-      <section className="py-16">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="space-y-8"
+    {/* Professional Journey */}
+    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
+      <div className="max-w-screen-xl mx-auto px-[150px]">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={stagger}
+          className="space-y-12"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
-            <motion.div variants={fadeInUp} className="space-y-6">
-              <motion.h1 
-                className="text-4xl font-bold text-light-heading dark:text-dark-heading transition-colors duration-300"
-                variants={slideInLeft}
-              >
-                About Me
-              </motion.h1>
-              
-              <motion.p 
-                className="text-lg text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
-                variants={slideInLeft}
-              >
-                I'm a passionate full-stack developer who lives at the intersection of code, SEO, and infrastructure. 
-                What started as curiosity about "how websites work" has evolved into a deep obsession with creating 
-                digital experiences that not only look beautiful but perform exceptionally well.
-              </motion.p>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Professional Overview */}
-      <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="space-y-12"
-          >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
-            >
-              Professional Journey
-            </motion.h2>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <motion.div variants={fadeInUp} className="space-y-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <motion.div
-                    variants={iconVariants}
-                    whileHover="hover"
-                    className="p-3 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                  >
-                    <ChartBarIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                  </motion.div>
-                  <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                    SEO Optimization Expert
-                  </h3>
-                </div>
-                
-                <p className="text-light-text dark:text-dark-text leading-relaxed">
-                  Over the past 5 years, I've helped businesses increase their organic traffic by an average of 
-                  <span className="font-semibold text-light-heading dark:text-dark-heading"> 285%</span>. 
-                  My approach combines technical SEO mastery with content strategy, focusing on sustainable, 
-                  white-hat techniques that deliver long-term results.
-                </p>
-
-                <div className="space-y-3">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">Key Achievements:</h4>
-                  <ul className="space-y-2 text-sm text-light-text dark:text-dark-text">
-                    <li>• Improved Core Web Vitals for 50+ websites, achieving 95+ PageSpeed scores</li>
-                    <li>• Increased organic traffic by 400% for an e-commerce client in 8 months</li>
-                    <li>• Developed SEO automation tools that reduced audit time by 70%</li>
-                    <li>• Successfully recovered 15+ websites from Google penalties</li>
-                  </ul>
-                </div>
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="space-y-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <motion.div
-                    variants={iconVariants}
-                    whileHover="hover"
-                    className="p-3 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                  >
-                    <CodeBracketIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                  </motion.div>
-                  <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                    Full-Stack Development
-                  </h3>
-                </div>
-                
-                <p className="text-light-text dark:text-dark-text leading-relaxed">
-                  I specialize in building scalable web applications that serve 
-                  <span className="font-semibold text-light-heading dark:text-dark-heading"> 100,000+ users</span>. 
-                  My development philosophy centers on writing clean, maintainable code while prioritizing 
-                  performance and user experience at every step.
-                </p>
-
-                <div className="space-y-3">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">Notable Projects:</h4>
-                  <ul className="space-y-2 text-sm text-light-text dark:text-dark-text">
-                    <li>• Built e-commerce platform handling $2M+ in annual transactions</li>
-                    <li>• Developed real-time analytics dashboard processing 1M+ data points daily</li>
-                    <li>• Created microservices architecture reducing server costs by 40%</li>
-                    <li>• Implemented CI/CD pipelines improving deployment speed by 85%</li>
-                  </ul>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Technical Expertise */}
-      <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="space-y-12"
-          >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
-            >
-              Technical Expertise
-            </motion.h2>
-
-            <motion.div variants={fadeInUp} className="space-y-8">
-              <div className="flex items-center gap-3 mb-6">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                  className="p-3 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                >
-                  <ServerIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                </motion.div>
+            Professional Journey
+          </motion.h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <motion.div variants={fadeInUp} className="space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <ChartBarIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
                 <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                  Software Infrastructure Passion
+                  SEO Optimization Expert
                 </h3>
               </div>
-              
-              <p className="text-light-text dark:text-dark-text leading-relaxed">
-                What truly excites me is the invisible foundation that makes everything work. I'm fascinated by 
-                how distributed systems communicate, how databases scale, and how infrastructure decisions made 
-                today impact performance years down the line. This passion drives me to constantly explore new 
-                technologies and architectural patterns.
+              <p className="text-light-text dark:text-dark-text">
+                I&apos;ve helped businesses increase their organic traffic by an
+                average of{" "}
+                <span className="font-semibold text-light-heading dark:text-dark-heading">
+                  285%
+                </span>
+                . My approach combines technical SEO mastery with content
+                strategy, focusing on sustainable, white-hat techniques.
               </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="space-y-3">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">Cloud & DevOps</h4>
-                  <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
-                    <li>• AWS/GCP architecture design</li>
-                    <li>• Docker containerization</li>
-                    <li>• Kubernetes orchestration</li>
-                    <li>• Infrastructure as Code</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">Performance Optimization</h4>
-                  <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
-                    <li>• Database query optimization</li>
-                    <li>• Caching strategies (Redis, CDN)</li>
-                    <li>• Load balancing & scaling</li>
-                    <li>• Monitoring & observability</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">SEO Technical Skills</h4>
-                  <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
-                    <li>• Core Web Vitals optimization</li>
-                    <li>• Schema markup implementation</li>
-                    <li>• Technical auditing & analysis</li>
-                    <li>• International SEO (hreflang)</li>
-                  </ul>
-                </div>
-              </div>
+              <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
+                <li>• Improved Core Web Vitals for 20+ websites</li>
+                <li>
+                  • Increased organic traffic by 400% for an e-commerce client
+                </li>
+                <li>• Built SEO automation tools to speed up audits</li>
+                <li>• Recovered 5+ websites from Google penalties</li>
+              </ul>
             </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Personal Touch */}
-      <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="space-y-12"
-          >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
-            >
-              The Person Behind the Code
-            </motion.h2>
-
-            <motion.div variants={fadeInUp} className="space-y-8">
-              <div className="flex items-center gap-3 mb-6">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                  className="p-3 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                >
-                  <HeartIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                </motion.div>
+            <motion.div variants={fadeInUp} className="space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <CodeBracketIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
                 <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                  My Journey & Philosophy
+                  Full-Stack Development
                 </h3>
               </div>
-              
-              <div className="space-y-6 text-light-text dark:text-dark-text leading-relaxed">
-                <p>
-                  My fascination with technology began in high school when I built my first website using HTML 
-                  tables (yes, tables!). What started as a simple curiosity about "how do websites work?" 
-                  quickly evolved into an obsession with understanding every layer of the web stack.
-                </p>
-                
-                <p>
-                  I discovered SEO during my first internship when I noticed our company's website wasn't 
-                  showing up in Google searches. That moment of realization – that building something amazing 
-                  isn't enough if people can't find it – shaped my entire career trajectory.
-                </p>
-                
-                <p>
-                  My approach to problem-solving is methodical yet creative. I believe in understanding the 
-                  "why" before jumping to solutions, and I'm not satisfied until I've explored at least three 
-                  different approaches to any challenge. Continuous learning isn't just a buzzword for me – 
-                  it's a necessity in our rapidly evolving field.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3 mt-8">
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                  className="p-3 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                >
-                  <LightBulbIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                </motion.div>
-                <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                  Problem-Solving Approach
-                </h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">My Process:</h4>
-                  <ol className="space-y-2 text-sm text-light-text dark:text-dark-text">
-                    <li>1. <strong>Listen & Understand:</strong> Every problem has context that matters</li>
-                    <li>2. <strong>Research & Analyze:</strong> Data-driven decisions beat assumptions</li>
-                    <li>3. <strong>Prototype & Test:</strong> Fail fast, learn faster</li>
-                    <li>4. <strong>Iterate & Improve:</strong> Perfect is the enemy of good, but good isn't the end goal</li>
-                  </ol>
-                </div>
-                
-                <div className="space-y-4">
-                  <h4 className="font-medium text-light-heading dark:text-dark-heading">Learning Philosophy:</h4>
-                  <ul className="space-y-2 text-sm text-light-text dark:text-dark-text">
-                    <li>• Stay curious about emerging technologies</li>
-                    <li>• Learn from failures as much as successes</li>
-                    <li>• Share knowledge through mentoring and writing</li>
-                    <li>• Question best practices – they evolve for a reason</li>
-                  </ul>
-                </div>
-              </div>
+              <p className="text-light-text dark:text-dark-text">
+                I build scalable web applications for{" "}
+                <span className="font-semibold text-light-heading dark:text-dark-heading">
+                  millions of users
+                </span>
+                , writing clean, maintainable code and prioritizing performance
+                and UX.
+              </p>
+              <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
+                <li>
+                  • Built tens of web applications using modern stacks and tools
+                </li>
+                <li>• Developed real-time analytics dashboards</li>
+                <li>• Created microservices to reduce server costs</li>
+                <li>• Implemented CI/CD pipelines for rapid deployment</li>
+              </ul>
             </motion.div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </motion.div>
+      </div>
+    </section>
 
-      {/* Fun Facts */}
-      <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="space-y-12"
+    {/* Technical Expertise */}
+    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
+      <div className="max-w-screen-xl mx-auto px-[150px]">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={stagger}
+          className="space-y-12"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
-            >
-              Fun Facts About Me
-            </motion.h2>
+            Technical Expertise
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+                Cloud & DevOps
+              </h4>
+              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+                <li>• AWS/GCP architecture</li>
+                <li>• Docker & Kubernetes</li>
+                <li>• Infrastructure as Code</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+                Performance Optimization
+              </h4>
+              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+                <li>• Database/query optimization</li>
+                <li>• Caching (Redis, CDN)</li>
+                <li>• Load balancing & scaling</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+                SEO Technical Skills
+              </h4>
+              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+                <li>• Core Web Vitals</li>
+                <li>• Schema markup</li>
+                <li>• Technical audits</li>
+                <li>• International SEO</li>
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
 
-            <motion.div 
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            >
-              {funFacts.map((fact, index) => {
-                const IconComponent = fact.icon
-                return (
-                  <motion.div
-                    key={index}
-                    variants={fadeInUp}
-                    className="group p-6 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
-                    whileHover={{ y: -5 }}
-                  >
-                    <div className="flex items-start gap-4">
-                      <motion.div
-                        variants={iconVariants}
-                        whileHover="hover"
-                        className="p-3 bg-light-mini/10 dark:bg-dark-mini/10 rounded-lg flex-shrink-0"
-                      >
-                        <IconComponent className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                      </motion.div>
-                      
-                      <div className="space-y-2">
-                        <h3 className="font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                          {fact.title}
-                        </h3>
-                        <p className="text-sm text-light-text dark:text-dark-text leading-relaxed">
-                          {fact.description}
-                        </p>
-                      </div>
+    {/* Personal Touch */}
+    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
+      <div className="max-w-screen-xl mx-auto px-[150px]">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={stagger}
+          className="space-y-12"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+          >
+            The Person Behind the Code
+          </motion.h2>
+          <motion.p
+            variants={fadeInUp}
+            className="text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
+          >
+            My fascination with technology began after a scholarship gave me the
+            chance to learn web development for a year. My curiosity about “how
+            things work” turned into a career focused on building, optimizing,
+            and scaling digital products. I believe in methodical, creative
+            problem-solving and continuous learning.
+          </motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+                My Process
+              </h4>
+              <ol className="text-sm text-light-text dark:text-dark-text space-y-1">
+                <li>1. Listen & Understand</li>
+                <li>2. Research & Analyze</li>
+                <li>3. Prototype & Test</li>
+                <li>4. Iterate & Improve</li>
+              </ol>
+            </div>
+            <div>
+              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+                Learning Philosophy
+              </h4>
+              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+                <li>• Stay curious about new tech</li>
+                <li>• Learn from failures and successes</li>
+                <li>• Share knowledge and mentor</li>
+                <li>• Question best practices</li>
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+
+    {/* Fun Facts */}
+    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
+      <div className="max-w-screen-xl mx-auto px-[150px]">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={stagger}
+          className="space-y-12"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+          >
+            Fun Facts About Me
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {funFacts.map((fact, i) => {
+              const Icon = fact.icon;
+              return (
+                <motion.div
+                  key={i}
+                  variants={fadeInUp}
+                  className="group p-6 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-light-mini/10 dark:bg-dark-mini/10 rounded-lg flex-shrink-0">
+                      <Icon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
                     </div>
-                  </motion.div>
-                )
-              })}
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+                    <div>
+                      <h3 className="font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                        {fact.title}
+                      </h3>
+                      <p className="text-sm text-light-text dark:text-dark-text leading-relaxed">
+                        {fact.description}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+    </section>
 
-      {/* Call to Action */}
-      <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-        <div className="max-w-screen-xl mx-auto px-[150px]">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="text-center space-y-8"
+    {/* Call to Action */}
+    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
+      <div className="max-w-screen-xl mx-auto px-[150px]">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={stagger}
+          className="text-center space-y-8"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            Let's Build Something Amazing Together
+          </motion.h2>
+          <motion.p
+            variants={fadeInUp}
+            className="text-light-text dark:text-dark-text max-w-2xl mx-auto leading-relaxed"
+          >
+            Whether you need help with SEO, full-stack development, or
+            infrastructure, I&apos;m always excited to tackle new challenges and
+            create solutions that make a real impact.
+          </motion.p>
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-wrap justify-center gap-4"
+          >
+            <Link
+              href="/contact"
+              className="px-6 py-3 bg-light-heading dark:bg-dark-heading text-light-bg dark:text-dark-bg rounded-lg hover:opacity-90 transition-opacity duration-300"
             >
-              Let's Build Something Amazing Together
-            </motion.h2>
-            
-            <motion.p 
-              variants={fadeInUp}
-              className="text-light-text dark:text-dark-text max-w-2xl mx-auto leading-relaxed"
+              Get In Touch
+            </Link>
+            <Link
+              href="/projects"
+              className="px-6 py-3 border border-light-mini/20 dark:border-dark-mini/20 text-light-heading dark:text-dark-heading rounded-lg hover:bg-light-mini/5 dark:hover:bg-dark-mini/5 transition-colors duration-300"
             >
-              Whether you need help with SEO optimization, full-stack development, or infrastructure design, 
-              I'm always excited to tackle new challenges and create solutions that make a real impact.
-            </motion.p>
-
-            <motion.div 
-              variants={fadeInUp}
-              className="flex flex-wrap justify-center gap-4"
-            >
-              <Link 
-                href="mailto:hello@example.com"
-                className="px-6 py-3 bg-light-heading dark:bg-dark-heading text-light-bg dark:text-dark-bg rounded-lg hover:opacity-90 transition-opacity duration-300"
-              >
-                Get In Touch
-              </Link>
-              <Link 
-                href="/"
-                className="px-6 py-3 border border-light-mini/20 dark:border-dark-mini/20 text-light-heading dark:text-dark-heading rounded-lg hover:bg-light-mini/5 dark:hover:bg-dark-mini/5 transition-colors duration-300"
-              >
-                View My Work
-              </Link>
-            </motion.div>
+              View My Work
+            </Link>
           </motion.div>
-        </div>
-      </section>
-    </div>
-  )
-}
+        </motion.div>
+      </div>
+    </section>
+  </div>
+);
 
-export default AboutPage
+export default AboutPage;
