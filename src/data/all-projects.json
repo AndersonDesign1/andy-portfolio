@@ -41,7 +41,7 @@
         "Mailchimp"
       ],
       "links": {
-        "live": "https://promptearn.ng",
+        "live": "https://promptearn.com/",
         "caseStudy": "/case-studies/prompt-earn"
       },
       "metrics": {
@@ -59,8 +59,8 @@
       "thumbnail": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
       "links": {
-        "live": "https://portfolio-demo.com",
-        "github": "https://github.com/username/portfolio"
+        "live": "https://www.andersonjoseph.com/",
+        "github": "https://github.com/AndersonDesign1/My-Portfolio"
       }
     },
     {
@@ -76,7 +76,7 @@
         "PageSpeed Insights"
       ],
       "links": {
-        "live": "https://thewealthypost.co.uk"
+        "live": "https://thewealthypost.com/"
       },
       "metrics": {
         "Organic Traffic": "200% increase post-launch",
@@ -86,49 +86,12 @@
     {
       "id": "5",
       "type": "standard",
-      "title": "Wix Developer at Eng4Careers",
-      "description": "Revamped the corporate website on Wix, streamlining UI/UX for better navigation and faster load times. Led user testing and feedback sessions, resulting in higher engagement and satisfaction.",
-      "thumbnail": "https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "techStack": ["Wix", "Wix Editor", "Wix Velo", "User Testing"],
-      "links": {
-        "live": "https://eng4careers.com"
-      },
-      "metrics": {
-        "Session Duration": "40% increase",
-        "Bounce Rate": "30% reduction",
-        "Load Speed": "7s → 2.4s"
-      }
-    },
-    {
-      "id": "6",
-      "type": "standard",
-      "title": "SEO Specialist at Book Tutors",
-      "description": "Drove a 70% increase in organic traffic and 35% more course sign-ups by optimizing content, targeting 150+ keywords, and achieving top 3 Google rankings for key course pages.",
-      "thumbnail": "https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "techStack": [
-        "Ahrefs",
-        "Google Search Console",
-        "Keyword Research",
-        "On-page SEO"
-      ],
-      "links": {
-        "live": "https://booktutors.ng"
-      },
-      "metrics": {
-        "Organic Traffic": "70% increase",
-        "Course Sign-ups": "35% increase",
-        "Top Rankings": "Top 3 for multiple courses"
-      }
-    },
-    {
-      "id": "7",
-      "type": "standard",
       "title": "Corporate Website for Dubiss Forex Academy",
       "description": "Built a modern, trust-focused website for Dubiss Forex Academy, highlighting their global reach, educational programs, and client testimonials. Enhanced credibility and user engagement with a clean, professional design.",
       "thumbnail": "https://images.pexels.com/photos/669619/pexels-photo-669619.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
-        "live": "https://dubissforex.com"
+        "live": "https://dubissfa.com/"
       },
       "metrics": {
         "Session Duration": "40% increase",
@@ -137,14 +100,14 @@
       }
     },
     {
-      "id": "8",
+      "id": "6",
       "type": "standard",
       "title": "Corporate Website for Craigwal Petreshore",
       "description": "Developed a robust corporate site for Craigwal Petreshore, showcasing engineering, procurement, and construction capabilities. Integrated downloadable company profile and clear service breakdowns.",
       "thumbnail": "https://images.pexels.com/photos/256369/pexels-photo-256369.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["WordPress", "Custom Theme", "SEO Optimization"],
       "links": {
-        "live": "https://craigwal.com"
+        "live": "https://www.craigwalpetroshore.com/"
       },
       "metrics": {
         "Profile Downloads": "Company profile download enabled",
@@ -153,14 +116,14 @@
       }
     },
     {
-      "id": "9",
+      "id": "7",
       "type": "standard",
       "title": "Corporate Website for New Hampshire Capital",
       "description": "Designed and built a modern site for New Hampshire Capital, highlighting their expertise in asset management, infrastructure, and energy projects. Focused on clarity, trust, and sector impact.",
       "thumbnail": "https://images.pexels.com/photos/2102416/pexels-photo-2102416.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
-        "live": "https://newhampshirecapital.com"
+        "live": "https://www.newhampshire.ng/"
       },
       "metrics": {
         "User Engagement": "Increased time on site",
@@ -169,14 +132,14 @@
       }
     },
     {
-      "id": "10",
+      "id": "8",
       "type": "standard",
       "title": "Corporate Website for Urabus Renewable Energies",
       "description": "Developed a clean, mission-driven website for Urabus Renewable Energies, focusing on their impact in healthcare, mobility, and sustainability. Showcased projects, testimonials, and SDG alignment.",
       "thumbnail": "https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
-        "live": "https://urabus.com"
+        "live": "https://www.urabusenergies.com/"
       },
       "metrics": {
         "Project Showcases": "Portfolio section added",
@@ -185,14 +148,14 @@
       }
     },
     {
-      "id": "11",
+      "id": "9",
       "type": "standard",
       "title": "Corporate Website for Aristeia Properties",
       "description": "Built a visually engaging site for Aristeia Properties, emphasizing their mission, vision, and core values. Enhanced investor trust and showcased real estate expertise.",
       "thumbnail": "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
-        "live": "https://aristeiaproperties.com"
+        "live": "https://www.aristeiaproperties.com/"
       },
       "metrics": {
         "Investor Inquiries": "Contact form conversions up",
@@ -201,7 +164,7 @@
       }
     },
     {
-      "id": "12",
+      "id": "10",
       "type": "standard",
       "title": "Lead Developer at Kyrus Recycling",
       "description": "Led a team to build a recycling web app that incentivizes users to recycle waste for rewards. Delivered the MVP in 3 months, driving 500+ user sign-ups in the first month.",
@@ -214,7 +177,7 @@
         "Team Leadership"
       ],
       "links": {
-        "live": "https://kyrusrecycling.com"
+        "live": "https://trashpoint.africa/"
       },
       "metrics": {
         "User Sign-ups": "500+ in first month",

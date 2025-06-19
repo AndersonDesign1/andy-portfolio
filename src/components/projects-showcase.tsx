@@ -23,9 +23,17 @@ interface Project {
   metrics?: Record<string, string>;
 }
 
+// Clean metrics and cast type for type safety
 const projects: Project[] = projectsDataJson.projects.map((p: any) => ({
   ...p,
   type: p.type as "case-study" | "standard",
+  metrics: p.metrics
+    ? Object.fromEntries(
+        Object.entries(p.metrics).filter(
+          ([, value]) => typeof value === "string"
+        )
+      )
+    : undefined,
 }));
 
 const categories = ["All", "Full Stack", "SEO", "Web Design"];
@@ -71,11 +79,7 @@ const ProjectsShowcase: React.FC = () => {
     if (activeCategory === "Web Design")
       return projects.filter((project) =>
         project.techStack.some((tech) =>
-          [
-            "WordPress",
-            "Wix",
-            "Webflow",
-          ].includes(tech)
+          ["WordPress", "Wix", "Webflow"].includes(tech)
         )
       );
     return [];
@@ -95,13 +99,13 @@ const ProjectsShowcase: React.FC = () => {
               variant="ghost"
               onClick={() => setActiveCategory(category)}
               className={`text-sm shadow-none transition-colors duration-200
-        ${
-          activeCategory === category
-            ? "font-bold text-light-heading dark:text-dark-heading"
-            : "text-light-mini dark:text-dark-mini"
-        }
-        hover:text-blue-600 dark:hover:text-blue-400 
-      `}
+                ${
+                  activeCategory === category
+                    ? "font-bold text-light-heading dark:text-dark-heading"
+                    : "text-light-mini dark:text-dark-mini"
+                }
+                hover:text-blue-600 dark:hover:text-blue-400
+              `}
               style={{
                 background: "none",
                 border: "none",
@@ -119,88 +123,128 @@ const ProjectsShowcase: React.FC = () => {
         <div className="max-w-screen-xl mx-auto px-[150px]">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeCategory}
+              key={activeCategory} // Key changes to re-trigger AnimatePresence for category transitions
               className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16"
               variants={gridVariants}
               initial="initial"
               animate="animate"
               exit="exit"
             >
-              {filteredProjects.map((project) => (
-                <motion.div key={project.id} className="group space-y-6">
+              {filteredProjects.map((project, index) => (
+                <motion.div // Apply main card animation
+                  key={project.id}
+                  className="group space-y-6"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.32,
+                    ease: [0.25, 0.25, 0, 1],
+                    delay: index * 0.06, // Use index for staggered delay
+                  }}
+                  viewport={{ once: true, amount: 0.2 }}
+                >
                   {/* Project Image */}
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+                  <motion.div // Apply image hover animation
+                    className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
+                    whileHover={{ scale: 1.025 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  >
                     <Image
                       src={project.thumbnail}
                       alt={project.title}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      // priority prop from original ProjectCard component, useful for LCP
+                      priority={index < 2 && activeCategory === "All"}
                     />
-                  </div>
+                    <div
+                      className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
+                      aria-hidden
+                    />
+                  </motion.div>
                   {/* Project Content */}
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-4">
-                      <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
+                      <motion.h3 // Apply title hover animation
+                        className="text-lg font-medium text-light-heading dark:text-dark-heading transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                        whileHover={{ x: 2 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                      >
                         {project.title}
-                      </h3>
+                      </motion.h3>
                       <div className="flex gap-4 flex-shrink-0">
                         {project.links.github && (
-                          <a
+                          <motion.a // Apply GitHub link hover animation
                             href={project.links.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm hover:underline text-light-mini dark:text-dark-mini"
+                            className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
+                            whileHover={{ x: 2 }}
+                            transition={{ duration: 0.18 }}
                           >
                             GitHub ↗
-                          </a>
+                          </motion.a>
                         )}
                         {project.links.live && (
-                          <a
+                          <motion.a // Apply Live link hover animation
                             href={project.links.live}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm hover:underline text-light-mini dark:text-dark-mini"
+                            className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
+                            whileHover={{ x: 2 }}
+                            transition={{ duration: 0.18 }}
                           >
                             View ↗
-                          </a>
+                          </motion.a>
                         )}
                         {project.links.caseStudy && (
-                          <Link
-                            href={project.links.caseStudy}
-                            className="text-sm hover:underline text-light-mini dark:text-dark-mini"
+                          <motion.div // Apply Case Study link hover animation
+                            whileHover={{ x: 2 }}
+                            transition={{ duration: 0.18 }}
                           >
-                            Case Study ↗
-                          </Link>
+                            <Link
+                              href={project.links.caseStudy}
+                              className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
+                            >
+                              Case Study ↗
+                            </Link>
+                          </motion.div>
                         )}
                       </div>
                     </div>
-                    <p className="text-sm text-light-text dark:text-dark-text">
+                    <p className="text-sm text-light-text dark:text-dark-text leading-relaxed">
                       {project.description}
                     </p>
                     {/* Metrics for Case Studies */}
                     {project.type === "case-study" && project.metrics && (
-                      <div className="space-y-1">
-                        <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading transition-colors duration-300">
                           Key Results
                         </h4>
-                        {Object.entries(project.metrics).map(([key, value]) => (
-                          <div
-                            key={key}
-                            className="text-sm text-light-text dark:text-dark-text"
-                          >
-                            <span className="capitalize">{key}:</span>
-                            <span className="ml-2 font-medium">{value}</span>
-                          </div>
-                        ))}
+                        <div className="space-y-1">
+                          {Object.entries(project.metrics).map(
+                            ([key, value]) => (
+                              <div
+                                key={key}
+                                className="text-sm text-light-text dark:text-dark-text transition-colors duration-300"
+                              >
+                                <span className="capitalize">{key}:</span>
+                                <span className="ml-2 font-medium">
+                                  {value}
+                                </span>
+                              </div>
+                            )
+                          )}
+                        </div>
                       </div>
                     )}
                     {/* Tech Stack */}
-                    <div>
-                      <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading transition-colors duration-300">
                         Tech Stack
                       </h4>
-                      <p className="text-xs text-light-mini dark:text-dark-mini">
+                      <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300">
                         {project.techStack.join(" / ")}
                       </p>
                     </div>

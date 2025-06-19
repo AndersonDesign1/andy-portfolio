@@ -20,10 +20,10 @@
         "caseStudy": "/case-studies/welup-digital"
       },
       "metrics": {
-        "website traffic": "+300% website traffic (as SEO Specialist)",
-        "user engagement": "+40% enhanced user engagement metrics",
-        "speed improvement": "Up to 50% improvement in site speed metrics",
-        "developed websites": "10 dynamic client websites developed and optimized for welup clients"
+        "Website Traffic": "+300% increase after relaunch",
+        "User Engagement": "+40% improvement in session duration",
+        "Site Speed": "50% faster load times",
+        "Client Sites": "10+ client websites built and optimized"
       }
     },
     {
@@ -41,16 +41,14 @@
         "Mailchimp"
       ],
       "links": {
-        "live": "https://promptearn.ng",
+        "live": "https://promptearn.com/",
         "caseStudy": "/case-studies/prompt-earn"
       },
       "metrics": {
-        "Affiliate Growth": "40,000 to 93,000+ partners",
         "Organic Traffic": "250% increase in 6 months",
-        "Sales Uplift": "45% increase",
+        "PageSpeed": "+35 points improvement",
         "Bounce Rate": "50% reduction",
-        "Keyword Ranking": "Top 5 for key terms",
-        "Engagement": "60%+ improvement"
+        "Keyword Ranking": "Top 5 for key terms"
       }
     },
     {
@@ -61,8 +59,8 @@
       "thumbnail": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
       "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
       "links": {
-        "live": "https://portfolio-demo.com",
-        "github": "https://github.com/username/portfolio"
+        "live": "https://www.andersonjoseph.com/",
+        "github": "https://github.com/AndersonDesign1/My-Portfolio"
       }
     },
     {
@@ -78,10 +76,10 @@
         "PageSpeed Insights"
       ],
       "links": {
-        "live": "https://thewealthypost.co.uk"
+        "live": "https://thewealthypost.com/"
       },
       "metrics": {
-        "Organic Traffic": "200% increase in 3 months",
+        "Organic Traffic": "200% increase post-launch",
         "Load Time": "Reduced from 15s to 3s"
       }
     }

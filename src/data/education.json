@@ -1,68 +1,103 @@
 {
   "education": [
     {
-      "id": "uc-berkeley-cs",
-      "institution": "University of California, Berkeley",
-      "degree": "Bachelor of Science",
-      "field": "Computer Science",
-      "location": "Berkeley, CA",
-      "startDate": "2016-08-15",
-      "endDate": "2020-05-15",
-      "gpa": "3.8/4.0",
-      "honors": [
-        "Magna Cum Laude",
-        "Dean's List (6 semesters)",
-        "CS Department Honors",
-        "Outstanding Senior Project Award"
-      ],
-      "relevantCourses": [
-        "Data Structures & Algorithms",
-        "Software Engineering",
-        "Database Systems",
-        "Web Development",
-        "Machine Learning",
-        "Computer Networks",
-        "Operating Systems",
-        "Computer Graphics",
-        "Artificial Intelligence",
-        "Human-Computer Interaction"
-      ],
-      "projects": [
-        "Built distributed chat application serving 1000+ concurrent users using WebSocket and Redis",
-        "Developed machine learning model for stock price prediction achieving 85% accuracy",
-        "Created web-based project management tool used by 200+ students with real-time collaboration",
-        "Implemented compiler for custom programming language with full lexical and syntax analysis"
-      ],
-      "institutionUrl": "https://berkeley.edu"
+      "id": "mckinsey-forward-program",
+      "institution": "McKinsey & Company",
+      "degree": "Program Completion",
+      "field": "Leadership Development",
+      "location": "Online",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-31",
+      "gpa": null,
+      "institutionUrl": "https://www.mckinsey.com/forward"
     },
     {
-      "id": "codecademy-fullstack",
-      "institution": "Codecademy",
-      "degree": "Professional Certificate",
-      "field": "Full Stack Web Development",
+      "id": "coursera-advanced-seo-tactics",
+      "institution": "Coursera",
+      "degree": "Certificate",
+      "field": "Advanced Content and Social Tactics to Optimize SEO",
       "location": "Online",
-      "startDate": "2020-01-01",
-      "endDate": "2020-06-30",
-      "honors": [
-        "Top 5% of cohort",
-        "Perfect attendance",
-        "Peer mentor recognition"
-      ],
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "gpa": null,
+      "institutionUrl": "https://coursera.org/verify/QGGVKP45U9MW"
+    },
+    {
+      "id": "freecodecamp-js-algorithms",
+      "institution": "freeCodeCamp",
+      "degree": "Certification",
+      "field": "JavaScript Algorithms and Data Structures",
+      "location": "Online",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31",
+      "gpa": null,
+      "honors": [],
       "relevantCourses": [
-        "Advanced React Development",
-        "Node.js & Express",
-        "Database Design",
-        "API Development",
-        "DevOps Fundamentals",
-        "Test-Driven Development",
-        "Agile Methodologies"
+        "ES6",
+        "Regular Expressions",
+        "Debugging",
+        "Basic Data Structures",
+        "Algorithm Scripting"
       ],
       "projects": [
-        "E-commerce platform with payment integration using Stripe and inventory management",
-        "Real-time chat application with WebSocket, user authentication, and file sharing",
-        "RESTful API with authentication, authorization, and comprehensive documentation"
+        "Completed all required projects for the JavaScript Algorithms and Data Structures certification."
       ],
-      "institutionUrl": "https://codecademy.com"
+      "institutionUrl": "https://freecodecamp.org/certification/fccb3aeb8e2-e79c-4716-a0eb-ab81a2aeccc1/javascript-algorithms-and-data-structures"
+    },
+    {
+      "id": "coursera-optimize-google-search",
+      "institution": "Coursera",
+      "degree": "Certificate",
+      "field": "Optimizing a Website for Google Search",
+      "location": "Online",
+      "startDate": "2023-09-01",
+      "endDate": "2023-09-30",
+      "gpa": null,
+      "institutionUrl": "https://coursera.org/verify/3H7ZVVUWS6Q6"
+    },
+    {
+      "id": "coursera-intro-google-seo",
+      "institution": "Coursera",
+      "degree": "Certificate",
+      "field": "Introduction to Google SEO",
+      "location": "Online",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31",
+      "gpa": null,
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WHCFRV6J3MW9"
+    },
+    {
+      "id": "coursera-google-seo-fundamentals",
+      "institution": "Coursera",
+      "degree": "Certificate",
+      "field": "Google SEO Fundamentals",
+      "location": "Online",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31",
+      "gpa": null,
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WXVUPBHNSW6Y"
+    },
+    {
+      "id": "nabteb-computer-science",
+      "institution": "NABTEB",
+      "degree": "Diploma",
+      "field": "Computer Science",
+      "location": "Benin City, Edo state",
+      "startDate": "2021-04-01",
+      "endDate": "2022-04-30",
+      "gpa": null,
+      "institutionUrl": "https://nabteb.gov.ng"
+    },
+    {
+      "id": "edobits-ict-academy",
+      "institution": "Edobits ICT Academy",
+      "degree": "Diploma",
+      "field": "Web Development",
+      "location": "Benin City, Edo state",
+      "startDate": "2020-09-01",
+      "endDate": "2021-09-30",
+      "gpa": null,
+      "institutionUrl": "https://edobits.com"
     }
   ]
 }
