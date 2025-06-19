@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useTheme } from "next-themes"; // Import useTheme
 
 interface MenuItem {
   label: string;
@@ -22,6 +23,13 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { theme, systemTheme } = useTheme();
+
+  const currentTheme = theme === "system" ? systemTheme : theme;
+
+
+  const logoSrc =
+    currentTheme === "dark" ? "/logo.png" : "/logo-dark.png";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -94,14 +102,14 @@ const Navbar: React.FC = () => {
       }`}
     >
       <div className="flex justify-center items-center max-w-6xl mx-auto">
-        <div className="bg-light-bg/90 dark:bg-dark-bg/90 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-light-mini/20 dark:border-dark-mini/20">
+        <div className="bg-light-bg/90 dark:bg-dark-bg/90 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-light-mini/20 dark:border-mini/20">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold mr-12" prefetch>
             <Image
-              src="/logo.png"
+              src={logoSrc} 
               alt="Logo"
               width={50}
-              height={20}
+              height={20} 
               className="object-contain"
               priority
             />
