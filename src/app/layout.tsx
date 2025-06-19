@@ -13,16 +13,35 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 // 1. Configure only the Inter font
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
-  description:
-    "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
-  keywords:
-    "Anderson Joseph, Web Developer, SEO Specialist, Web Performance, No-code Developer",
-  openGraph: {
-    url: "https://andersonjoseph.com",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+    description:
+      "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+    keywords: [
+      "Anderson Joseph",
+      "Web Developer",
+      "SEO Specialist",
+      "Web Performance",
+      "No-code Developer",
+    ],
+    openGraph: {
+      title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+      description:
+        "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+      url: "https://andersonjoseph.com",
+      type: "website",
+      images: ["/Andy.webp"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+      description:
+        "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+      images: ["/Andy.webp"],
+    },
+  };
+}
 
 interface RootLayoutProps {
   children: ReactNode;

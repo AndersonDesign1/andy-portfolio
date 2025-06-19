@@ -5,7 +5,7 @@
       "type": "case-study",
       "title": "Full-Stack Web & SEO Architect at Welup Digital",
       "description": "Built and fine-tuned Welup Digital’s core platforms for top-notch SEO, speed, and UX. Also crafted and optimized client sites, boosting traffic and online impact with smart, modern web strategies.",
-      "thumbnail": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "thumbnail": "/welup-digital.webp",
       "techStack": [
         "Next.js",
         "TypeScript",
@@ -31,7 +31,7 @@
       "type": "case-study",
       "title": "SEO & Growth Specialist at PromptEarn",
       "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and a 45% sales increase.",
-      "thumbnail": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "thumbnail": "/promptearn.webp",
       "techStack": [
         "Ahrefs",
         "Google Search Console",
@@ -56,7 +56,7 @@
       "type": "standard",
       "title": "Portfolio Website",
       "description": "A minimalist portfolio website showcasing projects and skills with a clean, responsive design and smooth animations.",
-      "thumbnail": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "thumbnail": "/my-website.webp",
       "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
       "links": {
         "live": "https://www.andersonjoseph.com/",
@@ -68,7 +68,7 @@
       "type": "standard",
       "title": "WordPress Developer at The Wealthy Post",
       "description": "Revamped The Wealthy Post’s website with advanced WordPress techniques, boosting engagement and organic traffic through responsive design, SEO, and performance optimization.",
-      "thumbnail": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "thumbnail": "/the-wealthy-post.webp",
       "techStack": [
         "WordPress",
         "Yoast SEO",

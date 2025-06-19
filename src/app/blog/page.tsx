@@ -4,11 +4,32 @@ import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
-export const metadata: Metadata = {
-  title: "Blog | Andy Portfolio",
-  description:
-    "Insights, tutorials, and stories from my journey in engineering, design, and business.",
-};
+// Using generateMetadata enables streaming for performance
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Blog | Andy Portfolio",
+    description:
+      "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
+
+    openGraph: {
+      title: "Blog | Andy Portfolio",
+      description:
+        "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
+      url: "https://www.andersonjoseph.com/blog",
+      type: "website",
+      images: ["/Andy.webp"],
+    },
+
+    // Twitter/X sharing
+    twitter: {
+      card: "summary_large_image",
+      title: "Blog | Andy Portfolio",
+      description:
+        "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
+      images: ["/Andy.webp"],
+    },
+  };
+}
 
 async function getPosts() {
   try {

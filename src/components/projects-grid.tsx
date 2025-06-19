@@ -25,8 +25,6 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
   project,
   index,
 }) => {
-  const isCaseStudy = project.type === "case-study";
-
   return (
     <motion.div
       className="group space-y-6"
@@ -41,7 +39,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
     >
       {/* Project Image */}
       <motion.div
-        className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
+        className="relative aspect-[4/3] min-h-[200px] overflow-hidden rounded-lg"
         whileHover={{ scale: 1.025 }}
         transition={{ type: "spring", stiffness: 200, damping: 18 }}
       >
@@ -49,7 +47,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
           src={project.thumbnail}
           alt={project.title}
           fill
-          className="object-cover"
+          className="object-contain"
           sizes="(max-width: 768px) 100vw, 50vw"
           priority={index < 2}
         />

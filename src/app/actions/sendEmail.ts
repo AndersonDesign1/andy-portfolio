@@ -19,7 +19,7 @@ export async function sendEmail(
   try {
     await resend.emails.send({
       from: "Contact Form <contact@andersonjoseph.com>", // must be a verified sender/domain
-      to: ["hello@andersonjoseph.com"], // your receiving email
+      to: ["josanderson25@gmail.com"], // your receiving email
       subject: subject || "New Contact Form Submission",
       replyTo: email, // <-- correct property for Resend
       html: `
