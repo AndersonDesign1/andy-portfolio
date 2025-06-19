@@ -11,12 +11,14 @@ interface SanityImage {
   alt?: string;
   caption?: string;
 }
+
 interface Category {
   _id: string;
   title: string;
   slug: { current: string };
   description?: string;
 }
+
 interface SanityPost {
   title: string;
   body: any[];
@@ -37,11 +39,11 @@ const components: PortableTextComponents = {
       >
         <div className="relative w-full h-[500px] border-4 border-zinc-700 rounded-lg overflow-hidden">
           <Image
-            src={urlFor(value).url() || "/placeholder.svg"}
+            src={urlFor(value).url() || "/placeholder.svg?height=500&width=800"}
             alt={value.alt || "Blog post image"}
             fill
             className="object-cover"
-            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
         </div>
         {value.caption && (
@@ -53,7 +55,7 @@ const components: PortableTextComponents = {
     ),
     code: ({ value }) => (
       <motion.pre
-        className="bg-zinc-800 p-4 rounded-lg overflow-x-auto"
+        className="bg-zinc-800 p-4 rounded-lg overflow-x-auto my-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -123,7 +125,8 @@ const components: PortableTextComponents = {
         <a
           href={value.href}
           rel={rel}
-          className="text-blue-400 hover:text-blue-300 transition-colors"
+          className="text-blue-400 hover:text-blue-300 transition-colors underline"
+          target={!value.href.startsWith("/") ? "_blank" : undefined}
         >
           {children}
         </a>
@@ -158,21 +161,8 @@ const components: PortableTextComponents = {
 };
 
 export default function BlogPost({ post }: { post: SanityPost }) {
-  if (!post) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-bg text-dark-heading">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-6">Post not found</h1>
-          <Link href="/blog" className="text-gray-400 hover:text-gray-300">
-            Back to blog
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300 min-h-screen">
+    <section className="pt-28 pb-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300 min-h-screen">
       <div className="max-w-screen-md mx-auto px-6">
         <Link
           href="/blog"
@@ -181,6 +171,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
           <ArrowLeft className="mr-2 h-5 w-5" />
           Back to Blog
         </Link>
+
         <article className="max-w-4xl mx-auto">
           <motion.h1
             className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-light-heading dark:text-dark-heading"
@@ -190,9 +181,15 @@ export default function BlogPost({ post }: { post: SanityPost }) {
           >
             {post.title}
           </motion.h1>
-          {/* Categories (null-safe) */}
+
+          {/* Categories */}
           {post.categories && post.categories.length > 0 && (
-            <div className="mb-6 flex flex-wrap gap-2">
+            <motion.div
+              className="mb-6 flex flex-wrap gap-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
               {post.categories
                 ?.filter(
                   (cat): cat is Category =>
@@ -207,9 +204,15 @@ export default function BlogPost({ post }: { post: SanityPost }) {
                     {cat.title}
                   </Link>
                 ))}
-            </div>
+            </motion.div>
           )}
-          <p className="text-light-mini dark:text-dark-mini text-lg mb-8">
+
+          <motion.p
+            className="text-light-mini dark:text-dark-mini text-lg mb-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
             {new Date(post.publishedAt || post._createdAt).toLocaleDateString(
               "en-US",
               {
@@ -218,7 +221,8 @@ export default function BlogPost({ post }: { post: SanityPost }) {
                 day: "numeric",
               }
             )}
-          </p>
+          </motion.p>
+
           {post.mainImage && (
             <motion.figure
               className="mb-10"
@@ -228,11 +232,15 @@ export default function BlogPost({ post }: { post: SanityPost }) {
             >
               <div className="relative aspect-video overflow-hidden rounded-xl border-4 border-zinc-700">
                 <Image
-                  src={urlFor(post.mainImage).url() || "/placeholder.svg"}
+                  src={
+                    urlFor(post.mainImage).url() ||
+                    "/placeholder.svg?height=600&width=1200"
+                  }
                   alt={post.mainImage.alt || post.title}
                   fill
                   className="object-cover"
                   priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                 />
               </div>
               {post.mainImage.caption && (
@@ -242,9 +250,15 @@ export default function BlogPost({ post }: { post: SanityPost }) {
               )}
             </motion.figure>
           )}
-          <div className="prose prose-invert prose-lg max-w-none">
+
+          <motion.div
+            className="prose prose-invert prose-lg max-w-none"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             <PortableText value={post.body} components={components} />
-          </div>
+          </motion.div>
         </article>
       </div>
     </section>

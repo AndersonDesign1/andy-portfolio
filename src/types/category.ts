@@ -1,11 +1,10 @@
-import type { Rule } from "sanity"
-import type { DocumentSchema, SlugField, SchemaField } from "../lib/types"
+import type { Rule } from "sanity";
 
 /**
  * Category schema definition
  * Represents a blog post category
  */
-const category: DocumentSchema = {
+const category = {
   name: "category",
   title: "Category",
   type: "document",
@@ -15,7 +14,7 @@ const category: DocumentSchema = {
       title: "Title",
       type: "string",
       validation: (rule: Rule) => rule.required(),
-    } as SchemaField,
+    },
     {
       name: "slug",
       title: "Slug",
@@ -25,14 +24,13 @@ const category: DocumentSchema = {
         maxLength: 96,
       },
       validation: (rule: Rule) => rule.required(),
-    } as SlugField,
+    },
     {
       name: "description",
       title: "Description",
       type: "text",
-    } as SchemaField,
+    },
   ],
-}
+} as const;
 
-export default category
-
+export default category;

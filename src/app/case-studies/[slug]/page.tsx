@@ -12,9 +12,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[params.slug];
+  const { slug } = await params;
+  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
   return cs
     ? {
         title: `${cs.hero.title} - Case Study`,
@@ -23,8 +24,13 @@ export async function generateMetadata({
     : { title: "Case Study Not Found" };
 }
 
-export default function CaseStudy({ params }: { params: { slug: string } }) {
-  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[params.slug];
+export default async function CaseStudyPageComponent({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
   if (!cs) notFound();
   return <CaseStudyPage caseStudy={cs} />;
 }

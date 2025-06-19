@@ -1,11 +1,10 @@
-import type { Rule } from "sanity"
-import type { DocumentSchema, SchemaField, SlugField, ImageField, ArrayField, CodeField } from "../lib/types"
+import type { Rule } from "sanity";
 
 /**
  * Post schema definition
  * Represents a blog post with rich content
  */
-const postSchema: DocumentSchema = {
+const postSchema = {
   name: "post",
   title: "Post",
   type: "document",
@@ -15,7 +14,7 @@ const postSchema: DocumentSchema = {
       title: "Title",
       type: "string",
       validation: (rule: Rule) => rule.required().max(100),
-    } as SchemaField,
+    },
     {
       name: "slug",
       title: "Slug",
@@ -25,7 +24,7 @@ const postSchema: DocumentSchema = {
         maxLength: 96,
       },
       validation: (rule: Rule) => rule.required(),
-    } as SlugField,
+    },
     {
       name: "mainImage",
       title: "Main image",
@@ -48,16 +47,13 @@ const postSchema: DocumentSchema = {
           description: "Text displayed below the image",
         },
       ],
-    } as ImageField,
+    },
     {
       name: "categories",
       title: "Categories",
       type: "array",
-      of: [{ type: "string" }],
-      options: {
-        layout: "tags",
-      },
-    } as ArrayField,
+      of: [{ type: "reference", to: [{ type: "category" }] }],
+    },
     {
       name: "tags",
       title: "Tags",
@@ -66,13 +62,13 @@ const postSchema: DocumentSchema = {
       options: {
         layout: "tags",
       },
-    } as ArrayField,
+    },
     {
       name: "publishedAt",
       title: "Published at",
       type: "datetime",
       validation: (rule: Rule) => rule.required(),
-    } as SchemaField,
+    },
     {
       name: "excerpt",
       title: "Excerpt",
@@ -80,14 +76,14 @@ const postSchema: DocumentSchema = {
       rows: 3,
       description: "A short summary of the post, used for SEO and previews.",
       validation: (rule: Rule) => rule.required().max(200),
-    } as SchemaField,
+    },
     {
       name: "seoTitle",
       title: "SEO Title",
       type: "string",
       description: "Title used for SEO (if different from main title)",
       validation: (rule: Rule) => rule.max(60),
-    } as SchemaField,
+    },
     {
       name: "seoDescription",
       title: "SEO Description",
@@ -95,7 +91,7 @@ const postSchema: DocumentSchema = {
       rows: 3,
       description: "Description used for SEO (if different from excerpt)",
       validation: (rule: Rule) => rule.max(160),
-    } as SchemaField,
+    },
     {
       name: "body",
       title: "Body",
@@ -122,7 +118,7 @@ const postSchema: DocumentSchema = {
           options: {
             hotspot: true,
           },
-        } as ImageField,
+        },
         {
           type: "code",
           options: {
@@ -136,9 +132,9 @@ const postSchema: DocumentSchema = {
               { title: "Python", value: "python" },
             ],
           },
-        } as CodeField,
+        },
       ],
-    } as ArrayField,
+    },
   ],
   preview: {
     select: {
@@ -146,7 +142,6 @@ const postSchema: DocumentSchema = {
       media: "mainImage",
     },
   },
-}
+} as const;
 
-export default postSchema
-
+export default postSchema;
