@@ -1,17 +1,12 @@
 "use client";
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useTheme } from "next-themes"; // Import useTheme
+import { useTheme } from "next-themes";
 
-interface MenuItem {
-  label: string;
-  link: string;
-}
-
-const menuItems: MenuItem[] = [
+const menuItems = [
   { label: "Home", link: "/" },
   { label: "About", link: "/about" },
   { label: "Portfolio", link: "/projects" },
@@ -22,76 +17,21 @@ const menuItems: MenuItem[] = [
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { theme, systemTheme } = useTheme();
-
-  const currentTheme = theme === "system" ? systemTheme : theme;
-
-
-  const logoSrc =
-    currentTheme === "dark" ? "/logo.png" : "/logo-black.png";
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    setMounted(true);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  useEffect(() => setIsOpen(false), [pathname]);
 
-  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
-
-  const renderedMenuItems = useMemo(
-    () =>
-      menuItems.map(({ label, link }) => {
-        const isActive = pathname === link;
-        return (
-          <li key={label}>
-            <Link
-              href={link}
-              prefetch
-              className={`relative px-3 py-1 font-medium text-light-heading dark:text-dark-heading transition-colors duration-200
-                after:content-[''] after:absolute after:w-full after:h-[2px] after:left-0 after:-bottom-1 after:rounded-full
-                after:transition-transform after:duration-300 after:bg-blue-500
-                ${
-                  isActive
-                    ? "after:scale-x-100"
-                    : "after:scale-x-0 hover:after:scale-x-100"
-                }
-                after:origin-left`}
-              aria-current={isActive ? "page" : undefined}
-            >
-              {label}
-            </Link>
-          </li>
-        );
-      }),
-    [pathname]
-  );
-
-  const renderedMobileMenuItems = useMemo(
-    () =>
-      menuItems.map(({ label, link }) => {
-        const isActive = pathname === link;
-        return (
-          <Link
-            key={label}
-            href={link}
-            prefetch
-            className={`block w-full px-3 py-2 rounded-xl font-medium text-light-heading dark:text-dark-heading transition-colors duration-200
-              ${isActive ? "bg-blue-900/30" : "hover:bg-blue-900/10"}
-            `}
-            onClick={() => setIsOpen(false)}
-            aria-current={isActive ? "page" : undefined}
-          >
-            {label}
-          </Link>
-        );
-      }),
-    [pathname]
-  );
+  const logoSrc =
+    resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
 
   return (
     <nav
@@ -103,26 +43,49 @@ const Navbar: React.FC = () => {
     >
       <div className="flex justify-center items-center max-w-6xl mx-auto">
         <div className="bg-light-bg/90 dark:bg-dark-bg/90 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-light-mini/20 dark:border-mini/20">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold mr-12" prefetch>
-            <Image
-              src={logoSrc} 
-              alt="Logo"
-              width={50}
-              height={20} 
-              className="object-contain"
-              priority
-            />
+          <Link href="/" className="mr-12" prefetch>
+            {mounted && (
+              <Image
+                key={logoSrc}
+                src={logoSrc}
+                alt="Logo"
+                width={50}
+                height={20}
+                className="object-contain"
+                priority
+              />
+            )}
           </Link>
-          {/* Navigation Links */}
-          <ul className="hidden md:flex gap-4">{renderedMenuItems}</ul>
-          {/* Theme Toggle */}
+          <ul className="hidden md:flex gap-4">
+            {menuItems.map(({ label, link }) => {
+              const isActive = pathname === link;
+              return (
+                <li key={label}>
+                  <Link
+                    href={link}
+                    prefetch
+                    className={`relative px-3 py-1 font-medium text-light-heading dark:text-dark-heading transition-colors duration-200
+                      after:content-[''] after:absolute after:w-full after:h-[2px] after:left-0 after:-bottom-1 after:rounded-full
+                      after:transition-transform after:duration-300 after:bg-blue-500
+                      ${
+                        isActive
+                          ? "after:scale-x-100"
+                          : "after:scale-x-0 hover:after:scale-x-100"
+                      }
+                      after:origin-left`}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
           <div className="ml-6">
             <ThemeToggle />
           </div>
-          {/* Mobile Menu Button */}
           <button
-            onClick={toggleMenu}
+            onClick={() => setIsOpen((v) => !v)}
             className="md:hidden text-light-heading dark:text-dark-heading text-2xl focus:outline-none ml-auto"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
@@ -133,7 +96,6 @@ const Navbar: React.FC = () => {
           </button>
         </div>
       </div>
-      {/* Mobile Dropdown Menu */}
       <div
         id="mobile-menu"
         className={`absolute top-full left-0 right-0 mx-4 mt-2 bg-light-bg dark:bg-dark-bg text-light-heading dark:text-dark-heading flex flex-col gap-2 py-6 px-6 z-50 shadow-lg md:hidden rounded-3xl border border-light-mini/10 dark:border-dark-mini/10 backdrop-blur-xs transition-all duration-300 ${
@@ -144,7 +106,23 @@ const Navbar: React.FC = () => {
         role="menu"
         aria-labelledby="menu-button"
       >
-        {renderedMobileMenuItems}
+        {menuItems.map(({ label, link }) => {
+          const isActive = pathname === link;
+          return (
+            <Link
+              key={label}
+              href={link}
+              prefetch
+              className={`block w-full px-3 py-2 rounded-xl font-medium text-light-heading dark:text-dark-heading transition-colors duration-200
+                ${isActive ? "bg-blue-900/30" : "hover:bg-blue-900/10"}
+              `}
+              onClick={() => setIsOpen(false)}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

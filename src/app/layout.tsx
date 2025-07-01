@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode, ReactElement } from "react";
-import { Inter } from "next/font/google"; // Keep only Inter
+import { Inter } from "next/font/google"; 
 import "./globals.css";
-
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/ui/navbar";
@@ -10,7 +9,6 @@ import Footer from "@/components/ui/footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// 1. Configure only the Inter font
 const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -52,14 +50,8 @@ export default function RootLayout({
 }: RootLayoutProps): ReactElement {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* 2. Apply the Inter font's className directly to the body */}
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
+        <ThemeProvider disableTransitionOnChange={false}>
           <Navbar />
           <main>{children}</main>
           <Footer />
