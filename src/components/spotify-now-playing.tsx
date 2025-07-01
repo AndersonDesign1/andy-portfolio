@@ -22,7 +22,7 @@ export default function SpotifyNowPlaying() {
       }
     }
     fetchTrack();
-    const interval = setInterval(fetchTrack, 30000);
+    const interval = setInterval(fetchTrack, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -53,10 +53,8 @@ export default function SpotifyNowPlaying() {
       onBlur={() => setShowTooltip(false)}
       tabIndex={0}
     >
-      <a
-        href={track.external_urls.spotify}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        onClick={() => setShowTooltip(!showTooltip)}
         className={`
           flex items-center gap-2 sm:gap-3
           bg-light-bg text-dark-bg border border-light-mini/30
@@ -66,12 +64,8 @@ export default function SpotifyNowPlaying() {
           focus:outline-none focus:ring-2 focus:ring-blue-400
           text-xs sm:text-sm max-w-[90vw] sm:max-w-xs
         `}
-        aria-label={`Now playing: ${track.name} by ${track.artists
-          .map((a) => a.name)
-          .join(", ")}`}
-        title={`Now playing: ${track.name} by ${track.artists
-          .map((a) => a.name)
-          .join(", ")}`}
+        aria-label={track.isPlaying ? `Now playing: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}` : `Last played: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}`}
+        title={track.isPlaying ? `Now playing: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}` : `Last played: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}`}
       >
         <img
           src={track.album.images[2]?.url || track.album.images[0]?.url}
@@ -80,13 +74,13 @@ export default function SpotifyNowPlaying() {
         />
         <div className="flex flex-col items-start min-w-0">
           <span className="font-medium text-[11px] sm:text-xs truncate w-full">
-            {track.isPlaying ? "Now Playing" : "Recently Played"}
+            {track.isPlaying ? "Now Playing" : "Last Played"}
           </span>
           <span className="text-[11px] sm:text-xs text-light-mini dark:text-dark-mini truncate w-full">
             {track.name} — {track.artists.map((a) => a.name).join(", ")}
           </span>
         </div>
-      </a>
+      </button>
       {/* Tooltip/Modal */}
       <div
         className={`
