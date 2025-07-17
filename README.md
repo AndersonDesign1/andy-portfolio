@@ -1,6 +1,6 @@
-# Next.js Portfolio & Blog
+# My Personal Portfolio
 
-A modern fullstack web app boilerplate built using:
+A modern full-stack Portfolio built using:
 
 - [Next.js 15+](https://nextjs.org/)
 - [Sanity](https://www.sanity.io/)
@@ -25,7 +25,7 @@ A modern fullstack web app boilerplate built using:
 ### 1. Clone the Repository
 
 ```
-git clone <your-repo-url>
+git clone [<your-repo-url>](https://github.com/AndersonDesign1/andy-portfolio.git)
 ```
 
 ### 2. Install Dependencies with PNPM
