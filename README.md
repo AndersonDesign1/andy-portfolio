@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Portfolio & Blog
 
-## Getting Started
+A modern fullstack web app boilerplate built using:
 
-First, run the development server:
+- [Next.js 15+](https://nextjs.org/)
+- [Sanity](https://www.sanity.io/)
+- [shadcn/ui](https://ui.shadcn.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [PNPM](https://pnpm.io/) (Fast, disk-efficient package manager)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- Out-of-the-box content management with Sanity
+- Beautiful UI components using shadcn/ui
+- Scalable backend using Sanity
+- Folder structure ready for production apps
+- Strict TypeScript setup
+- App Router support (Next.js 15+)
+- Spotify "Now Playing" integration to show your recent songs
+
+---
+
+##  Getting Started
+
+### 1. Clone the Repository
+
+```
+git clone <your-repo-url>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies with PNPM
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+> This project uses [PNPM](https://pnpm.io/) for faster and more efficient package management.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### Install PNPM globally (if not installed)
 
-## Learn More
+```
+npm install -g pnpm
+```
 
-To learn more about Next.js, take a look at the following resources:
+#### Then install dependencies:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+pnpm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+##  Setup Sanity
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Go to [Sanity.io](https://www.sanity.io/) and create a free account.
+2. Create a new project.
+3. In the `.env.local` file (rename `env.example` to `.env.local`), add the following values from your Sanity project dashboard:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_sanity_project_id
+NEXT_PUBLIC_SANITY_DATASET=your_sanity_dataset
+```
+
+---
+
+## Setup Spotify Now Playing
+
+1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and create a new application.
+2. In the `.env.local` file, add the following values from your Spotify application dashboard:
+
+```env
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_REFRESH_TOKEN=your_spotify_refresh_token
+```
+
+---
+
+##  Run the App
+
+
+Visit `http://localhost:3000` to view the app in the browser.
+
+---
+
+##  Project Structure
+
+```
+.
+├── src/
+│   ├── app/              # App router structure
+│   ├── components/       # UI components (shadcn/ui)
+│   ├── lib/              # Utility functions
+│   ├── sanity/           # Sanity schema and client
+│   └── types/            # TypeScript types
+├── public/           # Static files
+├── .env.example        # Environment variables
+├── package.json
+├── pnpm-lock.yaml
+└── README.md
+```
+
+---
+
+##  Customization Tips
+
+- Add more shadcn components by running:
+  ```
+  pnpm dlx shadcn-ui@latest add [component]
+  ```
+- Extend the Sanity schema in `src/sanity/schemaTypes` as needed.
+
+---
+
+##  Deployment
+
+You can deploy this app to:
+
+- [Vercel](https://vercel.com/) — seamless for Next.js
+- [Netlify](https://netlify.com/)
+- [Render](https://render.com/)
+
+---
+
+##  License
+
+MIT License
