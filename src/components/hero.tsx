@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
+import { motion } from "motion/react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { FaGithub, FaEnvelope, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -35,78 +35,167 @@ const socialLinks = [
 ];
 
 const containerVariants = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.08,
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.32, ease: [0.25, 0.25, 0, 1] },
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+      duration: 0.6,
+    },
   },
 };
 
-const Hero: React.FC = () => {
+const linkVariants = {
+  hover: {
+    x: 8,
+    scale: 1.05,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+  tap: {
+    scale: 0.95,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+};
+
+const socialIconVariants = {
+  hover: {
+    y: -8,
+    rotate: [0, -10, 10, 0],
+    scale: 1.2,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+  tap: {
+    scale: 0.9,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+};
+
+export default function Hero() {
   return (
     <section className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 relative min-h-[60vh] flex items-center">
       <div className="max-w-screen-xl mx-auto px-6 md:px-[150px] w-full">
         <motion.div
+          variants={containerVariants}
           initial="hidden"
           animate="visible"
-          variants={containerVariants}
           className="text-left"
         >
           <motion.h1
-            className="text-3xl md:text-4xl font-semibold mb-6 text-light-heading dark:text-dark-heading transition-colors duration-300"
             variants={itemVariants}
+            whileHover={{
+              scale: 1.02,
+              x: 5,
+              transition: { type: "spring", stiffness: 300, damping: 20 },
+            }}
+            className="text-3xl md:text-4xl font-semibold mb-6 text-light-heading dark:text-dark-heading"
           >
             Hello 👋, I&apos;m Andy
           </motion.h1>
+
           <motion.p
-            className="text-base leading-relaxed mb-8 text-light-text dark:text-dark-text transition-colors duration-300 max-w-2xl"
             variants={itemVariants}
+            whileHover={{
+              x: 5,
+              transition: { type: "spring", stiffness: 300, damping: 20 },
+            }}
+            className="text-base leading-relaxed mb-8 text-light-text dark:text-dark-text max-w-2xl"
           >
             Full-stack developer who geeks out over SEO and software
             infrastructure. I&apos;m obsessed with crafting web experiences that
             are lightning-fast, generate revenue and solve problems.
           </motion.p>
-          <motion.div className="flex gap-6 mb-8" variants={itemVariants}>
-            <Link
-              href="/about"
-              className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+
+          <motion.div variants={itemVariants} className="flex gap-6 mb-8">
+            <motion.div
+              variants={linkVariants}
+              whileHover="hover"
+              whileTap="tap"
             >
-              About Me ↗
-            </Link>
-            <Link
-              href="/blog"
-              className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+              <Link
+                href="/about"
+                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+              >
+                About Me ↗
+              </Link>
+            </motion.div>
+
+            <motion.div
+              variants={linkVariants}
+              whileHover="hover"
+              whileTap="tap"
             >
-              Blog ↗
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+              <Link
+                href="/blog"
+                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+              >
+                Blog ↗
+              </Link>
+            </motion.div>
+
+            <motion.div
+              variants={linkVariants}
+              whileHover="hover"
+              whileTap="tap"
             >
-              Contact ↗
-            </Link>
+              <Link
+                href="/contact"
+                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+              >
+                Contact ↗
+              </Link>
+            </motion.div>
           </motion.div>
-          <motion.div className="flex gap-4" variants={itemVariants}>
-            {socialLinks.map(({ icon, href, label }) => (
+
+          <motion.div variants={itemVariants} className="flex gap-4">
+            {socialLinks.map(({ icon, href, label }, index) => (
               <motion.a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:opacity-80 transition-all duration-300 text-light-mini dark:text-dark-mini"
-                whileHover={{ y: -2, scale: 1.12 }}
-                whileTap={{ scale: 0.96 }}
+                variants={socialIconVariants}
+                whileHover="hover"
+                whileTap="tap"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 0.4 + index * 0.1,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 20,
+                }}
+                className="text-light-mini dark:text-dark-mini p-3 rounded-full hover:bg-light-mini/10 dark:hover:bg-dark-mini/10"
                 aria-label={label}
               >
                 {icon}
@@ -118,6 +207,4 @@ const Hero: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default Hero;
+}

@@ -1,266 +1,120 @@
 "use client";
-import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import { urlFor } from "@/sanity/lib/image";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { PortableText } from "@portabletext/react";
+import { getPost, getPosts } from "@/sanity/lib/client";
+import { notFound } from "next/navigation";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-interface SanityImage {
-  asset: { _ref: string; _type: string };
-  alt?: string;
-  caption?: string;
+export async function generateStaticParams() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    slug: post.slug.current,
+  }));
 }
 
-interface Category {
-  _id: string;
-  title: string;
-  slug: { current: string };
-  description?: string;
-}
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const post = await getPost(params.slug);
 
-interface SanityPost {
-  title: string;
-  body: any[];
-  _createdAt: string;
-  publishedAt?: string;
-  mainImage?: SanityImage;
-  categories?: (Category | null)[];
-}
+  if (!post) {
+    notFound();
+  }
 
-const components: PortableTextComponents = {
-  types: {
-    image: ({ value }) => (
-      <motion.figure
-        className="my-10"
-        initial={{ opacity: 0, scale: 1.05 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.25, 0.25, 0, 1] }}
-      >
-        <div className="relative w-full h-[500px] border-4 border-zinc-700 rounded-lg overflow-hidden">
-          <Image
-            src={urlFor(value).url() || "/placeholder.svg?height=500&width=800"}
-            alt={value.alt || "Blog post image"}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-          />
-        </div>
-        {value.caption && (
-          <figcaption className="mt-4 text-center text-sm text-gray-400 italic">
-            {value.caption}
-          </figcaption>
-        )}
-      </motion.figure>
-    ),
-    code: ({ value }) => (
-      <motion.pre
-        className="bg-zinc-800 p-4 rounded-lg overflow-x-auto my-6"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <code className="text-sm font-mono text-gray-200">{value.code}</code>
-      </motion.pre>
-    ),
-  },
-  block: {
-    h1: ({ children }) => (
-      <motion.h1
-        className="text-4xl font-bold mt-8 mb-4 text-light-heading dark:text-dark-heading"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {children}
-      </motion.h1>
-    ),
-    h2: ({ children }) => (
-      <motion.h2
-        className="text-3xl font-bold mt-8 mb-4 text-light-heading dark:text-dark-heading"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {children}
-      </motion.h2>
-    ),
-    h3: ({ children }) => (
-      <motion.h3
-        className="text-2xl font-bold mt-6 mb-3 text-light-heading dark:text-dark-heading"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {children}
-      </motion.h3>
-    ),
-    normal: ({ children }) => (
-      <motion.p
-        className="text-light-text dark:text-dark-text leading-relaxed mb-6"
-        initial={{ opacity: 0.8 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        {children}
-      </motion.p>
-    ),
-    blockquote: ({ children }) => (
-      <motion.blockquote
-        className="border-l-4 border-blue-500 pl-4 italic my-6 text-light-text dark:text-dark-text"
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        {children}
-      </motion.blockquote>
-    ),
-  },
-  marks: {
-    link: ({ children, value }) => {
-      const rel = !value.href.startsWith("/")
-        ? "noreferrer noopener"
-        : undefined;
-      return (
-        <a
-          href={value.href}
-          rel={rel}
-          className="text-blue-400 hover:text-blue-300 transition-colors underline"
-          target={!value.href.startsWith("/") ? "_blank" : undefined}
-        >
-          {children}
-        </a>
-      );
-    },
-    code: ({ children }) => (
-      <code className="bg-zinc-800 px-1.5 py-0.5 rounded text-gray-200 font-mono text-sm">
-        {children}
-      </code>
-    ),
-    strong: ({ children }) => (
-      <strong className="font-bold text-light-heading dark:text-dark-heading">
-        {children}
-      </strong>
-    ),
-    em: ({ children }) => (
-      <em className="italic text-light-text dark:text-dark-text">{children}</em>
-    ),
-  },
-  list: {
-    bullet: ({ children }) => (
-      <ul className="list-disc list-inside space-y-2 mb-6 text-light-text dark:text-dark-text pl-4">
-        {children}
-      </ul>
-    ),
-    number: ({ children }) => (
-      <ol className="list-decimal list-inside space-y-2 mb-6 text-light-text dark:text-dark-text pl-4">
-        {children}
-      </ol>
-    ),
-  },
-};
-
-export default function BlogPost({ post }: { post: SanityPost }) {
   return (
-    <section className="pt-28 pb-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300 min-h-screen">
-      <div className="max-w-screen-md mx-auto px-6">
-        <Link
-          href="/blog"
-          className="inline-flex items-center text-light-mini dark:text-dark-mini hover:text-blue-400 font-medium mb-10 transition-colors duration-300"
+    <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] py-20">
+        {/* Back Navigation */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8"
         >
-          <ArrowLeft className="mr-2 h-5 w-5" />
-          Back to Blog
-        </Link>
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            Back to Blog
+          </Link>
+        </motion.div>
 
-        <article className="max-w-4xl mx-auto">
+        {/* Article Header */}
+        <motion.article
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto"
+        >
+          {/* Title */}
           <motion.h1
-            className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-light-heading dark:text-dark-heading"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl lg:text-5xl font-bold text-light-heading dark:text-dark-heading mb-6"
           >
             {post.title}
           </motion.h1>
 
-          {/* Categories */}
-          {post.categories && post.categories.length > 0 && (
+          {/* Meta Information */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-wrap items-center gap-4 text-sm text-light-mini dark:text-dark-mini mb-8"
+          >
+            <span>
+              {new Date(post.publishedAt || post._createdAt).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
+            </span>
+            {post.categories && post.categories.length > 0 && (
+              <>
+                <span>•</span>
+                <span>{post.categories[0].title}</span>
+              </>
+            )}
+          </motion.div>
+
+          {/* Featured Image */}
+          {post.mainImage && (
             <motion.div
-              className="mb-6 flex flex-wrap gap-2"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="relative aspect-[16/9] overflow-hidden rounded-lg mb-8"
             >
-              {post.categories
-                ?.filter(
-                  (cat): cat is Category =>
-                    !!cat && !!cat.slug && !!cat.slug.current
-                )
-                .map((cat) => (
-                  <Link
-                    key={cat._id}
-                    href={`/blog/category/${cat.slug.current}`}
-                    className="inline-block bg-blue-900 text-blue-200 px-3 py-1 rounded-full text-xs font-medium hover:bg-blue-800 transition"
-                  >
-                    {cat.title}
-                  </Link>
-                ))}
+              <Image
+                src={post.mainImage.asset.url}
+                alt={post.title}
+                fill
+                className="object-cover"
+                priority
+              />
             </motion.div>
           )}
 
-          <motion.p
-            className="text-light-mini dark:text-dark-mini text-lg mb-8"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            {new Date(post.publishedAt || post._createdAt).toLocaleDateString(
-              "en-US",
-              {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }
-            )}
-          </motion.p>
-
-          {post.mainImage && (
-            <motion.figure
-              className="mb-10"
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, ease: [0.25, 0.25, 0, 1] }}
-            >
-              <div className="relative aspect-video overflow-hidden rounded-xl border-4 border-zinc-700">
-                <Image
-                  src={
-                    urlFor(post.mainImage).url() ||
-                    "/placeholder.svg?height=600&width=1200"
-                  }
-                  alt={post.mainImage.alt || post.title}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                />
-              </div>
-              {post.mainImage.caption && (
-                <figcaption className="mt-4 text-center text-sm text-gray-400 italic">
-                  {post.mainImage.caption}
-                </figcaption>
-              )}
-            </motion.figure>
-          )}
-
+          {/* Content */}
           <motion.div
-            className="prose prose-invert prose-lg max-w-none"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="prose prose-lg max-w-none prose-headings:text-light-heading prose-headings:dark:text-dark-heading prose-p:text-light-text prose-p:dark:text-dark-text prose-strong:text-light-heading prose-strong:dark:text-dark-heading prose-a:text-blue-600 prose-a:dark:text-blue-400"
           >
-            <PortableText value={post.body} components={components} />
+            <PortableText value={post.body} />
           </motion.div>
-        </article>
+        </motion.article>
       </div>
-    </section>
+    </div>
   );
 }

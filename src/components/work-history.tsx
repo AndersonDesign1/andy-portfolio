@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   BriefcaseIcon,
   AcademicCapIcon,
@@ -12,6 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import workExperienceData from "@/data/work-experience.json";
 import educationData from "@/data/education.json";
+import { getAnimationDelay, formatDate } from "@/lib/utils";
 
 const TABS = ["work", "education"] as const;
 type Tab = (typeof TABS)[number];
@@ -21,30 +21,22 @@ const tabIcons = {
   education: <AcademicCapIcon className="w-4 h-4" />,
 };
 
-const WorkHistory: React.FC = () => {
+export default function WorkHistory() {
   const [activeTab, setActiveTab] = useState<Tab>("work");
   const workExperience = workExperienceData.workExperience;
   const education = educationData.education;
 
   return (
     <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div
-        className="
-          max-w-screen-xl mx-auto
-          px-4
-          sm:px-8
-          md:px-16
-          lg:px-[150px]
-        "
-      >
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         {/* Header & Toggle */}
-        <div className="mb-16">
+        <div className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
             Professional Background
           </h2>
           <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full">
             {TABS.map((tab) => (
-              <motion.button
+              <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`relative z-10 flex items-center gap-2 px-7 py-2 text-sm font-medium rounded-full transition-all duration-200 cursor-pointer ${
@@ -54,89 +46,64 @@ const WorkHistory: React.FC = () => {
                 }`}
                 style={{ fontWeight: activeTab === tab ? 600 : 500 }}
                 type="button"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
               >
                 {tabIcons[tab]}
                 {tab === "work" ? "Experience" : "Education"}
-              </motion.button>
+              </button>
             ))}
             {/* Active Tab Background */}
-            <motion.div
-              className="absolute top-1 bottom-1 bg-light-heading dark:bg-dark-heading rounded-full shadow-lg"
-              initial={false}
-              animate={{
-                left: activeTab === "work" ? "4px" : "50%",
-                right: activeTab === "work" ? "50%" : "4px",
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            <div
+              className={`absolute top-1 bottom-1 bg-light-heading dark:bg-dark-heading rounded-full shadow-lg transition-all duration-300 ${
+                activeTab === "work"
+                  ? "left-1 right-[50%]"
+                  : "left-[50%] right-1"
+              }`}
             />
           </div>
         </div>
 
         {/* Content */}
-        <AnimatePresence mode="wait">
+        <div className="space-y-12">
           {activeTab === "work" ? (
-            <motion.div
-              key="work"
-              className="space-y-12"
-              initial={false}
-              animate="visible"
-              exit="hidden"
-            >
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               {workExperience.map((job, idx) => (
-                <motion.div
+                <div
                   key={job.id}
-                  className="relative flex flex-col sm:flex-row gap-6"
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.32, ease: [0.25, 0.25, 0, 1] }}
-                  viewport={{ once: true, amount: 0.2 }}
+                  className="relative flex flex-col sm:flex-row gap-6 mb-12 last:mb-0 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                  style={{ animationDelay: getAnimationDelay(idx) }}
                 >
                   {/* Timeline Line - hidden on mobile */}
                   {idx < workExperience.length - 1 && (
                     <div className="absolute left-6 sm:left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20 hidden sm:block" />
                   )}
                   {/* Timeline Dot */}
-                  <motion.div
-                    className="relative flex-shrink-0 mx-auto sm:mx-0"
-                    whileHover={{ scale: 1.08 }}
-                  >
+                  <div className="relative flex-shrink-0 mx-auto sm:mx-0">
                     <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
                       <BriefcaseIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
                     </div>
                     {job.current && (
-                      <motion.div
-                        className="absolute -top-1 -right-1 w-4 h-4 bg-light-heading dark:bg-dark-heading rounded-full"
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 1, repeat: Infinity }}
-                      />
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-light-heading dark:bg-dark-heading rounded-full animate-pulse" />
                     )}
-                  </motion.div>
+                  </div>
                   {/* Content */}
                   <div className="flex-1 space-y-4 min-w-0">
                     <div className="space-y-2">
                       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div>
-                          <motion.h3
-                            className="text-lg font-semibold text-light-heading dark:text-dark-heading"
-                            whileHover={{ x: 2 }}
-                            transition={{ duration: 0.18 }}
-                          >
+                          <h3 className="text-lg font-semibold text-light-heading dark:text-dark-heading">
                             {job.position}
-                          </motion.h3>
+                          </h3>
                           <div className="flex items-center gap-2 text-light-text dark:text-dark-text flex-wrap">
                             <span className="font-medium">{job.company}</span>
                             {job.companyUrl && (
-                              <motion.a
+                              <a
                                 href={job.companyUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading"
-                                whileHover={{ scale: 1.1 }}
+                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-200"
                               >
                                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                              </motion.a>
+                              </a>
                             )}
                           </div>
                         </div>
@@ -150,17 +117,8 @@ const WorkHistory: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <CalendarIcon className="w-4 h-4" />
                           <span>
-                            {new Date(job.startDate).toLocaleDateString(
-                              "en-US",
-                              { month: "short", year: "numeric" }
-                            )}{" "}
-                            -{" "}
-                            {job.endDate
-                              ? new Date(job.endDate).toLocaleDateString(
-                                  "en-US",
-                                  { month: "short", year: "numeric" }
-                                )
-                              : "Present"}
+                            {formatDate(job.startDate)} -{" "}
+                            {job.endDate ? formatDate(job.endDate) : "Present"}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
@@ -208,65 +166,48 @@ const WorkHistory: React.FC = () => {
                       </div>
                     )}
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           ) : (
-            <motion.div
-              key="education"
-              className="space-y-12"
-              initial={false}
-              animate="visible"
-              exit="hidden"
-            >
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               {education.map((edu, idx) => (
-                <motion.div
+                <div
                   key={edu.id}
-                  className="relative flex flex-col sm:flex-row gap-6"
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.32, ease: [0.25, 0.25, 0, 1] }}
-                  viewport={{ once: true, amount: 0.2 }}
+                  className="relative flex flex-col sm:flex-row gap-6 mb-12 last:mb-0 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                  style={{ animationDelay: getAnimationDelay(idx) }}
                 >
                   {/* Timeline Line - hidden on mobile */}
                   {idx < education.length - 1 && (
                     <div className="absolute left-6 sm:left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20 hidden sm:block" />
                   )}
                   {/* Timeline Dot */}
-                  <motion.div
-                    className="relative flex-shrink-0 mx-auto sm:mx-0"
-                    whileHover={{ scale: 1.08 }}
-                  >
+                  <div className="relative flex-shrink-0 mx-auto sm:mx-0">
                     <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
                       <AcademicCapIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
                     </div>
-                  </motion.div>
+                  </div>
                   {/* Content */}
                   <div className="flex-1 space-y-4 min-w-0">
                     <div className="space-y-2">
                       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div>
-                          <motion.h3
-                            className="text-lg font-semibold text-light-heading dark:text-dark-heading"
-                            whileHover={{ x: 2 }}
-                            transition={{ duration: 0.18 }}
-                          >
+                          <h3 className="text-lg font-semibold text-light-heading dark:text-dark-heading">
                             {edu.degree} in {edu.field}
-                          </motion.h3>
+                          </h3>
                           <div className="flex items-center gap-2 text-light-text dark:text-dark-text flex-wrap">
                             <span className="font-medium">
                               {edu.institution}
                             </span>
                             {edu.institutionUrl && (
-                              <motion.a
+                              <a
                                 href={edu.institutionUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading"
-                                whileHover={{ scale: 1.1 }}
+                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-200"
                               >
                                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                              </motion.a>
+                              </a>
                             )}
                           </div>
                         </div>
@@ -280,15 +221,8 @@ const WorkHistory: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <CalendarIcon className="w-4 h-4" />
                           <span>
-                            {new Date(edu.startDate).toLocaleDateString(
-                              "en-US",
-                              { month: "short", year: "numeric" }
-                            )}{" "}
-                            -{" "}
-                            {new Date(edu.endDate).toLocaleDateString("en-US", {
-                              month: "short",
-                              year: "numeric",
-                            })}
+                            {formatDate(edu.startDate)} -{" "}
+                            {formatDate(edu.endDate)}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
@@ -353,14 +287,12 @@ const WorkHistory: React.FC = () => {
                       </div>
                     )}
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </div>
     </section>
   );
-};
-
-export default WorkHistory;
+}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 
 interface SpotifyTrack {
   name: string;
@@ -12,21 +12,109 @@ interface SpotifyTrack {
 export default function SpotifyNowPlaying() {
   const [track, setTrack] = useState<SpotifyTrack | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const lastTrackRef = useRef<string>("");
+  const intervalRef = useRef<NodeJS.Timeout>();
 
-  useEffect(() => {
-    async function fetchTrack() {
+  // Only update state if track actually changed
+  const updateTrack = useCallback((newTrack: SpotifyTrack | null) => {
+    if (!newTrack) {
+      setTrack(null);
+      setIsLoading(false);
+      return;
+    }
+
+    const newTrackKey = `${newTrack.name}-${newTrack.artists
+      .map((a) => a.name)
+      .join(",")}-${newTrack.isPlaying}`;
+
+    if (newTrackKey !== lastTrackRef.current) {
+      setTrack(newTrack);
+      lastTrackRef.current = newTrackKey;
+    }
+    setIsLoading(false);
+  }, []);
+
+  // Fetch track data
+  const fetchTrack = useCallback(async () => {
+    try {
       const res = await fetch("/api/spotify/now-playing");
       if (res.ok) {
         const data = await res.json();
-        setTrack(data);
+        updateTrack(data);
+      } else {
+        updateTrack(null);
       }
+    } catch (error) {
+      console.error("Failed to fetch Spotify track:", error);
+      updateTrack(null);
     }
-    fetchTrack();
-    const interval = setInterval(fetchTrack, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  }, [updateTrack]);
 
-  if (!track) {
+  // Smart polling - adaptive intervals based on playback state
+  useEffect(() => {
+    let isActive = true;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Clear interval when tab is hidden
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = undefined;
+        }
+      } else if (isActive) {
+        // Restart polling when tab becomes visible
+        fetchTrack();
+        const interval = track?.isPlaying ? 5000 : 15000; // 5s if playing, 15s if not
+        intervalRef.current = setInterval(fetchTrack, interval);
+      }
+    };
+
+    const handleUserActivity = () => {
+      if (isActive && !intervalRef.current) {
+        fetchTrack();
+        const interval = track?.isPlaying ? 5000 : 15000;
+        intervalRef.current = setInterval(fetchTrack, interval);
+      }
+    };
+
+    // Initial fetch
+    fetchTrack();
+
+    // Set up adaptive polling based on current playback state
+    const interval = track?.isPlaying ? 5000 : 15000;
+    intervalRef.current = setInterval(fetchTrack, interval);
+
+    // Listen for tab visibility changes
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Listen for user activity to restart polling if needed
+    document.addEventListener("mousemove", handleUserActivity);
+    document.addEventListener("keydown", handleUserActivity);
+    document.addEventListener("click", handleUserActivity);
+
+    return () => {
+      isActive = false;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("mousemove", handleUserActivity);
+      document.removeEventListener("keydown", handleUserActivity);
+      document.removeEventListener("click", handleUserActivity);
+    };
+  }, [fetchTrack, track?.isPlaying]); // Re-run when playback state changes
+
+  // Update polling interval when track playback state changes
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      const interval = track?.isPlaying ? 5000 : 15000;
+      intervalRef.current = setInterval(fetchTrack, interval);
+    }
+  }, [track?.isPlaying, fetchTrack]);
+
+  if (isLoading) {
     return (
       <button
         className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50
@@ -40,6 +128,24 @@ export default function SpotifyNowPlaying() {
         disabled
       >
         Loading Spotify...
+      </button>
+    );
+  }
+
+  if (!track) {
+    return (
+      <button
+        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50
+          bg-light-bg text-dark-bg border border-light-mini/30
+          dark:bg-dark-bg dark:text-light-bg dark:border-dark-mini/30
+          px-3 py-2 sm:px-4 sm:py-2 rounded-full shadow transition-all duration-300
+          focus:outline-none focus:ring-2 focus:ring-blue-400
+          opacity-100 translate-y-0 text-xs sm:text-sm"
+        aria-label="Spotify Not Playing"
+        title="Spotify Not Playing"
+        disabled
+      >
+        Not Playing
       </button>
     );
   }
@@ -64,8 +170,24 @@ export default function SpotifyNowPlaying() {
           focus:outline-none focus:ring-2 focus:ring-blue-400
           text-xs sm:text-sm max-w-[90vw] sm:max-w-xs
         `}
-        aria-label={track.isPlaying ? `Now playing: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}` : `Last played: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}`}
-        title={track.isPlaying ? `Now playing: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}` : `Last played: ${track.name} by ${track.artists.map((a) => a.name).join(", ")}`}
+        aria-label={
+          track.isPlaying
+            ? `Now playing: ${track.name} by ${track.artists
+                .map((a) => a.name)
+                .join(", ")}`
+            : `Last played: ${track.name} by ${track.artists
+                .map((a) => a.name)
+                .join(", ")}`
+        }
+        title={
+          track.isPlaying
+            ? `Now playing: ${track.name} by ${track.artists
+                .map((a) => a.name)
+                .join(", ")}`
+            : `Last played: ${track.name} by ${track.artists
+                .map((a) => a.name)
+                .join(", ")}`
+        }
       >
         <img
           src={track.album.images[2]?.url || track.album.images[0]?.url}

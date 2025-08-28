@@ -1,21 +1,11 @@
 "use client";
 
 import React, { useState, useTransition, useRef } from "react";
-import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { sendEmail } from "@/app/actions/sendEmail";
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] },
-  },
-};
 
 const initialForm = { name: "", email: "", subject: "", message: "" };
 
@@ -69,33 +59,19 @@ export default function ContactPage() {
   return (
     <section className="pt-36 flex min-h-screen items-center justify-center bg-light-bg dark:bg-dark-bg transition-colors duration-300 py-16">
       <div className="w-full max-w-lg mx-auto px-4 sm:px-8">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="mb-10"
-        >
-          <motion.h1
-            variants={itemVariants}
-            className="text-2xl sm:text-3xl font-semibold text-light-heading dark:text-dark-heading mb-4 text-center"
-          >
+        <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-light-heading dark:text-dark-heading mb-4 text-center">
             Get In Touch
-          </motion.h1>
-          <motion.p
-            variants={itemVariants}
-            className="text-base text-light-text dark:text-dark-text leading-relaxed max-w-2xl text-center mx-auto"
-          >
+          </h1>
+          <p className="text-base text-light-text dark:text-dark-text leading-relaxed max-w-2xl text-center mx-auto">
             Have a project in mind or want to collaborate? I&apos;d love to hear
             from you. Let&apos;s discuss how we can bring your ideas to life.
-          </motion.p>
-        </motion.div>
-        <motion.form
+          </p>
+        </div>
+        <form
           ref={formRef}
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           onSubmit={handleSubmit}
-          className="space-y-6"
+          className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200"
         >
           {[
             {
@@ -123,11 +99,7 @@ export default function ContactPage() {
               placeholder: "What's this about?",
             },
           ].map((field) => (
-            <motion.div
-              key={field.name}
-              className="space-y-2"
-              variants={itemVariants}
-            >
+            <div key={field.name} className="space-y-2">
               <label
                 htmlFor={field.name}
                 className="text-sm font-medium text-light-heading dark:text-dark-heading"
@@ -153,9 +125,9 @@ export default function ContactPage() {
                   {field.error}
                 </p>
               )}
-            </motion.div>
+            </div>
           ))}
-          <motion.div className="space-y-2" variants={itemVariants}>
+          <div className="space-y-2">
             <label
               htmlFor="message"
               className="text-sm font-medium text-light-heading dark:text-dark-heading"
@@ -179,28 +151,22 @@ export default function ContactPage() {
                 {errors.message}
               </p>
             )}
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            variants={itemVariants}
+          </div>
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full px-8 py-3 text-base hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200"
           >
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="w-full px-8 py-3 text-base"
-            >
-              {isPending ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  Sending...
-                </span>
-              ) : (
-                "Send Message"
-              )}
-            </Button>
-          </motion.div>
-        </motion.form>
+            {isPending ? (
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Sending...
+              </span>
+            ) : (
+              "Send Message"
+            )}
+          </Button>
+        </form>
       </div>
     </section>
   );
