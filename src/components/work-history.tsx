@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PlusIcon, ExternalLinkIcon } from "lucide-react";
+import { PlusIcon, ExternalLinkIcon, Clock } from "lucide-react";
 import workExperienceData from "@/data/work-experience.json";
 import educationData from "@/data/education.json";
 import { formatDate } from "@/lib/utils";
@@ -52,15 +52,44 @@ export default function WorkHistory() {
     setOpenItem(value);
   };
 
-  // Sort work experience by year (newest first)
-  const sortedWorkExperience = [...workExperience].sort(
-    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  );
+  // Sort work experience: current roles first, then by year (newest first)
+  const sortedWorkExperience = [...workExperience].sort((a, b) => {
+    const aIsCurrent = !a.endDate;
+    const bIsCurrent = !b.endDate;
 
-  // Sort education by year (newest first)
-  const sortedEducation = [...education].sort(
-    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  );
+    // Current roles come first
+    if (aIsCurrent && !bIsCurrent) return -1;
+    if (!aIsCurrent && bIsCurrent) return 1;
+
+    // If both are current, prioritize developer roles above SEO roles
+    if (aIsCurrent && bIsCurrent) {
+      const aIsDeveloper =
+        a.position.toLowerCase().includes("developer") ||
+        a.position.toLowerCase().includes("full stack");
+      const bIsDeveloper =
+        b.position.toLowerCase().includes("developer") ||
+        b.position.toLowerCase().includes("full stack");
+
+      if (aIsDeveloper && !bIsDeveloper) return -1;
+      if (!aIsDeveloper && bIsDeveloper) return 1;
+    }
+
+    // If both are current or both are past, sort by start date (newest first)
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
+
+  // Sort education: current education first, then by year (newest first)
+  const sortedEducation = [...education].sort((a, b) => {
+    const aIsCurrent = !a.endDate;
+    const bIsCurrent = !b.endDate;
+
+    // Current education comes first
+    if (aIsCurrent && !bIsCurrent) return -1;
+    if (!aIsCurrent && bIsCurrent) return 1;
+
+    // If both are current or both are past, sort by start date (newest first)
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
 
   return (
     <section
@@ -78,7 +107,7 @@ export default function WorkHistory() {
           <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
             Professional Background
           </h2>
-          <div className="relative inline-flex items-center p-1 bg-light-mini/20 dark:bg-dark-mini/20 rounded-full border border-light-mini/10 dark:border-dark-mini/10">
+          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full border border-light-mini/20 dark:border-dark-mini/20">
             {TABS.map((tab) => (
               <motion.button
                 key={tab}
@@ -102,7 +131,7 @@ export default function WorkHistory() {
             {/* Active Tab Background */}
             <motion.div
               layoutId="activeTab"
-              className="absolute top-1 bottom-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-md"
+              className="absolute top-1 bottom-1 bg-blue-600 dark:bg-blue-500 rounded-full shadow-sm"
               initial={false}
               transition={{
                 type: "spring",
@@ -135,14 +164,8 @@ export default function WorkHistory() {
                 animate="visible"
                 className="relative"
               >
-                {/* Right Side Decorative Elements */}
-                <div className="absolute right-5 md:right-9 lg:right-8 xl:right-11 top-0 bottom-0 w-8 lg:w-9">
-                  {/* Horizontal Line */}
-                  <div className="absolute -bottom-10 right-5 w-64 md:w-96 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
-                </div>
-
                 {/* Main Accordion Container */}
-                <div className="rounded-3xl border border-light-mini/20 dark:border-dark-mini/20 bg-gradient-to-br from-light-mini/5 to-light-mini/10 dark:from-dark-mini/5 dark:to-dark-mini/10 relative">
+                <div className="rounded-xl border border-light-mini/20 dark:border-dark-mini/20 bg-light-bg/50 dark:bg-dark-bg/50 relative">
                   <Accordion
                     type="single"
                     collapsible
@@ -164,43 +187,21 @@ export default function WorkHistory() {
                             className="relative group"
                           >
                             <li>
-                              <AnimatePresence>
-                                {open && (
-                                  <motion.div
-                                    className={`absolute inset-0 bg-gradient-to-br from-light-mini/25 to-light-mini/10 dark:from-dark-mini/25 dark:to-dark-mini/10 -z-10 ${
-                                      lastItem ? "rounded-b-3xl" : ""
-                                    } ${firstItem ? "rounded-t-3xl" : ""}`}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="hidden"
-                                    variants={{
-                                      hidden: { opacity: 0 },
-                                      visible: { opacity: 1 },
-                                    }}
-                                    transition={ANIMATIONS.motion}
-                                  />
-                                )}
-                              </AnimatePresence>
-
                               <motion.div
-                                className={`absolute inset-0 bg-gradient-to-br from-light-mini/15 to-light-mini/5 dark:from-dark-mini/15 dark:to-dark-mini/5 -z-20 ${
-                                  firstItem ? "rounded-t-3xl" : ""
-                                } ${lastItem ? "rounded-b-3xl" : ""}`}
-                                initial={{ opacity: 0, scale: 0.99 }}
+                                className={`absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 -z-10 ${
+                                  lastItem ? "rounded-b-xl" : ""
+                                } ${firstItem ? "rounded-t-xl" : ""}`}
+                                initial={{ opacity: 0 }}
                                 whileHover={{
                                   opacity: 1,
-                                  scale: 1,
-                                  transition: {
-                                    ...ANIMATIONS.hover,
-                                    scale: { duration: 0.2 },
-                                  },
+                                  transition: { duration: 0.2 },
                                 }}
-                                transition={ANIMATIONS.hover}
+                                transition={{ duration: 0.2 }}
                               />
 
                               {/* Separator Line */}
                               {!lastItem && (
-                                <div className="absolute bottom-0 border-b border-light-mini/3 dark:border-dark-mini/3 left-0 right-0" />
+                                <div className="absolute bottom-0 border-b border-light-mini/10 dark:border-dark-mini/10 left-0 right-0" />
                               )}
 
                               <motion.div
@@ -209,8 +210,8 @@ export default function WorkHistory() {
                               >
                                 <AccordionTrigger
                                   className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
-                                    firstItem ? "rounded-t-3xl" : ""
-                                  } ${lastItem ? "rounded-b-3xl" : ""}`}
+                                    firstItem ? "rounded-t-xl" : ""
+                                  } ${lastItem ? "rounded-b-xl" : ""}`}
                                   aria-label={`${new Date(
                                     job.startDate
                                   ).getFullYear()}, ${job.position}, ${
@@ -221,14 +222,21 @@ export default function WorkHistory() {
                                   {/* Year */}
                                   <div className="hidden sm:block col-start-3 sm:col-start-auto sm:mr-10">
                                     <div className="relative font-semibold text-light-mini dark:text-dark-mini text-xs md:text-sm">
-                                      {new Date(job.startDate).getFullYear()}
+                                      {!job.endDate ? (
+                                        <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                                          <Clock className="w-3 h-3" />
+                                          Present
+                                        </span>
+                                      ) : (
+                                        new Date(job.startDate).getFullYear()
+                                      )}
                                     </div>
                                   </div>
 
                                   {/* Company Logo */}
                                   <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
                                     {job.logoUrl ? (
-                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center">
+                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center border border-light-mini/20 dark:border-dark-mini/20">
                                         <img
                                           src={
                                             job.logoUrl || "/placeholder.svg"
@@ -249,7 +257,7 @@ export default function WorkHistory() {
                                       </div>
                                     ) : null}
                                     <div
-                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm ${
                                         job.logoUrl ? "hidden" : ""
                                       }`}
                                     >
@@ -290,7 +298,7 @@ export default function WorkHistory() {
 
                                   {/* Plus Icon */}
                                   <div className="flex justify-end col-start-4">
-                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-gradient-to-br from-light-mini/10 to-light-mini/5 dark:from-dark-mini/10 dark:to-dark-mini/5">
+                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-light-mini/5 dark:bg-dark-mini/5">
                                       <motion.div
                                         initial={false}
                                         variants={{
@@ -353,9 +361,6 @@ export default function WorkHistory() {
                                             duration: 0.4,
                                           }}
                                         >
-                                          {/* Left Side Decorative Elements */}
-                                          <div className="hidden md:block absolute left-0 bottom-14 w-20 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
-
                                           {/* Description */}
                                           <p className="font-normal text-sm md:text-base text-light-text dark:text-dark-text max-w-[50em] leading-relaxed mb-10 md:mb-12">
                                             {job.description}
@@ -457,14 +462,8 @@ export default function WorkHistory() {
                 animate="visible"
                 className="relative"
               >
-                {/* Right Side Decorative Elements */}
-                <div className="absolute right-5 md:right-9 lg:right-8 xl:right-11 top-0 bottom-0 w-8 lg:w-9">
-                  {/* Horizontal Line */}
-                  <div className="absolute -bottom-10 right-5 w-64 md:w-96 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
-                </div>
-
                 {/* Main Accordion Container */}
-                <div className="rounded-3xl border border-light-mini/20 dark:border-dark-mini/20 bg-gradient-to-br from-light-mini/5 to-light-mini/10 dark:from-dark-mini/5 dark:to-dark-mini/10 relative">
+                <div className="rounded-xl border border-light-mini/20 dark:border-dark-mini/20 bg-light-bg/50 dark:bg-dark-bg/50 relative">
                   <Accordion
                     type="single"
                     collapsible
@@ -486,43 +485,21 @@ export default function WorkHistory() {
                             className="relative group"
                           >
                             <li>
-                              <AnimatePresence>
-                                {open && (
-                                  <motion.div
-                                    className={`absolute inset-0 bg-gradient-to-br from-light-mini/25 to-light-mini/10 dark:from-dark-mini/25 dark:to-dark-mini/10 -z-10 ${
-                                      lastItem ? "rounded-b-3xl" : ""
-                                    } ${firstItem ? "rounded-t-3xl" : ""}`}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="hidden"
-                                    variants={{
-                                      hidden: { opacity: 0 },
-                                      visible: { opacity: 1 },
-                                    }}
-                                    transition={ANIMATIONS.motion}
-                                  />
-                                )}
-                              </AnimatePresence>
-
                               <motion.div
-                                className={`absolute inset-0 bg-gradient-to-br from-light-mini/15 to-light-mini/5 dark:from-dark-mini/15 dark:to-dark-mini/5 -z-20 ${
-                                  firstItem ? "rounded-t-3xl" : ""
-                                } ${lastItem ? "rounded-b-3xl" : ""}`}
-                                initial={{ opacity: 0, scale: 0.99 }}
+                                className={`absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 -z-10 ${
+                                  lastItem ? "rounded-b-xl" : ""
+                                } ${firstItem ? "rounded-t-xl" : ""}`}
+                                initial={{ opacity: 0 }}
                                 whileHover={{
                                   opacity: 1,
-                                  scale: 1,
-                                  transition: {
-                                    ...ANIMATIONS.hover,
-                                    scale: { duration: 0.2 },
-                                  },
+                                  transition: { duration: 0.2 },
                                 }}
-                                transition={ANIMATIONS.hover}
+                                transition={{ duration: 0.2 }}
                               />
 
                               {/* Separator Line */}
                               {!lastItem && (
-                                <div className="absolute bottom-0 border-b border-light-mini/3 dark:border-dark-mini/3 left-0 right-0" />
+                                <div className="absolute bottom-0 border-b border-light-mini/10 dark:border-dark-mini/10 left-0 right-0" />
                               )}
 
                               <motion.div
@@ -531,8 +508,8 @@ export default function WorkHistory() {
                               >
                                 <AccordionTrigger
                                   className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
-                                    firstItem ? "rounded-t-3xl" : ""
-                                  } ${lastItem ? "rounded-b-3xl" : ""}`}
+                                    firstItem ? "rounded-t-xl" : ""
+                                  } ${lastItem ? "rounded-b-xl" : ""}`}
                                   aria-label={`${new Date(
                                     edu.startDate
                                   ).getFullYear()}, ${edu.degree}, ${
@@ -543,14 +520,21 @@ export default function WorkHistory() {
                                   {/* Year */}
                                   <div className="hidden sm:block col-start-3 sm:col-start-auto sm:mr-10">
                                     <div className="relative font-semibold text-light-mini dark:text-dark-mini text-xs md:text-sm">
-                                      {new Date(edu.startDate).getFullYear()}
+                                      {!edu.endDate ? (
+                                        <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                                          <Clock className="w-3 h-3" />
+                                          Present
+                                        </span>
+                                      ) : (
+                                        new Date(edu.startDate).getFullYear()
+                                      )}
                                     </div>
                                   </div>
 
                                   {/* Institution Logo */}
                                   <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
                                     {edu.logoUrl ? (
-                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center">
+                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center border border-light-mini/20 dark:border-dark-mini/20">
                                         <img
                                           src={
                                             edu.logoUrl || "/placeholder.svg"
@@ -571,7 +555,7 @@ export default function WorkHistory() {
                                       </div>
                                     ) : null}
                                     <div
-                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-green-600 dark:bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm ${
                                         edu.logoUrl ? "hidden" : ""
                                       }`}
                                     >
@@ -612,7 +596,7 @@ export default function WorkHistory() {
 
                                   {/* Plus Icon */}
                                   <div className="flex justify-end col-start-4">
-                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-gradient-to-br from-light-mini/10 to-light-mini/5 dark:from-dark-mini/10 dark:to-dark-mini/5">
+                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-light-mini/5 dark:bg-dark-mini/5">
                                       <motion.div
                                         initial={false}
                                         variants={{
@@ -675,9 +659,6 @@ export default function WorkHistory() {
                                             duration: 0.4,
                                           }}
                                         >
-                                          {/* Left Side Decorative Elements */}
-                                          <div className="hidden md:block absolute left-0 bottom-14 w-20 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
-
                                           {/* Field */}
                                           {edu.field && (
                                             <div className="mb-6">

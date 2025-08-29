@@ -270,6 +270,16 @@ export default function ProjectsGrid() {
             />
           ))}
         </motion.div>
+
+        {/* View More Section */}
+        <div className="text-center mt-16">
+          <Link
+            href="/projects"
+            className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
+          >
+            View All Projects ↗
+          </Link>
+        </div>
       </div>
     </section>
   );
