@@ -1,10 +1,16 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import projectsData from "@/data/projects.json";
+import {
+  useScrollAnimation,
+  projectsContainer,
+  projectCardVariants,
+  projectHeaderVariants,
+} from "@/hooks/use-scroll-animation";
 
 interface Project {
   id: string;
@@ -18,30 +24,85 @@ interface Project {
     github?: string;
     caseStudy?: string;
   };
-  metrics?: Record<string, string>;
+  metrics?: Record<string, string | undefined>;
 }
 
-const ProjectCard: React.FC<{ project: Project; index: number }> = ({
-  project,
-  index,
-}) => {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 20,
+      duration: 0.6,
+    },
+  },
+};
+
+const imageVariants = {
+  hover: {
+    scale: 1.05,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 25,
+    },
+  },
+};
+
+const linkVariants = {
+  hover: {
+    x: 8,
+    scale: 1.05,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+  tap: {
+    scale: 0.95,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+};
+
+function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <motion.div
-      className="group space-y-6"
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.32,
-        ease: [0.25, 0.25, 0, 1],
-        delay: index * 0.06,
+      variants={projectCardVariants}
+      whileHover={{
+        y: -4,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 25,
+        },
       }}
-      viewport={{ once: true, amount: 0.2 }}
+      className="group space-y-6 bg-light-bg/50 dark:bg-dark-bg/50 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
     >
       {/* Project Image */}
       <motion.div
+        variants={imageVariants}
+        whileHover="hover"
         className="relative aspect-[4/3] min-h-[200px] overflow-hidden rounded-lg"
-        whileHover={{ scale: 1.025 }}
-        transition={{ type: "spring", stiffness: 200, damping: 18 }}
       >
         <Image
           src={project.thumbnail}
@@ -51,8 +112,9 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
           sizes="(max-width: 768px) 100vw, 50vw"
           priority={index < 2}
         />
-        <div
+        <motion.div
           className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
+          whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
           aria-hidden
         />
       </motion.div>
@@ -60,11 +122,16 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
       {/* Project Content */}
       <div className="space-y-4">
         {/* Project Header */}
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <motion.div
+          variants={projectHeaderVariants}
+          className="flex items-start justify-between gap-4 flex-wrap"
+        >
           <motion.h3
-            className="text-lg font-medium text-light-heading dark:text-dark-heading transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400"
-            whileHover={{ x: 2 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
+            whileHover={{
+              x: 2,
+              transition: { type: "spring", stiffness: 300, damping: 20 },
+            }}
+            className="text-lg font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300"
           >
             {project.title}
           </motion.h3>
@@ -74,9 +141,10 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
                 href={project.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
-                whileHover={{ x: 2 }}
-                transition={{ duration: 0.18 }}
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
               >
                 GitHub ↗
               </motion.a>
@@ -86,108 +154,122 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({
                 href={project.links.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
-                whileHover={{ x: 2 }}
-                transition={{ duration: 0.18 }}
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
               >
                 View ↗
               </motion.a>
             )}
             {project.links.caseStudy && (
-              <motion.div whileHover={{ x: 2 }} transition={{ duration: 0.18 }}>
+              <motion.div
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
                 <Link
                   href={project.links.caseStudy}
-                  className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
+                  className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
                 >
                   Case Study ↗
                 </Link>
               </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Project Description */}
-        <p className="text-sm text-light-text dark:text-dark-text transition-colors duration-300 leading-relaxed">
+        <motion.p
+          variants={projectHeaderVariants}
+          whileHover={{
+            x: 2,
+            transition: { type: "spring", stiffness: 300, damping: 20 },
+          }}
+          className="text-sm text-light-text dark:text-dark-text leading-relaxed"
+        >
           {project.description}
-        </p>
+        </motion.p>
 
         {/* Metrics for Case Studies */}
         {project.metrics && (
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading transition-colors duration-300">
+          <motion.div variants={projectHeaderVariants} className="space-y-2">
+            <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
               Key Results
             </h4>
             <div className="space-y-1">
               {Object.entries(project.metrics).map(([key, value]) => (
-                <div
+                <motion.div
                   key={key}
-                  className="text-sm text-light-text dark:text-dark-text transition-colors duration-300"
+                  whileHover={{
+                    x: 2,
+                    transition: { type: "spring", stiffness: 300, damping: 20 },
+                  }}
+                  className="text-sm text-light-text dark:text-dark-text hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
                 >
                   <span className="capitalize">{key}:</span>
                   <span className="ml-2 font-medium">{value}</span>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Tech Stack */}
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading transition-colors duration-300">
+        <motion.div variants={projectHeaderVariants} className="space-y-2">
+          <h4 className="text-lg font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
             Tech Stack
           </h4>
-          <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300">
+          <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300 break-words">
             {project.techStack.join(" / ")}
           </p>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
-};
+}
 
-const ProjectsGrid: React.FC = () => {
-  // Clean metrics and cast type for type safety
-  const projects: Project[] = projectsData.projects.map((p) => ({
-    ...p,
-    type: p.type as "case-study" | "standard",
-    metrics: p.metrics
-      ? Object.fromEntries(
-          Object.entries(p.metrics).filter(
-            ([, value]) => typeof value === "string"
-          )
-        )
-      : undefined,
-  }));
+export default function ProjectsGrid() {
+  const { ref: gridRef } = useScrollAnimation({ threshold: 0.1 });
 
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div
-        className="
-          max-w-screen-xl mx-auto
-          px-4
-          sm:px-8
-          md:px-16
-          lg:px-[150px]
-        "
-      >
-        {/* Section Header */}
-        <div className="text-left mb-16">
-          <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading transition-colors duration-300">
+    <section
+      ref={gridRef}
+      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
+    >
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+        <motion.div
+          variants={projectHeaderVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-left mb-16"
+        >
+          <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading">
             Featured Projects
           </h2>
-          <p className="text-base text-light-text dark:text-dark-text transition-colors duration-300 max-w-2xl leading-relaxed">
-            A collection of my recent work, from detailed case studies to quick
-            projects. Each one represents a unique challenge and creative
-            solution.
+          <p className="text-base text-light-text dark:text-dark-text max-w-2xl leading-relaxed">
+            A selection of projects that showcase my expertise in full-stack
+            development, SEO optimization, and user experience design.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+        <motion.div
+          variants={projectsContainer}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16"
+        >
+          {projectsData.projects.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={{
+                ...project,
+                type: project.type as "case-study" | "standard",
+              }}
+              index={index}
+            />
           ))}
-        </div>
+        </motion.div>
 
         {/* View More Section */}
         <div className="text-center mt-16">
@@ -201,6 +283,4 @@ const ProjectsGrid: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default ProjectsGrid;
+}

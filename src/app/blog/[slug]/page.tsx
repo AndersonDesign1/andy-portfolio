@@ -1,17 +1,21 @@
-import BlogPost from "./blogpost";
+import BlogPost from "@/components/blogpost";
 import { client } from "@/sanity/lib/client";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const revalidate = 60;
 
+
+
 async function getPost(slug: string) {
   try {
     const post = await client.fetch(
       `*[_type == "post" && slug.current == $slug][0]{
+        _id,
         title,
-        body,
+        slug,
         excerpt,
+        body,
         _createdAt,
         publishedAt,
         mainImage{
@@ -48,13 +52,7 @@ export async function generateMetadata({
   const { slug } = await params;
 
   try {
-    const post = await client.fetch(
-      `*[_type == "post" && slug.current == $slug][0]{
-        title,
-        excerpt
-      }`,
-      { slug }
-    );
+    const post = await getPost(slug);
 
     return {
       title: post?.title ? `${post.title} | Andy Portfolio` : "Blog Post",
@@ -87,5 +85,10 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
   const post = await getPost(slug);
+
+  if (!post) {
+    notFound();
+  }
+
   return <BlogPost post={post} />;
 }

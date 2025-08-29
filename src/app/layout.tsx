@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode, ReactElement } from "react";
-import { Inter } from "next/font/google"; 
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import ScrollProvider from "@/components/scroll-provider";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
+import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -52,23 +54,26 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider disableTransitionOnChange={false}>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <ScrollProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <SpotifyNowPlaying />
 
-          <Analytics />
-          <SpeedInsights />
+            <Analytics />
+            <SpeedInsights />
 
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: "hsl(var(--background))",
-                color: "hsl(var(--foreground))",
-                border: "1px solid hsl(var(--border))",
-              },
-            }}
-          />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: "hsl(var(--background))",
+                  color: "hsl(var(--foreground))",
+                  border: "1px solid hsl(var(--border))",
+                },
+              }}
+            />
+          </ScrollProvider>
         </ThemeProvider>
       </body>
     </html>

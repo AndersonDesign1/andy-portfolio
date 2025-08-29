@@ -8,8 +8,8 @@
       "location": "Online",
       "startDate": "2024-07-01",
       "endDate": "2024-07-31",
-      "gpa": null,
-      "institutionUrl": "https://www.mckinsey.com/forward"
+      "institutionUrl": "https://www.mckinsey.com/forward",
+      "logoUrl": "https://cdn.brandfetch.io/iddTc-lesG/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667571666573"
     },
     {
       "id": "coursera-advanced-seo-tactics",
@@ -19,8 +19,8 @@
       "location": "Online",
       "startDate": "2024-01-01",
       "endDate": "2024-01-31",
-      "gpa": null,
-      "institutionUrl": "https://coursera.org/verify/QGGVKP45U9MW"
+      "institutionUrl": "https://coursera.org/verify/QGGVKP45U9MW",
+      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
     },
     {
       "id": "freecodecamp-js-algorithms",
@@ -30,19 +30,8 @@
       "location": "Online",
       "startDate": "2023-01-01",
       "endDate": "2023-12-31",
-      "gpa": null,
-      "honors": [],
-      "relevantCourses": [
-        "ES6",
-        "Regular Expressions",
-        "Debugging",
-        "Basic Data Structures",
-        "Algorithm Scripting"
-      ],
-      "projects": [
-        "Completed all required projects for the JavaScript Algorithms and Data Structures certification."
-      ],
-      "institutionUrl": "https://freecodecamp.org/certification/fccb3aeb8e2-e79c-4716-a0eb-ab81a2aeccc1/javascript-algorithms-and-data-structures"
+      "institutionUrl": "https://freecodecamp.org/certification/fccb3aeb8e2-e79c-4716-a0eb-ab81a2aeccc1/javascript-algorithms-and-data-structures",
+      "logoUrl": "https://cdn.brandfetch.io/idXgCW-Dlx/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1749503779562"
     },
     {
       "id": "coursera-optimize-google-search",
@@ -52,8 +41,8 @@
       "location": "Online",
       "startDate": "2023-09-01",
       "endDate": "2023-09-30",
-      "gpa": null,
-      "institutionUrl": "https://coursera.org/verify/3H7ZVVUWS6Q6"
+      "institutionUrl": "https://coursera.org/verify/3H7ZVVUWS6Q6",
+      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
     },
     {
       "id": "coursera-intro-google-seo",
@@ -63,8 +52,8 @@
       "location": "Online",
       "startDate": "2023-01-01",
       "endDate": "2023-12-31",
-      "gpa": null,
-      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WHCFRV6J3MW9"
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WHCFRV6J3MW9",
+      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
     },
     {
       "id": "coursera-google-seo-fundamentals",
@@ -74,8 +63,8 @@
       "location": "Online",
       "startDate": "2023-01-01",
       "endDate": "2023-12-31",
-      "gpa": null,
-      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WXVUPBHNSW6Y"
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WXVUPBHNSW6Y",
+      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
     },
     {
       "id": "nabteb-computer-science",
@@ -85,8 +74,8 @@
       "location": "Benin City, Edo state",
       "startDate": "2021-04-01",
       "endDate": "2022-04-30",
-      "gpa": null,
-      "institutionUrl": "https://nabteb.gov.ng"
+      "institutionUrl": "https://nabteb.gov.ng",
+      "logoUrl": "https://cdn.brandfetch.io/id5AAmrQuD/w/120/h/130/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1748815183924"
     },
     {
       "id": "edobits-ict-academy",
@@ -96,8 +85,8 @@
       "location": "Benin City, Edo state",
       "startDate": "2020-09-01",
       "endDate": "2021-09-30",
-      "gpa": null,
-      "institutionUrl": "https://edobits.com"
+      "institutionUrl": "https://edobits.com",
+      "logoUrl": "/edobits-logo.webp"
     }
   ]
 }

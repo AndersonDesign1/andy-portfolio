@@ -1,12 +1,18 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   CodeBracketIcon,
   PresentationChartLineIcon,
   PaintBrushIcon,
 } from "@heroicons/react/24/outline";
+import {
+  useScrollAnimation,
+  skillsContainer,
+  skillCategoryVariants,
+  skillItemVariants,
+} from "@/hooks/use-scroll-animation";
 
 interface Skill {
   name: string;
@@ -192,195 +198,122 @@ const skillsData: {
   },
 };
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.08,
-    },
-  },
-};
+export default function SkillsSection() {
+  const { ref: skillsRef } = useScrollAnimation({ threshold: 0.1 });
 
-const categoryVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.18, ease: [0.25, 0.25, 0, 1] },
-  },
-};
-
-const skillVariants = {
-  hidden: { opacity: 0, scale: 0.85 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.12, ease: "easeOut" },
-  },
-  hover: {
-    scale: 1.12,
-    y: -2,
-    transition: { duration: 0.1, ease: "easeOut" },
-  },
-};
-
-const titleVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.18,
-      ease: [0.25, 0.25, 0, 1],
-    },
-  },
-};
-
-const SkillsSection: React.FC = () => {
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div
-        className="
-          max-w-screen-xl mx-auto
-          px-4
-          sm:px-8
-          md:px-16
-          lg:px-[150px]
-        "
-      >
+    <section
+      ref={skillsRef}
+      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
+    >
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
+          variants={skillCategoryVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={containerVariants}
+          animate="visible"
+          className="text-left mb-16"
         >
-          {/* Section Header */}
-          <motion.div variants={titleVariants} className="text-left mb-16">
-            <motion.h2
-              className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading transition-colors duration-300"
-              whileInView={{ scale: [0.98, 1] }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-            >
-              Technical Skills
-            </motion.h2>
-            <motion.p
-              className="text-base text-light-text dark:text-dark-text transition-colors duration-300 max-w-2xl leading-relaxed"
-              initial={{ opacity: 0.8 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.12, delay: 0.05 }}
-            >
-              A comprehensive overview of my technical expertise across
-              development, SEO, and design.
-            </motion.p>
-          </motion.div>
+          <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading transition-colors duration-300">
+            Technical Skills
+          </h2>
+          <p className="text-base text-light-text dark:text-dark-text transition-colors duration-300 max-w-2xl leading-relaxed">
+            A comprehensive overview of my technical expertise across
+            development, SEO, and design.
+          </p>
+        </motion.div>
 
-          {/* Skills Categories */}
-          <div className="space-y-16">
-            {Object.entries(skillsData).map(
-              ([categoryName, categoryData], categoryIndex) => {
-                const IconComponent = categoryData.icon;
+        {/* Skills Categories */}
+        <motion.div
+          variants={skillsContainer}
+          initial="hidden"
+          animate="visible"
+          className="space-y-16"
+        >
+          {Object.entries(skillsData).map(
+            ([categoryName, categoryData], categoryIndex) => {
+              const IconComponent = categoryData.icon;
 
-                return (
+              return (
+                <motion.div
+                  key={categoryName}
+                  variants={skillCategoryVariants}
+                  className="space-y-8"
+                >
+                  {/* Category Header */}
                   <motion.div
-                    key={categoryName}
-                    variants={categoryVariants}
-                    className="space-y-8"
+                    variants={skillCategoryVariants}
+                    className="flex items-center gap-3 mb-8"
                   >
-                    {/* Category Header */}
-                    <div className="flex items-center gap-3 mb-8">
-                      <motion.div
-                        className="p-0 rounded-lg"
-                        whileHover={{ scale: 1.08 }}
-                        transition={{ duration: 0.1 }}
-                      >
-                        <IconComponent className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                      </motion.div>
-                      <h3 className="text-lg font-semibold text-light-heading dark:text-dark-heading transition-colors duration-300">
-                        {categoryName}
-                      </h3>
-                    </div>
-
-                    {/* Skills Grid - responsive columns */}
                     <motion.div
-                      className="
-                        grid
-                        grid-cols-3
-                        sm:grid-cols-4
-                        md:grid-cols-6
-                        lg:grid-cols-8
-                        xl:grid-cols-10
-                        gap-4
-                      "
-                      variants={containerVariants}
+                      variants={skillCategoryVariants}
+                      whileHover={{
+                        scale: 1.1,
+                        rotate: [0, -5, 5, 0],
+                        transition: {
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 25,
+                        },
+                      }}
+                      className="p-3 rounded-lg bg-light-mini/5 dark:bg-dark-mini/5 group-hover:bg-light-mini/10 dark:group-hover:bg-dark-mini/10 transition-colors duration-300"
                     >
-                      {categoryData.skills.map((skill, skillIndex) => (
-                        <motion.div
-                          key={skill.name}
-                          variants={skillVariants}
-                          whileHover="hover"
-                          className="group flex flex-col items-center gap-2 p-0 bg-transparent rounded-none transition-all duration-200"
-                          initial="hidden"
-                          whileInView="visible"
-                          viewport={{ once: true, amount: 0.2 }}
-                          transition={{
-                            duration: 0.12,
-                            delay: skillIndex * 0.02,
-                          }}
-                        >
-                          {/* Skill Icon */}
-                          <motion.div
-                            className="relative w-8 h-8 flex items-center justify-center"
-                            whileHover={{ rotate: [0, -3, 3, 0] }}
-                            transition={{ duration: 0.18 }}
-                          >
-                            <img
-                              src={skill.icon}
-                              alt={skill.name}
-                              width={24}
-                              height={24}
-                              className="w-6 h-6 object-contain filter group-hover:brightness-110 transition-all duration-200"
-                              loading="lazy"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = "none";
-                                const parent = target.parentElement;
-                                if (parent) {
-                                  parent.innerHTML = `<div class='w-6 h-6 bg-light-mini/20 dark:bg-dark-mini/20 rounded-md flex items-center justify-center text-light-mini dark:text-dark-mini text-xs font-medium'>${skill.name.charAt(
-                                    0
-                                  )}</div>`;
-                                }
-                              }}
-                            />
-                          </motion.div>
-                          {/* Skill Name */}
-                          <span className="text-xs font-medium text-light-text dark:text-dark-text text-center leading-tight group-hover:text-light-heading dark:group-hover:text-dark-heading transition-colors duration-200 break-words">
-                            {skill.name}
-                          </span>
-                        </motion.div>
-                      ))}
+                      <IconComponent className="w-6 h-6 text-light-heading dark:text-dark-heading" />
                     </motion.div>
-
-                    {/* Category Divider */}
-                    {categoryIndex < Object.entries(skillsData).length - 1 && (
-                      <motion.div
-                        className="w-full h-px bg-light-mini/20 dark:bg-dark-mini/20 mt-8"
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.3, delay: 0.05 }}
-                      />
-                    )}
+                    <h3 className="text-lg font-semibold text-light-heading dark:text-dark-heading transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      {categoryName}
+                    </h3>
                   </motion.div>
-                );
-              }
-            )}
-          </div>
+
+                  {/* Skills Grid */}
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
+                    {categoryData.skills.map((skill, skillIndex) => (
+                      <motion.div
+                        key={skill.name}
+                        variants={skillItemVariants}
+                        whileHover={{
+                          scale: 1.12,
+                          y: -3,
+                          transition: { duration: 0.2, ease: "easeOut" },
+                        }}
+                        className="group flex flex-col items-center gap-2 p-2 bg-transparent rounded-lg cursor-pointer"
+                      >
+                        {/* Skill Icon */}
+                        <div
+                          className="relative w-8 h-8 flex items-center justify-center"
+                          data-skill={skill.name}
+                        >
+                          <img
+                            src={skill.icon}
+                            alt={skill.name}
+                            width={24}
+                            height={24}
+                            className="w-6 h-6 object-contain"
+                            loading="lazy"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = "none";
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = `<div class='w-6 h-6 bg-light-mini/20 dark:bg-dark-mini/20 rounded-md flex items-center justify-center text-light-mini dark:text-dark-mini text-xs font-medium'>${skill.name.charAt(
+                                  0
+                                )}</div>`;
+                              }
+                            }}
+                          />
+                        </div>
+                        {/* Skill Name */}
+                        <span className="text-xs font-medium text-light-text dark:text-dark-text text-center leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 break-words">
+                          {skill.name}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            }
+          )}
         </motion.div>
       </div>
     </section>
   );
-};
-
-export default SkillsSection;
+}

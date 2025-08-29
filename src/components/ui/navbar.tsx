@@ -14,7 +14,7 @@ const menuItems = [
   { label: "Contact", link: "/contact" },
 ];
 
-const Navbar: React.FC = () => {
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -24,14 +24,13 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => setIsOpen(false), [pathname]);
 
-  const logoSrc =
-    resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
+  const logoSrc = resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
 
   return (
     <nav
@@ -126,6 +125,4 @@ const Navbar: React.FC = () => {
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}

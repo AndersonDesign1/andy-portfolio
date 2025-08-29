@@ -1,4 +1,4 @@
-import BlogList from "./bloglist";
+import BlogList from "@/components/bloglist";
 import { client } from "@/sanity/lib/client";
 import type { Metadata } from "next";
 
@@ -10,7 +10,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "Blog | Andy Portfolio",
     description:
       "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
-
     openGraph: {
       title: "Blog | Andy Portfolio",
       description:
@@ -19,8 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       images: ["/Andy.webp"],
     },
-
-    // Twitter/X sharing
     twitter: {
       card: "summary_large_image",
       title: "Blog | Andy Portfolio",
@@ -31,10 +28,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+
+
 async function getPosts() {
   try {
     return await client.fetch(
       `*[_type == "post"] | order(publishedAt desc){
+        _id,
         title,
         slug,
         excerpt,

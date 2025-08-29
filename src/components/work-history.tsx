@@ -1,366 +1,746 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  BriefcaseIcon,
-  AcademicCapIcon,
-  CalendarIcon,
-  MapPinIcon,
-  CheckIcon,
-  ArrowTopRightOnSquareIcon,
-} from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { PlusIcon, ExternalLinkIcon, Clock } from "lucide-react";
 import workExperienceData from "@/data/work-experience.json";
 import educationData from "@/data/education.json";
+import { formatDate } from "@/lib/utils";
+import {
+  useScrollAnimation,
+  workContainer,
+  workItemVariants,
+} from "@/hooks/use-scroll-animation";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const TABS = ["work", "education"] as const;
 type Tab = (typeof TABS)[number];
 
 const tabIcons = {
-  work: <BriefcaseIcon className="w-4 h-4" />,
-  education: <AcademicCapIcon className="w-4 h-4" />,
+  work: "💼",
+  education: "🎓",
 };
 
-const WorkHistory: React.FC = () => {
+const ANIMATIONS = {
+  motion: {
+    ease: [0.25, 0.46, 0.45, 0.94] as const,
+    duration: 0.25,
+  },
+  spring: {
+    type: "spring" as const,
+    stiffness: 450,
+    damping: 28,
+  },
+  hover: {
+    ease: [0.23, 1, 0.32, 1] as const,
+    duration: 0.2,
+  },
+} as const;
+
+export default function WorkHistory() {
   const [activeTab, setActiveTab] = useState<Tab>("work");
+  const [openItem, setOpenItem] = useState<string>("");
   const workExperience = workExperienceData.workExperience;
   const education = educationData.education;
+  const { ref: workRef } = useScrollAnimation({ threshold: 0.1 });
+
+  const handleOpenChange = (value: string) => {
+    setOpenItem(value);
+  };
+
+  // Sort work experience: current roles first, then by year (newest first)
+  const sortedWorkExperience = [...workExperience].sort((a, b) => {
+    const aIsCurrent = !a.endDate;
+    const bIsCurrent = !b.endDate;
+
+    // Current roles come first
+    if (aIsCurrent && !bIsCurrent) return -1;
+    if (!aIsCurrent && bIsCurrent) return 1;
+
+    // If both are current, prioritize developer roles above SEO roles
+    if (aIsCurrent && bIsCurrent) {
+      const aIsDeveloper =
+        a.position.toLowerCase().includes("developer") ||
+        a.position.toLowerCase().includes("full stack");
+      const bIsDeveloper =
+        b.position.toLowerCase().includes("developer") ||
+        b.position.toLowerCase().includes("full stack");
+
+      if (aIsDeveloper && !bIsDeveloper) return -1;
+      if (!aIsDeveloper && bIsDeveloper) return 1;
+    }
+
+    // If both are current or both are past, sort by start date (newest first)
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
+
+  // Sort education: current education first, then by year (newest first)
+  const sortedEducation = [...education].sort((a, b) => {
+    const aIsCurrent = !a.endDate;
+    const bIsCurrent = !b.endDate;
+
+    // Current education comes first
+    if (aIsCurrent && !bIsCurrent) return -1;
+    if (!aIsCurrent && bIsCurrent) return 1;
+
+    // If both are current or both are past, sort by start date (newest first)
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
 
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div
-        className="
-          max-w-screen-xl mx-auto
-          px-4
-          sm:px-8
-          md:px-16
-          lg:px-[150px]
-        "
-      >
+    <section
+      ref={workRef}
+      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
+    >
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] overflow-hidden">
         {/* Header & Toggle */}
-        <div className="mb-16">
+        <motion.div
+          variants={workItemVariants}
+          initial="hidden"
+          animate="visible"
+          className="mb-16"
+        >
           <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
             Professional Background
           </h2>
-          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full">
+          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full border border-light-mini/20 dark:border-dark-mini/20">
             {TABS.map((tab) => (
               <motion.button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative z-10 flex items-center gap-2 px-7 py-2 text-sm font-medium rounded-full transition-all duration-200 cursor-pointer ${
+                whileHover={{
+                  scale: 1.02,
+                  transition: { type: "spring", stiffness: 500, damping: 30 },
+                }}
+                whileTap={{ scale: 0.98 }}
+                className={`relative z-10 flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
                   activeTab === tab
-                    ? "text-light-bg dark:text-dark-bg"
+                    ? "text-gray-900 dark:text-white shadow-sm"
                     : "text-light-text dark:text-dark-text hover:text-light-heading dark:hover:text-dark-heading"
                 }`}
-                style={{ fontWeight: activeTab === tab ? 600 : 500 }}
                 type="button"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
               >
-                {tabIcons[tab]}
+                <span className="text-base">{tabIcons[tab]}</span>
                 {tab === "work" ? "Experience" : "Education"}
               </motion.button>
             ))}
             {/* Active Tab Background */}
             <motion.div
-              className="absolute top-1 bottom-1 bg-light-heading dark:bg-dark-heading rounded-full shadow-lg"
+              layoutId="activeTab"
+              className="absolute top-1 bottom-1 bg-blue-600 dark:bg-blue-500 rounded-full shadow-sm"
               initial={false}
-              animate={{
-                left: activeTab === "work" ? "4px" : "50%",
-                right: activeTab === "work" ? "50%" : "4px",
+              transition={{
+                type: "spring",
+                stiffness: 550,
+                damping: 30,
               }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <AnimatePresence mode="wait">
           {activeTab === "work" ? (
             <motion.div
               key="work"
-              className="space-y-12"
-              initial={false}
-              animate="visible"
-              exit="hidden"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{
+                type: "spring",
+                stiffness: 450,
+                damping: 28,
+              }}
+              className="relative"
             >
-              {workExperience.map((job, idx) => (
-                <motion.div
-                  key={job.id}
-                  className="relative flex flex-col sm:flex-row gap-6"
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.32, ease: [0.25, 0.25, 0, 1] }}
-                  viewport={{ once: true, amount: 0.2 }}
-                >
-                  {/* Timeline Line - hidden on mobile */}
-                  {idx < workExperience.length - 1 && (
-                    <div className="absolute left-6 sm:left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20 hidden sm:block" />
-                  )}
-                  {/* Timeline Dot */}
-                  <motion.div
-                    className="relative flex-shrink-0 mx-auto sm:mx-0"
-                    whileHover={{ scale: 1.08 }}
+              {/* Timeline Container */}
+              <motion.div
+                variants={workContainer}
+                initial="hidden"
+                animate="visible"
+                className="relative"
+              >
+                {/* Main Accordion Container */}
+                <div className="rounded-xl border border-light-mini/20 dark:border-dark-mini/20 bg-light-bg/50 dark:bg-dark-bg/50 relative">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    value={openItem}
+                    onValueChange={handleOpenChange}
+                    className="relative"
                   >
-                    <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
-                      <BriefcaseIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
-                    </div>
-                    {job.current && (
-                      <motion.div
-                        className="absolute -top-1 -right-1 w-4 h-4 bg-light-heading dark:bg-dark-heading rounded-full"
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 1, repeat: Infinity }}
-                      />
-                    )}
-                  </motion.div>
-                  {/* Content */}
-                  <div className="flex-1 space-y-4 min-w-0">
-                    <div className="space-y-2">
-                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                        <div>
-                          <motion.h3
-                            className="text-lg font-semibold text-light-heading dark:text-dark-heading"
-                            whileHover={{ x: 2 }}
-                            transition={{ duration: 0.18 }}
+                    <ul>
+                      {sortedWorkExperience.map((job, i) => {
+                        const firstItem = i === 0;
+                        const lastItem = sortedWorkExperience.length - 1 === i;
+                        const key = job.id;
+                        const open = openItem === key;
+
+                        return (
+                          <AccordionItem
+                            value={key}
+                            key={key}
+                            className="relative group"
                           >
-                            {job.position}
-                          </motion.h3>
-                          <div className="flex items-center gap-2 text-light-text dark:text-dark-text flex-wrap">
-                            <span className="font-medium">{job.company}</span>
-                            {job.companyUrl && (
-                              <motion.a
-                                href={job.companyUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading"
-                                whileHover={{ scale: 1.1 }}
+                            <li>
+                              <motion.div
+                                className={`absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 -z-10 ${
+                                  lastItem ? "rounded-b-xl" : ""
+                                } ${firstItem ? "rounded-t-xl" : ""}`}
+                                initial={{ opacity: 0 }}
+                                whileHover={{
+                                  opacity: 1,
+                                  transition: { duration: 0.2 },
+                                }}
+                                transition={{ duration: 0.2 }}
+                              />
+
+                              {/* Separator Line */}
+                              {!lastItem && (
+                                <div className="absolute bottom-0 border-b border-light-mini/10 dark:border-dark-mini/10 left-0 right-0" />
+                              )}
+
+                              <motion.div
+                                className="overflow-hidden"
+                                animate={open ? "open" : "closed"}
                               >
-                                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                              </motion.a>
-                            )}
-                          </div>
-                        </div>
-                        {job.current && (
-                          <span className="px-3 py-1 text-xs font-medium bg-light-heading/10 dark:bg-dark-heading/10 text-light-heading dark:text-dark-heading rounded-full mt-2 sm:mt-0">
-                            Current
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-4 text-sm text-light-mini dark:text-dark-mini">
-                        <div className="flex items-center gap-1">
-                          <CalendarIcon className="w-4 h-4" />
-                          <span>
-                            {new Date(job.startDate).toLocaleDateString(
-                              "en-US",
-                              { month: "short", year: "numeric" }
-                            )}{" "}
-                            -{" "}
-                            {job.endDate
-                              ? new Date(job.endDate).toLocaleDateString(
-                                  "en-US",
-                                  { month: "short", year: "numeric" }
-                                )
-                              : "Present"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPinIcon className="w-4 h-4" />
-                          <span>{job.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-light-text dark:text-dark-text leading-relaxed">
-                      {job.description}
-                    </p>
-                    {/* Achievements */}
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
-                        Key Achievements
-                      </h4>
-                      <ul className="space-y-2">
-                        {job.achievements.map((ach, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-3 text-sm text-light-text dark:text-dark-text"
-                          >
-                            <CheckIcon className="w-4 h-4 text-light-mini dark:text-dark-mini mt-0.5 flex-shrink-0" />
-                            {ach}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* Technologies */}
-                    {job.technologies && (
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
-                          Technologies Used
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {job.technologies.map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-3 py-1 text-xs bg-light-mini/10 dark:bg-dark-mini/10 text-light-text dark:text-dark-text rounded-full"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                                <AccordionTrigger
+                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
+                                    firstItem ? "rounded-t-xl" : ""
+                                  } ${lastItem ? "rounded-b-xl" : ""}`}
+                                  aria-label={`${new Date(
+                                    job.startDate
+                                  ).getFullYear()}, ${job.position}, ${
+                                    job.company
+                                  }`}
+                                  value={key}
+                                >
+                                  {/* Year */}
+                                  <div className="hidden sm:block col-start-3 sm:col-start-auto sm:mr-10">
+                                    <div className="relative font-semibold text-light-mini dark:text-dark-mini text-xs md:text-sm">
+                                      {!job.endDate ? (
+                                        <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                                          <Clock className="w-3 h-3" />
+                                          Present
+                                        </span>
+                                      ) : (
+                                        new Date(job.startDate).getFullYear()
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Company Logo */}
+                                  <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
+                                    {job.logoUrl ? (
+                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center border border-light-mini/20 dark:border-dark-mini/20">
+                                        <img
+                                          src={
+                                            job.logoUrl || "/placeholder.svg"
+                                          }
+                                          alt={`${job.company} logo`}
+                                          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                                          onError={(e) => {
+                                            // Fallback to initials if logo fails to load
+                                            const target =
+                                              e.target as HTMLImageElement;
+                                            target.style.display = "none";
+                                            const fallback =
+                                              target.nextElementSibling as HTMLElement;
+                                            if (fallback)
+                                              fallback.style.display = "flex";
+                                          }}
+                                        />
+                                      </div>
+                                    ) : null}
+                                    <div
+                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                                        job.logoUrl ? "hidden" : ""
+                                      }`}
+                                    >
+                                      {job.company.charAt(0)}
+                                    </div>
+                                  </div>
+
+                                  {/* Company & Role Info */}
+                                  <span className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0 ml-8">
+                                    <motion.h3
+                                      className="text-sm sm:text-base md:text-lg col-span-2 md:col-span-1 font-medium text-light-heading dark:text-dark-heading"
+                                      transition={{
+                                        ...ANIMATIONS.motion,
+                                        color: { duration: 0.1 },
+                                      }}
+                                    >
+                                      {job.company}
+                                    </motion.h3>
+
+                                    <AnimatePresence initial={false}>
+                                      {!open && (
+                                        <motion.p
+                                          className="text-xs md:text-sm lg:text-base text-light-text dark:text-dark-text font-normal col-start-1 col-span-2 md:col-span-1 md:col-start-2"
+                                          initial="closed"
+                                          animate="open"
+                                          exit="closed"
+                                          variants={{
+                                            open: { opacity: 1, y: "0%" },
+                                            closed: { opacity: 0, y: "100%" },
+                                          }}
+                                          transition={ANIMATIONS.motion}
+                                        >
+                                          {job.position}
+                                        </motion.p>
+                                      )}
+                                    </AnimatePresence>
+                                  </span>
+
+                                  {/* Plus Icon */}
+                                  <div className="flex justify-end col-start-4">
+                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-light-mini/5 dark:bg-dark-mini/5">
+                                      <motion.div
+                                        initial={false}
+                                        variants={{
+                                          open: { rotate: 45, scale: 1.1 },
+                                          closed: { rotate: 0, scale: 1 },
+                                        }}
+                                        transition={ANIMATIONS.spring}
+                                      >
+                                        <PlusIcon className="text-light-heading dark:text-dark-heading w-4 h-4 md:w-5 md:h-5" />
+                                      </motion.div>
+                                    </div>
+                                  </div>
+                                </AccordionTrigger>
+
+                                <AnimatePresence initial={false}>
+                                  {open && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{
+                                        height: "auto",
+                                        opacity: 1,
+                                        transition: {
+                                          height: {
+                                            type: "spring",
+                                            stiffness: 300,
+                                            damping: 25,
+                                            mass: 0.7,
+                                          },
+                                          opacity: {
+                                            delay: 0.08,
+                                            duration: 0.25,
+                                          },
+                                        },
+                                      }}
+                                      exit={{
+                                        height: 0,
+                                        opacity: 0,
+                                        transition: {
+                                          height: {
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 28,
+                                            mass: 0.6,
+                                          },
+                                          opacity: { duration: 0.2 },
+                                        },
+                                      }}
+                                      className="overflow-hidden"
+                                    >
+                                      <div className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10">
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                          }}
+                                          transition={{
+                                            delay: 0.12,
+                                            ease: [0.25, 0.46, 0.45, 0.94],
+                                            duration: 0.4,
+                                          }}
+                                        >
+                                          {/* Description */}
+                                          <p className="font-normal text-sm md:text-base text-light-text dark:text-dark-text max-w-[50em] leading-relaxed mb-10 md:mb-12">
+                                            {job.description}
+                                          </p>
+
+                                          {/* Key Details Grid */}
+                                          <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
+                                            {[
+                                              ["Home", job.companyUrl],
+                                              ["Role", job.position],
+                                              [
+                                                "Tenure",
+                                                `${formatDate(
+                                                  job.startDate
+                                                )} - ${
+                                                  job.endDate
+                                                    ? formatDate(job.endDate)
+                                                    : "Present"
+                                                }`,
+                                              ],
+                                            ].map(([label, value]) => (
+                                              <div key={label}>
+                                                <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                  {label}
+                                                </div>
+
+                                                {value === job.companyUrl ? (
+                                                  <a
+                                                    href={value}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                                  >
+                                                    {value}
+                                                    <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
+                                                  </a>
+                                                ) : (
+                                                  <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                                    {value}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+
+                                          {/* Technologies */}
+                                          {job.technologies &&
+                                            job.technologies.length > 0 && (
+                                              <div className="mt-8">
+                                                <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                  Technologies
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                  {job.technologies.map(
+                                                    (tech, techIdx) => (
+                                                      <span
+                                                        key={techIdx}
+                                                        className="px-3 py-1 bg-light-mini/10 dark:bg-dark-mini/10 text-xs text-light-text dark:text-dark-text rounded-full border border-light-mini/20 dark:border-dark-mini/20"
+                                                      >
+                                                        {tech}
+                                                      </span>
+                                                    )
+                                                  )}
+                                                </div>
+                                              </div>
+                                            )}
+                                        </motion.div>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </motion.div>
+                            </li>
+                          </AccordionItem>
+                        );
+                      })}
+                    </ul>
+                  </Accordion>
+                </div>
+              </motion.div>
             </motion.div>
           ) : (
             <motion.div
               key="education"
-              className="space-y-12"
-              initial={false}
-              animate="visible"
-              exit="hidden"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{
+                type: "spring",
+                stiffness: 450,
+                damping: 28,
+              }}
+              className="relative"
             >
-              {education.map((edu, idx) => (
-                <motion.div
-                  key={edu.id}
-                  className="relative flex flex-col sm:flex-row gap-6"
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.32, ease: [0.25, 0.25, 0, 1] }}
-                  viewport={{ once: true, amount: 0.2 }}
-                >
-                  {/* Timeline Line - hidden on mobile */}
-                  {idx < education.length - 1 && (
-                    <div className="absolute left-6 sm:left-6 top-16 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20 hidden sm:block" />
-                  )}
-                  {/* Timeline Dot */}
-                  <motion.div
-                    className="relative flex-shrink-0 mx-auto sm:mx-0"
-                    whileHover={{ scale: 1.08 }}
+              {/* Timeline Container */}
+              <motion.div
+                variants={workContainer}
+                initial="hidden"
+                animate="visible"
+                className="relative"
+              >
+                {/* Main Accordion Container */}
+                <div className="rounded-xl border border-light-mini/20 dark:border-dark-mini/20 bg-light-bg/50 dark:bg-dark-bg/50 relative">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    value={openItem}
+                    onValueChange={handleOpenChange}
+                    className="relative"
                   >
-                    <div className="w-12 h-12 bg-light-bg dark:bg-dark-bg rounded-full flex items-center justify-center shadow-sm">
-                      <AcademicCapIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
-                    </div>
-                  </motion.div>
-                  {/* Content */}
-                  <div className="flex-1 space-y-4 min-w-0">
-                    <div className="space-y-2">
-                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                        <div>
-                          <motion.h3
-                            className="text-lg font-semibold text-light-heading dark:text-dark-heading"
-                            whileHover={{ x: 2 }}
-                            transition={{ duration: 0.18 }}
+                    <ul>
+                      {sortedEducation.map((edu, i) => {
+                        const firstItem = i === 0;
+                        const lastItem = sortedEducation.length - 1 === i;
+                        const key = edu.id;
+                        const open = openItem === key;
+
+                        return (
+                          <AccordionItem
+                            value={key}
+                            key={key}
+                            className="relative group"
                           >
-                            {edu.degree} in {edu.field}
-                          </motion.h3>
-                          <div className="flex items-center gap-2 text-light-text dark:text-dark-text flex-wrap">
-                            <span className="font-medium">
-                              {edu.institution}
-                            </span>
-                            {edu.institutionUrl && (
-                              <motion.a
-                                href={edu.institutionUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading"
-                                whileHover={{ scale: 1.1 }}
+                            <li>
+                              <motion.div
+                                className={`absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 -z-10 ${
+                                  lastItem ? "rounded-b-xl" : ""
+                                } ${firstItem ? "rounded-t-xl" : ""}`}
+                                initial={{ opacity: 0 }}
+                                whileHover={{
+                                  opacity: 1,
+                                  transition: { duration: 0.2 },
+                                }}
+                                transition={{ duration: 0.2 }}
+                              />
+
+                              {/* Separator Line */}
+                              {!lastItem && (
+                                <div className="absolute bottom-0 border-b border-light-mini/10 dark:border-dark-mini/10 left-0 right-0" />
+                              )}
+
+                              <motion.div
+                                className="overflow-hidden"
+                                animate={open ? "open" : "closed"}
                               >
-                                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                              </motion.a>
-                            )}
-                          </div>
-                        </div>
-                        {edu.gpa && (
-                          <span className="px-3 py-1 text-xs font-medium bg-light-heading/10 dark:bg-dark-heading/10 text-light-heading dark:text-dark-heading rounded-full mt-2 sm:mt-0">
-                            GPA: {edu.gpa}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-4 text-sm text-light-mini dark:text-dark-mini">
-                        <div className="flex items-center gap-1">
-                          <CalendarIcon className="w-4 h-4" />
-                          <span>
-                            {new Date(edu.startDate).toLocaleDateString(
-                              "en-US",
-                              { month: "short", year: "numeric" }
-                            )}{" "}
-                            -{" "}
-                            {new Date(edu.endDate).toLocaleDateString("en-US", {
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPinIcon className="w-4 h-4" />
-                          <span>{edu.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Honors */}
-                    {edu.honors && (
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
-                          Honors & Recognition
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {edu.honors.map((honor) => (
-                            <span
-                              key={honor}
-                              className="px-3 py-1 text-xs bg-light-mini/10 dark:bg-dark-mini/10 text-light-text dark:text-dark-text rounded-full"
-                            >
-                              {honor}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {/* Relevant Courses */}
-                    {edu.relevantCourses && (
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
-                          Relevant Coursework
-                        </h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {edu.relevantCourses.map((course) => (
-                            <div
-                              key={course}
-                              className="text-sm text-light-text dark:text-dark-text"
-                            >
-                              • {course}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {/* Projects */}
-                    {edu.projects && (
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading">
-                          Notable Projects
-                        </h4>
-                        <ul className="space-y-2">
-                          {edu.projects.map((project, i) => (
-                            <li
-                              key={i}
-                              className="flex items-start gap-3 text-sm text-light-text dark:text-dark-text"
-                            >
-                              <CheckIcon className="w-4 h-4 text-light-mini dark:text-dark-mini mt-0.5 flex-shrink-0" />
-                              {project}
+                                <AccordionTrigger
+                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
+                                    firstItem ? "rounded-t-xl" : ""
+                                  } ${lastItem ? "rounded-b-xl" : ""}`}
+                                  aria-label={`${new Date(
+                                    edu.startDate
+                                  ).getFullYear()}, ${edu.degree}, ${
+                                    edu.institution
+                                  }`}
+                                  value={key}
+                                >
+                                  {/* Year */}
+                                  <div className="hidden sm:block col-start-3 sm:col-start-auto sm:mr-10">
+                                    <div className="relative font-semibold text-light-mini dark:text-dark-mini text-xs md:text-sm">
+                                      {!edu.endDate ? (
+                                        <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                                          <Clock className="w-3 h-3" />
+                                          Present
+                                        </span>
+                                      ) : (
+                                        new Date(edu.startDate).getFullYear()
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Institution Logo */}
+                                  <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
+                                    {edu.logoUrl ? (
+                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center border border-light-mini/20 dark:border-dark-mini/20">
+                                        <img
+                                          src={
+                                            edu.logoUrl || "/placeholder.svg"
+                                          }
+                                          alt={`${edu.institution} logo`}
+                                          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                                          onError={(e) => {
+                                            // Fallback to initials if logo fails to load
+                                            const target =
+                                              e.target as HTMLImageElement;
+                                            target.style.display = "none";
+                                            const fallback =
+                                              target.nextElementSibling as HTMLElement;
+                                            if (fallback)
+                                              fallback.style.display = "flex";
+                                          }}
+                                        />
+                                      </div>
+                                    ) : null}
+                                    <div
+                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-green-600 dark:bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                                        edu.logoUrl ? "hidden" : ""
+                                      }`}
+                                    >
+                                      {edu.institution.charAt(0)}
+                                    </div>
+                                  </div>
+
+                                  {/* Institution & Degree Info */}
+                                  <span className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0 ml-8">
+                                    <motion.h3
+                                      className="text-sm sm:text-base md:text-lg col-span-2 md:col-span-1 font-medium text-light-heading dark:text-dark-heading"
+                                      transition={{
+                                        ...ANIMATIONS.motion,
+                                        color: { duration: 0.1 },
+                                      }}
+                                    >
+                                      {edu.institution}
+                                    </motion.h3>
+
+                                    <AnimatePresence initial={false}>
+                                      {!open && (
+                                        <motion.p
+                                          className="text-xs md:text-sm lg:text-base text-light-text dark:text-dark-text font-normal col-start-1 col-span-2 md:col-span-1 md:col-start-2"
+                                          initial="closed"
+                                          animate="open"
+                                          exit="closed"
+                                          variants={{
+                                            open: { opacity: 1, y: "0%" },
+                                            closed: { opacity: 0, y: "100%" },
+                                          }}
+                                          transition={ANIMATIONS.motion}
+                                        >
+                                          {edu.degree}
+                                        </motion.p>
+                                      )}
+                                    </AnimatePresence>
+                                  </span>
+
+                                  {/* Plus Icon */}
+                                  <div className="flex justify-end col-start-4">
+                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-light-mini/5 dark:bg-dark-mini/5">
+                                      <motion.div
+                                        initial={false}
+                                        variants={{
+                                          open: { rotate: 45, scale: 1.1 },
+                                          closed: { rotate: 0, scale: 1 },
+                                        }}
+                                        transition={ANIMATIONS.spring}
+                                      >
+                                        <PlusIcon className="text-light-heading dark:text-dark-heading w-4 h-4 md:w-5 md:h-5" />
+                                      </motion.div>
+                                    </div>
+                                  </div>
+                                </AccordionTrigger>
+
+                                <AnimatePresence initial={false}>
+                                  {open && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{
+                                        height: "auto",
+                                        opacity: 1,
+                                        transition: {
+                                          height: {
+                                            type: "spring",
+                                            stiffness: 300,
+                                            damping: 25,
+                                            mass: 0.7,
+                                          },
+                                          opacity: {
+                                            delay: 0.08,
+                                            duration: 0.25,
+                                          },
+                                        },
+                                      }}
+                                      exit={{
+                                        height: 0,
+                                        opacity: 0,
+                                        transition: {
+                                          height: {
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 28,
+                                            mass: 0.6,
+                                          },
+                                          opacity: { duration: 0.2 },
+                                        },
+                                      }}
+                                      className="overflow-hidden"
+                                    >
+                                      <div className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10">
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                          }}
+                                          transition={{
+                                            delay: 0.12,
+                                            ease: [0.25, 0.46, 0.45, 0.94],
+                                            duration: 0.4,
+                                          }}
+                                        >
+                                          {/* Field */}
+                                          {edu.field && (
+                                            <div className="mb-6">
+                                              <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                Field
+                                              </div>
+                                              <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                                {edu.field}
+                                              </div>
+                                            </div>
+                                          )}
+
+                                          {/* Key Details Grid */}
+                                          <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
+                                            {[
+                                              ["Home", edu.institutionUrl],
+                                              ["Degree", edu.degree],
+                                              [
+                                                "Duration",
+                                                `${formatDate(
+                                                  edu.startDate
+                                                )} - ${
+                                                  edu.endDate
+                                                    ? formatDate(edu.endDate)
+                                                    : "Present"
+                                                }`,
+                                              ],
+                                            ].map(([label, value]) => (
+                                              <div key={label}>
+                                                <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                  {label}
+                                                </div>
+
+                                                {value ===
+                                                edu.institutionUrl ? (
+                                                  <a
+                                                    href={value}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                                  >
+                                                    {value}
+                                                    <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
+                                                  </a>
+                                                ) : (
+                                                  <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                                    {value}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+
+                                          {/* Location */}
+                                          {edu.location && (
+                                            <div className="mt-8">
+                                              <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                Location
+                                              </div>
+                                              <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                                {edu.location}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </motion.div>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </motion.div>
                             </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                          </AccordionItem>
+                        );
+                      })}
+                    </ul>
+                  </Accordion>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
     </section>
   );
-};
-
-export default WorkHistory;
+}

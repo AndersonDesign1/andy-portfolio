@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   CodeBracketIcon,
@@ -10,20 +11,6 @@ import {
   SparklesIcon,
   ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
-  },
-};
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
-};
 
 const funFacts = [
   {
@@ -77,17 +64,39 @@ const AboutPage: React.FC = () => (
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={stagger}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+              },
+            },
+          }}
           className="space-y-8"
         >
           <motion.h1
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-3xl sm:text-4xl font-bold text-light-heading dark:text-dark-heading"
           >
             About Me
           </motion.h1>
           <motion.p
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-base sm:text-lg text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
           >
             I&apos;m a passionate full-stack developer with expertise in SEO and
@@ -108,17 +117,39 @@ const AboutPage: React.FC = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
           className="space-y-12"
         >
           <motion.h2
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Professional Journey
           </motion.h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <motion.div variants={fadeInUp} className="space-y-4">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                },
+              }}
+              className="space-y-4"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <ChartBarIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
                 <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
@@ -143,7 +174,17 @@ const AboutPage: React.FC = () => (
                 <li>• Recovered 5+ websites from Google penalties</li>
               </ul>
             </motion.div>
-            <motion.div variants={fadeInUp} className="space-y-4">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                },
+              }}
+              className="space-y-4"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <CodeBracketIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
                 <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
@@ -179,11 +220,23 @@ const AboutPage: React.FC = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
           className="space-y-12"
         >
           <motion.h2
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Technical Expertise
@@ -232,22 +285,41 @@ const AboutPage: React.FC = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
           className="space-y-12"
         >
           <motion.h2
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             The Person Behind the Code
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
           >
             My fascination with technology began after a scholarship gave me the
-            chance to learn web development for a year. My curiosity about “how
-            things work” turned into a career focused on building, optimizing,
+            chance to learn web development for a year. My curiosity about &ldquo;how
+            things work&rdquo; turned into a career focused on building, optimizing,
             and scaling digital products. I believe in methodical, creative
             problem-solving and continuous learning.
           </motion.p>
@@ -286,11 +358,23 @@ const AboutPage: React.FC = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
           className="space-y-12"
         >
           <motion.h2
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Fun Facts About Me
@@ -301,7 +385,14 @@ const AboutPage: React.FC = () => (
               return (
                 <motion.div
                   key={i}
-                  variants={fadeInUp}
+                  variants={{
+                    hidden: { opacity: 0, y: 30 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                    },
+                  }}
                   className="group p-6 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                   whileHover={{ y: -5 }}
                 >
@@ -333,17 +424,36 @@ const AboutPage: React.FC = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
           className="text-center space-y-8"
         >
           <motion.h2
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Let&apos;s Build Something Amazing Together
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="text-light-text dark:text-dark-text max-w-2xl mx-auto leading-relaxed"
           >
             Whether you need help with SEO, full-stack development, or
@@ -351,7 +461,14 @@ const AboutPage: React.FC = () => (
             create solutions that make a real impact.
           </motion.p>
           <motion.div
-            variants={fadeInUp}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+              },
+            }}
             className="flex flex-wrap justify-center gap-4"
           >
             <Link
