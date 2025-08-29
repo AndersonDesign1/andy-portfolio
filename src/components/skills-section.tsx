@@ -7,6 +7,12 @@ import {
   PresentationChartLineIcon,
   PaintBrushIcon,
 } from "@heroicons/react/24/outline";
+import {
+  useScrollAnimation,
+  skillsContainer,
+  skillCategoryVariants,
+  skillItemVariants,
+} from "@/hooks/use-scroll-animation";
 
 interface Skill {
   name: string;
@@ -193,13 +199,18 @@ const skillsData: {
 };
 
 export default function SkillsSection() {
+  const { ref: skillsRef } = useScrollAnimation({ threshold: 0.1 });
+
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <section
+      ref={skillsRef}
+      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
+    >
       <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          variants={skillCategoryVariants}
+          initial="hidden"
+          animate="visible"
           className="text-left mb-16"
         >
           <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading transition-colors duration-300">
@@ -212,7 +223,12 @@ export default function SkillsSection() {
         </motion.div>
 
         {/* Skills Categories */}
-        <div className="space-y-16">
+        <motion.div
+          variants={skillsContainer}
+          initial="hidden"
+          animate="visible"
+          className="space-y-16"
+        >
           {Object.entries(skillsData).map(
             ([categoryName, categoryData], categoryIndex) => {
               const IconComponent = categoryData.icon;
@@ -220,35 +236,46 @@ export default function SkillsSection() {
               return (
                 <motion.div
                   key={categoryName}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+                  variants={skillCategoryVariants}
                   className="space-y-8"
                 >
                   {/* Category Header */}
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="p-0 rounded-lg">
+                  <motion.div
+                    variants={skillCategoryVariants}
+                    className="flex items-center gap-3 mb-8"
+                  >
+                    <motion.div
+                      variants={skillCategoryVariants}
+                      whileHover={{
+                        scale: 1.1,
+                        rotate: [0, -5, 5, 0],
+                        transition: {
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 25,
+                        },
+                      }}
+                      className="p-3 rounded-lg bg-light-mini/5 dark:bg-dark-mini/5 group-hover:bg-light-mini/10 dark:group-hover:bg-dark-mini/10 transition-colors duration-300"
+                    >
                       <IconComponent className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-light-heading dark:text-dark-heading transition-colors duration-300">
+                    </motion.div>
+                    <h3 className="text-lg font-semibold text-light-heading dark:text-dark-heading transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {categoryName}
                     </h3>
-                  </div>
+                  </motion.div>
 
                   {/* Skills Grid */}
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
                     {categoryData.skills.map((skill, skillIndex) => (
                       <motion.div
                         key={skill.name}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: skillIndex * 0.05 }}
+                        variants={skillItemVariants}
                         whileHover={{
-                          scale: 1.15,
-                          y: -4,
-                          transition: { duration: 0.15, ease: "easeOut" },
+                          scale: 1.12,
+                          y: -3,
+                          transition: { duration: 0.2, ease: "easeOut" },
                         }}
-                        className="group flex flex-col items-center gap-2 p-2 bg-transparent rounded-lg transition-all duration-150 cursor-pointer"
+                        className="group flex flex-col items-center gap-2 p-2 bg-transparent rounded-lg cursor-pointer"
                       >
                         {/* Skill Icon */}
                         <div className="relative w-8 h-8 flex items-center justify-center">
@@ -257,7 +284,7 @@ export default function SkillsSection() {
                             alt={skill.name}
                             width={24}
                             height={24}
-                            className="w-6 h-6 object-contain filter group-hover:brightness-125 group-hover:scale-110 transition-all duration-150"
+                            className="w-6 h-6 object-contain"
                             loading="lazy"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
@@ -272,7 +299,7 @@ export default function SkillsSection() {
                           />
                         </div>
                         {/* Skill Name */}
-                        <span className="text-xs font-medium text-light-text dark:text-dark-text text-center leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-150 break-words">
+                        <span className="text-xs font-medium text-light-text dark:text-dark-text text-center leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 break-words">
                           {skill.name}
                         </span>
                       </motion.div>
@@ -281,13 +308,16 @@ export default function SkillsSection() {
 
                   {/* Category Divider */}
                   {categoryIndex < Object.entries(skillsData).length - 1 && (
-                    <div className="w-full h-px bg-light-mini/20 dark:bg-dark-mini/20 mt-8" />
+                    <motion.div
+                      variants={skillCategoryVariants}
+                      className="w-full h-px bg-light-mini/20 dark:bg-dark-mini/20 mt-8"
+                    />
                   )}
                 </motion.div>
               );
             }
           )}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

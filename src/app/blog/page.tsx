@@ -1,5 +1,7 @@
-import BlogList from "./bloglist";
+import BlogList from "@/components/bloglist";
 import { client } from "@/sanity/lib/client";
+import { draftMode } from "next/headers";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
@@ -10,7 +12,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "Blog | Andy Portfolio",
     description:
       "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
-
     openGraph: {
       title: "Blog | Andy Portfolio",
       description:
@@ -19,8 +20,6 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       images: ["/Andy.webp"],
     },
-
-    // Twitter/X sharing
     twitter: {
       card: "summary_large_image",
       title: "Blog | Andy Portfolio",
@@ -31,10 +30,35 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// Sanity Live Preview
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const secret = searchParams.get("secret");
+  const slug = searchParams.get("slug");
+
+  // Check the secret and next parameters
+  if (secret !== process.env.SANITY_PREVIEW_SECRET) {
+    return new Response("Invalid token", { status: 401 });
+  }
+
+  // Enable Draft Mode by setting the cookies
+  const draft = await draftMode();
+  draft.enable();
+
+  // Redirect to the path from the fetched post
+  // If no slug is provided, redirect to the blog list
+  if (slug) {
+    redirect(`/blog/${slug}`);
+  } else {
+    redirect("/blog");
+  }
+}
+
 async function getPosts() {
   try {
     return await client.fetch(
       `*[_type == "post"] | order(publishedAt desc){
+        _id,
         title,
         slug,
         excerpt,

@@ -2,12 +2,32 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
-import { getPosts } from "@/sanity/lib/client";
 import { formatDate } from "@/lib/utils";
 
-export default async function BlogList() {
-  const posts = await getPosts();
+interface Post {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  excerpt?: string;
+  publishedAt: string;
+  mainImage?: {
+    asset: { url: string };
+    alt?: string;
+    caption?: string;
+  };
+  categories?: Array<{
+    _id: string;
+    title: string;
+    slug: { current: string };
+    description?: string;
+  }>;
+}
 
+interface BlogListProps {
+  posts: Post[];
+}
+
+export default function BlogList({ posts }: BlogListProps) {
   return (
     <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] py-20">

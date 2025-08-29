@@ -5,6 +5,12 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import projectsData from "@/data/projects.json";
+import {
+  useScrollAnimation,
+  projectsContainer,
+  projectCardVariants,
+  projectHeaderVariants,
+} from "@/hooks/use-scroll-animation";
 
 interface Project {
   id: string;
@@ -81,16 +87,16 @@ const linkVariants = {
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <motion.div
-      variants={cardVariants}
+      variants={projectCardVariants}
       whileHover={{
-        y: -12,
+        y: -4,
         transition: {
           type: "spring",
           stiffness: 300,
           damping: 25,
         },
       }}
-      className="group space-y-6 bg-light-bg/50 dark:bg-dark-bg/50 rounded-xl p-6 hover:shadow-2xl transition-shadow duration-300"
+      className="group space-y-6 bg-light-bg/50 dark:bg-dark-bg/50 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
     >
       {/* Project Image */}
       <motion.div
@@ -107,8 +113,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           priority={index < 2}
         />
         <motion.div
-          className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
-          whileHover={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+          className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
+          whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
           aria-hidden
         />
       </motion.div>
@@ -116,10 +122,13 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       {/* Project Content */}
       <div className="space-y-4">
         {/* Project Header */}
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <motion.div
+          variants={projectHeaderVariants}
+          className="flex items-start justify-between gap-4 flex-wrap"
+        >
           <motion.h3
             whileHover={{
-              x: 5,
+              x: 2,
               transition: { type: "spring", stiffness: 300, damping: 20 },
             }}
             className="text-lg font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300"
@@ -168,12 +177,13 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Project Description */}
         <motion.p
+          variants={projectHeaderVariants}
           whileHover={{
-            x: 5,
+            x: 2,
             transition: { type: "spring", stiffness: 300, damping: 20 },
           }}
           className="text-sm text-light-text dark:text-dark-text leading-relaxed"
@@ -183,17 +193,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* Metrics for Case Studies */}
         {project.metrics && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.2,
-              type: "spring",
-              stiffness: 200,
-              damping: 20,
-            }}
-            className="space-y-2"
-          >
+          <motion.div variants={projectHeaderVariants} className="space-y-2">
             <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
               Key Results
             </h4>
@@ -202,7 +202,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 <motion.div
                   key={key}
                   whileHover={{
-                    x: 5,
+                    x: 2,
                     transition: { type: "spring", stiffness: 300, damping: 20 },
                   }}
                   className="text-sm text-light-text dark:text-dark-text hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
@@ -216,18 +216,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         )}
 
         {/* Tech Stack */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.3,
-            type: "spring",
-            stiffness: 200,
-            damping: 20,
-          }}
-          className="space-y-2"
-        >
-          <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+        <motion.div variants={projectHeaderVariants} className="space-y-2">
+          <h4 className="text-lg font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
             Tech Stack
           </h4>
           <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300 break-words">
@@ -240,18 +230,18 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export default function ProjectsGrid() {
+  const { ref: gridRef } = useScrollAnimation({ threshold: 0.1 });
+
   return (
-    <section className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <section
+      ref={gridRef}
+      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
+    >
       <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            duration: 0.8,
-          }}
+          variants={projectHeaderVariants}
+          initial="hidden"
+          animate="visible"
           className="text-left mb-16"
         >
           <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading">
@@ -264,7 +254,7 @@ export default function ProjectsGrid() {
         </motion.div>
 
         <motion.div
-          variants={containerVariants}
+          variants={projectsContainer}
           initial="hidden"
           animate="visible"
           className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16"

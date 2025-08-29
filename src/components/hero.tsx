@@ -5,6 +5,11 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { FaGithub, FaEnvelope, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import {
+  useScrollAnimation,
+  heroStagger,
+  heroTextVariants,
+} from "@/hooks/use-scroll-animation";
 
 const socialLinks = [
   {
@@ -102,17 +107,22 @@ const socialIconVariants = {
 };
 
 export default function Hero() {
+  const { ref: heroRef } = useScrollAnimation({ threshold: 0.2 });
+
   return (
-    <section className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 relative min-h-[60vh] flex items-center">
+    <section
+      ref={heroRef}
+      className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 relative min-h-[60vh] flex items-center"
+    >
       <div className="max-w-screen-xl mx-auto px-6 md:px-[150px] w-full">
         <motion.div
-          variants={containerVariants}
+          variants={heroStagger}
           initial="hidden"
           animate="visible"
           className="text-left"
         >
           <motion.h1
-            variants={itemVariants}
+            variants={heroTextVariants}
             whileHover={{
               scale: 1.02,
               x: 5,
@@ -124,7 +134,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p
-            variants={itemVariants}
+            variants={heroTextVariants}
             whileHover={{
               x: 5,
               transition: { type: "spring", stiffness: 300, damping: 20 },
@@ -136,7 +146,7 @@ export default function Hero() {
             are lightning-fast, generate revenue and solve problems.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex gap-6 mb-8">
+          <motion.div variants={heroTextVariants} className="flex gap-6 mb-8">
             <motion.div
               variants={linkVariants}
               whileHover="hover"
@@ -177,7 +187,7 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="flex gap-4">
+          <motion.div variants={heroTextVariants} className="flex gap-4">
             {socialLinks.map(({ icon, href, label }, index) => (
               <motion.a
                 key={label}

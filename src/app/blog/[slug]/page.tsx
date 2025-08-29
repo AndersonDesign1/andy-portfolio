@@ -1,17 +1,43 @@
-import BlogPost from "./blogpost";
+import BlogPost from "@/components/blogpost";
 import { client } from "@/sanity/lib/client";
+import { draftMode } from "next/headers";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const revalidate = 60;
 
+// Sanity Live Preview
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { searchParams } = new URL(request.url);
+  const secret = searchParams.get("secret");
+  const { slug } = await params;
+
+  // Check the secret and next parameters
+  if (secret !== process.env.SANITY_PREVIEW_SECRET) {
+    return new Response("Invalid token", { status: 401 });
+  }
+
+  // Enable Draft Mode by setting the cookies
+  const draft = await draftMode();
+  draft.enable();
+
+  // Redirect to the path from the fetched post
+  redirect(`/blog/${slug}`);
+}
+
 async function getPost(slug: string) {
   try {
     const post = await client.fetch(
       `*[_type == "post" && slug.current == $slug][0]{
+        _id,
         title,
-        body,
+        slug,
         excerpt,
+        body,
         _createdAt,
         publishedAt,
         mainImage{
@@ -48,13 +74,7 @@ export async function generateMetadata({
   const { slug } = await params;
 
   try {
-    const post = await client.fetch(
-      `*[_type == "post" && slug.current == $slug][0]{
-        title,
-        excerpt
-      }`,
-      { slug }
-    );
+    const post = await getPost(slug);
 
     return {
       title: post?.title ? `${post.title} | Andy Portfolio` : "Blog Post",
@@ -87,5 +107,10 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
   const post = await getPost(slug);
+
+  if (!post) {
+    notFound();
+  }
+
   return <BlogPost post={post} />;
 }
