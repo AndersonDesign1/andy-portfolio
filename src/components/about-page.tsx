@@ -318,8 +318,8 @@ const AboutPage: React.FC = () => (
             className="text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
           >
             My fascination with technology began after a scholarship gave me the
-            chance to learn web development for a year. My curiosity about "how
-            things work" turned into a career focused on building, optimizing,
+            chance to learn web development for a year. My curiosity about &ldquo;how
+            things work&rdquo; turned into a career focused on building, optimizing,
             and scaling digital products. I believe in methodical, creative
             problem-solving and continuous learning.
           </motion.p>

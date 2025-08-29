@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback, useRef } from "react";
+import Image from "next/image";
 
 interface SpotifyTrack {
   name: string;
@@ -14,7 +15,7 @@ export default function SpotifyNowPlaying() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const lastTrackRef = useRef<string>("");
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Only update state if track actually changed
   const updateTrack = useCallback((newTrack: SpotifyTrack | null) => {
@@ -153,13 +154,13 @@ export default function SpotifyNowPlaying() {
   return (
     <div
       className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50"
-      onMouseEnter={(e) => {
+      onMouseEnter={() => {
         // Only show tooltip on desktop (non-touch devices)
         if (window.innerWidth >= 640) {
           setShowTooltip(true);
         }
       }}
-      onMouseLeave={(e) => {
+      onMouseLeave={() => {
         // Only hide tooltip on desktop (non-touch devices)
         if (window.innerWidth >= 640) {
           setShowTooltip(false);
@@ -217,9 +218,11 @@ export default function SpotifyNowPlaying() {
         }
       >
         {/* Mobile: Just album art, Desktop: Album art + text */}
-        <img
+        <Image
           src={track.album.images[2]?.url || track.album.images[0]?.url}
           alt={track.name}
+          width={32}
+          height={32}
           className="w-6 h-6 sm:w-8 sm:h-8 rounded"
         />
 
@@ -244,11 +247,12 @@ export default function SpotifyNowPlaying() {
               : "opacity-0 translate-y-2 pointer-events-none"
           }
           
-          /* Mobile: Bottom sheet */
+          /* Mobile: Always visible on mobile, tooltip on desktop */
           absolute bottom-16 right-0 w-72 max-w-[85vw]
-          
-          /* Desktop: Tooltip */
           sm:bottom-14 sm:w-64 sm:max-w-[90vw]
+          
+          /* Show on mobile when clicked, show/hide on desktop based on hover */
+          ${showTooltip ? "block" : "hidden sm:block"}
         `}
         style={{ zIndex: 100 }}
       >
@@ -265,9 +269,11 @@ export default function SpotifyNowPlaying() {
           `}
         >
           <div className="flex items-center gap-3 sm:gap-2">
-            <img
+            <Image
               src={track.album.images[1]?.url || track.album.images[0]?.url}
               alt={track.album.name}
+              width={48}
+              height={48}
               className="w-12 h-12 sm:w-10 sm:h-10 rounded"
             />
             <div className="min-w-0 flex-1">

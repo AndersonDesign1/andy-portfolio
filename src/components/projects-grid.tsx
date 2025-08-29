@@ -24,7 +24,7 @@ interface Project {
     github?: string;
     caseStudy?: string;
   };
-  metrics?: Record<string, string>;
+  metrics?: Record<string, string | undefined>;
 }
 
 const containerVariants = {
@@ -260,7 +260,14 @@ export default function ProjectsGrid() {
           className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16"
         >
           {projectsData.projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <ProjectCard
+              key={project.id}
+              project={{
+                ...project,
+                type: project.type as "case-study" | "standard",
+              }}
+              index={index}
+            />
           ))}
         </motion.div>
       </div>

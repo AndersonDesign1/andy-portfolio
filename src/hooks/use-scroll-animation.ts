@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
+import { useInView } from "motion/react";
 
 interface UseScrollAnimationOptions {
   threshold?: number;
@@ -19,7 +19,7 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   } = options;
 
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { threshold, once: triggerOnce });
+  const isInView = useInView(ref, { amount: threshold, once: triggerOnce });
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {

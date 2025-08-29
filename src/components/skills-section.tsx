@@ -278,7 +278,10 @@ export default function SkillsSection() {
                         className="group flex flex-col items-center gap-2 p-2 bg-transparent rounded-lg cursor-pointer"
                       >
                         {/* Skill Icon */}
-                        <div className="relative w-8 h-8 flex items-center justify-center">
+                        <div
+                          className="relative w-8 h-8 flex items-center justify-center"
+                          data-skill={skill.name}
+                        >
                           <img
                             src={skill.icon}
                             alt={skill.name}
@@ -305,14 +308,6 @@ export default function SkillsSection() {
                       </motion.div>
                     ))}
                   </div>
-
-                  {/* Category Divider */}
-                  {categoryIndex < Object.entries(skillsData).length - 1 && (
-                    <motion.div
-                      variants={skillCategoryVariants}
-                      className="w-full h-px bg-light-mini/20 dark:bg-dark-mini/20 mt-8"
-                    />
-                  )}
                 </motion.div>
               );
             }
