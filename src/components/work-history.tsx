@@ -26,11 +26,22 @@ const tabIcons = {
   education: "🎓",
 };
 
-const MOTION_TRANSITION = {
-  ease: [0.5, 0.2, 0.2, 1],
-  duration: 0.3,
-  opacity: { ease: "linear", duration: 0.15 },
-};
+// Simple animation configurations for non-accordion elements
+const ANIMATIONS = {
+  motion: {
+    ease: [0.25, 0.46, 0.45, 0.94] as const,
+    duration: 0.3,
+  },
+  spring: {
+    type: "spring" as const,
+    stiffness: 300,
+    damping: 20,
+  },
+  hover: {
+    ease: [0.23, 1, 0.32, 1] as const,
+    duration: 0.3,
+  },
+} as const;
 
 export default function WorkHistory() {
   const [activeTab, setActiveTab] = useState<Tab>("work");
@@ -42,6 +53,16 @@ export default function WorkHistory() {
   const handleOpenChange = (value: string) => {
     setOpenItem(value);
   };
+
+  // Sort work experience by year (newest first)
+  const sortedWorkExperience = [...workExperience].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+
+  // Sort education by year (newest first)
+  const sortedEducation = [...education].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
 
   return (
     <section
@@ -59,38 +80,36 @@ export default function WorkHistory() {
           <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
             Professional Background
           </h2>
-          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full">
+          <div className="relative inline-flex items-center p-1 bg-light-mini/20 dark:bg-dark-mini/20 rounded-full border border-light-mini/10 dark:border-dark-mini/10">
             {TABS.map((tab) => (
               <motion.button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 whileHover={{
-                  scale: 1.05,
-                  y: -2,
+                  scale: 1.02,
                   transition: { type: "spring", stiffness: 400, damping: 25 },
                 }}
-                whileTap={{ scale: 0.95 }}
-                className={`relative z-10 flex items-center gap-2 px-7 py-2 text-sm font-medium rounded-full cursor-pointer ${
+                whileTap={{ scale: 0.98 }}
+                className={`relative z-10 flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
                   activeTab === tab
-                    ? "text-light-bg dark:text-dark-bg"
+                    ? "text-gray-900 dark:text-white shadow-sm"
                     : "text-light-text dark:text-dark-text hover:text-light-heading dark:hover:text-dark-heading"
                 }`}
-                style={{ fontWeight: activeTab === tab ? 600 : 500 }}
                 type="button"
               >
-                <span className="text-lg">{tabIcons[tab]}</span>
+                <span className="text-base">{tabIcons[tab]}</span>
                 {tab === "work" ? "Experience" : "Education"}
               </motion.button>
             ))}
             {/* Active Tab Background */}
             <motion.div
               layoutId="activeTab"
-              className="absolute top-1 bottom-1 bg-light-heading dark:bg-dark-heading rounded-full shadow-lg"
+              className="absolute top-1 bottom-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-md"
               initial={false}
               transition={{
                 type: "spring",
-                stiffness: 500,
-                damping: 30,
+                stiffness: 400,
+                damping: 25,
               }}
             />
           </div>
@@ -120,14 +139,12 @@ export default function WorkHistory() {
               >
                 {/* Right Side Decorative Elements */}
                 <div className="absolute right-5 md:right-9 lg:right-8 xl:right-11 top-0 bottom-0 w-8 lg:w-9">
-                  {/* Vertical Line */}
-                  <div className="absolute left-0 top-1/2 -bottom-24 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20" />
                   {/* Horizontal Line */}
                   <div className="absolute -bottom-10 right-5 w-64 md:w-96 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
                 </div>
 
                 {/* Main Accordion Container */}
-                <div className="rounded-3xl shadow-2xl border border-light-mini/20 dark:border-dark-mini/20 bg-gradient-to-br from-light-mini/5 to-light-mini/10 dark:from-dark-mini/5 dark:to-dark-mini/10 relative">
+                <div className="rounded-3xl border border-light-mini/20 dark:border-dark-mini/20 bg-gradient-to-br from-light-mini/5 to-light-mini/10 dark:from-dark-mini/5 dark:to-dark-mini/10 relative">
                   <Accordion
                     type="single"
                     collapsible
@@ -136,9 +153,9 @@ export default function WorkHistory() {
                     className="relative"
                   >
                     <ul>
-                      {workExperience.map((job, i) => {
+                      {sortedWorkExperience.map((job, i) => {
                         const firstItem = i === 0;
-                        const lastItem = workExperience.length - 1 === i;
+                        const lastItem = sortedWorkExperience.length - 1 === i;
                         const key = job.id;
                         const open = openItem === key;
 
@@ -146,7 +163,7 @@ export default function WorkHistory() {
                           <AccordionItem
                             value={key}
                             key={key}
-                            className="relative"
+                            className="relative group"
                           >
                             <li>
                               <AnimatePresence>
@@ -162,10 +179,22 @@ export default function WorkHistory() {
                                       hidden: { opacity: 0 },
                                       visible: { opacity: 1 },
                                     }}
-                                    transition={MOTION_TRANSITION}
+                                    transition={ANIMATIONS.motion}
                                   />
                                 )}
                               </AnimatePresence>
+
+                              {/* Hover Background */}
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-br from-light-mini/20 to-light-mini/8 dark:from-dark-mini/20 dark:to-dark-mini/8 -z-20"
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                whileHover={{
+                                  opacity: 1,
+                                  scale: 1,
+                                  transition: ANIMATIONS.hover,
+                                }}
+                                transition={ANIMATIONS.hover}
+                              />
 
                               {/* Separator Line */}
                               {!lastItem && (
@@ -177,7 +206,7 @@ export default function WorkHistory() {
                                 animate={open ? "open" : "closed"}
                               >
                                 <AccordionTrigger
-                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_7.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline ${
+                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
                                     firstItem ? "rounded-t-3xl" : ""
                                   } ${lastItem ? "rounded-b-3xl" : ""}`}
                                   aria-label={`${new Date(
@@ -196,22 +225,40 @@ export default function WorkHistory() {
 
                                   {/* Company Logo */}
                                   <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
-                                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    {job.logoUrl ? (
+                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-light-bg dark:bg-dark-bg overflow-hidden flex items-center justify-center">
+                                        <img
+                                          src={job.logoUrl}
+                                          alt={`${job.company} logo`}
+                                          className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+                                          onError={(e) => {
+                                            // Fallback to initials if logo fails to load
+                                            const target =
+                                              e.target as HTMLImageElement;
+                                            target.style.display = "none";
+                                            const fallback =
+                                              target.nextElementSibling as HTMLElement;
+                                            if (fallback)
+                                              fallback.style.display = "flex";
+                                          }}
+                                        />
+                                      </div>
+                                    ) : null}
+                                    <div
+                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-light-bg dark:text-dark-bg font-bold text-sm ${
+                                        job.logoUrl ? "hidden" : ""
+                                      }`}
+                                    >
                                       {job.company.charAt(0)}
                                     </div>
                                   </div>
 
                                   {/* Company & Role Info */}
-                                  <span className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0">
+                                  <span className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0 ml-8">
                                     <motion.h3
-                                      className="text-sm sm:text-base md:text-lg xl:text-xl text-light-heading dark:text-dark-heading col-span-2 md:col-span-1 font-medium"
-                                      animate={{
-                                        color: open
-                                          ? "var(--color-blue-600)"
-                                          : "var(--color-light-heading)",
-                                      }}
+                                      className="text-sm sm:text-base md:text-lg col-span-2 md:col-span-1 font-medium text-light-heading dark:text-dark-heading"
                                       transition={{
-                                        ...MOTION_TRANSITION,
+                                        ...ANIMATIONS.motion,
                                         color: { duration: 0.1 },
                                       }}
                                     >
@@ -229,7 +276,7 @@ export default function WorkHistory() {
                                             open: { opacity: 1, y: "0%" },
                                             closed: { opacity: 0, y: "100%" },
                                           }}
-                                          transition={MOTION_TRANSITION}
+                                          transition={ANIMATIONS.motion}
                                         >
                                           {job.position}
                                         </motion.p>
@@ -243,10 +290,10 @@ export default function WorkHistory() {
                                       <motion.div
                                         initial={false}
                                         variants={{
-                                          open: { rotate: 45, scale: 1 },
-                                          closed: { rotate: 0, scale: 0.8 },
+                                          open: { rotate: 45, scale: 1.1 },
+                                          closed: { rotate: 0, scale: 1 },
                                         }}
-                                        transition={MOTION_TRANSITION}
+                                        transition={ANIMATIONS.spring}
                                       >
                                         <PlusIcon className="text-light-heading dark:text-dark-heading w-4 h-4 md:w-5 md:h-5" />
                                       </motion.div>
@@ -254,96 +301,77 @@ export default function WorkHistory() {
                                   </div>
                                 </AccordionTrigger>
 
-                                <AccordionContent value={key}>
-                                  <motion.div
-                                    initial={false}
-                                    variants={{
-                                      open: { height: "auto" },
-                                      closed: { height: 0 },
-                                    }}
-                                    transition={MOTION_TRANSITION}
-                                  >
-                                    <motion.div
-                                      variants={{
-                                        open: { opacity: 1, y: 0 },
-                                        closed: { opacity: 0, y: 20 },
-                                      }}
-                                      transition={MOTION_TRANSITION}
-                                      className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10 overflow-hidden"
-                                    >
-                                      {/* Left Side Decorative Elements */}
-                                      <div className="absolute left-0 top-14 hidden md:block w-7 xl:w-10 bottom-14">
-                                        <div className="w-full h-full border-l border-light-mini/20 dark:border-dark-mini/20" />
-                                      </div>
-                                      <div className="hidden md:block absolute left-7 xl:left-10 top-4 bottom-4 w-px bg-light-mini/20 dark:bg-dark-mini/20" />
-                                      <div className="hidden md:block absolute left-0 bottom-14 w-20 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
+                                <AccordionContent
+                                  value={key}
+                                  className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10 overflow-hidden"
+                                >
+                                  {/* Left Side Decorative Elements */}
+                                  <div className="hidden md:block absolute left-0 bottom-14 w-20 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
 
-                                      {/* Description */}
-                                      <p className="font-normal text-sm md:text-base text-light-text dark:text-dark-text max-w-[50em] leading-relaxed mb-10 md:mb-12">
-                                        {job.description}
-                                      </p>
+                                  {/* Description */}
+                                  <p className="font-normal text-sm md:text-base text-light-text dark:text-dark-text max-w-[50em] leading-relaxed mb-10 md:mb-12">
+                                    {job.description}
+                                  </p>
 
-                                      {/* Key Details Grid */}
-                                      <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
-                                        {[
-                                          ["Home", job.companyUrl],
-                                          ["Role", job.position],
-                                          [
-                                            "Tenure",
-                                            `${formatDate(job.startDate)} - ${
-                                              job.endDate
-                                                ? formatDate(job.endDate)
-                                                : "Present"
-                                            }`,
-                                          ],
-                                        ].map(([label, value]) => (
-                                          <div key={label}>
-                                            <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
-                                              {label}
-                                            </div>
+                                  {/* Key Details Grid */}
+                                  <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
+                                    {[
+                                      ["Home", job.companyUrl],
+                                      ["Role", job.position],
+                                      [
+                                        "Tenure",
+                                        `${formatDate(job.startDate)} - ${
+                                          job.endDate
+                                            ? formatDate(job.endDate)
+                                            : "Present"
+                                        }`,
+                                      ],
+                                    ].map(([label, value]) => (
+                                      <div key={label}>
+                                        <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                          {label}
+                                        </div>
 
-                                            {value === job.companyUrl ? (
-                                              <a
-                                                href={value}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                                              >
-                                                {value}
-                                                <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
-                                              </a>
-                                            ) : (
-                                              <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
-                                                {value}
-                                              </div>
-                                            )}
-                                          </div>
-                                        ))}
-                                      </div>
-
-                                      {/* Technologies */}
-                                      {job.technologies &&
-                                        job.technologies.length > 0 && (
-                                          <div className="mt-8">
-                                            <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
-                                              Technologies
-                                            </div>
-                                            <div className="flex flex-wrap gap-2">
-                                              {job.technologies.map(
-                                                (tech, techIdx) => (
-                                                  <span
-                                                    key={techIdx}
-                                                    className="px-3 py-1 bg-light-mini/10 dark:bg-dark-mini/10 text-xs text-light-text dark:text-dark-text rounded-full border border-light-mini/20 dark:border-dark-mini/20"
-                                                  >
-                                                    {tech}
-                                                  </span>
-                                                )
-                                              )}
-                                            </div>
+                                        {value === job.companyUrl ? (
+                                          <a
+                                            href={value}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                          >
+                                            {value}
+                                            <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
+                                          </a>
+                                        ) : (
+                                          <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                            {value}
                                           </div>
                                         )}
-                                    </motion.div>
-                                  </motion.div>
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Technologies */}
+                                  {job.technologies &&
+                                    job.technologies.length > 0 && (
+                                      <div className="mt-8">
+                                        <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                          Technologies
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                          {job.technologies.map(
+                                            (tech, techIdx) => (
+                                              <span
+                                                key={techIdx}
+                                                className="px-3 py-1 bg-light-mini/10 dark:bg-dark-mini/10 text-xs text-light-text dark:text-dark-text rounded-full border border-light-mini/20 dark:border-dark-mini/20"
+                                              >
+                                                {tech}
+                                              </span>
+                                            )
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
                                 </AccordionContent>
                               </motion.div>
                             </li>
@@ -377,14 +405,12 @@ export default function WorkHistory() {
               >
                 {/* Right Side Decorative Elements */}
                 <div className="absolute right-5 md:right-9 lg:right-8 xl:right-11 top-0 bottom-0 w-8 lg:w-9">
-                  {/* Vertical Line */}
-                  <div className="absolute left-0 top-1/2 -bottom-24 w-px h-full bg-light-mini/20 dark:bg-dark-mini/20" />
                   {/* Horizontal Line */}
                   <div className="absolute -bottom-10 right-5 w-64 md:w-96 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
                 </div>
 
                 {/* Main Accordion Container */}
-                <div className="rounded-3xl shadow-2xl border border-light-mini/20 dark:border-dark-mini/20 bg-gradient-to-br from-light-mini/5 to-light-mini/10 dark:from-dark-mini/5 dark:to-dark-mini/10 relative">
+                <div className="rounded-3xl border border-light-mini/20 dark:border-dark-mini/20 bg-gradient-to-br from-light-mini/5 to-light-mini/10 dark:from-dark-mini/5 dark:to-dark-mini/10 relative">
                   <Accordion
                     type="single"
                     collapsible
@@ -393,9 +419,9 @@ export default function WorkHistory() {
                     className="relative"
                   >
                     <ul>
-                      {education.map((edu, i) => {
+                      {sortedEducation.map((edu, i) => {
                         const firstItem = i === 0;
-                        const lastItem = education.length - 1 === i;
+                        const lastItem = sortedEducation.length - 1 === i;
                         const key = edu.id;
                         const open = openItem === key;
 
@@ -403,7 +429,7 @@ export default function WorkHistory() {
                           <AccordionItem
                             value={key}
                             key={key}
-                            className="relative"
+                            className="relative group"
                           >
                             <li>
                               <AnimatePresence>
@@ -419,10 +445,22 @@ export default function WorkHistory() {
                                       hidden: { opacity: 0 },
                                       visible: { opacity: 1 },
                                     }}
-                                    transition={MOTION_TRANSITION}
+                                    transition={ANIMATIONS.motion}
                                   />
                                 )}
                               </AnimatePresence>
+
+                              {/* Hover Background */}
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-br from-light-mini/20 to-light-mini/8 dark:from-dark-mini/20 dark:to-dark-mini/8 -z-20"
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                whileHover={{
+                                  opacity: 1,
+                                  scale: 1,
+                                  transition: ANIMATIONS.hover,
+                                }}
+                                transition={ANIMATIONS.hover}
+                              />
 
                               {/* Separator Line */}
                               {!lastItem && (
@@ -434,7 +472,7 @@ export default function WorkHistory() {
                                 animate={open ? "open" : "closed"}
                               >
                                 <AccordionTrigger
-                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_7.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline ${
+                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
                                     firstItem ? "rounded-t-3xl" : ""
                                   } ${lastItem ? "rounded-b-3xl" : ""}`}
                                   aria-label={`${new Date(
@@ -453,22 +491,40 @@ export default function WorkHistory() {
 
                                   {/* Institution Logo */}
                                   <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
-                                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    {edu.logoUrl ? (
+                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-light-bg dark:bg-dark-bg overflow-hidden flex items-center justify-center">
+                                        <img
+                                          src={edu.logoUrl}
+                                          alt={`${edu.institution} logo`}
+                                          className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+                                          onError={(e) => {
+                                            // Fallback to initials if logo fails to load
+                                            const target =
+                                              e.target as HTMLImageElement;
+                                            target.style.display = "none";
+                                            const fallback =
+                                              target.nextElementSibling as HTMLElement;
+                                            if (fallback)
+                                              fallback.style.display = "flex";
+                                          }}
+                                        />
+                                      </div>
+                                    ) : null}
+                                    <div
+                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-light-bg dark:text-dark-bg font-bold text-sm ${
+                                        edu.logoUrl ? "hidden" : ""
+                                      }`}
+                                    >
                                       {edu.institution.charAt(0)}
                                     </div>
                                   </div>
 
                                   {/* Institution & Degree Info */}
-                                  <span className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0">
+                                  <span className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0 ml-8">
                                     <motion.h3
-                                      className="text-sm sm:text-base md:text-lg xl:text-xl text-light-heading dark:text-dark-heading col-span-2 md:col-span-1 font-medium"
-                                      animate={{
-                                        color: open
-                                          ? "var(--color-blue-600)"
-                                          : "var(--color-light-heading)",
-                                      }}
+                                      className="text-sm sm:text-base md:text-lg col-span-2 md:col-span-1 font-medium text-light-heading dark:text-dark-heading"
                                       transition={{
-                                        ...MOTION_TRANSITION,
+                                        ...ANIMATIONS.motion,
                                         color: { duration: 0.1 },
                                       }}
                                     >
@@ -486,7 +542,7 @@ export default function WorkHistory() {
                                             open: { opacity: 1, y: "0%" },
                                             closed: { opacity: 0, y: "100%" },
                                           }}
-                                          transition={MOTION_TRANSITION}
+                                          transition={ANIMATIONS.motion}
                                         >
                                           {edu.degree}
                                         </motion.p>
@@ -500,10 +556,10 @@ export default function WorkHistory() {
                                       <motion.div
                                         initial={false}
                                         variants={{
-                                          open: { rotate: 45, scale: 1 },
-                                          closed: { rotate: 0, scale: 0.8 },
+                                          open: { rotate: 45, scale: 1.1 },
+                                          closed: { rotate: 0, scale: 1 },
                                         }}
-                                        transition={MOTION_TRANSITION}
+                                        transition={ANIMATIONS.spring}
                                       >
                                         <PlusIcon className="text-light-heading dark:text-dark-heading w-4 h-4 md:w-5 md:h-5" />
                                       </motion.div>
@@ -511,93 +567,74 @@ export default function WorkHistory() {
                                   </div>
                                 </AccordionTrigger>
 
-                                <AccordionContent value={key}>
-                                  <motion.div
-                                    initial={false}
-                                    variants={{
-                                      open: { height: "auto" },
-                                      closed: { height: 0 },
-                                    }}
-                                    transition={MOTION_TRANSITION}
-                                  >
-                                    <motion.div
-                                      variants={{
-                                        open: { opacity: 1, y: 0 },
-                                        closed: { opacity: 0, y: 20 },
-                                      }}
-                                      transition={MOTION_TRANSITION}
-                                      className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10 overflow-hidden"
-                                    >
-                                      {/* Left Side Decorative Elements */}
-                                      <div className="absolute left-0 top-14 hidden md:block w-7 xl:w-10 bottom-14">
-                                        <div className="w-full h-full border-l border-light-mini/20 dark:border-dark-mini/20" />
+                                <AccordionContent
+                                  value={key}
+                                  className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10 overflow-hidden"
+                                >
+                                  {/* Left Side Decorative Elements */}
+                                  <div className="hidden md:block absolute left-0 bottom-14 w-20 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
+
+                                  {/* Field */}
+                                  {edu.field && (
+                                    <div className="mb-6">
+                                      <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                        Field
                                       </div>
-                                      <div className="hidden md:block absolute left-7 xl:left-10 top-4 bottom-4 w-px bg-light-mini/20 dark:bg-dark-mini/20" />
-                                      <div className="hidden md:block absolute left-0 bottom-14 w-20 h-px bg-light-mini/20 dark:bg-dark-mini/20" />
-
-                                      {/* Field */}
-                                      {edu.field && (
-                                        <div className="mb-6">
-                                          <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
-                                            Field
-                                          </div>
-                                          <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
-                                            {edu.field}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {/* Key Details Grid */}
-                                      <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
-                                        {[
-                                          ["Home", edu.institutionUrl],
-                                          ["Degree", edu.degree],
-                                          [
-                                            "Duration",
-                                            `${formatDate(edu.startDate)} - ${
-                                              edu.endDate
-                                                ? formatDate(edu.endDate)
-                                                : "Present"
-                                            }`,
-                                          ],
-                                        ].map(([label, value]) => (
-                                          <div key={label}>
-                                            <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
-                                              {label}
-                                            </div>
-
-                                            {value === edu.institutionUrl ? (
-                                              <a
-                                                href={value}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                                              >
-                                                {value}
-                                                <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
-                                              </a>
-                                            ) : (
-                                              <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
-                                                {value}
-                                              </div>
-                                            )}
-                                          </div>
-                                        ))}
+                                      <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                        {edu.field}
                                       </div>
+                                    </div>
+                                  )}
 
-                                      {/* Location */}
-                                      {edu.location && (
-                                        <div className="mt-8">
-                                          <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
-                                            Location
-                                          </div>
-                                          <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
-                                            {edu.location}
-                                          </div>
+                                  {/* Key Details Grid */}
+                                  <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
+                                    {[
+                                      ["Home", edu.institutionUrl],
+                                      ["Degree", edu.degree],
+                                      [
+                                        "Duration",
+                                        `${formatDate(edu.startDate)} - ${
+                                          edu.endDate
+                                            ? formatDate(edu.endDate)
+                                            : "Present"
+                                        }`,
+                                      ],
+                                    ].map(([label, value]) => (
+                                      <div key={label}>
+                                        <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                          {label}
                                         </div>
-                                      )}
-                                    </motion.div>
-                                  </motion.div>
+
+                                        {value === edu.institutionUrl ? (
+                                          <a
+                                            href={value}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                          >
+                                            {value}
+                                            <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
+                                          </a>
+                                        ) : (
+                                          <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                            {value}
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Location */}
+                                  {edu.location && (
+                                    <div className="mt-8">
+                                      <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                        Location
+                                      </div>
+                                      <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                        {edu.location}
+                                      </div>
+                                    </div>
+                                  )}
                                 </AccordionContent>
                               </motion.div>
                             </li>
