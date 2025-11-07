@@ -1,475 +1,773 @@
 "use client";
-import React from "react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  StarIcon,
+  TrophyIcon,
+} from "@heroicons/react/24/outline";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import type React from "react";
 import {
-  ArrowLeftIcon,
-  CheckIcon,
-  TrophyIcon,
-  StarIcon,
-  ArrowUpIcon,
-  ArrowDownIcon,
-} from "@heroicons/react/24/outline";
+  ANIMATION_DELAY_CASE_STUDY,
+  ANIMATION_DURATION_CASE_STUDY,
+  ANIMATION_DURATION_MEDIUM,
+  ANIMATION_EASE_CUBIC,
+  STAR_RATING_COUNT,
+} from "@/lib/constants";
+import type { CaseStudy } from "@/types/case-study";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] },
+    transition: {
+      duration: 0.4,
+      ease: ANIMATION_EASE_CUBIC,
+    },
   },
 };
+
 const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
   },
 };
 
-function getImprovementIcon(improvement: string) {
-  if (improvement.match(/\+|faster|better/))
-    return <ArrowUpIcon className="w-3 h-3" />;
-  if (improvement.match(/-|reduced|lower/))
-    return <ArrowDownIcon className="w-3 h-3" />;
-  return null;
-}
-function getImprovementColor(improvement: string) {
-  return improvement.match(/\+|faster|better|reduced|lower|-/)
-    ? "text-light-heading dark:text-dark-heading"
-    : "text-light-text dark:text-dark-text";
-}
-
-const Section = ({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) => (
-  <section
-    className={`py-16 border-t border-light-mini/20 dark:border-dark-mini/20 ${className}`}
-  >
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
-      {children}
-    </div>
-  </section>
-);
-
-export default function CaseStudyPage({ caseStudy }: { caseStudy: any }) {
+export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
   return (
-    <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+    <div className="min-h-screen bg-light-bg transition-colors duration-300 dark:bg-dark-bg">
       {/* Back Navigation */}
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] pt-8">
+      <div className="mx-auto max-w-screen-xl px-4 pt-8 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
         >
           <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+            className="inline-flex items-center gap-2 text-light-mini text-sm transition-colors duration-300 hover:text-light-heading dark:text-dark-mini dark:hover:text-dark-heading"
+            href="/case-studies"
           >
-            <ArrowLeftIcon className="w-4 h-4" />
-            Back to Projects
+            <ArrowLeftIcon className="h-4 w-4" />
+            Back to Case Studies
           </Link>
         </motion.div>
       </div>
 
       {/* Hero Section */}
-      <Section className="border-none">
+      <section className="mx-auto max-w-screen-xl px-4 py-16 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
-          initial="hidden"
           animate="visible"
+          className="space-y-8"
+          initial="hidden"
           variants={stagger}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
         >
-          <motion.div variants={fadeInUp} className="space-y-6">
+          {/* Project Header */}
+          <motion.div className="space-y-6" variants={fadeInUp}>
             <div className="space-y-4">
-              <motion.h1
-                className="text-3xl sm:text-4xl font-bold text-light-heading dark:text-dark-heading transition-colors duration-300"
-                variants={fadeInUp}
-              >
-                {caseStudy.hero.title}
-              </motion.h1>
-              <motion.div
-                className="space-y-2 text-sm text-light-mini dark:text-dark-mini"
-                variants={fadeInUp}
-              >
-                <p>
-                  <span className="font-medium">Client:</span>{" "}
-                  {caseStudy.hero.client}
-                </p>
-                <p>
-                  <span className="font-medium">Duration:</span>{" "}
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="rounded-full bg-light-mini/10 px-4 py-2 text-light-mini text-sm dark:bg-dark-mini/10 dark:text-dark-mini">
                   {caseStudy.hero.duration}
-                </p>
-              </motion.div>
-            </div>
-            <motion.p
-              className="text-base text-light-text dark:text-dark-text leading-relaxed"
-              variants={fadeInUp}
-            >
-              {caseStudy.hero.overview}
-            </motion.p>
-            <motion.div variants={fadeInUp} className="space-y-3">
-              <h3 className="text-sm font-medium text-light-heading dark:text-dark-heading">
-                Technologies Used
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {caseStudy.hero.technologies.map((tech: string) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 text-xs bg-light-mini/10 dark:bg-dark-mini/10 text-light-text dark:text-dark-text rounded-full"
-                  >
-                    {tech}
-                  </span>
-                ))}
+                </span>
+                <span className="rounded-full bg-light-mini/10 px-4 py-2 text-light-mini text-sm dark:bg-dark-mini/10 dark:text-dark-mini">
+                  {caseStudy.hero.client}
+                </span>
               </div>
-            </motion.div>
+              <h1 className="font-bold text-4xl text-light-heading transition-colors duration-300 dark:text-dark-heading md:text-5xl lg:text-6xl">
+                {caseStudy.hero.title}
+              </h1>
+            </div>
+            <p className="max-w-2xl text-light-text text-lg leading-relaxed dark:text-dark-text">
+              {caseStudy.hero.overview}
+            </p>
           </motion.div>
+
+          {/* Hero Image */}
           <motion.div
-            variants={fadeInUp}
-            className="relative aspect-[4/3] rounded-lg overflow-hidden min-h-[200px] h-full"
+            className="group relative overflow-hidden rounded-xl shadow-2xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: ANIMATION_EASE_CUBIC }}
           >
             <Image
-              src={caseStudy.hero.heroImage}
               alt={caseStudy.hero.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              priority
+              className="h-80 w-full object-cover md:h-96 lg:h-[500px]"
+              height={500}
+              src={caseStudy.hero.heroImage}
+              width={1200}
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-light-heading/20 to-transparent dark:from-dark-heading/20" />
+            <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
+          </motion.div>
+
+          {/* Technologies */}
+          <motion.div className="space-y-4" variants={fadeInUp}>
+            <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
+              Technologies Used
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {caseStudy.hero.technologies.map((tech, index) => (
+                <motion.span
+                  className="rounded-full bg-light-mini/10 px-3 py-1 text-light-mini text-sm dark:bg-dark-mini/10 dark:text-dark-mini"
+                  key={tech}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: index * 0.05,
+                    ease: ANIMATION_EASE_CUBIC 
+                  }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    backgroundColor: "rgba(0, 0, 0, 0.1)" 
+                  }}
+                >
+                  {tech}
+                </motion.span>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
-      </Section>
+      </section>
 
-      {/* Challenge & Context */}
-      <Section>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
-          className="space-y-12"
-        >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+      {/* Challenge & Solution */}
+      <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+        <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
+          <motion.div
+            animate="visible"
+            className="grid grid-cols-1 gap-12 lg:grid-cols-2"
+            initial="hidden"
+            variants={stagger}
           >
-            Challenge & Context
-          </motion.h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            <motion.div variants={fadeInUp} className="space-y-6">
-              {["problem", "context"].map((key) => (
-                <div key={key}>
-                  <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-3">
-                    {key === "problem" ? "The Problem" : "Industry Context"}
-                  </h3>
-                  <p className="text-light-text dark:text-dark-text leading-relaxed">
-                    {caseStudy.challenge[key]}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
-            <motion.div variants={fadeInUp} className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-3">
+            {/* Challenge */}
+            <motion.div className="space-y-6" variants={fadeInUp}>
+              <motion.h2 
+                className="font-bold text-2xl text-light-heading dark:text-dark-heading"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, ease: ANIMATION_EASE_CUBIC }}
+              >
+                The Challenge
+              </motion.h2>
+              <motion.p 
+                className="text-light-text leading-relaxed dark:text-dark-text"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1, ease: ANIMATION_EASE_CUBIC }}
+              >
+                {caseStudy.challenge.problem}
+              </motion.p>
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
                   Key Constraints
                 </h3>
                 <ul className="space-y-2">
-                  {caseStudy.challenge.constraints.map(
-                    (c: string, i: number) => (
-                      <li
-                        key={i}
-                        className="flex items-start gap-3 text-light-text dark:text-dark-text"
-                      >
-                        <CheckIcon className="w-4 h-4 text-light-mini dark:text-dark-mini mt-0.5 flex-shrink-0" />
-                        {c}
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-3">
-                  Initial Metrics
-                </h3>
-                <ul className="space-y-2">
-                  {caseStudy.challenge.metrics.map((m: string, i: number) => (
-                    <li key={i} className="text-light-text dark:text-dark-text">
-                      • {m}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </Section>
-
-      {/* Project Goals */}
-      <Section>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
-          className="space-y-12"
-        >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
-          >
-            Project Goals
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {["primary", "stakeholder", "success"].map((key) => (
-              <motion.div key={key} variants={fadeInUp} className="space-y-4">
-                <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                  {key === "primary"
-                    ? "Primary Objectives"
-                    : key === "stakeholder"
-                    ? "Stakeholder Requirements"
-                    : "Success Criteria"}
-                </h3>
-                <ul className="space-y-3">
-                  {caseStudy.goals[key].map((item: string, i: number) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-sm text-light-text dark:text-dark-text"
+                  {caseStudy.challenge.constraints.map((constraint, index) => (
+                    <motion.li
+                      className="flex items-start gap-3 text-light-text dark:text-dark-text"
+                      key={constraint}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: 0.3 + (index * 0.05),
+                        ease: ANIMATION_EASE_CUBIC 
+                      }}
+                      whileHover={{ x: 5 }}
                     >
-                      <CheckIcon className="w-4 h-4 text-light-mini dark:text-dark-mini mt-0.5 flex-shrink-0" />
-                      {item}
-                    </li>
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ 
+                          duration: 0.2, 
+                          delay: 0.4 + (index * 0.05),
+                          ease: "backOut" 
+                        }}
+                      >
+                        <CheckIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-light-mini dark:text-dark-mini" />
+                      </motion.div>
+                      {constraint}
+                    </motion.li>
                   ))}
                 </ul>
               </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </Section>
+            </motion.div>
 
-      {/* Approach & Process */}
-      <Section>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
-          className="space-y-12"
-        >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
+            {/* Goals */}
+            <motion.div className="space-y-6" variants={fadeInUp}>
+              <motion.h2 
+                className="font-bold text-2xl text-light-heading dark:text-dark-heading"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, ease: ANIMATION_EASE_CUBIC }}
+              >
+                Goals & Success Metrics
+              </motion.h2>
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
+                  Primary Objectives
+                </h3>
+                <ul className="space-y-2">
+                  {caseStudy.goals.primary.map((goal, index) => (
+                    <motion.li
+                      className="flex items-start gap-3 text-light-text dark:text-dark-text"
+                      key={goal}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: 0.2 + (index * 0.05),
+                        ease: ANIMATION_EASE_CUBIC 
+                      }}
+                      whileHover={{ x: -5 }}
+                    >
+                      <motion.div
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ 
+                          duration: 0.2, 
+                          delay: 0.3 + (index * 0.05),
+                          ease: "backOut" 
+                        }}
+                      >
+                        <CheckIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-light-mini dark:text-dark-mini" />
+                      </motion.div>
+                      {goal}
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+
+      {/* Approach */}
+      <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+        <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
+          <motion.div
+            animate="visible"
+            className="space-y-12"
+            initial="hidden"
+            variants={stagger}
           >
-            Approach & Process
-          </motion.h2>
-          <motion.div variants={fadeInUp} className="space-y-8">
-            <div>
-              <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-3">
-                Methodology
-              </h3>
-              <p className="text-light-text dark:text-dark-text leading-relaxed">
+            <motion.div className="text-center" variants={fadeInUp}>
+              <h2 className="mb-4 font-bold text-2xl text-light-heading dark:text-dark-heading">
+                My Approach
+              </h2>
+              <p className="max-w-2xl mx-auto text-light-text leading-relaxed dark:text-dark-text">
                 {caseStudy.approach.methodology}
               </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-6">
-                Project Phases
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {caseStudy.approach.phases.map((phase: any, i: number) => (
-                  <div
-                    key={i}
-                    className="p-6 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-medium text-light-heading dark:text-dark-heading">
-                        {phase.name}
-                      </h4>
-                      <span className="text-xs text-light-mini dark:text-dark-mini">
-                        {phase.duration}
-                      </span>
-                    </div>
-                    <ul className="space-y-2">
-                      {phase.activities.map((a: string, j: number) => (
-                        <li
-                          key={j}
-                          className="text-sm text-light-text dark:text-dark-text"
-                        >
-                          • {a}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading mb-6">
-                Key Decisions & Rationale
-              </h3>
-              <div className="space-y-4">
-                {caseStudy.approach.keyDecisions.map((d: any, i: number) => (
-                  <div
-                    key={i}
-                    className="border-l-4 border-light-mini dark:border-dark-mini pl-4"
-                  >
-                    <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
-                      {d.decision}
-                    </h4>
-                    <p className="text-sm text-light-text dark:text-dark-text">
-                      {d.rationale}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </Section>
+            </motion.div>
 
-      {/* Results & Impact */}
-      <Section>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
-          className="space-y-12"
-        >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-2xl font-semibold text-light-heading dark:text-dark-heading"
-          >
-            Results & Impact
-          </motion.h2>
-          <motion.div variants={fadeInUp} className="space-y-8">
-            <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-              Before vs After
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {caseStudy.results.beforeAfter.map((m: any, i: number) => (
+            {/* Process Steps */}
+            <motion.div
+              className="grid grid-cols-1 gap-6 md:grid-cols-2"
+              variants={stagger}
+            >
+              {caseStudy.approach.phases.map((phase, index) => (
                 <motion.div
-                  key={i}
-                  className="group relative overflow-hidden"
-                  initial="hidden"
-                  whileInView="visible"
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  className="group relative rounded-lg bg-light-bg p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 dark:bg-dark-bg"
+                  key={phase.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: index * 0.1,
+                    ease: ANIMATION_EASE_CUBIC 
+                  }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-light-bg via-light-bg to-light-bg/50 dark:from-dark-bg dark:via-dark-bg dark:to-dark-bg/50 rounded-xl" />
-                  <div className="relative bg-light-bg dark:bg-dark-bg rounded-xl p-6 md:p-8 backdrop-blur-sm group-hover:shadow-md transition-all duration-300">
-                    <h4 className="text-lg md:text-xl font-semibold text-light-heading dark:text-dark-heading mb-4 md:mb-6">
-                      {m.metric}
+                  <div className="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
+                  <motion.div 
+                    className="mb-3 flex items-start justify-between"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                  >
+                    <h4 className="font-medium text-light-heading dark:text-dark-heading">
+                      {phase.name}
                     </h4>
-                    <div className="space-y-4 mb-4 md:mb-6">
-                      {["before", "after"].map((k) => (
-                        <div
-                          key={k}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-xs md:text-sm font-medium text-light-mini dark:text-dark-mini">
-                            {k.charAt(0).toUpperCase() + k.slice(1)}:
-                          </span>
-                          <span
-                            className={`text-base md:text-lg font-mono ${
-                              k === "after"
-                                ? "text-light-heading dark:text-dark-heading font-semibold"
-                                : "text-light-text dark:text-dark-text"
-                            }`}
-                          >
-                            {m[k]}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <div
-                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-light-mini/10 dark:bg-dark-mini/10 backdrop-blur-sm ${getImprovementColor(
-                        m.improvement
-                      )}`}
+                    <motion.span 
+                      className="rounded-full bg-light-mini/10 px-2 py-1 text-light-mini text-xs dark:bg-dark-mini/10 dark:text-dark-mini"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ 
+                        duration: 0.2, 
+                        delay: 0.2 + (index * 0.1),
+                        ease: "backOut" 
+                      }}
                     >
-                      {getImprovementIcon(m.improvement)}
-                      <span className="text-sm font-semibold tracking-wide">
-                        {m.improvement}
-                      </span>
-                    </div>
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent dark:from-dark-heading/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                  </div>
+                      {phase.duration}
+                    </motion.span>
+                  </motion.div>
+                  <ul className="space-y-2">
+                    {phase.activities.map((activity, activityIndex) => (
+                      <motion.li
+                        className="text-light-text text-sm dark:text-dark-text"
+                        key={activity}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ 
+                          duration: 0.3, 
+                          delay: 0.3 + (index * 0.1) + (activityIndex * 0.05),
+                          ease: ANIMATION_EASE_CUBIC 
+                        }}
+                        whileHover={{ x: 5 }}
+                      >
+                        • {activity}
+                      </motion.li>
+                    ))}
+                  </ul>
                 </motion.div>
               ))}
-            </div>
-          </motion.div>
-          <motion.div variants={fadeInUp} className="space-y-6">
-            <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-              Additional Impact
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {caseStudy.results.metrics.map((m: string, i: number) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 p-4 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                >
-                  <TrophyIcon className="w-5 h-5 text-light-mini dark:text-dark-mini" />
-                  <span className="text-sm text-light-text dark:text-dark-text">
-                    {m}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-          {caseStudy.results.testimonials?.length > 0 && (
-            <motion.div variants={fadeInUp} className="space-y-6">
-              <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
-                Client Testimonials
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {caseStudy.results.testimonials.map((t: any, i: number) => (
-                  <div
-                    key={i}
-                    className="p-6 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm"
-                  >
-                    <div className="flex items-center gap-1 mb-3">
-                      {[...Array(5)].map((_, j) => (
-                        <StarIcon
-                          key={j}
-                          className="w-4 h-4 fill-light-mini dark:fill-dark-mini text-light-mini dark:text-dark-mini"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-light-text dark:text-dark-text mb-4 italic">
-                      &quot;{t.quote}&quot;
-                    </p>
-                    <div>
-                      <p className="font-medium text-light-heading dark:text-dark-heading">
-                        {t.name}
-                      </p>
-                      <p className="text-sm text-light-mini dark:text-dark-mini">
-                        {t.role}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </motion.div>
-          )}
-        </motion.div>
-      </Section>
+          </motion.div>
+        </div>
+      </section>
 
-      {/* Back to Projects */}
-      <Section className="text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
+
+      {/* Results */}
+      <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+        <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
+          <motion.div
+            animate="visible"
+            className="space-y-12"
+            initial="hidden"
+            variants={stagger}
           >
-            <ArrowLeftIcon className="w-4 h-4" />
-            Back to All Projects
-          </Link>
-        </motion.div>
-      </Section>
+            <motion.div className="text-center" variants={fadeInUp}>
+              <h2 className="mb-4 font-bold text-2xl text-light-heading dark:text-dark-heading">
+                Results & Impact
+              </h2>
+            </motion.div>
+
+            {/* Before/After Metrics */}
+            <motion.div
+              className="grid grid-cols-1 gap-6 md:grid-cols-2"
+              variants={stagger}
+            >
+              {caseStudy.results.beforeAfter.map((metric, index) => (
+                <motion.div
+                  className="group relative overflow-hidden rounded-xl bg-light-bg p-6 shadow-sm dark:bg-dark-bg"
+                  key={metric.metric}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: index * 0.1,
+                    ease: ANIMATION_EASE_CUBIC 
+                  }}
+                >
+                  <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
+                  <motion.h4 
+                    className="mb-4 font-semibold text-lg text-light-heading dark:text-dark-heading"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                  >
+                    {metric.metric}
+                  </motion.h4>
+                  <div className="mb-4 space-y-4">
+                    {["before", "after"].map((k, kIndex) => (
+                      <motion.div 
+                        className="flex items-center justify-between" 
+                        key={k}
+                        initial={{ opacity: 0, x: k === "before" ? -20 : 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ 
+                          duration: 0.3, 
+                          delay: 0.2 + (index * 0.1) + (kIndex * 0.05),
+                          ease: ANIMATION_EASE_CUBIC 
+                        }}
+                      >
+                        <span className="text-light-mini text-sm dark:text-dark-mini capitalize">
+                          {k}:
+                        </span>
+                        <motion.span
+                          className={`font-medium ${
+                            k === "after"
+                              ? "font-semibold text-light-heading dark:text-dark-heading"
+                              : "text-light-text dark:text-dark-text"
+                          }`}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ 
+                            duration: 0.2, 
+                            delay: 0.3 + (index * 0.1) + (kIndex * 0.05),
+                            ease: "backOut" 
+                          }}
+                        >
+                          {metric[k as keyof typeof metric]}
+                        </motion.span>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <motion.div 
+                    className="inline-flex items-center gap-2 rounded-full bg-light-mini/10 px-4 py-2 backdrop-blur-sm dark:bg-dark-mini/10"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ 
+                      duration: 0.3, 
+                      delay: 0.4 + (index * 0.1),
+                      ease: "backOut" 
+                    }}
+                  >
+                    <motion.div
+                      initial={{ rotate: -180 }}
+                      animate={{ rotate: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: 0.5 + (index * 0.1),
+                        ease: "backOut" 
+                      }}
+                    >
+                      <TrophyIcon className="h-4 w-4 text-light-mini dark:text-dark-mini" />
+                    </motion.div>
+                    <span className="font-semibold text-sm tracking-wide">
+                      {metric.improvement}
+                    </span>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Additional Metrics */}
+            {caseStudy.results.metrics.length > 0 && (
+              <motion.div 
+                className="space-y-6" 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <motion.h3 
+                  className="font-medium text-lg text-light-heading dark:text-dark-heading"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, ease: ANIMATION_EASE_CUBIC }}
+                >
+                  Additional Impact
+                </motion.h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {caseStudy.results.metrics.map((metric, index) => (
+                    <motion.div
+                      className="group relative flex items-center gap-3 rounded-xl bg-light-bg p-4 shadow-sm dark:bg-dark-bg"
+                      key={metric}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: index * 0.05,
+                        ease: ANIMATION_EASE_CUBIC 
+                      }}
+                    >
+                      <motion.div
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ 
+                          duration: 0.3, 
+                          delay: 0.1 + (index * 0.05),
+                          ease: "backOut" 
+                        }}
+                      >
+                        <TrophyIcon className="h-5 w-5 text-light-mini dark:text-dark-mini" />
+                      </motion.div>
+                      <motion.span 
+                        className="text-light-text text-sm dark:text-dark-text"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ 
+                          duration: 0.3, 
+                          delay: 0.15 + (index * 0.05),
+                          ease: ANIMATION_EASE_CUBIC 
+                        }}
+                      >
+                        {metric}
+                      </motion.span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Testimonials */}
+            {caseStudy.results.testimonials && caseStudy.results.testimonials.length > 0 && (
+              <motion.div 
+                className="space-y-6"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <motion.h3 
+                  className="font-medium text-lg text-light-heading dark:text-dark-heading"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, ease: ANIMATION_EASE_CUBIC }}
+                >
+                  Client Feedback
+                </motion.h3>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {caseStudy.results.testimonials.map((testimonial, index) => (
+                    <motion.div
+                      className="group relative rounded-xl bg-light-bg p-6 shadow-sm dark:bg-dark-bg"
+                      key={testimonial.name}
+                      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: index * 0.1,
+                        ease: ANIMATION_EASE_CUBIC 
+                      }}
+                    >
+                      <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
+                      <motion.div 
+                        className="mb-3 flex items-center gap-1"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                      >
+                        {[...new Array(STAR_RATING_COUNT)].map((_, starIndex) => (
+                          <motion.div
+                            key={`star-${starIndex}`}
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ 
+                              duration: 0.2, 
+                              delay: 0.2 + (index * 0.1) + (starIndex * 0.05),
+                              ease: "backOut" 
+                            }}
+                          >
+                            <StarIcon className="h-4 w-4 fill-light-mini text-light-mini dark:fill-dark-mini dark:text-dark-mini" />
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                      <motion.p 
+                        className="mb-4 text-light-text italic dark:text-dark-text"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.3 + (index * 0.1) }}
+                      >
+                        &quot;{testimonial.quote}&quot;
+                      </motion.p>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.4 + (index * 0.1) }}
+                      >
+                        <p className="font-medium text-light-heading dark:text-dark-heading">
+                          {testimonial.name}
+                        </p>
+                        <p className="text-light-mini text-sm dark:text-dark-mini">
+                          {testimonial.role}
+                        </p>
+                      </motion.div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Project Images Gallery */}
+      <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+        <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
+          <motion.div
+            animate="visible"
+            className="space-y-12"
+            initial="hidden"
+            variants={stagger}
+          >
+            <motion.div className="text-center" variants={fadeInUp}>
+              <h2 className="mb-4 font-bold text-2xl text-light-heading dark:text-dark-heading">
+                Project Gallery
+              </h2>
+              <p className="max-w-2xl mx-auto text-light-text leading-relaxed dark:text-dark-text">
+                Visual documentation of the project process and outcomes
+              </p>
+            </motion.div>
+
+            {/* Main Project Images */}
+            <motion.div
+              className="space-y-8"
+              variants={stagger}
+            >
+              <motion.div
+                className="group relative overflow-hidden rounded-xl"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <Image
+                  alt={caseStudy.gallery.images[0]?.alt || "Project wireframes and planning"}
+                  className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
+                  height={700}
+                  src={caseStudy.gallery.images[0]?.src || "/my-website.webp"}
+                  width={1200}
+                />
+                
+                {/* Image Title Overlay */}
+                <motion.div
+                  className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: 0.2 
+                  }}
+                >
+                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
+                    {caseStudy.gallery.images[0]?.title || "Project wireframes and planning"}
+                  </p>
+                </motion.div>
+              </motion.div>
+              
+              <motion.div
+                className="group relative overflow-hidden rounded-xl"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <Image
+                  alt={caseStudy.gallery.images[1]?.alt || "Development process and code"}
+                  className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
+                  height={700}
+                  src={caseStudy.gallery.images[1]?.src || "/new-hampshire.webp"}
+                  width={1200}
+                />
+                
+                {/* Image Title Overlay */}
+                <motion.div
+                  className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: 0.3 
+                  }}
+                >
+                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
+                    {caseStudy.gallery.images[1]?.title || "Development process and code"}
+                  </p>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+
+            {/* Challenge Analysis Image */}
+            <motion.div
+              className="group relative overflow-hidden rounded-xl"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2, ease: ANIMATION_EASE_CUBIC }}
+            >
+              <Image
+                alt={caseStudy.gallery.images[2]?.alt || "Challenge analysis and problem solving"}
+                className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
+                height={700}
+                src={caseStudy.gallery.images[2]?.src || "/promptearn.webp"}
+                width={1200}
+              />
+              
+              {/* Image Title Overlay */}
+              <motion.div
+                className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.3, 
+                  delay: 0.4 
+                }}
+              >
+                <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
+                  {caseStudy.gallery.images[2]?.title || "Challenge analysis and problem solving"}
+                </p>
+              </motion.div>
+            </motion.div>
+
+            {/* Process Images */}
+            <motion.div
+              className="space-y-8"
+              variants={stagger}
+            >
+              <motion.div
+                className="group relative overflow-hidden rounded-xl"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <Image
+                  alt={caseStudy.gallery.images[3]?.alt || "Development workflow and process"}
+                  className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
+                  height={700}
+                  src={caseStudy.gallery.images[3]?.src || "/craigwal.webp"}
+                  width={1200}
+                />
+                
+                {/* Image Title Overlay */}
+                <motion.div
+                  className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: 0.5 
+                  }}
+                >
+                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
+                    {caseStudy.gallery.images[3]?.title || "Development workflow and process"}
+                  </p>
+                </motion.div>
+              </motion.div>
+              
+              <motion.div
+                className="group relative overflow-hidden rounded-xl"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.4, ease: ANIMATION_EASE_CUBIC }}
+              >
+                <Image
+                  alt={caseStudy.gallery.images[4]?.alt || "Testing and optimization phase"}
+                  className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
+                  height={700}
+                  src={caseStudy.gallery.images[4]?.src || "/dubiss.webp"}
+                  width={1200}
+                />
+                
+                {/* Image Title Overlay */}
+                <motion.div
+                  className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: 0.6 
+                  }}
+                >
+                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
+                    {caseStudy.gallery.images[4]?.title || "Testing and optimization phase"}
+                  </p>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

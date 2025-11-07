@@ -1,6 +1,6 @@
 import type { SchemaTypeDefinition } from "sanity";
-import post from "./post";
 import category from "./category";
+import post from "./post";
 
 /**
  * Array of all schema types

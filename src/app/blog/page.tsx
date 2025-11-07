@@ -1,6 +1,6 @@
+import type { Metadata } from "next";
 import BlogList from "@/components/bloglist";
 import { client } from "@/sanity/lib/client";
-import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
@@ -28,8 +28,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-
-
 async function getPosts() {
   try {
     return await client.fetch(
@@ -53,8 +51,7 @@ async function getPosts() {
         }
       }`
     );
-  } catch (error) {
-    console.error("Error fetching posts:", error);
+  } catch (_error) {
     return [];
   }
 }

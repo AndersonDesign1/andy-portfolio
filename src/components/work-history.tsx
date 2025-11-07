@@ -1,21 +1,23 @@
 "use client";
 
+import { Clock, ExternalLinkIcon, PlusIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { PlusIcon, ExternalLinkIcon, Clock } from "lucide-react";
-import workExperienceData from "@/data/work-experience.json";
-import educationData from "@/data/education.json";
-import { formatDate } from "@/lib/utils";
-import {
-  useScrollAnimation,
-  workContainer,
-  workItemVariants,
-} from "@/hooks/use-scroll-animation";
-import { motion, AnimatePresence } from "motion/react";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import educationData from "@/data/education.json" with { type: "json" };
+import workExperienceData from "@/data/work-experience.json" with {
+  type: "json",
+};
+import {
+  useScrollAnimation,
+  workContainer,
+  workItemVariants,
+} from "@/hooks/use-scroll-animation";
+import { formatDate } from "@/lib/utils";
 
 const TABS = ["work", "education"] as const;
 type Tab = (typeof TABS)[number];
@@ -58,8 +60,12 @@ export default function WorkHistory() {
     const bIsCurrent = !b.endDate;
 
     // Current roles come first
-    if (aIsCurrent && !bIsCurrent) return -1;
-    if (!aIsCurrent && bIsCurrent) return 1;
+    if (aIsCurrent && !bIsCurrent) {
+      return -1;
+    }
+    if (!aIsCurrent && bIsCurrent) {
+      return 1;
+    }
 
     // If both are current, prioritize developer roles above SEO roles
     if (aIsCurrent && bIsCurrent) {
@@ -70,8 +76,12 @@ export default function WorkHistory() {
         b.position.toLowerCase().includes("developer") ||
         b.position.toLowerCase().includes("full stack");
 
-      if (aIsDeveloper && !bIsDeveloper) return -1;
-      if (!aIsDeveloper && bIsDeveloper) return 1;
+      if (aIsDeveloper && !bIsDeveloper) {
+        return -1;
+      }
+      if (!aIsDeveloper && bIsDeveloper) {
+        return 1;
+      }
     }
 
     // If both are current or both are past, sort by start date (newest first)
@@ -84,8 +94,12 @@ export default function WorkHistory() {
     const bIsCurrent = !b.endDate;
 
     // Current education comes first
-    if (aIsCurrent && !bIsCurrent) return -1;
-    if (!aIsCurrent && bIsCurrent) return 1;
+    if (aIsCurrent && !bIsCurrent) {
+      return -1;
+    }
+    if (!aIsCurrent && bIsCurrent) {
+      return 1;
+    }
 
     // If both are current or both are past, sort by start date (newest first)
     return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
@@ -93,36 +107,36 @@ export default function WorkHistory() {
 
   return (
     <section
+      className="bg-light-bg py-20 transition-colors duration-300 dark:bg-dark-bg"
       ref={workRef}
-      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
     >
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] overflow-hidden">
+      <div className="mx-auto max-w-screen-xl overflow-hidden px-4 sm:px-8 md:px-16 lg:px-[150px]">
         {/* Header & Toggle */}
         <motion.div
-          variants={workItemVariants}
-          initial="hidden"
           animate="visible"
           className="mb-16"
+          initial="hidden"
+          variants={workItemVariants}
         >
-          <h2 className="text-xl font-semibold mb-8 text-light-heading dark:text-dark-heading">
+          <h2 className="mb-8 font-semibold text-light-heading text-xl dark:text-dark-heading">
             Professional Background
           </h2>
-          <div className="relative inline-flex items-center p-1 bg-light-mini/10 dark:bg-dark-mini/10 rounded-full border border-light-mini/20 dark:border-dark-mini/20">
+          <div className="relative inline-flex items-center rounded-full border border-light-mini/20 bg-light-mini/10 p-1 dark:border-dark-mini/20 dark:bg-dark-mini/10">
             {TABS.map((tab) => (
               <motion.button
+                className={`relative z-10 flex cursor-pointer items-center gap-2 rounded-full px-6 py-2.5 font-medium text-sm transition-colors duration-200 ${
+                  activeTab === tab
+                    ? "text-gray-900 shadow-sm dark:text-white"
+                    : "text-light-text hover:text-light-heading dark:text-dark-text dark:hover:text-dark-heading"
+                }`}
                 key={tab}
                 onClick={() => setActiveTab(tab)}
+                type="button"
                 whileHover={{
                   scale: 1.02,
                   transition: { type: "spring", stiffness: 500, damping: 30 },
                 }}
                 whileTap={{ scale: 0.98 }}
-                className={`relative z-10 flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
-                  activeTab === tab
-                    ? "text-gray-900 dark:text-white shadow-sm"
-                    : "text-light-text dark:text-dark-text hover:text-light-heading dark:hover:text-dark-heading"
-                }`}
-                type="button"
               >
                 <span className="text-base">{tabIcons[tab]}</span>
                 {tab === "work" ? "Experience" : "Education"}
@@ -130,9 +144,9 @@ export default function WorkHistory() {
             ))}
             {/* Active Tab Background */}
             <motion.div
-              layoutId="activeTab"
-              className="absolute top-1 bottom-1 bg-blue-600 dark:bg-blue-500 rounded-full shadow-sm"
+              className="absolute top-1 bottom-1 rounded-full bg-blue-600 shadow-sm dark:bg-blue-500"
               initial={false}
+              layoutId="activeTab"
               transition={{
                 type: "spring",
                 stiffness: 550,
@@ -146,32 +160,32 @@ export default function WorkHistory() {
         <AnimatePresence mode="wait">
           {activeTab === "work" ? (
             <motion.div
-              key="work"
-              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
+              className="relative"
               exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: -20 }}
+              key="work"
               transition={{
                 type: "spring",
                 stiffness: 450,
                 damping: 28,
               }}
-              className="relative"
             >
               {/* Timeline Container */}
               <motion.div
-                variants={workContainer}
-                initial="hidden"
                 animate="visible"
                 className="relative"
+                initial="hidden"
+                variants={workContainer}
               >
                 {/* Main Accordion Container */}
-                <div className="rounded-xl border border-light-mini/20 dark:border-dark-mini/20 bg-light-bg/50 dark:bg-dark-bg/50 relative">
+                <div className="relative rounded-xl border border-light-mini/20 bg-light-bg/50 dark:border-dark-mini/20 dark:bg-dark-bg/50">
                   <Accordion
-                    type="single"
-                    collapsible
-                    value={openItem}
-                    onValueChange={handleOpenChange}
                     className="relative"
+                    collapsible
+                    onValueChange={handleOpenChange}
+                    type="single"
+                    value={openItem}
                   >
                     <ul>
                       {sortedWorkExperience.map((job, i) => {
@@ -182,67 +196,64 @@ export default function WorkHistory() {
 
                         return (
                           <AccordionItem
-                            value={key}
+                            className="group relative"
                             key={key}
-                            className="relative group"
+                            value={key}
                           >
                             <li>
                               <motion.div
-                                className={`absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 -z-10 ${
+                                className={`-z-10 absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 ${
                                   lastItem ? "rounded-b-xl" : ""
                                 } ${firstItem ? "rounded-t-xl" : ""}`}
                                 initial={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
                                 whileHover={{
                                   opacity: 1,
                                   transition: { duration: 0.2 },
                                 }}
-                                transition={{ duration: 0.2 }}
                               />
 
                               {/* Separator Line */}
                               {!lastItem && (
-                                <div className="absolute bottom-0 border-b border-light-mini/10 dark:border-dark-mini/10 left-0 right-0" />
+                                <div className="absolute right-0 bottom-0 left-0 border-light-mini/10 border-b dark:border-dark-mini/10" />
                               )}
 
                               <motion.div
-                                className="overflow-hidden"
                                 animate={open ? "open" : "closed"}
+                                className="overflow-hidden"
                               >
                                 <AccordionTrigger
-                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
-                                    firstItem ? "rounded-t-xl" : ""
-                                  } ${lastItem ? "rounded-b-xl" : ""}`}
                                   aria-label={`${new Date(
                                     job.startDate
                                   ).getFullYear()}, ${job.position}, ${
                                     job.company
                                   }`}
+                                  className={`relative grid w-full cursor-pointer grid-cols-[auto_auto_1fr_auto] items-center gap-y-2 rounded-xl px-5 py-5 text-left transition-all duration-300 hover:no-underline sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] md:px-7 lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] xl:px-10 xl:py-6 ${
+                                    firstItem ? "rounded-t-xl" : ""
+                                  } ${lastItem ? "rounded-b-xl" : ""}`}
                                   value={key}
                                 >
                                   {/* Year */}
-                                  <div className="hidden sm:block col-start-3 sm:col-start-auto sm:mr-10">
-                                    <div className="relative font-semibold text-light-mini dark:text-dark-mini text-xs md:text-sm">
-                                      {!job.endDate ? (
+                                  <div className="col-start-3 hidden sm:col-start-auto sm:mr-10 sm:block">
+                                    <div className="relative font-semibold text-light-mini text-xs md:text-sm dark:text-dark-mini">
+                                      {job.endDate ? (
+                                        new Date(job.startDate).getFullYear()
+                                      ) : (
                                         <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                                          <Clock className="w-3 h-3" />
+                                          <Clock className="h-3 w-3" />
                                           Present
                                         </span>
-                                      ) : (
-                                        new Date(job.startDate).getFullYear()
                                       )}
                                     </div>
                                   </div>
 
                                   {/* Company Logo */}
-                                  <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
+                                  <div className="col-span-2 col-start-1 mr-4 sm:col-span-1 sm:col-start-auto md:mr-0">
                                     {job.logoUrl ? (
-                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center border border-light-mini/20 dark:border-dark-mini/20">
+                                      <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-light-mini/20 bg-white sm:h-12 sm:w-12 dark:border-dark-mini/20">
                                         <img
-                                          src={
-                                            job.logoUrl || "/placeholder.svg"
-                                          }
                                           alt={`${job.company} logo`}
-                                          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                                          className="h-10 w-10 object-contain sm:h-12 sm:w-12"
                                           onError={(e) => {
                                             // Fallback to initials if logo fails to load
                                             const target =
@@ -250,14 +261,18 @@ export default function WorkHistory() {
                                             target.style.display = "none";
                                             const fallback =
                                               target.nextElementSibling as HTMLElement;
-                                            if (fallback)
+                                            if (fallback) {
                                               fallback.style.display = "flex";
+                                            }
                                           }}
+                                          src={
+                                            job.logoUrl || "/placeholder.svg"
+                                          }
                                         />
                                       </div>
                                     ) : null}
                                     <div
-                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                                      className={`flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-bold text-sm text-white sm:h-12 sm:w-12 dark:bg-blue-500 ${
                                         job.logoUrl ? "hidden" : ""
                                       }`}
                                     >
@@ -266,9 +281,9 @@ export default function WorkHistory() {
                                   </div>
 
                                   {/* Company & Role Info */}
-                                  <span className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0 ml-8">
+                                  <span className="col-start-3 ml-8 grid grid-cols-1 grid-rows-2 gap-y-2 pt-1 sm:col-start-auto sm:row-start-auto md:grid-cols-2 md:grid-rows-1 md:items-center md:pt-0">
                                     <motion.h3
-                                      className="text-sm sm:text-base md:text-lg col-span-2 md:col-span-1 font-medium text-light-heading dark:text-dark-heading"
+                                      className="col-span-2 font-medium text-light-heading text-sm sm:text-base md:col-span-1 md:text-lg dark:text-dark-heading"
                                       transition={{
                                         ...ANIMATIONS.motion,
                                         color: { duration: 0.1 },
@@ -280,15 +295,15 @@ export default function WorkHistory() {
                                     <AnimatePresence initial={false}>
                                       {!open && (
                                         <motion.p
-                                          className="text-xs md:text-sm lg:text-base text-light-text dark:text-dark-text font-normal col-start-1 col-span-2 md:col-span-1 md:col-start-2"
-                                          initial="closed"
                                           animate="open"
+                                          className="col-span-2 col-start-1 font-normal text-light-text text-xs md:col-span-1 md:col-start-2 md:text-sm lg:text-base dark:text-dark-text"
                                           exit="closed"
+                                          initial="closed"
+                                          transition={ANIMATIONS.motion}
                                           variants={{
                                             open: { opacity: 1, y: "0%" },
                                             closed: { opacity: 0, y: "100%" },
                                           }}
-                                          transition={ANIMATIONS.motion}
                                         >
                                           {job.position}
                                         </motion.p>
@@ -297,17 +312,17 @@ export default function WorkHistory() {
                                   </span>
 
                                   {/* Plus Icon */}
-                                  <div className="flex justify-end col-start-4">
-                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-light-mini/5 dark:bg-dark-mini/5">
+                                  <div className="col-start-4 flex justify-end">
+                                    <div className="rounded-full border border-light-mini/20 bg-light-mini/5 p-1.5 md:p-2 dark:border-dark-mini/20 dark:bg-dark-mini/5">
                                       <motion.div
                                         initial={false}
+                                        transition={ANIMATIONS.spring}
                                         variants={{
                                           open: { rotate: 45, scale: 1.1 },
                                           closed: { rotate: 0, scale: 1 },
                                         }}
-                                        transition={ANIMATIONS.spring}
                                       >
-                                        <PlusIcon className="text-light-heading dark:text-dark-heading w-4 h-4 md:w-5 md:h-5" />
+                                        <PlusIcon className="h-4 w-4 text-light-heading md:h-5 md:w-5 dark:text-dark-heading" />
                                       </motion.div>
                                     </div>
                                   </div>
@@ -316,7 +331,6 @@ export default function WorkHistory() {
                                 <AnimatePresence initial={false}>
                                   {open && (
                                     <motion.div
-                                      initial={{ height: 0, opacity: 0 }}
                                       animate={{
                                         height: "auto",
                                         opacity: 1,
@@ -333,6 +347,7 @@ export default function WorkHistory() {
                                           },
                                         },
                                       }}
+                                      className="overflow-hidden"
                                       exit={{
                                         height: 0,
                                         opacity: 0,
@@ -346,15 +361,15 @@ export default function WorkHistory() {
                                           opacity: { duration: 0.2 },
                                         },
                                       }}
-                                      className="overflow-hidden"
+                                      initial={{ height: 0, opacity: 0 }}
                                     >
-                                      <div className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10">
+                                      <div className="relative px-5 pt-2 pb-14 md:px-7 md:pl-[4.25rem] lg:pl-[5.25rem] xl:px-10">
                                         <motion.div
-                                          initial={{ opacity: 0, y: -10 }}
                                           animate={{
                                             opacity: 1,
                                             y: 0,
                                           }}
+                                          initial={{ opacity: 0, y: -10 }}
                                           transition={{
                                             delay: 0.12,
                                             ease: [0.25, 0.46, 0.45, 0.94],
@@ -362,12 +377,12 @@ export default function WorkHistory() {
                                           }}
                                         >
                                           {/* Description */}
-                                          <p className="font-normal text-sm md:text-base text-light-text dark:text-dark-text max-w-[50em] leading-relaxed mb-10 md:mb-12">
+                                          <p className="mb-10 max-w-[50em] font-normal text-light-text text-sm leading-relaxed md:mb-12 md:text-base dark:text-dark-text">
                                             {job.description}
                                           </p>
 
                                           {/* Key Details Grid */}
-                                          <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
+                                          <div className="flex flex-col items-start gap-7 md:gap-8 lg:flex-row lg:gap-16">
                                             {[
                                               ["Home", job.companyUrl],
                                               ["Role", job.position],
@@ -383,22 +398,22 @@ export default function WorkHistory() {
                                               ],
                                             ].map(([label, value]) => (
                                               <div key={label}>
-                                                <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                <div className="mb-3 font-medium text-light-heading text-sm md:mb-4 md:text-base dark:text-dark-heading">
                                                   {label}
                                                 </div>
 
                                                 {value === job.companyUrl ? (
                                                   <a
+                                                    className="block text-blue-600 text-sm underline decoration-light-mini/30 underline-offset-2 transition-colors hover:text-blue-700 md:text-base dark:text-blue-400 dark:decoration-dark-mini/30 dark:hover:text-blue-300"
                                                     href={value}
-                                                    target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                                    target="_blank"
                                                   >
                                                     {value}
-                                                    <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
+                                                    <ExternalLinkIcon className="ml-1 inline h-3 w-3" />
                                                   </a>
                                                 ) : (
-                                                  <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                                  <div className="font-normal text-light-text text-sm md:text-base dark:text-dark-text">
                                                     {value}
                                                   </div>
                                                 )}
@@ -410,15 +425,15 @@ export default function WorkHistory() {
                                           {job.technologies &&
                                             job.technologies.length > 0 && (
                                               <div className="mt-8">
-                                                <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                <div className="mb-3 font-medium text-light-heading text-sm md:mb-4 md:text-base dark:text-dark-heading">
                                                   Technologies
                                                 </div>
                                                 <div className="flex flex-wrap gap-2">
                                                   {job.technologies.map(
                                                     (tech, techIdx) => (
                                                       <span
+                                                        className="rounded-full border border-light-mini/20 bg-light-mini/10 px-3 py-1 text-light-text text-xs dark:border-dark-mini/20 dark:bg-dark-mini/10 dark:text-dark-text"
                                                         key={techIdx}
-                                                        className="px-3 py-1 bg-light-mini/10 dark:bg-dark-mini/10 text-xs text-light-text dark:text-dark-text rounded-full border border-light-mini/20 dark:border-dark-mini/20"
                                                       >
                                                         {tech}
                                                       </span>
@@ -444,32 +459,32 @@ export default function WorkHistory() {
             </motion.div>
           ) : (
             <motion.div
-              key="education"
-              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
+              className="relative"
               exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: -20 }}
+              key="education"
               transition={{
                 type: "spring",
                 stiffness: 450,
                 damping: 28,
               }}
-              className="relative"
             >
               {/* Timeline Container */}
               <motion.div
-                variants={workContainer}
-                initial="hidden"
                 animate="visible"
                 className="relative"
+                initial="hidden"
+                variants={workContainer}
               >
                 {/* Main Accordion Container */}
-                <div className="rounded-xl border border-light-mini/20 dark:border-dark-mini/20 bg-light-bg/50 dark:bg-dark-bg/50 relative">
+                <div className="relative rounded-xl border border-light-mini/20 bg-light-bg/50 dark:border-dark-mini/20 dark:bg-dark-bg/50">
                   <Accordion
-                    type="single"
-                    collapsible
-                    value={openItem}
-                    onValueChange={handleOpenChange}
                     className="relative"
+                    collapsible
+                    onValueChange={handleOpenChange}
+                    type="single"
+                    value={openItem}
                   >
                     <ul>
                       {sortedEducation.map((edu, i) => {
@@ -480,67 +495,64 @@ export default function WorkHistory() {
 
                         return (
                           <AccordionItem
-                            value={key}
+                            className="group relative"
                             key={key}
-                            className="relative group"
+                            value={key}
                           >
                             <li>
                               <motion.div
-                                className={`absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 -z-10 ${
+                                className={`-z-10 absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 ${
                                   lastItem ? "rounded-b-xl" : ""
                                 } ${firstItem ? "rounded-t-xl" : ""}`}
                                 initial={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
                                 whileHover={{
                                   opacity: 1,
                                   transition: { duration: 0.2 },
                                 }}
-                                transition={{ duration: 0.2 }}
                               />
 
                               {/* Separator Line */}
                               {!lastItem && (
-                                <div className="absolute bottom-0 border-b border-light-mini/10 dark:border-dark-mini/10 left-0 right-0" />
+                                <div className="absolute right-0 bottom-0 left-0 border-light-mini/10 border-b dark:border-dark-mini/10" />
                               )}
 
                               <motion.div
-                                className="overflow-hidden"
                                 animate={open ? "open" : "closed"}
+                                className="overflow-hidden"
                               >
                                 <AccordionTrigger
-                                  className={`grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] gap-y-2 px-5 md:px-7 xl:px-10 py-5 xl:py-6 items-center relative w-full text-left rounded-xl hover:no-underline cursor-pointer transition-all duration-300 ${
-                                    firstItem ? "rounded-t-xl" : ""
-                                  } ${lastItem ? "rounded-b-xl" : ""}`}
                                   aria-label={`${new Date(
                                     edu.startDate
                                   ).getFullYear()}, ${edu.degree}, ${
                                     edu.institution
                                   }`}
+                                  className={`relative grid w-full cursor-pointer grid-cols-[auto_auto_1fr_auto] items-center gap-y-2 rounded-xl px-5 py-5 text-left transition-all duration-300 hover:no-underline sm:grid-cols-[auto_auto_1fr_auto] md:grid-cols-[4.25rem_3.25rem_1fr_8.5rem] md:px-7 lg:grid-cols-[5.25rem_3.25rem_1fr_8.5rem] xl:px-10 xl:py-6 ${
+                                    firstItem ? "rounded-t-xl" : ""
+                                  } ${lastItem ? "rounded-b-xl" : ""}`}
                                   value={key}
                                 >
                                   {/* Year */}
-                                  <div className="hidden sm:block col-start-3 sm:col-start-auto sm:mr-10">
-                                    <div className="relative font-semibold text-light-mini dark:text-dark-mini text-xs md:text-sm">
-                                      {!edu.endDate ? (
+                                  <div className="col-start-3 hidden sm:col-start-auto sm:mr-10 sm:block">
+                                    <div className="relative font-semibold text-light-mini text-xs md:text-sm dark:text-dark-mini">
+                                      {edu.endDate ? (
+                                        new Date(edu.startDate).getFullYear()
+                                      ) : (
                                         <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                                          <Clock className="w-3 h-3" />
+                                          <Clock className="h-3 w-3" />
                                           Present
                                         </span>
-                                      ) : (
-                                        new Date(edu.startDate).getFullYear()
                                       )}
                                     </div>
                                   </div>
 
                                   {/* Institution Logo */}
-                                  <div className="col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mr-4 md:mr-0">
+                                  <div className="col-span-2 col-start-1 mr-4 sm:col-span-1 sm:col-start-auto md:mr-0">
                                     {edu.logoUrl ? (
-                                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white overflow-hidden flex items-center justify-center border border-light-mini/20 dark:border-dark-mini/20">
+                                      <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-light-mini/20 bg-white sm:h-12 sm:w-12 dark:border-dark-mini/20">
                                         <img
-                                          src={
-                                            edu.logoUrl || "/placeholder.svg"
-                                          }
                                           alt={`${edu.institution} logo`}
-                                          className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                                          className="h-10 w-10 object-contain sm:h-12 sm:w-12"
                                           onError={(e) => {
                                             // Fallback to initials if logo fails to load
                                             const target =
@@ -548,14 +560,18 @@ export default function WorkHistory() {
                                             target.style.display = "none";
                                             const fallback =
                                               target.nextElementSibling as HTMLElement;
-                                            if (fallback)
+                                            if (fallback) {
                                               fallback.style.display = "flex";
+                                            }
                                           }}
+                                          src={
+                                            edu.logoUrl || "/placeholder.svg"
+                                          }
                                         />
                                       </div>
                                     ) : null}
                                     <div
-                                      className={`w-10 h-10 sm:w-12 sm:h-12 bg-green-600 dark:bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                                      className={`flex h-10 w-10 items-center justify-center rounded-full bg-green-600 font-bold text-sm text-white sm:h-12 sm:w-12 dark:bg-green-500 ${
                                         edu.logoUrl ? "hidden" : ""
                                       }`}
                                     >
@@ -564,9 +580,9 @@ export default function WorkHistory() {
                                   </div>
 
                                   {/* Institution & Degree Info */}
-                                  <span className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-y-2 md:items-center col-start-3 sm:col-start-auto sm:row-start-auto pt-1 md:pt-0 ml-8">
+                                  <span className="col-start-3 ml-8 grid grid-cols-1 gap-y-2 pt-1 sm:col-start-auto sm:row-start-auto md:grid-cols-2 md:grid-rows-1 md:items-center md:pt-0">
                                     <motion.h3
-                                      className="text-sm sm:text-base md:text-lg col-span-2 md:col-span-1 font-medium text-light-heading dark:text-dark-heading"
+                                      className="col-span-2 font-medium text-light-heading text-sm sm:text-base md:col-span-1 md:text-lg dark:text-dark-heading"
                                       transition={{
                                         ...ANIMATIONS.motion,
                                         color: { duration: 0.1 },
@@ -578,15 +594,15 @@ export default function WorkHistory() {
                                     <AnimatePresence initial={false}>
                                       {!open && (
                                         <motion.p
-                                          className="text-xs md:text-sm lg:text-base text-light-text dark:text-dark-text font-normal col-start-1 col-span-2 md:col-span-1 md:col-start-2"
-                                          initial="closed"
                                           animate="open"
+                                          className="col-span-2 col-start-1 font-normal text-light-text text-xs md:col-span-1 md:col-start-2 md:text-sm lg:text-base dark:text-dark-text"
                                           exit="closed"
+                                          initial="closed"
+                                          transition={ANIMATIONS.motion}
                                           variants={{
                                             open: { opacity: 1, y: "0%" },
                                             closed: { opacity: 0, y: "100%" },
                                           }}
-                                          transition={ANIMATIONS.motion}
                                         >
                                           {edu.degree}
                                         </motion.p>
@@ -595,17 +611,17 @@ export default function WorkHistory() {
                                   </span>
 
                                   {/* Plus Icon */}
-                                  <div className="flex justify-end col-start-4">
-                                    <div className="p-1.5 md:p-2 border border-light-mini/20 dark:border-dark-mini/20 rounded-full bg-light-mini/5 dark:bg-dark-mini/5">
+                                  <div className="col-start-4 flex justify-end">
+                                    <div className="rounded-full border border-light-mini/20 bg-light-mini/5 p-1.5 md:p-2 dark:border-dark-mini/20 dark:bg-dark-mini/5">
                                       <motion.div
                                         initial={false}
+                                        transition={ANIMATIONS.spring}
                                         variants={{
                                           open: { rotate: 45, scale: 1.1 },
                                           closed: { rotate: 0, scale: 1 },
                                         }}
-                                        transition={ANIMATIONS.spring}
                                       >
-                                        <PlusIcon className="text-light-heading dark:text-dark-heading w-4 h-4 md:w-5 md:h-5" />
+                                        <PlusIcon className="h-4 w-4 text-light-heading md:h-5 md:w-5 dark:text-dark-heading" />
                                       </motion.div>
                                     </div>
                                   </div>
@@ -614,7 +630,6 @@ export default function WorkHistory() {
                                 <AnimatePresence initial={false}>
                                   {open && (
                                     <motion.div
-                                      initial={{ height: 0, opacity: 0 }}
                                       animate={{
                                         height: "auto",
                                         opacity: 1,
@@ -631,6 +646,7 @@ export default function WorkHistory() {
                                           },
                                         },
                                       }}
+                                      className="overflow-hidden"
                                       exit={{
                                         height: 0,
                                         opacity: 0,
@@ -644,15 +660,15 @@ export default function WorkHistory() {
                                           opacity: { duration: 0.2 },
                                         },
                                       }}
-                                      className="overflow-hidden"
+                                      initial={{ height: 0, opacity: 0 }}
                                     >
-                                      <div className="md:pl-[4.25rem] lg:pl-[5.25rem] pb-14 pt-2 relative px-5 md:px-7 xl:px-10">
+                                      <div className="relative px-5 pt-2 pb-14 md:px-7 md:pl-[4.25rem] lg:pl-[5.25rem] xl:px-10">
                                         <motion.div
-                                          initial={{ opacity: 0, y: -10 }}
                                           animate={{
                                             opacity: 1,
                                             y: 0,
                                           }}
+                                          initial={{ opacity: 0, y: -10 }}
                                           transition={{
                                             delay: 0.12,
                                             ease: [0.25, 0.46, 0.45, 0.94],
@@ -662,17 +678,17 @@ export default function WorkHistory() {
                                           {/* Field */}
                                           {edu.field && (
                                             <div className="mb-6">
-                                              <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                              <div className="mb-3 font-medium text-light-heading text-sm md:mb-4 md:text-base dark:text-dark-heading">
                                                 Field
                                               </div>
-                                              <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                              <div className="font-normal text-light-text text-sm md:text-base dark:text-dark-text">
                                                 {edu.field}
                                               </div>
                                             </div>
                                           )}
 
                                           {/* Key Details Grid */}
-                                          <div className="flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-16 items-start">
+                                          <div className="flex flex-col items-start gap-7 md:gap-8 lg:flex-row lg:gap-16">
                                             {[
                                               ["Home", edu.institutionUrl],
                                               ["Degree", edu.degree],
@@ -688,23 +704,23 @@ export default function WorkHistory() {
                                               ],
                                             ].map(([label, value]) => (
                                               <div key={label}>
-                                                <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                                <div className="mb-3 font-medium text-light-heading text-sm md:mb-4 md:text-base dark:text-dark-heading">
                                                   {label}
                                                 </div>
 
                                                 {value ===
                                                 edu.institutionUrl ? (
                                                   <a
+                                                    className="block text-blue-600 text-sm underline decoration-light-mini/30 underline-offset-2 transition-colors hover:text-blue-700 md:text-base dark:text-blue-400 dark:decoration-dark-mini/30 dark:hover:text-blue-300"
                                                     href={value}
-                                                    target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-sm md:text-base block underline underline-offset-2 decoration-light-mini/30 dark:decoration-dark-mini/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                                    target="_blank"
                                                   >
                                                     {value}
-                                                    <ExternalLinkIcon className="inline w-3 h-3 ml-1" />
+                                                    <ExternalLinkIcon className="ml-1 inline h-3 w-3" />
                                                   </a>
                                                 ) : (
-                                                  <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                                  <div className="font-normal text-light-text text-sm md:text-base dark:text-dark-text">
                                                     {value}
                                                   </div>
                                                 )}
@@ -715,10 +731,10 @@ export default function WorkHistory() {
                                           {/* Location */}
                                           {edu.location && (
                                             <div className="mt-8">
-                                              <div className="font-medium text-sm md:text-base mb-3 md:mb-4 text-light-heading dark:text-dark-heading">
+                                              <div className="mb-3 font-medium text-light-heading text-sm md:mb-4 md:text-base dark:text-dark-heading">
                                                 Location
                                               </div>
-                                              <div className="font-normal text-sm md:text-base text-light-text dark:text-dark-text">
+                                              <div className="font-normal text-light-text text-sm md:text-base dark:text-dark-text">
                                                 {edu.location}
                                               </div>
                                             </div>

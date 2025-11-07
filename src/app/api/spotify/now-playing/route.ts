@@ -1,8 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/env";
 
-const client_id = process.env.SPOTIFY_CLIENT_ID!;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET!;
-const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN!;
+// HTTP status codes
+const HTTP_STATUS_NO_CONTENT = 204;
+const HTTP_STATUS_BAD_REQUEST = 400;
+
+// Spotify API configuration
+const client_id = env.SPOTIFY_CLIENT_ID;
+const client_secret = env.SPOTIFY_CLIENT_SECRET;
+const refresh_token = env.SPOTIFY_REFRESH_TOKEN;
 
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
@@ -21,7 +27,7 @@ async function getAccessToken() {
   return response.json();
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const { access_token } = await getAccessToken();
 
   // Try now playing first
@@ -35,7 +41,10 @@ export async function GET(req: NextRequest) {
     }
   );
 
-  if (res.status === 204 || res.status > 400) {
+  if (
+    res.status === HTTP_STATUS_NO_CONTENT ||
+    res.status > HTTP_STATUS_BAD_REQUEST
+  ) {
     // Fallback to recently played
     res = await fetch(
       "https://api.spotify.com/v1/me/player/recently-played?limit=1",

@@ -1,16 +1,15 @@
-import type { DocumentSchema } from "../lib/types"
-import post from "./post"
-import category from "./category"
+import type { SchemaTypeDefinition } from "sanity";
+import category from "./category";
+import post from "./post";
 
 /**
  * Array of all schema types
  */
-export const schemaTypes: DocumentSchema[] = [post, category]
+export const schemaTypes: SchemaTypeDefinition[] = [post, category];
 
 /**
  * Schema configuration object
  */
 export const schema = {
   types: schemaTypes,
-}
-
+};

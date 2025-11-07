@@ -1,17 +1,23 @@
 "use client";
 
-import React, { useEffect, useRef, createContext, useContext } from "react";
 import Lenis from "lenis";
+import type React from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
+import {
+  SCROLL_DURATION,
+  SCROLL_EASING_CONSTANT,
+  SCROLL_EASING_EXPONENT,
+} from "@/lib/constants";
 
-interface ScrollContextType {
+type ScrollContextType = {
   lenis: Lenis | null;
-}
+};
 
 const ScrollContext = createContext<ScrollContextType>({ lenis: null });
 
-interface ScrollProviderProps {
+type ScrollProviderProps = {
   children: React.ReactNode;
-}
+};
 
 export default function ScrollProvider({ children }: ScrollProviderProps) {
   const lenisRef = useRef<Lenis | null>(null);
@@ -19,8 +25,8 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
   useEffect(() => {
     // Always initialize Lenis, but use CSS media queries to control behavior
     lenisRef.current = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: SCROLL_DURATION,
+      easing: (t) => Math.min(1, SCROLL_EASING_CONSTANT - 2 ** (SCROLL_EASING_EXPONENT * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,

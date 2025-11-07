@@ -1,16 +1,23 @@
 "use client";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { PortableText } from "@portabletext/react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { PortableText } from "@portabletext/react";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-interface Post {
+// PortableText block types
+type PortableTextBlock = {
+  _type: string;
+  _key: string;
+  [key: string]: unknown;
+};
+
+type Post = {
   _id: string;
   title: string;
   slug: { current: string };
   excerpt?: string;
-  body?: any;
+  body?: PortableTextBlock[];
   _createdAt: string;
   publishedAt: string;
   mainImage?: {
@@ -24,55 +31,55 @@ interface Post {
     slug: { current: string };
     description?: string;
   }>;
-}
+};
 
-interface BlogPostProps {
+type BlogPostProps = {
   post: Post;
-}
+};
 
 export default function BlogPost({ post }: BlogPostProps) {
   return (
-    <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] py-20">
+    <div className="min-h-screen bg-light-bg pt-24 transition-colors duration-300 dark:bg-dark-bg">
+      <div className="mx-auto max-w-screen-xl px-4 py-20 sm:px-8 md:px-16 lg:px-[150px]">
         {/* Back Navigation */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
           className="mb-8"
+          initial={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.4 }}
         >
           <Link
+            className="inline-flex items-center gap-2 text-light-mini text-sm transition-colors duration-300 hover:text-light-heading dark:text-dark-mini dark:hover:text-dark-heading"
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
           >
-            <ArrowLeftIcon className="w-4 h-4" />
+            <ArrowLeftIcon className="h-4 w-4" />
             Back to Blog
           </Link>
         </motion.div>
 
         {/* Article Header */}
         <motion.article
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          className="mx-auto max-w-4xl"
+          initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
         >
           {/* Title */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="mb-6 font-bold text-4xl text-light-heading lg:text-5xl dark:text-dark-heading"
+            initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl lg:text-5xl font-bold text-light-heading dark:text-dark-heading mb-6"
           >
             {post.title}
           </motion.h1>
 
           {/* Meta Information */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="mb-8 flex flex-wrap items-center gap-4 text-light-mini text-sm dark:text-dark-mini"
+            initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-wrap items-center gap-4 text-sm text-light-mini dark:text-dark-mini mb-8"
           >
             <span>
               {new Date(post.publishedAt || post._createdAt).toLocaleDateString(
@@ -95,17 +102,17 @@ export default function BlogPost({ post }: BlogPostProps) {
           {/* Featured Image */}
           {post.mainImage && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              className="relative mb-8 aspect-[16/9] overflow-hidden rounded-lg"
+              initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="relative aspect-[16/9] overflow-hidden rounded-lg mb-8"
             >
               <Image
-                src={post.mainImage.asset.url}
                 alt={post.title}
-                fill
                 className="object-cover"
+                fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+                src={post.mainImage.asset.url}
               />
             </motion.div>
           )}
@@ -113,10 +120,10 @@ export default function BlogPost({ post }: BlogPostProps) {
           {/* Article Body */}
           {post.body && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              className="prose prose-lg max-w-none prose-a:text-blue-600 prose-headings:text-light-heading prose-p:text-light-text prose-strong:text-light-heading prose-a:dark:text-blue-400 prose-headings:dark:text-dark-heading prose-p:dark:text-dark-text prose-strong:dark:text-dark-heading"
+              initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="prose prose-lg max-w-none prose-headings:text-light-heading prose-headings:dark:text-dark-heading prose-p:text-light-text prose-p:dark:text-dark-text prose-strong:text-light-heading prose-strong:dark:text-dark-heading prose-a:text-blue-600 prose-a:dark:text-blue-400"
             >
               <PortableText value={post.body} />
             </motion.div>

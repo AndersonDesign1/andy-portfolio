@@ -1,11 +1,11 @@
-import type { Rule } from "sanity";
-import type { DocumentSchema, SlugField, SchemaField } from "../lib/types";
+import type { Rule, DocumentDefinition } from "sanity";
+import type { SchemaField, SlugField } from "../lib/types";
 
 /**
  * Category schema definition
  * Represents a blog post category
  */
-const category: DocumentSchema = {
+const category: DocumentDefinition = {
   name: "category",
   title: "Category",
   type: "document",

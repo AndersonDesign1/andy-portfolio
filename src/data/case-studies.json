@@ -154,6 +154,35 @@
           "250% organic traffic growth",
           "Bounce rate halved"
         ]
+      },
+      "gallery": {
+        "images": [
+          {
+            "src": "/my-website.webp",
+            "alt": "PromptEarn website homepage showing affiliate marketing platform",
+            "title": "Homepage Design"
+          },
+          {
+            "src": "/new-hampshire.webp", 
+            "alt": "SEO dashboard and analytics interface for PromptEarn",
+            "title": "Analytics Dashboard"
+          },
+          {
+            "src": "/promptearn.webp",
+            "alt": "Affiliate partner onboarding and management system",
+            "title": "Partner Management"
+          },
+          {
+            "src": "/craigwal.webp",
+            "alt": "Mobile-responsive design and user experience improvements",
+            "title": "Mobile Experience"
+          },
+          {
+            "src": "/dubiss.webp",
+            "alt": "Performance optimization and Core Web Vitals improvements",
+            "title": "Performance Optimization"
+          }
+        ]
       }
     },
     "welup-digital": {
@@ -334,6 +363,35 @@
           "Zero downtime migration",
           "Major SEO and client delivery wins",
           "CMS and content system for the team"
+        ]
+      },
+      "gallery": {
+        "images": [
+          {
+            "src": "/my-website.webp",
+            "alt": "Welup Digital modernized website homepage with Next.js",
+            "title": "Modern Homepage"
+          },
+          {
+            "src": "/new-hampshire.webp", 
+            "alt": "Sanity CMS interface for content management",
+            "title": "CMS Interface"
+          },
+          {
+            "src": "/promptearn.webp",
+            "alt": "Client website examples built with the new platform",
+            "title": "Client Websites"
+          },
+          {
+            "src": "/craigwal.webp",
+            "alt": "SEO optimization and performance monitoring dashboard",
+            "title": "SEO Dashboard"
+          },
+          {
+            "src": "/dubiss.webp",
+            "alt": "DDoS protection and uptime monitoring system",
+            "title": "Security & Uptime"
+          }
         ]
       }
     }

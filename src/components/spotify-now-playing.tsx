@@ -1,14 +1,18 @@
 "use client";
-import React, { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  SPOTIFY_POLLING_INTERVAL_PLAYING,
+  SPOTIFY_POLLING_INTERVAL_PAUSED,
+} from "@/lib/constants";
 
-interface SpotifyTrack {
+type SpotifyTrack = {
   name: string;
   artists: { name: string }[];
   album: { images: { url: string }[]; name: string; release_date: string };
   external_urls: { spotify: string };
   isPlaying?: boolean;
-}
+};
 
 export default function SpotifyNowPlaying() {
   const [track, setTrack] = useState<SpotifyTrack | null>(null);
@@ -46,8 +50,7 @@ export default function SpotifyNowPlaying() {
       } else {
         updateTrack(null);
       }
-    } catch (error) {
-      console.error("Failed to fetch Spotify track:", error);
+    } catch (_error) {
       updateTrack(null);
     }
   }, [updateTrack]);
@@ -66,7 +69,7 @@ export default function SpotifyNowPlaying() {
       } else if (isActive) {
         // Restart polling when tab becomes visible
         fetchTrack();
-        const interval = track?.isPlaying ? 5000 : 15000; // 5s if playing, 15s if not
+        const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
         intervalRef.current = setInterval(fetchTrack, interval);
       }
     };
@@ -74,7 +77,7 @@ export default function SpotifyNowPlaying() {
     const handleUserActivity = () => {
       if (isActive && !intervalRef.current) {
         fetchTrack();
-        const interval = track?.isPlaying ? 5000 : 15000;
+        const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
         intervalRef.current = setInterval(fetchTrack, interval);
       }
     };
@@ -83,7 +86,7 @@ export default function SpotifyNowPlaying() {
     fetchTrack();
 
     // Set up adaptive polling based on current playback state
-    const interval = track?.isPlaying ? 5000 : 15000;
+    const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
     intervalRef.current = setInterval(fetchTrack, interval);
 
     // Listen for tab visibility changes
@@ -110,7 +113,7 @@ export default function SpotifyNowPlaying() {
   useEffect(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
-      const interval = track?.isPlaying ? 5000 : 15000;
+      const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
       intervalRef.current = setInterval(fetchTrack, interval);
     }
   }, [track?.isPlaying, fetchTrack]);
@@ -118,15 +121,10 @@ export default function SpotifyNowPlaying() {
   if (isLoading) {
     return (
       <button
-        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50
-          bg-light-bg text-dark-bg border border-light-mini/30
-          dark:bg-dark-bg dark:text-light-bg dark:border-dark-mini/30
-          px-3 py-2 sm:px-4 sm:py-2 rounded-full shadow transition-all duration-300
-          focus:outline-none focus:ring-2 focus:ring-blue-400
-          opacity-100 translate-y-0 text-xs sm:text-sm"
         aria-label="Spotify Now Playing"
-        title="Spotify Now Playing"
+        className="fixed right-4 bottom-4 z-50 translate-y-0 rounded-full border border-light-mini/30 bg-light-bg px-3 py-2 text-dark-bg text-xs opacity-100 shadow transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:right-8 sm:bottom-8 sm:px-4 sm:py-2 sm:text-sm dark:border-dark-mini/30 dark:bg-dark-bg dark:text-light-bg"
         disabled
+        title="Spotify Now Playing"
       >
         Loading Spotify...
       </button>
@@ -136,15 +134,10 @@ export default function SpotifyNowPlaying() {
   if (!track) {
     return (
       <button
-        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50
-          bg-light-bg text-dark-bg border border-light-mini/30
-          dark:bg-dark-bg dark:text-light-bg dark:border-dark-mini/30
-          px-3 py-2 sm:px-4 sm:py-2 rounded-full shadow transition-all duration-300
-          focus:outline-none focus:ring-2 focus:ring-blue-400
-          opacity-100 translate-y-0 text-xs sm:text-sm"
         aria-label="Spotify Not Playing"
-        title="Spotify Not Playing"
+        className="fixed right-4 bottom-4 z-50 translate-y-0 rounded-full border border-light-mini/30 bg-light-bg px-3 py-2 text-dark-bg text-xs opacity-100 shadow transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:right-8 sm:bottom-8 sm:px-4 sm:py-2 sm:text-sm dark:border-dark-mini/30 dark:bg-dark-bg dark:text-light-bg"
         disabled
+        title="Spotify Not Playing"
       >
         Not Playing
       </button>
@@ -153,7 +146,19 @@ export default function SpotifyNowPlaying() {
 
   return (
     <div
-      className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50"
+      className="fixed right-4 bottom-4 z-50 sm:right-8 sm:bottom-8"
+      onBlur={() => {
+        // Only hide tooltip on desktop blur
+        if (window.innerWidth >= 640) {
+          setShowTooltip(false);
+        }
+      }}
+      onFocus={() => {
+        // Only show tooltip on desktop focus
+        if (window.innerWidth >= 640) {
+          setShowTooltip(true);
+        }
+      }}
       onMouseEnter={() => {
         // Only show tooltip on desktop (non-touch devices)
         if (window.innerWidth >= 640) {
@@ -166,38 +171,9 @@ export default function SpotifyNowPlaying() {
           setShowTooltip(false);
         }
       }}
-      onFocus={() => {
-        // Only show tooltip on desktop focus
-        if (window.innerWidth >= 640) {
-          setShowTooltip(true);
-        }
-      }}
-      onBlur={() => {
-        // Only hide tooltip on desktop blur
-        if (window.innerWidth >= 640) {
-          setShowTooltip(false);
-        }
-      }}
-      tabIndex={0}
     >
       {/* Mobile: Small circular button, Desktop: Full button */}
       <button
-        onClick={() => setShowTooltip(!showTooltip)}
-        className={`
-          transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-blue-400
-          shadow hover:shadow-lg
-          
-          /* Mobile styles */
-          w-12 h-12 rounded-full
-          bg-light-bg text-dark-bg border border-light-mini/30
-          dark:bg-dark-bg dark:text-light-bg dark:border-dark-mini/30
-          flex items-center justify-center
-          
-          /* Desktop styles */
-          sm:w-auto sm:h-auto sm:px-4 sm:py-2 sm:gap-3 sm:rounded-full
-          sm:hover:bg-light-mini/10 sm:dark:hover:bg-dark-mini/10
-        `}
         aria-label={
           track.isPlaying
             ? `Now playing: ${track.name} by ${track.artists
@@ -207,6 +183,10 @@ export default function SpotifyNowPlaying() {
                 .map((a) => a.name)
                 .join(", ")}`
         }
+        className={
+          "/* Mobile styles */ /* Desktop styles */ flex h-12 w-12 items-center justify-center rounded-full border border-light-mini/30 bg-light-bg text-dark-bg shadow transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 sm:h-auto sm:w-auto sm:gap-3 sm:rounded-full sm:px-4 sm:py-2 sm:hover:bg-light-mini/10 dark:border-dark-mini/30 dark:bg-dark-bg dark:text-light-bg sm:dark:hover:bg-dark-mini/10"
+        }
+        onClick={() => setShowTooltip(!showTooltip)}
         title={
           track.isPlaying
             ? `Now playing: ${track.name} by ${track.artists
@@ -219,19 +199,19 @@ export default function SpotifyNowPlaying() {
       >
         {/* Mobile: Just album art, Desktop: Album art + text */}
         <Image
-          src={track.album.images[2]?.url || track.album.images[0]?.url}
           alt={track.name}
-          width={32}
+          className="h-6 w-6 rounded sm:h-8 sm:w-8"
           height={32}
-          className="w-6 h-6 sm:w-8 sm:h-8 rounded"
+          src={track.album.images[2]?.url || track.album.images[0]?.url}
+          width={32}
         />
 
         {/* Desktop: Full text info */}
-        <div className="hidden sm:flex sm:flex-col sm:items-start sm:min-w-0">
-          <span className="font-medium text-xs truncate w-full">
+        <div className="hidden sm:flex sm:min-w-0 sm:flex-col sm:items-start">
+          <span className="w-full truncate font-medium text-xs">
             {track.isPlaying ? "Now Playing" : "Last Played"}
           </span>
-          <span className="text-xs text-light-mini dark:text-dark-mini truncate w-full">
+          <span className="w-full truncate text-light-mini text-xs dark:text-dark-mini">
             {track.name} — {track.artists.map((a) => a.name).join(", ")}
           </span>
         </div>
@@ -239,54 +219,39 @@ export default function SpotifyNowPlaying() {
 
       {/* Tooltip/Modal - Mobile: Bottom sheet style, Desktop: Tooltip */}
       <div
-        className={`
-          transition-all duration-200
-          ${
-            showTooltip
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 translate-y-2 pointer-events-none"
-          }
-          
-          /* Mobile: Always visible on mobile, tooltip on desktop */
-          absolute bottom-16 right-0 w-72 max-w-[85vw]
-          sm:bottom-14 sm:w-64 sm:max-w-[90vw]
-          
-          /* Show on mobile when clicked, show/hide on desktop based on hover */
-          ${showTooltip ? "block" : "hidden sm:block"}
-        `}
+        className={`transition-all duration-200 ${
+          showTooltip
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-2 opacity-0"
+        } absolute right-0 bottom-16 w-72 max-w-[85vw] sm:bottom-14 sm:w-64 sm:max-w-[90vw] ${
+          showTooltip ? "block" : "hidden"
+        }`}
         style={{ zIndex: 100 }}
       >
         <div
-          className={`
-            bg-light-bg border border-light-mini/20
-            dark:bg-dark-bg dark:border-dark-mini/20
-            rounded-xl shadow-lg p-4
-            flex flex-col gap-3
-            transition-colors duration-200
-            
-            /* Desktop: Smaller padding */
-            sm:p-3 sm:gap-2
-          `}
+          className={
+            "/* Desktop: Smaller padding */ flex flex-col gap-3 rounded-xl border border-light-mini/20 bg-light-bg p-4 shadow-lg transition-colors duration-200 sm:gap-2 sm:p-3 dark:border-dark-mini/20 dark:bg-dark-bg"
+          }
         >
           <div className="flex items-center gap-3 sm:gap-2">
             <Image
-              src={track.album.images[1]?.url || track.album.images[0]?.url}
               alt={track.album.name}
-              width={48}
+              className="h-12 w-12 rounded sm:h-10 sm:w-10"
               height={48}
-              className="w-12 h-12 sm:w-10 sm:h-10 rounded"
+              src={track.album.images[1]?.url || track.album.images[0]?.url}
+              width={48}
             />
             <div className="min-w-0 flex-1">
-              <div className="font-semibold text-sm sm:text-xs text-light-heading dark:text-dark-heading truncate">
+              <div className="truncate font-semibold text-light-heading text-sm sm:text-xs dark:text-dark-heading">
                 {track.name}
               </div>
-              <div className="text-xs sm:text-[11px] text-light-mini dark:text-dark-mini truncate">
+              <div className="truncate text-light-mini text-xs sm:text-[11px] dark:text-dark-mini">
                 {track.artists.map((a) => a.name).join(", ")}
               </div>
             </div>
           </div>
 
-          <div className="text-xs sm:text-[11px] text-light-mini dark:text-dark-mini space-y-1">
+          <div className="space-y-1 text-light-mini text-xs sm:text-[11px] dark:text-dark-mini">
             <div>
               <span className="font-medium">Album:</span> {track.album.name}
             </div>
@@ -297,10 +262,10 @@ export default function SpotifyNowPlaying() {
           </div>
 
           <a
+            className="mt-2 inline-block py-2 text-blue-600 text-sm hover:underline sm:mt-1 sm:py-1 sm:text-xs dark:text-blue-400"
             href={track.external_urls.spotify}
-            target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 sm:mt-1 inline-block text-sm sm:text-xs text-blue-600 dark:text-blue-400 hover:underline py-2 sm:py-1"
+            target="_blank"
           >
             Open in Spotify ↗
           </a>

@@ -1,55 +1,45 @@
 /**
  * Common type definitions for Sanity schemas
  */
-import type { Rule } from "sanity";
+import type { Rule, DocumentDefinition } from "sanity";
 
 /**
  * Base interface for all schema types
  */
-export interface SchemaType {
+export type SchemaType = {
   name: string;
   title: string;
   type: string;
-}
+};
 
 /**
  * Interface for document schema types
+ * Using Sanity's built-in DocumentDefinition type
  */
-export interface DocumentSchema extends SchemaType {
-  type: "document";
-  fields: SchemaField[];
-  preview?: {
-    select: Record<string, string>;
-    prepare?: (selection: Record<string, any>) => {
-      title?: string;
-      subtitle?: string;
-      media?: any;
-    };
-  };
-}
+export type DocumentSchema = DocumentDefinition;
 
 /**
  * Interface for field definitions
  */
-export interface SchemaField {
+export type SchemaField = {
   name: string;
   title: string;
   type: string;
   description?: string;
   validation?: (rule: Rule) => Rule;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
   fields?: SchemaField[];
   of?: Array<{ type: string } & Partial<SchemaField>>;
   rows?: number;
-}
+};
 
 /**
  * Type for language alternatives in code blocks
  */
-export interface LanguageAlternative {
+export type LanguageAlternative = {
   title: string;
   value: string;
-}
+};
 
 /**
  * Type for image field with hotspot

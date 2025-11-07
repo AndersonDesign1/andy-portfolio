@@ -1,45 +1,48 @@
 "use client";
 
-import React from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { FaGithub, FaEnvelope, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { FaEnvelope, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import {
-  useScrollAnimation,
   heroStagger,
   heroTextVariants,
+  useScrollAnimation,
 } from "@/hooks/use-scroll-animation";
+import {
+  ANIMATION_DELAY_BASE,
+  ANIMATION_DELAY_INCREMENT,
+} from "@/lib/constants";
 
 const socialLinks = [
   {
-    icon: <FaGithub className="w-5 h-5" />,
+    icon: <FaGithub className="h-5 w-5" />,
     href: "https://github.com/AndersonDesign1",
     label: "GitHub",
   },
   {
-    icon: <FaXTwitter className="w-5 h-5" />,
+    icon: <FaXTwitter className="h-5 w-5" />,
     href: "https://twitter.com/HeyItsAndersonJ",
     label: "Twitter",
   },
   {
-    icon: <FaEnvelope className="w-5 h-5" />,
+    icon: <FaEnvelope className="h-5 w-5" />,
     href: "mailto:hello@andersonjoseph.com",
     label: "Email",
   },
   {
-    icon: <FaLinkedin className="w-5 h-5" />,
+    icon: <FaLinkedin className="h-5 w-5" />,
     href: "https://linkedin.com/in/anderson-josh",
     label: "LinkedIn",
   },
   {
-    icon: <FaInstagram className="w-5 h-5" />,
+    icon: <FaInstagram className="h-5 w-5" />,
     href: "https://instagram.com/josephandy_official",
     label: "Instagram",
   },
 ];
 
-const containerVariants = {
+const _containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -50,7 +53,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const _itemVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
@@ -111,50 +114,50 @@ export default function Hero() {
 
   return (
     <section
+      className="relative flex min-h-[60vh] items-center bg-light-bg py-20 pt-36 transition-colors duration-300 dark:bg-dark-bg"
       ref={heroRef}
-      className="py-20 pt-36 bg-light-bg dark:bg-dark-bg transition-colors duration-300 relative min-h-[60vh] flex items-center"
     >
-      <div className="max-w-screen-xl mx-auto px-6 md:px-[150px] w-full">
+      <div className="mx-auto w-full max-w-screen-xl px-6 md:px-[150px]">
         <motion.div
-          variants={heroStagger}
-          initial="hidden"
           animate="visible"
           className="text-left"
+          initial="hidden"
+          variants={heroStagger}
         >
           <motion.h1
+            className="mb-6 font-semibold text-3xl text-light-heading md:text-4xl dark:text-dark-heading"
             variants={heroTextVariants}
             whileHover={{
               scale: 1.02,
               x: 5,
               transition: { type: "spring", stiffness: 300, damping: 20 },
             }}
-            className="text-3xl md:text-4xl font-semibold mb-6 text-light-heading dark:text-dark-heading"
           >
             Hello 👋, I&apos;m Andy
           </motion.h1>
 
           <motion.p
+            className="mb-8 max-w-2xl text-base text-light-text leading-relaxed dark:text-dark-text"
             variants={heroTextVariants}
             whileHover={{
               x: 5,
               transition: { type: "spring", stiffness: 300, damping: 20 },
             }}
-            className="text-base leading-relaxed mb-8 text-light-text dark:text-dark-text max-w-2xl"
           >
             Full-stack developer who geeks out over SEO and software
             infrastructure. I&apos;m obsessed with crafting web experiences that
             are lightning-fast, generate revenue and solve problems.
           </motion.p>
 
-          <motion.div variants={heroTextVariants} className="flex gap-6 mb-8">
+          <motion.div className="mb-8 flex gap-6" variants={heroTextVariants}>
             <motion.div
               variants={linkVariants}
               whileHover="hover"
               whileTap="tap"
             >
               <Link
+                className="text-light-mini text-sm transition-colors duration-300 hover:text-light-heading hover:underline dark:text-dark-mini dark:hover:text-dark-heading"
                 href="/about"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
               >
                 About Me ↗
               </Link>
@@ -166,8 +169,8 @@ export default function Hero() {
               whileTap="tap"
             >
               <Link
+                className="text-light-mini text-sm transition-colors duration-300 hover:text-light-heading hover:underline dark:text-dark-mini dark:hover:text-dark-heading"
                 href="/blog"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
               >
                 Blog ↗
               </Link>
@@ -179,34 +182,35 @@ export default function Hero() {
               whileTap="tap"
             >
               <Link
+                className="text-light-mini text-sm transition-colors duration-300 hover:text-light-heading hover:underline dark:text-dark-mini dark:hover:text-dark-heading"
                 href="/contact"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
               >
                 Contact ↗
               </Link>
             </motion.div>
           </motion.div>
 
-          <motion.div variants={heroTextVariants} className="flex gap-4">
+          <motion.div className="flex gap-4" variants={heroTextVariants}>
             {socialLinks.map(({ icon, href, label }, index) => (
               <motion.a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                variants={socialIconVariants}
-                whileHover="hover"
-                whileTap="tap"
-                initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
+                aria-label={label}
+                className="rounded-full p-3 text-light-mini hover:bg-light-mini/10 dark:text-dark-mini dark:hover:bg-dark-mini/10"
+                href={href}
+                initial={{ opacity: 0, scale: 0 }}
+                key={label}
+                rel="noopener noreferrer"
+                target="_blank"
                 transition={{
-                  delay: 0.4 + index * 0.1,
+                  delay:
+                    ANIMATION_DELAY_BASE + index * ANIMATION_DELAY_INCREMENT,
                   type: "spring",
                   stiffness: 200,
                   damping: 20,
                 }}
-                className="text-light-mini dark:text-dark-mini p-3 rounded-full hover:bg-light-mini/10 dark:hover:bg-dark-mini/10"
-                aria-label={label}
+                variants={socialIconVariants}
+                whileHover="hover"
+                whileTap="tap"
               >
                 {icon}
                 <span className="sr-only">{label}</span>

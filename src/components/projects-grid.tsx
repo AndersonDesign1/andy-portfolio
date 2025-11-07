@@ -1,18 +1,17 @@
 "use client";
 
-import React from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import projectsData from "@/data/projects.json";
+import projectsData from "@/data/projects.json" with { type: "json" };
 import {
-  useScrollAnimation,
-  projectsContainer,
   projectCardVariants,
   projectHeaderVariants,
+  projectsContainer,
+  useScrollAnimation,
 } from "@/hooks/use-scroll-animation";
 
-interface Project {
+type Project = {
   id: string;
   type: "case-study" | "standard";
   title: string;
@@ -25,9 +24,9 @@ interface Project {
     caseStudy?: string;
   };
   metrics?: Record<string, string | undefined>;
-}
+};
 
-const containerVariants = {
+const _containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -38,7 +37,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const _cardVariants = {
   hidden: { opacity: 0, y: 50, scale: 0.9 },
   visible: {
     opacity: 1,
@@ -87,6 +86,7 @@ const linkVariants = {
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <motion.div
+      className="group space-y-6 rounded-xl bg-light-bg/50 p-6 transition-shadow duration-300 hover:shadow-lg dark:bg-dark-bg/50"
       variants={projectCardVariants}
       whileHover={{
         y: -4,
@@ -96,26 +96,25 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           damping: 25,
         },
       }}
-      className="group space-y-6 bg-light-bg/50 dark:bg-dark-bg/50 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
     >
       {/* Project Image */}
       <motion.div
+        className="relative aspect-[4/3] min-h-[200px] overflow-hidden rounded-lg"
         variants={imageVariants}
         whileHover="hover"
-        className="relative aspect-[4/3] min-h-[200px] overflow-hidden rounded-lg"
       >
         <Image
-          src={project.thumbnail}
           alt={project.title}
-          fill
           className="object-contain"
-          sizes="(max-width: 768px) 100vw, 50vw"
+          fill
           priority={index < 2}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          src={project.thumbnail}
         />
         <motion.div
-          className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
-          whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
           aria-hidden
+          className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10"
+          whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
         />
       </motion.div>
 
@@ -123,41 +122,41 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       <div className="space-y-4">
         {/* Project Header */}
         <motion.div
+          className="flex flex-wrap items-start justify-between gap-4"
           variants={projectHeaderVariants}
-          className="flex items-start justify-between gap-4 flex-wrap"
         >
           <motion.h3
+            className="font-medium text-lg text-light-heading transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400"
             whileHover={{
               x: 2,
               transition: { type: "spring", stiffness: 300, damping: 20 },
             }}
-            className="text-lg font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300"
           >
             {project.title}
           </motion.h3>
-          <div className="flex gap-4 flex-shrink-0 flex-wrap">
+          <div className="flex flex-shrink-0 flex-wrap gap-4">
             {project.links.github && (
               <motion.a
+                className="text-light-mini text-sm transition-colors duration-300 hover:text-blue-600 hover:underline dark:text-dark-mini dark:hover:text-blue-400"
                 href={project.links.github}
-                target="_blank"
                 rel="noopener noreferrer"
+                target="_blank"
                 variants={linkVariants}
                 whileHover="hover"
                 whileTap="tap"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
               >
                 GitHub ↗
               </motion.a>
             )}
             {project.links.live && (
               <motion.a
+                className="text-light-mini text-sm transition-colors duration-300 hover:text-blue-600 hover:underline dark:text-dark-mini dark:hover:text-blue-400"
                 href={project.links.live}
-                target="_blank"
                 rel="noopener noreferrer"
+                target="_blank"
                 variants={linkVariants}
                 whileHover="hover"
                 whileTap="tap"
-                className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
               >
                 View ↗
               </motion.a>
@@ -169,8 +168,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 whileTap="tap"
               >
                 <Link
+                  className="text-light-mini text-sm transition-colors duration-300 hover:text-blue-600 hover:underline dark:text-dark-mini dark:hover:text-blue-400"
                   href={project.links.caseStudy}
-                  className="text-sm hover:underline text-light-mini dark:text-dark-mini hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
                 >
                   Case Study ↗
                 </Link>
@@ -181,31 +180,31 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* Project Description */}
         <motion.p
+          className="text-light-text text-sm leading-relaxed dark:text-dark-text"
           variants={projectHeaderVariants}
           whileHover={{
             x: 2,
             transition: { type: "spring", stiffness: 300, damping: 20 },
           }}
-          className="text-sm text-light-text dark:text-dark-text leading-relaxed"
         >
           {project.description}
         </motion.p>
 
         {/* Metrics for Case Studies */}
         {project.metrics && (
-          <motion.div variants={projectHeaderVariants} className="space-y-2">
-            <h4 className="text-sm font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+          <motion.div className="space-y-2" variants={projectHeaderVariants}>
+            <h4 className="font-medium text-light-heading text-sm transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400">
               Key Results
             </h4>
             <div className="space-y-1">
               {Object.entries(project.metrics).map(([key, value]) => (
                 <motion.div
+                  className="text-light-text text-sm transition-colors duration-300 hover:text-blue-600 dark:text-dark-text dark:hover:text-blue-400"
                   key={key}
                   whileHover={{
                     x: 2,
                     transition: { type: "spring", stiffness: 300, damping: 20 },
                   }}
-                  className="text-sm text-light-text dark:text-dark-text hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
                 >
                   <span className="capitalize">{key}:</span>
                   <span className="ml-2 font-medium">{value}</span>
@@ -216,11 +215,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         )}
 
         {/* Tech Stack */}
-        <motion.div variants={projectHeaderVariants} className="space-y-2">
-          <h4 className="text-lg font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+        <motion.div className="space-y-2" variants={projectHeaderVariants}>
+          <h4 className="font-medium text-lg text-light-heading transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400">
             Tech Stack
           </h4>
-          <p className="text-xs text-light-mini dark:text-dark-mini transition-colors duration-300 break-words">
+          <p className="break-words text-light-mini text-xs transition-colors duration-300 dark:text-dark-mini">
             {project.techStack.join(" / ")}
           </p>
         </motion.div>
@@ -234,48 +233,48 @@ export default function ProjectsGrid() {
 
   return (
     <section
+      className="bg-light-bg py-20 transition-colors duration-300 dark:bg-dark-bg"
       ref={gridRef}
-      className="py-20 bg-light-bg dark:bg-dark-bg transition-colors duration-300"
     >
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
-          variants={projectHeaderVariants}
-          initial="hidden"
           animate="visible"
-          className="text-left mb-16"
+          className="mb-16 text-left"
+          initial="hidden"
+          variants={projectHeaderVariants}
         >
-          <h2 className="text-xl font-semibold mb-4 text-light-heading dark:text-dark-heading">
+          <h2 className="mb-4 font-semibold text-light-heading text-xl dark:text-dark-heading">
             Featured Projects
           </h2>
-          <p className="text-base text-light-text dark:text-dark-text max-w-2xl leading-relaxed">
+          <p className="max-w-2xl text-base text-light-text leading-relaxed dark:text-dark-text">
             A selection of projects that showcase my expertise in full-stack
             development, SEO optimization, and user experience design.
           </p>
         </motion.div>
 
         <motion.div
-          variants={projectsContainer}
-          initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16"
+          className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:gap-16"
+          initial="hidden"
+          variants={projectsContainer}
         >
           {projectsData.projects.map((project, index) => (
             <ProjectCard
+              index={index}
               key={project.id}
               project={{
                 ...project,
                 type: project.type as "case-study" | "standard",
               }}
-              index={index}
             />
           ))}
         </motion.div>
 
         {/* View More Section */}
-        <div className="text-center mt-16">
+        <div className="mt-16 text-center">
           <Link
+            className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
             href="/projects"
-            className="text-sm hover:underline text-light-mini dark:text-dark-mini transition-colors duration-300"
           >
             View All Projects ↗
           </Link>

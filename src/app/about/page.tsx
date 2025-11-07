@@ -1,5 +1,5 @@
-import AboutPage from "@/components/about-page";
 import type { Metadata } from "next";
+import AboutPage from "@/components/about-page";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

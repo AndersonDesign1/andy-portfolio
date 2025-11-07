@@ -1,8 +1,8 @@
+import { codeInput } from "@sanity/code-input";
+import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure"; // Updated from deskTool
-import { visionTool } from "@sanity/vision";
 import { schema } from "./src/sanity/schemaTypes";
-import { codeInput } from "@sanity/code-input";
 
 /**
  * Sanity configuration

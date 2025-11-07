@@ -1,5 +1,5 @@
 // types/case-study.ts
-export interface CaseStudy {
+export type CaseStudy = {
   id: string;
   hero: {
     title: string;
@@ -53,8 +53,15 @@ export interface CaseStudy {
     deliverables: string[];
     achievements: string[];
   };
-}
+  gallery: {
+    images: Array<{
+      src: string;
+      alt: string;
+      title: string;
+    }>;
+  };
+};
 
-export interface CaseStudiesData {
+export type CaseStudiesData = {
   caseStudies: Record<string, CaseStudy>;
-}
+};

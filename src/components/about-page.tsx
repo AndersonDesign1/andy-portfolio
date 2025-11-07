@@ -1,16 +1,20 @@
 "use client";
 
-import React from "react";
-import { motion } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
 import {
-  CodeBracketIcon,
+  ArrowLeftIcon,
   ChartBarIcon,
+  CodeBracketIcon,
   ServerIcon,
   SparklesIcon,
-  ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
+import { motion } from "motion/react";
+import Link from "next/link";
+import type React from "react";
+import {
+  ANIMATION_DURATION_MEDIUM,
+  ANIMATION_DURATION_SHORT,
+  ANIMATION_EASE_CUBIC,
+} from "@/lib/constants";
 
 const funFacts = [
   {
@@ -40,19 +44,19 @@ const funFacts = [
 ];
 
 const AboutPage: React.FC = () => (
-  <div className="pt-24 min-h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300">
+  <div className="min-h-screen bg-light-bg pt-24 transition-colors duration-300 dark:bg-dark-bg">
     {/* Back Navigation */}
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px] pt-8">
+    <div className="mx-auto max-w-screen-xl px-4 pt-8 sm:px-8 md:px-16 lg:px-[150px]">
       <motion.div
-        initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.4 }}
       >
         <Link
+          className="inline-flex items-center gap-2 text-light-mini text-sm transition-colors duration-300 hover:text-light-heading dark:text-dark-mini dark:hover:text-dark-heading"
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-light-mini dark:text-dark-mini hover:text-light-heading dark:hover:text-dark-heading transition-colors duration-300"
         >
-          <ArrowLeftIcon className="w-4 h-4" />
+          <ArrowLeftIcon className="h-4 w-4" />
           Back to Home
         </Link>
       </motion.div>
@@ -60,10 +64,11 @@ const AboutPage: React.FC = () => (
 
     {/* Hero Section */}
     <section className="py-16">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
-          initial="hidden"
           animate="visible"
+          className="space-y-8"
+          initial="hidden"
           variants={{
             hidden: {},
             visible: {
@@ -73,31 +78,36 @@ const AboutPage: React.FC = () => (
               },
             },
           }}
-          className="space-y-8"
         >
           <motion.h1
+            className="font-bold text-3xl text-light-heading sm:text-4xl dark:text-dark-heading"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_MEDIUM,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-3xl sm:text-4xl font-bold text-light-heading dark:text-dark-heading"
           >
             About Me
           </motion.h1>
           <motion.p
+            className="max-w-3xl text-base text-light-text leading-relaxed sm:text-lg dark:text-dark-text"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.6, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_MEDIUM,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-base sm:text-lg text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
           >
             I&apos;m a passionate full-stack developer with expertise in SEO and
             infrastructure. My journey started after winning a scholarship to
@@ -111,48 +121,54 @@ const AboutPage: React.FC = () => (
     </section>
 
     {/* Professional Journey */}
-    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+    <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
+          className="space-y-12"
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: {},
             visible: {
               transition: { staggerChildren: 0.1, delayChildren: 0.2 },
             },
           }}
-          className="space-y-12"
+          viewport={{ once: true, margin: "-100px" }}
+          whileInView="visible"
         >
           <motion.h2
+            className="font-semibold text-light-heading text-xl sm:text-2xl dark:text-dark-heading"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Professional Journey
           </motion.h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <motion.div
+              className="space-y-4"
               variants={{
                 hidden: { opacity: 0, y: 30 },
                 visible: {
                   opacity: 1,
                   y: 0,
-                  transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                  transition: {
+                    duration: ANIMATION_DURATION_SHORT,
+                    ease: ANIMATION_EASE_CUBIC,
+                  },
                 },
               }}
-              className="space-y-4"
             >
-              <div className="flex items-center gap-3 mb-2">
-                <ChartBarIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
+              <div className="mb-2 flex items-center gap-3">
+                <ChartBarIcon className="h-6 w-6 text-light-heading dark:text-dark-heading" />
+                <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
                   SEO Optimization Expert
                 </h3>
               </div>
@@ -165,7 +181,7 @@ const AboutPage: React.FC = () => (
                 . My approach combines technical SEO mastery with content
                 strategy, focusing on sustainable, white-hat techniques.
               </p>
-              <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
+              <ul className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>• Improved Core Web Vitals for 20+ websites</li>
                 <li>
                   • Increased organic traffic by 400% for an e-commerce client
@@ -175,19 +191,22 @@ const AboutPage: React.FC = () => (
               </ul>
             </motion.div>
             <motion.div
+              className="space-y-4"
               variants={{
                 hidden: { opacity: 0, y: 30 },
                 visible: {
                   opacity: 1,
                   y: 0,
-                  transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                  transition: {
+                    duration: ANIMATION_DURATION_SHORT,
+                    ease: ANIMATION_EASE_CUBIC,
+                  },
                 },
               }}
-              className="space-y-4"
             >
-              <div className="flex items-center gap-3 mb-2">
-                <CodeBracketIcon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
-                <h3 className="text-lg font-medium text-light-heading dark:text-dark-heading">
+              <div className="mb-2 flex items-center gap-3">
+                <CodeBracketIcon className="h-6 w-6 text-light-heading dark:text-dark-heading" />
+                <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
                   Full-Stack Development
                 </h3>
               </div>
@@ -199,7 +218,7 @@ const AboutPage: React.FC = () => (
                 , writing clean, maintainable code and prioritizing performance
                 and UX.
               </p>
-              <ul className="space-y-1 text-sm text-light-text dark:text-dark-text">
+              <ul className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>
                   • Built tens of web applications using modern stacks and tools
                 </li>
@@ -214,59 +233,62 @@ const AboutPage: React.FC = () => (
     </section>
 
     {/* Technical Expertise */}
-    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+    <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
+          className="space-y-12"
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: {},
             visible: {
               transition: { staggerChildren: 0.1, delayChildren: 0.2 },
             },
           }}
-          className="space-y-12"
+          viewport={{ once: true, margin: "-100px" }}
+          whileInView="visible"
         >
           <motion.h2
+            className="font-semibold text-light-heading text-xl sm:text-2xl dark:text-dark-heading"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Technical Expertise
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div>
-              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+              <h4 className="mb-2 font-medium text-light-heading dark:text-dark-heading">
                 Cloud & DevOps
               </h4>
-              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+              <ul className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>• AWS/GCP architecture</li>
                 <li>• Docker & Kubernetes</li>
                 <li>• Infrastructure as Code</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+              <h4 className="mb-2 font-medium text-light-heading dark:text-dark-heading">
                 Performance Optimization
               </h4>
-              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+              <ul className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>• Database/query optimization</li>
                 <li>• Caching (Redis, CDN)</li>
                 <li>• Load balancing & scaling</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+              <h4 className="mb-2 font-medium text-light-heading dark:text-dark-heading">
                 SEO Technical Skills
               </h4>
-              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+              <ul className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>• Core Web Vitals</li>
                 <li>• Schema markup</li>
                 <li>• Technical audits</li>
@@ -279,56 +301,62 @@ const AboutPage: React.FC = () => (
     </section>
 
     {/* Personal Touch */}
-    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+    <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
+          className="space-y-12"
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: {},
             visible: {
               transition: { staggerChildren: 0.1, delayChildren: 0.2 },
             },
           }}
-          className="space-y-12"
+          viewport={{ once: true, margin: "-100px" }}
+          whileInView="visible"
         >
           <motion.h2
+            className="font-semibold text-light-heading text-xl sm:text-2xl dark:text-dark-heading"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             The Person Behind the Code
           </motion.h2>
           <motion.p
+            className="max-w-3xl text-light-text leading-relaxed dark:text-dark-text"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-light-text dark:text-dark-text leading-relaxed max-w-3xl"
           >
             My fascination with technology began after a scholarship gave me the
-            chance to learn web development for a year. My curiosity about &ldquo;how
-            things work&rdquo; turned into a career focused on building, optimizing,
-            and scaling digital products. I believe in methodical, creative
-            problem-solving and continuous learning.
+            chance to learn web development for a year. My curiosity about
+            &ldquo;how things work&rdquo; turned into a career focused on
+            building, optimizing, and scaling digital products. I believe in
+            methodical, creative problem-solving and continuous learning.
           </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div>
-              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+              <h4 className="mb-2 font-medium text-light-heading dark:text-dark-heading">
                 My Process
               </h4>
-              <ol className="text-sm text-light-text dark:text-dark-text space-y-1">
+              <ol className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>1. Listen & Understand</li>
                 <li>2. Research & Analyze</li>
                 <li>3. Prototype & Test</li>
@@ -336,10 +364,10 @@ const AboutPage: React.FC = () => (
               </ol>
             </div>
             <div>
-              <h4 className="font-medium text-light-heading dark:text-dark-heading mb-2">
+              <h4 className="mb-2 font-medium text-light-heading dark:text-dark-heading">
                 Learning Philosophy
               </h4>
-              <ul className="text-sm text-light-text dark:text-dark-text space-y-1">
+              <ul className="space-y-1 text-light-text text-sm dark:text-dark-text">
                 <li>• Stay curious about new tech</li>
                 <li>• Learn from failures and successes</li>
                 <li>• Share knowledge and mentor</li>
@@ -352,59 +380,65 @@ const AboutPage: React.FC = () => (
     </section>
 
     {/* Fun Facts */}
-    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+    <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
+          className="space-y-12"
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: {},
             visible: {
               transition: { staggerChildren: 0.1, delayChildren: 0.2 },
             },
           }}
-          className="space-y-12"
+          viewport={{ once: true, margin: "-100px" }}
+          whileInView="visible"
         >
           <motion.h2
+            className="font-semibold text-light-heading text-xl sm:text-2xl dark:text-dark-heading"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Fun Facts About Me
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {funFacts.map((fact, i) => {
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {funFacts.map((fact) => {
               const Icon = fact.icon;
               return (
                 <motion.div
-                  key={i}
+                  className="group rounded-lg bg-light-bg p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-dark-bg"
+                  key={fact.title}
                   variants={{
                     hidden: { opacity: 0, y: 30 },
                     visible: {
                       opacity: 1,
                       y: 0,
-                      transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                      transition: {
+                        duration: ANIMATION_DURATION_SHORT,
+                        ease: ANIMATION_EASE_CUBIC,
+                      },
                     },
                   }}
-                  className="group p-6 bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                   whileHover={{ y: -5 }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-light-mini/10 dark:bg-dark-mini/10 rounded-lg flex-shrink-0">
-                      <Icon className="w-6 h-6 text-light-heading dark:text-dark-heading" />
+                    <div className="flex-shrink-0 rounded-lg bg-light-mini/10 p-3 dark:bg-dark-mini/10">
+                      <Icon className="h-6 w-6 text-light-heading dark:text-dark-heading" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-light-heading dark:text-dark-heading group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                      <h3 className="font-medium text-light-heading transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400">
                         {fact.title}
                       </h3>
-                      <p className="text-sm text-light-text dark:text-dark-text leading-relaxed">
+                      <p className="text-light-text text-sm leading-relaxed dark:text-dark-text">
                         {fact.description}
                       </p>
                     </div>
@@ -418,68 +452,77 @@ const AboutPage: React.FC = () => (
     </section>
 
     {/* Call to Action */}
-    <section className="py-16 border-t border-light-mini/20 dark:border-dark-mini/20">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-[150px]">
+    <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
+          className="space-y-8 text-center"
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: {},
             visible: {
               transition: { staggerChildren: 0.1, delayChildren: 0.2 },
             },
           }}
-          className="text-center space-y-8"
+          viewport={{ once: true, margin: "-100px" }}
+          whileInView="visible"
         >
           <motion.h2
+            className="font-semibold text-light-heading text-xl sm:text-2xl dark:text-dark-heading"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-xl sm:text-2xl font-semibold text-light-heading dark:text-dark-heading"
           >
             Let&apos;s Build Something Amazing Together
           </motion.h2>
           <motion.p
+            className="mx-auto max-w-2xl text-light-text leading-relaxed dark:text-dark-text"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="text-light-text dark:text-dark-text max-w-2xl mx-auto leading-relaxed"
           >
             Whether you need help with SEO, full-stack development, or
             infrastructure, I&apos;m always excited to tackle new challenges and
             create solutions that make a real impact.
           </motion.p>
           <motion.div
+            className="flex flex-wrap justify-center gap-4"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.5, ease: [0.25, 0.25, 0, 1] },
+                transition: {
+                  duration: ANIMATION_DURATION_SHORT,
+                  ease: ANIMATION_EASE_CUBIC,
+                },
               },
             }}
-            className="flex flex-wrap justify-center gap-4"
           >
             <Link
+              className="rounded-lg bg-light-heading px-6 py-3 text-light-bg transition-opacity duration-300 hover:opacity-90 dark:bg-dark-heading dark:text-dark-bg"
               href="/contact"
-              className="px-6 py-3 bg-light-heading dark:bg-dark-heading text-light-bg dark:text-dark-bg rounded-lg hover:opacity-90 transition-opacity duration-300"
             >
               Get In Touch
             </Link>
             <Link
+              className="rounded-lg border border-light-mini/20 px-6 py-3 text-light-heading transition-colors duration-300 hover:bg-light-mini/5 dark:border-dark-mini/20 dark:text-dark-heading dark:hover:bg-dark-mini/5"
               href="/projects"
-              className="px-6 py-3 border border-light-mini/20 dark:border-dark-mini/20 text-light-heading dark:text-dark-heading rounded-lg hover:bg-light-mini/5 dark:hover:bg-dark-mini/5 transition-colors duration-300"
             >
               View My Work
             </Link>

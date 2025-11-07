@@ -1,14 +1,14 @@
-import Hero from '@/components/hero';
-import ProjectsGrid from '@/components/projects-grid';
-import WorkHistory from '@/components/work-history';
-import SkillsSection from '@/components/skills-section';
+import Hero from "@/components/hero";
+import ProjectsGrid from "@/components/projects-grid";
+import SkillsSection from "@/components/skills-section";
+import WorkHistory from "@/components/work-history";
 
 export default function Home() {
   return (
     <main>
       <Hero />
       <ProjectsGrid />
-       <WorkHistory />
+      <WorkHistory />
       <SkillsSection />
     </main>
   );

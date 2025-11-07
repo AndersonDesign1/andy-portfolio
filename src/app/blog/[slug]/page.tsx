@@ -1,11 +1,9 @@
-import BlogPost from "@/components/blogpost";
-import { client } from "@/sanity/lib/client";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import BlogPost from "@/components/blogpost";
+import { client } from "@/sanity/lib/client";
 
 export const revalidate = 60;
-
-
 
 async function getPost(slug: string) {
   try {
@@ -38,8 +36,7 @@ async function getPost(slug: string) {
     }
 
     return post;
-  } catch (error) {
-    console.error("Error fetching post:", error);
+  } catch (_error) {
     notFound();
   }
 }
@@ -72,8 +69,7 @@ export async function generateStaticParams() {
       `*[_type == "post" && defined(slug.current)]{ slug }`
     );
     return posts.map((post) => ({ slug: post.slug.current }));
-  } catch (error) {
-    console.error("Error generating static params:", error);
+  } catch (_error) {
     return [];
   }
 }
