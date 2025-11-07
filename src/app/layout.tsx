@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import type { ReactNode, ReactElement } from "react";
 import { Inter } from "next/font/google";
+import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import ScrollProvider from "@/components/scroll-provider";
-import Navbar from "@/components/ui/navbar";
-import Footer from "@/components/ui/footer";
-import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import ScrollProvider from "@/components/scroll-provider";
+import SpotifyNowPlaying from "@/components/spotify-now-playing";
+import { ThemeProvider } from "@/components/theme-provider";
+import Footer from "@/components/ui/footer";
+import Navbar from "@/components/ui/navbar";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
+    metadataBase: new URL("https://andersonjoseph.com"),
     title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
     description:
       "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
@@ -43,9 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-interface RootLayoutProps {
+type RootLayoutProps = {
   children: ReactNode;
-}
+};
 
 export default function RootLayout({
   children,

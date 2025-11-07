@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
-import caseStudiesDataJson from "@/data/case-studies.json";
 import CaseStudyPage from "@/components/case-study-page";
+import caseStudiesDataJson from "@/data/case-studies.json" with {
+  type: "json",
+};
 import type { CaseStudiesData, CaseStudy } from "@/types/case-study";
 
 const caseStudiesData: CaseStudiesData = caseStudiesDataJson;
@@ -31,6 +33,8 @@ export default async function CaseStudyPageComponent({
 }) {
   const { slug } = await params;
   const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
-  if (!cs) notFound();
+  if (!cs) {
+    notFound();
+  }
   return <CaseStudyPage caseStudy={cs} />;
 }

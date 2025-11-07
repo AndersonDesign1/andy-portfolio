@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface AccordionContextType {
+type AccordionContextType = {
   openItems: string[];
   toggleItem: (value: string) => void;
-}
+};
 
 const AccordionContext = React.createContext<AccordionContextType | undefined>(
   undefined
@@ -21,14 +20,14 @@ const useAccordion = () => {
   return context;
 };
 
-interface AccordionProps {
+type AccordionProps = {
   children: React.ReactNode;
   type?: "single" | "multiple";
   collapsible?: boolean;
   value?: string;
   onValueChange?: (value: string) => void;
   className?: string;
-}
+};
 
 const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
   (
@@ -91,7 +90,7 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
 
     return (
       <AccordionContext.Provider value={{ openItems, toggleItem }}>
-        <div ref={ref} className={cn("w-full", className)} {...props}>
+        <div className={cn("w-full", className)} ref={ref} {...props}>
           {children}
         </div>
       </AccordionContext.Provider>
@@ -100,12 +99,12 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
 );
 Accordion.displayName = "Accordion";
 
-interface AccordionItemProps {
+type AccordionItemProps = {
   children: React.ReactNode;
   value: string;
   className?: string;
   asChild?: boolean;
-}
+};
 
 const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
   ({ children, value, className, asChild = false, ...props }, ref) => {
@@ -128,12 +127,12 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 );
 AccordionItem.displayName = "AccordionItem";
 
-interface AccordionTriggerProps {
+type AccordionTriggerProps = {
   children: React.ReactNode;
   value: string;
   className?: string;
   asChild?: boolean;
-}
+};
 
 const AccordionTrigger = React.forwardRef<
   HTMLButtonElement,
@@ -161,12 +160,12 @@ const AccordionTrigger = React.forwardRef<
 });
 AccordionTrigger.displayName = "AccordionTrigger";
 
-interface AccordionContentProps {
+type AccordionContentProps = {
   children: React.ReactNode;
   value: string;
   className?: string;
   asChild?: boolean;
-}
+};
 
 const AccordionContent = React.forwardRef<
   HTMLDivElement,

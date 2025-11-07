@@ -1,5 +1,10 @@
 import type { Rule } from "sanity";
 
+// Validation constants
+const MAX_TITLE_LENGTH = 100;
+const MAX_EXCERPT_LENGTH = 200;
+const MAX_SEO_DESCRIPTION_LENGTH = 160;
+
 /**
  * Post schema definition
  * Represents a blog post with rich content
@@ -13,7 +18,7 @@ const postSchema = {
       name: "title",
       title: "Title",
       type: "string",
-      validation: (rule: Rule) => rule.required().max(100),
+      validation: (rule: Rule) => rule.required().max(MAX_TITLE_LENGTH),
     },
     {
       name: "slug",
@@ -75,7 +80,7 @@ const postSchema = {
       type: "text",
       rows: 3,
       description: "A short summary of the post, used for SEO and previews.",
-      validation: (rule: Rule) => rule.required().max(200),
+      validation: (rule: Rule) => rule.required().max(MAX_EXCERPT_LENGTH),
     },
     {
       name: "seoTitle",
@@ -90,7 +95,7 @@ const postSchema = {
       type: "text",
       rows: 3,
       description: "Description used for SEO (if different from excerpt)",
-      validation: (rule: Rule) => rule.max(160),
+      validation: (rule: Rule) => rule.max(MAX_SEO_DESCRIPTION_LENGTH),
     },
     {
       name: "body",

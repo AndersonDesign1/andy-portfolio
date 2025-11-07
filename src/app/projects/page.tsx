@@ -1,5 +1,5 @@
-import ProjectsShowcase from "@/components/projects-showcase";
 import type { Metadata } from "next";
+import ProjectsShowcase from "@/components/projects-showcase";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

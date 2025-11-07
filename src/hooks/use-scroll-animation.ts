@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
-interface UseScrollAnimationOptions {
+type UseScrollAnimationOptions = {
   threshold?: number;
   triggerOnce?: boolean;
   delay?: number;
   stagger?: number;
-}
+};
 
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   const {

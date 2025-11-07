@@ -1,8 +1,9 @@
 "use server";
 
 import { Resend } from "resend";
+import { env } from "@/lib/env";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 export async function sendEmail(
   formData: FormData
@@ -12,7 +13,7 @@ export async function sendEmail(
   const subject = formData.get("subject") as string;
   const message = formData.get("message") as string;
 
-  if (!name || !email || !message) {
+  if (!(name && email && message)) {
     return { success: false, message: "All fields are required." };
   }
 
@@ -34,9 +35,7 @@ export async function sendEmail(
       success: true,
       message: "Message sent! I'll get back to you soon.",
     };
-  } catch (error) {
-    // Optionally log the error for debugging
-    console.error("Resend error:", error);
+  } catch (_error) {
     return {
       success: false,
       message: "Failed to send email. Please try again later.",

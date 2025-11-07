@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const menuItems = [
   { label: "Home", link: "/" },
@@ -28,51 +28,48 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setIsOpen(false), [pathname]);
+  useEffect(() => setIsOpen(false), []);
 
-  const logoSrc = resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
+  const logoSrc =
+    resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-light-bg/80 dark:bg-dark-bg/80 backdrop-blur-md py-2 border-b border-light-mini/10 dark:border-dark-mini/10"
-          : "bg-light-bg/40 dark:bg-dark-bg/40 backdrop-blur-xs py-4"
+          ? "border-light-mini/10 border-b bg-light-bg/80 py-2 backdrop-blur-md dark:border-dark-mini/10 dark:bg-dark-bg/80"
+          : "bg-light-bg/40 py-4 backdrop-blur-xs dark:bg-dark-bg/40"
       }`}
     >
-      <div className="flex justify-center items-center max-w-6xl mx-auto">
-        <div className="bg-light-bg/90 dark:bg-dark-bg/90 rounded-full px-8 py-2 shadow-md flex items-center mx-auto z-40 border border-light-mini/20 dark:border-mini/20">
-          <Link href="/" className="mr-12" prefetch>
+      <div className="mx-auto flex max-w-6xl items-center justify-center">
+        <div className="z-40 mx-auto flex items-center rounded-full border border-light-mini/20 bg-light-bg/90 px-8 py-2 shadow-md dark:border-mini/20 dark:bg-dark-bg/90">
+          <Link className="mr-12" href="/" prefetch>
             {mounted && (
               <Image
-                key={logoSrc}
-                src={logoSrc}
                 alt="Logo"
-                width={50}
-                height={20}
                 className="object-contain"
+                height={20}
+                key={logoSrc}
                 priority
+                src={logoSrc}
+                width={50}
               />
             )}
           </Link>
-          <ul className="hidden md:flex gap-4">
+          <ul className="hidden gap-4 md:flex">
             {menuItems.map(({ label, link }) => {
               const isActive = pathname === link;
               return (
                 <li key={label}>
                   <Link
+                    aria-current={isActive ? "page" : undefined}
+                    className={`after:-bottom-1 relative px-3 py-1 font-medium text-light-heading transition-colors duration-200 after:absolute after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-blue-500 after:transition-transform after:duration-300 after:content-[''] dark:text-dark-heading ${
+                      isActive
+                        ? "after:scale-x-100"
+                        : "after:scale-x-0 hover:after:scale-x-100"
+                    }after:origin-left`}
                     href={link}
                     prefetch
-                    className={`relative px-3 py-1 font-medium text-light-heading dark:text-dark-heading transition-colors duration-200
-                      after:content-[''] after:absolute after:w-full after:h-[2px] after:left-0 after:-bottom-1 after:rounded-full
-                      after:transition-transform after:duration-300 after:bg-blue-500
-                      ${
-                        isActive
-                          ? "after:scale-x-100"
-                          : "after:scale-x-0 hover:after:scale-x-100"
-                      }
-                      after:origin-left`}
-                    aria-current={isActive ? "page" : undefined}
                   >
                     {label}
                   </Link>
@@ -84,11 +81,11 @@ export default function Navbar() {
             <ThemeToggle />
           </div>
           <button
-            onClick={() => setIsOpen((v) => !v)}
-            className="md:hidden text-light-heading dark:text-dark-heading text-2xl focus:outline-none ml-auto"
-            aria-expanded={isOpen}
             aria-controls="mobile-menu"
+            aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
+            className="ml-auto text-2xl text-light-heading focus:outline-none md:hidden dark:text-dark-heading"
+            onClick={() => setIsOpen((v) => !v)}
             type="button"
           >
             ☰
@@ -96,27 +93,26 @@ export default function Navbar() {
         </div>
       </div>
       <div
-        id="mobile-menu"
-        className={`absolute top-full left-0 right-0 mx-4 mt-2 bg-light-bg dark:bg-dark-bg text-light-heading dark:text-dark-heading flex flex-col gap-2 py-6 px-6 z-50 shadow-lg md:hidden rounded-3xl border border-light-mini/10 dark:border-dark-mini/10 backdrop-blur-xs transition-all duration-300 ${
-          isOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-4 pointer-events-none"
-        }`}
-        role="menu"
         aria-labelledby="menu-button"
+        className={`absolute top-full right-0 left-0 z-50 mx-4 mt-2 flex flex-col gap-2 rounded-3xl border border-light-mini/10 bg-light-bg px-6 py-6 text-light-heading shadow-lg backdrop-blur-xs transition-all duration-300 md:hidden dark:border-dark-mini/10 dark:bg-dark-bg dark:text-dark-heading ${
+          isOpen
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "-translate-y-4 pointer-events-none opacity-0"
+        }`}
+        id="mobile-menu"
+        role="menu"
       >
         {menuItems.map(({ label, link }) => {
           const isActive = pathname === link;
           return (
             <Link
-              key={label}
-              href={link}
-              prefetch
-              className={`block w-full px-3 py-2 rounded-xl font-medium text-light-heading dark:text-dark-heading transition-colors duration-200
-                ${isActive ? "bg-blue-900/30" : "hover:bg-blue-900/10"}
-              `}
-              onClick={() => setIsOpen(false)}
               aria-current={isActive ? "page" : undefined}
+              className={`block w-full rounded-xl px-3 py-2 font-medium text-light-heading transition-colors duration-200 dark:text-dark-heading ${isActive ? "bg-blue-900/30" : "hover:bg-blue-900/10"}
+              `}
+              href={link}
+              key={label}
+              onClick={() => setIsOpen(false)}
+              prefetch
             >
               {label}
             </Link>

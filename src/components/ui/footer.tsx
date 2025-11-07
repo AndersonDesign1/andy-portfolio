@@ -1,14 +1,14 @@
 "use client";
-import type React from "react";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import {
   faGithub,
-  faLinkedin,
   faInstagram,
+  faLinkedin,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import SpotifyNowPlaying from "@/components/spotify-now-playing";
 
 const socialLinks = [
   {
@@ -34,10 +34,10 @@ const socialLinks = [
 ];
 
 const Footer: React.FC = () => {
-  const [showButton, setShowButton] = useState(false);
+  const [_showButton, setShowButton] = useState(false);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
-  const scrollToTop = useCallback(() => {
+  const _scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -48,22 +48,22 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="bg-light-bg dark:bg-dark-bg text-light-mini dark:text-dark-mini py-6 text-center relative border-t border-light-mini/20 dark:border-dark-mini/20">
+    <footer className="relative border-light-mini/20 border-t bg-light-bg py-6 text-center text-light-mini dark:border-dark-mini/20 dark:bg-dark-bg dark:text-dark-mini">
       <div className="container mx-auto">
-        <p className="text-xs mb-2">
+        <p className="mb-2 text-xs">
           © {currentYear} Anderson Joseph. All rights reserved.
         </p>
-        <div className="flex justify-center gap-5 mb-2">
+        <div className="mb-2 flex justify-center gap-5">
           {socialLinks.map((link) => (
             <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
               aria-label={link.label}
-              className="hover:text-blue-500 transition-colors"
+              className="transition-colors hover:text-blue-500"
+              href={link.href}
+              key={link.href}
+              rel="noopener noreferrer"
+              target="_blank"
             >
-              <FontAwesomeIcon icon={link.icon} className="w-5 h-5" />
+              <FontAwesomeIcon className="h-5 w-5" icon={link.icon} />
             </a>
           ))}
         </div>
