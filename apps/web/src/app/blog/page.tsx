@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import BlogList from "@/components/bloglist";
-import { client } from "@/sanity/lib/client";
+import { client } from "@andy-portfolio/sanity-config";
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
