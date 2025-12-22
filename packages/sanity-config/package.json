@@ -10,15 +10,17 @@
     "./client": "./src/lib/client.ts",
     "./image": "./src/lib/image.ts",
     "./types": "./src/lib/types.ts",
-    "./env": "./src/env.ts"
+    "./env": "./src/env.ts",
+    "./structure": "./src/structure.ts"
   },
   "dependencies": {
-    "@sanity/client": "^7.6.0",
-    "@sanity/image-url": "^1.1.0",
-    "@sanity/types": "^3.93.0",
-    "sanity": "^3.93.0"
+    "@sanity/client": "^7.13.2",
+    "@sanity/image-url": "^2.0.2",
+    "@sanity/types": "^5.0.1",
+    "sanity": "^5.0.1"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "typescript": "^5.8.2"
   }
 }

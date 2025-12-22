@@ -1,0 +1,25 @@
+{
+  "name": "@andy-portfolio/studio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "start": "sanity start"
+  },
+  "dependencies": {
+    "@andy-portfolio/sanity-config": "workspace:*",
+    "@sanity/code-input": "^7.0.2",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "sanity": "^5.0.1",
+    "styled-components": "^6.1.17"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.8.2"
+  }
+}
