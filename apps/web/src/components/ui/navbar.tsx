@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,39 +36,42 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-light-mini/10 border-b bg-light-bg/80 py-2 backdrop-blur-md dark:border-dark-mini/10 dark:bg-dark-bg/80"
-          : "bg-light-bg/40 py-4 backdrop-blur-xs dark:bg-dark-bg/40"
+          ? "bg-primary/95 border-b border-subtle backdrop-blur-sm py-4"
+          : "bg-transparent py-6 md:py-8"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-center">
-        <div className="z-40 mx-auto flex items-center rounded-full border border-light-mini/20 bg-light-bg/90 px-8 py-2 shadow-md dark:border-mini/20 dark:bg-dark-bg/90">
-          <Link className="mr-12" href="/" prefetch>
-            {mounted && (
-              <Image
-                alt="Logo"
-                className="object-contain"
-                height={20}
-                key={logoSrc}
-                priority
-                src={logoSrc}
-                width={50}
-              />
-            )}
-          </Link>
-          <ul className="hidden gap-4 md:flex">
+      <div className="mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
+        {/* Logo - Aligned left */}
+        <Link className="shrink-0" href="/" prefetch>
+          {mounted && (
+            <Image
+              alt="Logo"
+              className="object-contain"
+              height={40}
+              key={logoSrc}
+              priority
+              src={logoSrc}
+              width={90}
+            />
+          )}
+        </Link>
+
+        {/* Desktop Menu - Centered or offset right */}
+        <div className="hidden md:flex items-center gap-8">
+          <ul className="flex gap-6">
             {menuItems.map(({ label, link }) => {
               const isActive = pathname === link;
               return (
                 <li key={label}>
                   <Link
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative px-3 py-1 font-medium text-light-heading transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-blue-500 after:transition-transform after:duration-300 after:content-[''] dark:text-dark-heading ${
+                    className={`relative text-sm font-medium transition-colors duration-200 ${
                       isActive
-                        ? "after:scale-x-100"
-                        : "after:scale-x-0 hover:after:scale-x-100"
-                    }after:origin-left`}
+                        ? "text-primary"
+                        : "text-muted hover:text-primary"
+                    }`}
                     href={link}
                     prefetch
                   >
@@ -77,38 +81,51 @@ export default function Navbar() {
               );
             })}
           </ul>
-          <div className="ml-6">
+
+          {/* Theme Toggle & Mobile Menu Button */}
+          <div className="flex items-center gap-4 pl-4 border-l border-subtle">
             <ThemeToggle />
           </div>
+        </div>
+
+        {/* Mobile Toggle */}
+        <div className="flex items-center gap-4 md:hidden">
+          <ThemeToggle />
           <button
             aria-controls="mobile-menu"
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
-            className="ml-auto text-2xl text-light-heading focus:outline-none md:hidden dark:text-dark-heading"
+            className="text-primary text-xl focus:outline-none"
             onClick={() => setIsOpen((v) => !v)}
             type="button"
           >
-            ☰
+            {isOpen ? "✕" : "☰"}
           </button>
         </div>
       </div>
+
+      {/* Mobile menu overlay */}
       <div
         aria-labelledby="menu-button"
-        className={`absolute top-full right-0 left-0 z-50 mx-4 mt-2 flex flex-col gap-2 rounded-3xl border border-light-mini/10 bg-light-bg px-6 py-6 text-light-heading shadow-lg backdrop-blur-xs transition-all duration-300 md:hidden dark:border-dark-mini/10 dark:bg-dark-bg dark:text-dark-heading ${
+        className={`fixed inset-0 z-40 flex flex-col items-center justify-center bg-primary transition-all duration-300 md:hidden ${
           isOpen
-            ? "pointer-events-auto translate-y-0 opacity-100"
-            : "pointer-events-none -translate-y-4 opacity-0"
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
         }`}
         id="mobile-menu"
         role="menu"
       >
+        <div className="flex flex-col items-center gap-8">
         {menuItems.map(({ label, link }) => {
           const isActive = pathname === link;
           return (
             <Link
               aria-current={isActive ? "page" : undefined}
-              className={`block w-full rounded-xl px-3 py-2 font-medium text-light-heading transition-colors duration-200 dark:text-dark-heading ${isActive ? "bg-blue-900/30" : "hover:bg-blue-900/10"}
-              `}
+              className={`text-2xl font-medium transition-colors duration-200 ${
+                isActive
+                  ? "text-primary"
+                  : "text-muted hover:text-primary"
+              }`}
               href={link}
               key={label}
               onClick={() => setIsOpen(false)}
@@ -118,6 +135,7 @@ export default function Navbar() {
             </Link>
           );
         })}
+        </div>
       </div>
     </nav>
   );

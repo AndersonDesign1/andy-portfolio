@@ -1,14 +1,13 @@
 "use client";
+
 import {
   faGithub,
-  faInstagram,
   faLinkedin,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import SpotifyNowPlaying from "@/components/spotify-now-playing";
+import { useMemo } from "react";
 
 const socialLinks = [
   {
@@ -26,49 +25,35 @@ const socialLinks = [
     icon: faXTwitter,
     label: "X",
   },
-  {
-    href: "https://www.instagram.com/josephandy_official/",
-    icon: faInstagram,
-    label: "Instagram",
-  },
 ];
 
 const Footer: React.FC = () => {
-  const [_showButton, setShowButton] = useState(false);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
-  const _scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => setShowButton(window.scrollY > 300);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <footer className="relative border-light-mini/20 border-t bg-light-bg py-6 text-center text-light-mini dark:border-dark-mini/20 dark:bg-dark-bg dark:text-dark-mini">
-      <div className="container mx-auto">
-        <p className="mb-2 text-xs">
-          © {currentYear} Anderson Joseph. All rights reserved.
+    <footer className="relative border-t border-subtle py-12 md:py-24 bg-primary">
+      <div className="mx-auto max-w-screen-lg px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* Copyright - Left aligned on desktop */}
+        <p className="text-muted text-sm font-mono tracking-tight order-2 md:order-1">
+          © {currentYear} Anderson Joseph
         </p>
-        <div className="mb-2 flex justify-center gap-5">
+
+        {/* Social links - Right aligned on desktop */}
+        <div className="flex justify-center gap-6 order-1 md:order-2">
           {socialLinks.map((link) => (
             <a
               aria-label={link.label}
-              className="transition-colors hover:text-blue-500"
+              className="text-muted hover:text-primary transition-colors duration-200"
               href={link.href}
               key={link.href}
               rel="noopener noreferrer"
               target="_blank"
             >
-              <FontAwesomeIcon className="h-5 w-5" icon={link.icon} />
+              <FontAwesomeIcon className="h-4 w-4" icon={link.icon} />
             </a>
           ))}
         </div>
       </div>
-      <SpotifyNowPlaying />
     </footer>
   );
 };

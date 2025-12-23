@@ -1,10 +1,13 @@
+
 "use client";
+
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   SPOTIFY_POLLING_INTERVAL_PAUSED,
   SPOTIFY_POLLING_INTERVAL_PLAYING,
 } from "@/lib/constants";
+import { motion, AnimatePresence } from "motion/react";
 
 type SpotifyTrack = {
   name: string;
@@ -16,12 +19,23 @@ type SpotifyTrack = {
 
 export default function SpotifyNowPlaying() {
   const [track, setTrack] = useState<SpotifyTrack | null>(null);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const lastTrackRef = useRef<string>("");
   const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Only update state if track actually changed
+  // Click outside handler
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const updateTrack = useCallback((newTrack: SpotifyTrack | null) => {
     if (!newTrack) {
       setTrack(null);
@@ -40,7 +54,6 @@ export default function SpotifyNowPlaying() {
     setIsLoading(false);
   }, []);
 
-  // Fetch track data
   const fetchTrack = useCallback(async () => {
     try {
       const res = await fetch("/api/spotify/now-playing");
@@ -55,19 +68,16 @@ export default function SpotifyNowPlaying() {
     }
   }, [updateTrack]);
 
-  // Smart polling - adaptive intervals based on playback state
   useEffect(() => {
     let isActive = true;
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // Clear interval when tab is hidden
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = undefined;
         }
       } else if (isActive) {
-        // Restart polling when tab becomes visible
         fetchTrack();
         const interval = track?.isPlaying
           ? SPOTIFY_POLLING_INTERVAL_PLAYING
@@ -76,32 +86,13 @@ export default function SpotifyNowPlaying() {
       }
     };
 
-    const handleUserActivity = () => {
-      if (isActive && !intervalRef.current) {
-        fetchTrack();
-        const interval = track?.isPlaying
-          ? SPOTIFY_POLLING_INTERVAL_PLAYING
-          : SPOTIFY_POLLING_INTERVAL_PAUSED;
-        intervalRef.current = setInterval(fetchTrack, interval);
-      }
-    };
-
-    // Initial fetch
     fetchTrack();
-
-    // Set up adaptive polling based on current playback state
     const interval = track?.isPlaying
       ? SPOTIFY_POLLING_INTERVAL_PLAYING
       : SPOTIFY_POLLING_INTERVAL_PAUSED;
     intervalRef.current = setInterval(fetchTrack, interval);
 
-    // Listen for tab visibility changes
     document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Listen for user activity to restart polling if needed
-    document.addEventListener("mousemove", handleUserActivity);
-    document.addEventListener("keydown", handleUserActivity);
-    document.addEventListener("click", handleUserActivity);
 
     return () => {
       isActive = false;
@@ -109,176 +100,97 @@ export default function SpotifyNowPlaying() {
         clearInterval(intervalRef.current);
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      document.removeEventListener("mousemove", handleUserActivity);
-      document.removeEventListener("keydown", handleUserActivity);
-      document.removeEventListener("click", handleUserActivity);
     };
-  }, [fetchTrack, track?.isPlaying]); // Re-run when playback state changes
+  }, [fetchTrack, track?.isPlaying]);
 
-  // Update polling interval when track playback state changes
-  useEffect(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      const interval = track?.isPlaying
-        ? SPOTIFY_POLLING_INTERVAL_PLAYING
-        : SPOTIFY_POLLING_INTERVAL_PAUSED;
-      intervalRef.current = setInterval(fetchTrack, interval);
-    }
-  }, [track?.isPlaying, fetchTrack]);
-
-  if (isLoading) {
-    return (
-      <button
-        aria-label="Spotify Now Playing"
-        className="fixed right-4 bottom-4 z-50 translate-y-0 rounded-full border border-light-mini/30 bg-light-bg px-3 py-2 text-dark-bg text-xs opacity-100 shadow transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:right-8 sm:bottom-8 sm:px-4 sm:py-2 sm:text-sm dark:border-dark-mini/30 dark:bg-dark-bg dark:text-light-bg"
-        disabled
-        title="Spotify Now Playing"
-      >
-        Loading Spotify...
-      </button>
-    );
-  }
-
-  if (!track) {
-    return (
-      <button
-        aria-label="Spotify Not Playing"
-        className="fixed right-4 bottom-4 z-50 translate-y-0 rounded-full border border-light-mini/30 bg-light-bg px-3 py-2 text-dark-bg text-xs opacity-100 shadow transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:right-8 sm:bottom-8 sm:px-4 sm:py-2 sm:text-sm dark:border-dark-mini/30 dark:bg-dark-bg dark:text-light-bg"
-        disabled
-        title="Spotify Not Playing"
-      >
-        Not Playing
-      </button>
-    );
-  }
+  if (isLoading || !track) return null;
 
   return (
-    <div
-      className="fixed right-4 bottom-4 z-50 sm:right-8 sm:bottom-8"
-      onBlur={() => {
-        // Only hide tooltip on desktop blur
-        if (window.innerWidth >= 640) {
-          setShowTooltip(false);
-        }
-      }}
-      onFocus={() => {
-        // Only show tooltip on desktop focus
-        if (window.innerWidth >= 640) {
-          setShowTooltip(true);
-        }
-      }}
-      onMouseEnter={() => {
-        // Only show tooltip on desktop (non-touch devices)
-        if (window.innerWidth >= 640) {
-          setShowTooltip(true);
-        }
-      }}
-      onMouseLeave={() => {
-        // Only hide tooltip on desktop (non-touch devices)
-        if (window.innerWidth >= 640) {
-          setShowTooltip(false);
-        }
-      }}
-    >
-      {/* Mobile: Small circular button, Desktop: Full button */}
-      <button
-        aria-label={
-          track.isPlaying
-            ? `Now playing: ${track.name} by ${track.artists
-                .map((a) => a.name)
-                .join(", ")}`
-            : `Last played: ${track.name} by ${track.artists
-                .map((a) => a.name)
-                .join(", ")}`
-        }
-        className={
-          "/* Mobile styles */ /* Desktop styles */ flex h-12 w-12 items-center justify-center rounded-full border border-light-mini/30 bg-light-bg text-dark-bg shadow transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 sm:h-auto sm:w-auto sm:gap-3 sm:rounded-full sm:px-4 sm:py-2 sm:hover:bg-light-mini/10 dark:border-dark-mini/30 dark:bg-dark-bg dark:text-light-bg sm:dark:hover:bg-dark-mini/10"
-        }
-        onClick={() => setShowTooltip(!showTooltip)}
-        title={
-          track.isPlaying
-            ? `Now playing: ${track.name} by ${track.artists
-                .map((a) => a.name)
-                .join(", ")}`
-            : `Last played: ${track.name} by ${track.artists
-                .map((a) => a.name)
-                .join(", ")}`
-        }
-      >
-        {/* Mobile: Just album art, Desktop: Album art + text */}
-        <Image
-          alt={track.name}
-          className="h-6 w-6 rounded sm:h-8 sm:w-8"
-          height={32}
-          src={track.album.images[2]?.url || track.album.images[0]?.url}
-          width={32}
-        />
+    <div ref={wrapperRef} className="fixed right-6 bottom-6 z-50">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="absolute bottom-full right-0 mb-4 w-72 rounded-sm border border-subtle bg-primary p-6 shadow-2xl"
+          >
+            <div className="flex gap-4 mb-4">
+              <div className="relative">
+                <Image
+                  alt={track.album.name}
+                  className="h-16 w-16 grayscale object-cover rounded-sm"
+                  height={64}
+                  src={track.album.images[1]?.url || track.album.images[0]?.url}
+                  width={64}
+                />
+                 <div className="absolute -bottom-2 -right-2 flex gap-0.5 items-end justify-center h-4 w-4 bg-black/40 backdrop-blur-sm rounded-full p-0.5 border border-white/10">
+                    <div className={`w-0.5 bg-white ${track.isPlaying ? "animate-[music-bar_0.8s_ease-in-out_infinite] h-full" : "h-1/2"}`} />
+                    <div className={`w-0.5 bg-white ${track.isPlaying ? "animate-[music-bar_0.6s_ease-in-out_infinite] delay-75 h-2/3" : "h-3/4"}`} />
+                    <div className={`w-0.5 bg-white ${track.isPlaying ? "animate-[music-bar_1s_ease-in-out_infinite] delay-150 h-1/2" : "h-1/3"}`} />
+                 </div>
+              </div>
+              <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <h4 className="font-semibold text-primary truncate">
+                   {track.name}
+                </h4>
+                <p className="text-secondary text-sm truncate">
+                   {track.artists.map((a) => a.name).join(", ")}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-2 text-xs font-mono text-muted uppercase tracking-wider mb-6">
+               <div className="flex justify-between">
+                 <span>Album</span>
+                 <span className="text-right truncate max-w-[120px]">{track.album.name}</span>
+               </div>
+            </div>
 
-        {/* Desktop: Full text info */}
-        <div className="hidden sm:flex sm:min-w-0 sm:flex-col sm:items-start">
-          <span className="w-full truncate font-medium text-xs">
-            {track.isPlaying ? "Now Playing" : "Last Played"}
-          </span>
-          <span className="w-full truncate text-light-mini text-xs dark:text-dark-mini">
-            {track.name} — {track.artists.map((a) => a.name).join(", ")}
+            <a
+              href={track.external_urls.spotify}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center py-3 border border-subtle text-xs font-mono uppercase tracking-widest hover:bg-secondary/10 transition-colors text-primary"
+            >
+              Open Spotify
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="group flex items-center gap-3 bg-primary/80 backdrop-blur-md border border-subtle pr-4 pl-2 py-2 rounded-full hover:border-primary transition-all duration-300 shadow-sm"
+      >
+        <div className={`relative h-8 w-8 overflow-hidden rounded-full ${!track.isPlaying ? "grayscale" : ""}`}>
+           <Image
+            alt={track.name}
+            className={`h-full w-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
+            height={32}
+            src={track.album.images[2]?.url || track.album.images[0]?.url}
+            width={32}
+          />
+           {/* Center dot to make it look like vinyl record */}
+           <div className="absolute inset-0 m-auto h-2 w-2 bg-primary rounded-full border border-subtle z-10" />
+        </div>
+
+        <div className="flex flex-col items-start text-left">
+           <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-widest font-mono text-muted leading-tight">
+                {track.isPlaying ? "Now Playing" : "Last Played"}
+            </span>
+             <div className="flex gap-0.5 items-end h-3">
+                <div className={`w-0.5 bg-[var(--text-primary)] ${track.isPlaying ? "animate-[music-bar_0.5s_ease-in-out_infinite] h-full" : "h-1/3"}`} />
+                <div className={`w-0.5 bg-[var(--text-primary)] ${track.isPlaying ? "animate-[music-bar_0.75s_ease-in-out_infinite] delay-75 h-1/2" : "h-2/3"}`} />
+                <div className={`w-0.5 bg-[var(--text-primary)] ${track.isPlaying ? "animate-[music-bar_0.6s_ease-in-out_infinite] delay-150 h-3/4" : "h-1/2"}`} />
+             </div>
+           </div>
+          <span className="text-xs font-medium text-primary truncate max-w-[140px] leading-tight group-hover:text-accent transition-colors">
+            {track.name}
           </span>
         </div>
       </button>
-
-      {/* Tooltip/Modal - Mobile: Bottom sheet style, Desktop: Tooltip */}
-      <div
-        className={`transition-all duration-200 ${
-          showTooltip
-            ? "pointer-events-auto translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-2 opacity-0"
-        } absolute right-0 bottom-16 w-72 max-w-[85vw] sm:bottom-14 sm:w-64 sm:max-w-[90vw] ${
-          showTooltip ? "block" : "hidden"
-        }`}
-        style={{ zIndex: 100 }}
-      >
-        <div
-          className={
-            "/* Desktop: Smaller padding */ flex flex-col gap-3 rounded-xl border border-light-mini/20 bg-light-bg p-4 shadow-lg transition-colors duration-200 sm:gap-2 sm:p-3 dark:border-dark-mini/20 dark:bg-dark-bg"
-          }
-        >
-          <div className="flex items-center gap-3 sm:gap-2">
-            <Image
-              alt={track.album.name}
-              className="h-12 w-12 rounded sm:h-10 sm:w-10"
-              height={48}
-              src={track.album.images[1]?.url || track.album.images[0]?.url}
-              width={48}
-            />
-            <div className="min-w-0 flex-1">
-              <div className="truncate font-semibold text-light-heading text-sm sm:text-xs dark:text-dark-heading">
-                {track.name}
-              </div>
-              <div className="truncate text-light-mini text-xs sm:text-[11px] dark:text-dark-mini">
-                {track.artists.map((a) => a.name).join(", ")}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-1 text-light-mini text-xs sm:text-[11px] dark:text-dark-mini">
-            <div>
-              <span className="font-medium">Album:</span> {track.album.name}
-            </div>
-            <div>
-              <span className="font-medium">Released:</span>{" "}
-              {track.album.release_date}
-            </div>
-          </div>
-
-          <a
-            className="mt-2 inline-block py-2 text-blue-600 text-sm hover:underline sm:mt-1 sm:py-1 sm:text-xs dark:text-blue-400"
-            href={track.external_urls.spotify}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Open in Spotify ↗
-          </a>
-        </div>
-      </div>
     </div>
   );
 }

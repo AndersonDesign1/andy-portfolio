@@ -1,98 +1,213 @@
 @import "tailwindcss";
 
+/* ============================================
+   DESIGN SYSTEM: Minimal Portfolio
+   Based on interfaces.rauno.me guidelines
+   ============================================ */
+
 /* Tailwind CSS v4 custom variant for dark mode */
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is([data-theme="dark"] *));
 
-/* Tailwind CSS v4 theme configuration */
-@theme {
-  --color-light-bg: #faf9f6;
-  --color-light-heading: #0f0f0f;
-  --color-light-text: #3a3e45;
-  --color-light-mini: #6b7280;
-  --color-dark-bg: #0f0f0f;
-  --color-dark-heading: #f3f4f6;
-  --color-dark-text: #babec5;
-  --color-dark-mini: #4b5563;
-
-  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
-  --background-image-gradient-conic: conic-gradient(
-    from 180deg at 50% 50%,
-    var(--tw-gradient-stops)
-  );
-
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-
-  --animate-blob: blob 2s infinite;
-  --animate-float: float 2s ease-in-out infinite;
-  --animate-pulse-glow: pulse-glow 1.5s ease-in-out infinite;
-
-  --font-mono: JetBrains Mono, Fira Code, monospace;
-
-  @keyframes blob {
-    0% {
-      transform: translate(0px, 0px) scale(1);
-    }
-
-    33% {
-      transform: translate(30px, -50px) scale(1.1);
-    }
-
-    66% {
-      transform: translate(-20px, 20px) scale(0.9);
-    }
-
-    100% {
-      transform: translate(0px, 0px) scale(1);
-    }
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-
-    50% {
-      transform: translateY(-20px);
-    }
-  }
-
-  @keyframes pulse-glow {
-    0%,
-    100% {
-      opacity: 0.4;
-    }
-
-    50% {
-      opacity: 0.8;
-    }
-  }
+/* ============================================
+   CSS VARIABLES - Anti-Digital Palette
+   No pure black (#000) or white (#FFF)
+   ============================================ */
+:root {
+  /* Background colors - Soft Bone/Paper (Darker than F9F9F9 as requested) */
+  --bg: #F0F0F0;
+  --bg-secondary: #E5E5E5;
+  --bg-tertiary: #D4D4D4;
+  
+  /* Text colors - high contrast but softened */
+  --text-primary: #171717;
+  --text-secondary: #404040;
+  --text-muted: #737373;
+  
+  /* Border & divider */
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  
+  /* Accent */
+  --accent: #0066CC;
+  --accent-muted: rgba(0, 102, 204, 0.1);
+  
+  /* Radius - Keeping consistent radius */
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 4px;
+  --radius-full: 9999px;
 }
 
+[data-theme="dark"] {
+  /* Background colors - rich Charcoal, no pure black */
+  --bg: #121212;
+  --bg-secondary: #1C1C1C;
+  --bg-tertiary: #262626;
+  
+  /* Text colors */
+  --text-primary: #EDEDED;
+  --text-secondary: #A3A3A3;
+  --text-muted: #525252;
+  
+  /* Border & divider */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  
+  /* Accent */
+  --accent: #4DA3FF;
+  --accent-muted: rgba(77, 163, 255, 0.1);
+}
+
+/* ============================================
+   BASE STYLES
+   Typography, selection, scrollbar
+   ============================================ */
 @layer base {
   * {
-    border-color: var(--color-light-mini);
+    border-color: var(--border);
   }
 
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  
   body {
-    background-color: var(--color-light-bg);
-    color: var(--color-light-text);
+    background-color: var(--bg);
+    color: var(--text-secondary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1, "liga" 1;
+    /* Grid alignment helper if needed, but keeping clean for now */
   }
 
-  .dark * {
-    border-color: var(--color-dark-mini);
+  /* Selection styling */
+  ::selection {
+    background-color: var(--text-primary);
+    color: var(--bg);
   }
 
-  .dark body {
-    background-color: var(--color-dark-bg);
-    color: var(--color-dark-text);
+  ::-moz-selection {
+    background-color: var(--text-primary);
+    color: var(--bg);
+  }
+
+  /* Headings - Tight tracking for grotesque style */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  /* Links */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Tabs - tabular figures for consistency */
+  [data-tabular] {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom animation utilities */
+/* ============================================
+   GRAIN TEXTURE OVERLAY
+   Subtle noise for paper-like quality
+   ============================================ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  /* Increased opacity for visibility on light mode, removed mix-blend-mode for consistency */
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  /* Optional: invert filter for dark mode if using white noise, but standard noise works on both with opacity adjustment */
+}
+
+[data-theme="dark"] .grain-overlay {
+  /* Lower opacity on dark mode as noise shows up easier on dark surfaces */
+  opacity: 0.07;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
 @layer utilities {
+  /* Text colors using CSS variables */
+  .text-primary {
+    color: var(--text-primary);
+  }
+  
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+
+  /* Background colors using CSS variables */
+  .bg-primary {
+    background-color: var(--bg);
+  }
+  
+  .bg-secondary {
+    background-color: var(--bg-secondary);
+  }
+  
+  .bg-tertiary {
+    background-color: var(--bg-tertiary);
+  }
+
+  /* Border using CSS variables */
+  .border-subtle {
+    border-color: var(--border);
+  }
+  
+  .border-strong {
+    border-color: var(--border-strong);
+  }
+
+  /* Accent color utilities */
+  .text-accent {
+    color: var(--accent);
+  }
+
+  .bg-accent-muted {
+    background-color: var(--accent-muted);
+  }
+
+  /* Hover state utilities */
+  .hover\:text-primary:hover {
+    color: var(--text-primary);
+  }
+
+  .hover\:bg-secondary:hover {
+    background-color: var(--bg-secondary);
+  }
+
+  .hover\:bg-tertiary:hover {
+    background-color: var(--bg-tertiary);
+  }
+
+  .group:hover .group-hover\:opacity-100 {
+    opacity: 1;
+  }
+
+  .group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+  }
+
+  /* Disable user-select for interactive elements */
+  .select-none-children * {
+    user-select: none;
+  }
+
+  /* Animation utilities */
   .animate-in {
     animation-fill-mode: both;
   }
@@ -113,6 +228,10 @@
     animation-duration: 250ms;
   }
 
+  .duration-200 {
+    animation-duration: 200ms;
+  }
+
   .delay-100 {
     animation-delay: 100ms;
   }
@@ -130,11 +249,14 @@
   }
 }
 
+/* ============================================
+   KEYFRAME ANIMATIONS
+   Keep animations subtle per guidelines
+   ============================================ */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
@@ -145,9 +267,20 @@
     opacity: 0;
     transform: translateY(16px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes music-bar {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+
+/* ============================================
+   TAILWIND THEME CONFIGURATION
+   ============================================ */
+@theme {
+  --font-mono: JetBrains Mono, Fira Code, monospace;
 }

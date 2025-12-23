@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
 import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
 import {
   ANIMATION_DELAY_PROJECT,
@@ -112,44 +111,36 @@ const ProjectsShowcase: React.FC = () => {
   }, [activeCategory]);
 
   return (
-    <div className="min-h-screen bg-light-bg pt-28 transition-colors duration-300 dark:bg-dark-bg">
-      {/* Header */}
-      <div className="mx-auto max-w-screen-xl px-4 pt-8 sm:px-8 md:px-16 lg:px-[150px]">
-        <h1 className="mb-4 font-semibold text-3xl text-light-heading dark:text-dark-heading">
-          Projects
+    <div className="min-h-screen bg-primary pt-48 md:pt-64">
+      <div className="mx-auto max-w-screen-xl px-6 md:px-12">
+        <h1 className="font-bold text-6xl md:text-8xl text-primary tracking-tighter mb-16">
+          Selected Work
         </h1>
-        {/* Responsive, single-line, scrollable category selector */}
-        <div className="mb-8 flex gap-1 overflow-x-auto whitespace-nowrap sm:gap-3">
+
+        {/* Minimal Filters */}
+        <div className="mb-20 flex gap-8 border-b border-subtle pb-4 overflow-x-auto">
           {categories.map((category) => (
-            <Button
-              className={`px-2 py-1 text-xs shadow-none transition-colors duration-200 sm:px-4 sm:py-2 sm:text-sm ${
+            <button
+              className={`text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
                 activeCategory === category
-                  ? "font-bold text-light-heading dark:text-dark-heading"
-                  : "text-light-mini dark:text-dark-mini"
-              }hover:text-blue-600 dark:hover:text-blue-400`}
+                  ? "text-primary"
+                  : "text-muted hover:text-primary"
+              }`}
               key={category}
               onClick={() => setActiveCategory(category)}
-              style={{
-                background: "none",
-                border: "none",
-                boxShadow: "none",
-                minWidth: "70px",
-              }}
-              variant="ghost"
+              type="button"
             >
               {category}
-            </Button>
+            </button>
           ))}
         </div>
-      </div>
 
-      {/* Projects Grid with AnimatePresence */}
-      <section className="pb-20">
-        <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
+        {/* Projects Grid */}
+        <section className="pb-32">
           <AnimatePresence mode="wait">
             <motion.div
               animate="animate"
-              className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:gap-16"
+              className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24"
               exit="exit"
               initial="initial"
               key={activeCategory}
@@ -157,7 +148,7 @@ const ProjectsShowcase: React.FC = () => {
             >
               {filteredProjects.map((project, index) => (
                 <motion.div
-                  className="group space-y-6"
+                  className="group"
                   initial={{ opacity: 0, y: 24 }}
                   key={project.id}
                   transition={{
@@ -165,127 +156,90 @@ const ProjectsShowcase: React.FC = () => {
                     ease: ANIMATION_EASE_CUBIC,
                     delay: index * ANIMATION_DELAY_PROJECT,
                   }}
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: true, amount: 0.1 }}
                   whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Project Image */}
                   <motion.div
-                    className="relative aspect-[4/3] min-h-[200px] overflow-hidden rounded-lg"
+                    className="relative aspect-[16/10] overflow-hidden rounded-sm mb-6 bg-secondary/5"
                     transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
                     <Image
                       alt={project.title}
-                      className="object-contain"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                       fill
                       priority={index < 2 && activeCategory === "All"}
                       sizes="(max-width: 768px) 100vw, 50vw"
                       src={project.thumbnail}
                     />
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10"
-                    />
                   </motion.div>
+
                   {/* Project Content */}
-                  <div className="space-y-4">
-                    <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
-                      <motion.h3
-                        className="font-medium text-lg text-light-heading transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400"
-                        transition={{ duration: 0.18, ease: "easeOut" }}
-                        whileHover={{ x: 2 }}
-                      >
-                        {project.title}
-                      </motion.h3>
-                      <div className="flex flex-shrink-0 flex-wrap gap-4">
-                        {project.links.github && (
-                          <motion.a
-                            className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
-                            href={project.links.github}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            transition={{ duration: 0.18 }}
-                            whileHover={{ x: 2 }}
-                          >
-                            GitHub ↗
-                          </motion.a>
-                        )}
-                        {project.links.live && (
-                          <motion.a
-                            className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
-                            href={project.links.live}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            transition={{ duration: 0.18 }}
-                            whileHover={{ x: 2 }}
-                          >
-                            View ↗
-                          </motion.a>
-                        )}
-                        {project.links.caseStudy && (
-                          <motion.div
-                            transition={{ duration: 0.18 }}
-                            whileHover={{ x: 2 }}
-                          >
-                            <Link
-                              className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
-                              href={project.links.caseStudy}
-                            >
-                              Case Study ↗
-                            </Link>
-                          </motion.div>
-                        )}
-                      </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-baseline justify-between mb-2">
+                       <h3 className="text-xl font-medium text-primary">
+                          {project.title}
+                        </h3>
+                        <span className="text-xs font-mono text-muted uppercase tracking-widest">
+                           {project.type === 'case-study' ? 'Case Study' : 'Project'}
+                        </span>
                     </div>
-                    <p className="text-light-text text-sm leading-relaxed dark:text-dark-text">
+
+                     <p className="text-secondary text-base leading-relaxed mb-6 line-clamp-2">
                       {project.description}
                     </p>
-                    {/* Metrics for Case Studies */}
-                    {project.type === "case-study" && project.metrics && (
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-light-heading text-sm transition-colors duration-300 dark:text-dark-heading">
-                          Key Results
-                        </h4>
-                        <div className="space-y-1">
-                          {Object.entries(project.metrics).map(
-                            ([key, value]) => (
-                              <div
-                                className="text-light-text text-sm transition-colors duration-300 dark:text-dark-text"
-                                key={key}
-                              >
-                                <span className="capitalize">{key}:</span>
-                                <span className="ml-2 font-medium">
-                                  {value}
-                                </span>
-                              </div>
-                            )
-                          )}
+
+                    <div className="flex items-center justify-between border-t border-subtle pt-4 mt-auto">
+                        <p className="text-xs text-muted font-mono uppercase tracking-wider truncate max-w-[60%]">
+                            {project.techStack.slice(0, 3).join(" / ")}
+                        </p>
+                        <div className="flex gap-6">
+                            {project.links.caseStudy ? (
+                                <Link
+                                    href={project.links.caseStudy}
+                                    className="text-sm font-medium text-primary hover:text-muted transition-colors"
+                                >
+                                    Read Case Study
+                                </Link>
+                            ) : (
+                                <>
+                                    {project.links.live && (
+                                         <Link
+                                            href={project.links.live}
+                                            target="_blank"
+                                            className="text-sm font-medium text-primary hover:text-muted transition-colors"
+                                        >
+                                            Live Site
+                                        </Link>
+                                    )}
+                                     {project.links.github && (
+                                         <Link
+                                            href={project.links.github}
+                                            target="_blank"
+                                            className="text-sm font-medium text-primary hover:text-muted transition-colors"
+                                        >
+                                            Code
+                                        </Link>
+                                    )}
+                                </>
+                            )}
                         </div>
-                      </div>
-                    )}
-                    {/* Tech Stack */}
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-light-heading text-sm transition-colors duration-300 dark:text-dark-heading">
-                        Tech Stack
-                      </h4>
-                      <p className="break-words text-light-mini text-xs transition-colors duration-300 dark:text-dark-mini">
-                        {project.techStack.join(" / ")}
-                      </p>
                     </div>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
           </AnimatePresence>
-          {/* Empty State */}
+          
           {filteredProjects.length === 0 && (
-            <div className="py-16 text-center">
-              <p className="text-light-text dark:text-dark-text">
+            <div className="py-24 text-center">
+              <p className="text-secondary text-lg">
                 No projects found in this category.
               </p>
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };

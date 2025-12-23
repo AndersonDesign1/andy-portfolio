@@ -64,6 +64,9 @@ export default function RootLayout({
             <Analytics />
             <SpeedInsights />
 
+            {/* Grain texture overlay for paper-like quality */}
+            <div className="grain-overlay" aria-hidden="true" />
+
             <Toaster
               position="top-right"
               toastOptions={{
