@@ -202,7 +202,7 @@ export default function WorkHistory() {
                           >
                             <li>
                               <motion.div
-                                className={`-z-10 absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 ${
+                                className={`absolute inset-0 -z-10 bg-light-mini/5 dark:bg-dark-mini/5 ${
                                   lastItem ? "rounded-b-xl" : ""
                                 } ${firstItem ? "rounded-t-xl" : ""}`}
                                 initial={{ opacity: 0 }}
@@ -501,7 +501,7 @@ export default function WorkHistory() {
                           >
                             <li>
                               <motion.div
-                                className={`-z-10 absolute inset-0 bg-light-mini/5 dark:bg-dark-mini/5 ${
+                                className={`absolute inset-0 -z-10 bg-light-mini/5 dark:bg-dark-mini/5 ${
                                   lastItem ? "rounded-b-xl" : ""
                                 } ${firstItem ? "rounded-t-xl" : ""}`}
                                 initial={{ opacity: 0 }}

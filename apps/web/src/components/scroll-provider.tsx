@@ -26,7 +26,8 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     // Always initialize Lenis, but use CSS media queries to control behavior
     lenisRef.current = new Lenis({
       duration: SCROLL_DURATION,
-      easing: (t) => Math.min(1, SCROLL_EASING_CONSTANT - 2 ** (SCROLL_EASING_EXPONENT * t)),
+      easing: (t) =>
+        Math.min(1, SCROLL_EASING_CONSTANT - 2 ** (SCROLL_EASING_EXPONENT * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,

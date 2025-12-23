@@ -1,7 +1,6 @@
 "use client";
 import {
   ArrowLeftIcon,
-  ArrowRightIcon,
   CheckIcon,
   StarIcon,
   TrophyIcon,
@@ -9,14 +8,7 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import type React from "react";
-import {
-  ANIMATION_DELAY_CASE_STUDY,
-  ANIMATION_DURATION_CASE_STUDY,
-  ANIMATION_DURATION_MEDIUM,
-  ANIMATION_EASE_CUBIC,
-  STAR_RATING_COUNT,
-} from "@/lib/constants";
+import { ANIMATION_EASE_CUBIC, STAR_RATING_COUNT } from "@/lib/constants";
 import type { CaseStudy } from "@/types/case-study";
 
 const fadeInUp = {
@@ -78,20 +70,20 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                   {caseStudy.hero.client}
                 </span>
               </div>
-              <h1 className="font-bold text-4xl text-light-heading transition-colors duration-300 dark:text-dark-heading md:text-5xl lg:text-6xl">
+              <h1 className="font-bold text-4xl text-light-heading transition-colors duration-300 md:text-5xl lg:text-6xl dark:text-dark-heading">
                 {caseStudy.hero.title}
               </h1>
             </div>
-            <p className="max-w-2xl text-light-text text-lg leading-relaxed dark:text-dark-text">
+            <p className="max-w-2xl text-lg text-light-text leading-relaxed dark:text-dark-text">
               {caseStudy.hero.overview}
             </p>
           </motion.div>
 
           {/* Hero Image */}
           <motion.div
+            animate={{ opacity: 1, scale: 1 }}
             className="group relative overflow-hidden rounded-xl shadow-2xl"
             initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, ease: ANIMATION_EASE_CUBIC }}
           >
             <Image
@@ -113,18 +105,18 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
             <div className="flex flex-wrap gap-2">
               {caseStudy.hero.technologies.map((tech, index) => (
                 <motion.span
-                  className="rounded-full bg-light-mini/10 px-3 py-1 text-light-mini text-sm dark:bg-dark-mini/10 dark:text-dark-mini"
-                  key={tech}
-                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
+                  className="rounded-full bg-light-mini/10 px-3 py-1 text-light-mini text-sm dark:bg-dark-mini/10 dark:text-dark-mini"
+                  initial={{ opacity: 0, y: 20 }}
+                  key={tech}
+                  transition={{
+                    duration: 0.3,
                     delay: index * 0.05,
-                    ease: ANIMATION_EASE_CUBIC 
+                    ease: ANIMATION_EASE_CUBIC,
                   }}
-                  whileHover={{ 
-                    scale: 1.05, 
-                    backgroundColor: "rgba(0, 0, 0, 0.1)" 
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
                   }}
                 >
                   {tech}
@@ -146,27 +138,35 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
           >
             {/* Challenge */}
             <motion.div className="space-y-6" variants={fadeInUp}>
-              <motion.h2 
+              <motion.h2
+                animate={{ opacity: 1, x: 0 }}
                 className="font-bold text-2xl text-light-heading dark:text-dark-heading"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, ease: ANIMATION_EASE_CUBIC }}
               >
                 The Challenge
               </motion.h2>
-              <motion.p 
+              <motion.p
+                animate={{ opacity: 1, y: 0 }}
                 className="text-light-text leading-relaxed dark:text-dark-text"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1, ease: ANIMATION_EASE_CUBIC }}
+                transition={{
+                  duration: 0.3,
+                  delay: 0.1,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
               >
                 {caseStudy.challenge.problem}
               </motion.p>
-              <motion.div 
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="space-y-4"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.2, ease: ANIMATION_EASE_CUBIC }}
+                transition={{
+                  duration: 0.3,
+                  delay: 0.2,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
               >
                 <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
                   Key Constraints
@@ -174,24 +174,24 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                 <ul className="space-y-2">
                   {caseStudy.challenge.constraints.map((constraint, index) => (
                     <motion.li
-                      className="flex items-start gap-3 text-light-text dark:text-dark-text"
-                      key={constraint}
-                      initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ 
-                        duration: 0.3, 
-                        delay: 0.3 + (index * 0.05),
-                        ease: ANIMATION_EASE_CUBIC 
+                      className="flex items-start gap-3 text-light-text dark:text-dark-text"
+                      initial={{ opacity: 0, x: -20 }}
+                      key={constraint}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.3 + index * 0.05,
+                        ease: ANIMATION_EASE_CUBIC,
                       }}
                       whileHover={{ x: 5 }}
                     >
                       <motion.div
-                        initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ 
-                          duration: 0.2, 
-                          delay: 0.4 + (index * 0.05),
-                          ease: "backOut" 
+                        initial={{ scale: 0 }}
+                        transition={{
+                          duration: 0.2,
+                          delay: 0.4 + index * 0.05,
+                          ease: "backOut",
                         }}
                       >
                         <CheckIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-light-mini dark:text-dark-mini" />
@@ -205,19 +205,23 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
 
             {/* Goals */}
             <motion.div className="space-y-6" variants={fadeInUp}>
-              <motion.h2 
+              <motion.h2
+                animate={{ opacity: 1, x: 0 }}
                 className="font-bold text-2xl text-light-heading dark:text-dark-heading"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, ease: ANIMATION_EASE_CUBIC }}
               >
                 Goals & Success Metrics
               </motion.h2>
-              <motion.div 
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="space-y-4"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1, ease: ANIMATION_EASE_CUBIC }}
+                transition={{
+                  duration: 0.3,
+                  delay: 0.1,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
               >
                 <h3 className="font-medium text-lg text-light-heading dark:text-dark-heading">
                   Primary Objectives
@@ -225,24 +229,24 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                 <ul className="space-y-2">
                   {caseStudy.goals.primary.map((goal, index) => (
                     <motion.li
-                      className="flex items-start gap-3 text-light-text dark:text-dark-text"
-                      key={goal}
-                      initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ 
-                        duration: 0.3, 
-                        delay: 0.2 + (index * 0.05),
-                        ease: ANIMATION_EASE_CUBIC 
+                      className="flex items-start gap-3 text-light-text dark:text-dark-text"
+                      initial={{ opacity: 0, x: 20 }}
+                      key={goal}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.2 + index * 0.05,
+                        ease: ANIMATION_EASE_CUBIC,
                       }}
                       whileHover={{ x: -5 }}
                     >
                       <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
-                        transition={{ 
-                          duration: 0.2, 
-                          delay: 0.3 + (index * 0.05),
-                          ease: "backOut" 
+                        initial={{ scale: 0, rotate: -180 }}
+                        transition={{
+                          duration: 0.2,
+                          delay: 0.3 + index * 0.05,
+                          ease: "backOut",
                         }}
                       >
                         <CheckIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-light-mini dark:text-dark-mini" />
@@ -257,7 +261,6 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
         </div>
       </section>
 
-
       {/* Approach */}
       <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
         <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
@@ -271,7 +274,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
               <h2 className="mb-4 font-bold text-2xl text-light-heading dark:text-dark-heading">
                 My Approach
               </h2>
-              <p className="max-w-2xl mx-auto text-light-text leading-relaxed dark:text-dark-text">
+              <p className="mx-auto max-w-2xl text-light-text leading-relaxed dark:text-dark-text">
                 {caseStudy.approach.methodology}
               </p>
             </motion.div>
@@ -283,34 +286,34 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
             >
               {caseStudy.approach.phases.map((phase, index) => (
                 <motion.div
-                  className="group relative rounded-lg bg-light-bg p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 dark:bg-dark-bg"
-                  key={phase.name}
-                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
+                  className="group relative rounded-lg bg-light-bg p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:bg-dark-bg"
+                  initial={{ opacity: 0, y: 30 }}
+                  key={phase.name}
+                  transition={{
+                    duration: 0.3,
                     delay: index * 0.1,
-                    ease: ANIMATION_EASE_CUBIC 
+                    ease: ANIMATION_EASE_CUBIC,
                   }}
                 >
                   <div className="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
-                  <motion.div 
+                  <motion.div
+                    animate={{ opacity: 1, y: 0 }}
                     className="mb-3 flex items-start justify-between"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                    transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
                   >
                     <h4 className="font-medium text-light-heading dark:text-dark-heading">
                       {phase.name}
                     </h4>
-                    <motion.span 
+                    <motion.span
+                      animate={{ scale: 1 }}
                       className="rounded-full bg-light-mini/10 px-2 py-1 text-light-mini text-xs dark:bg-dark-mini/10 dark:text-dark-mini"
                       initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ 
-                        duration: 0.2, 
-                        delay: 0.2 + (index * 0.1),
-                        ease: "backOut" 
+                      transition={{
+                        duration: 0.2,
+                        delay: 0.2 + index * 0.1,
+                        ease: "backOut",
                       }}
                     >
                       {phase.duration}
@@ -319,14 +322,14 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                   <ul className="space-y-2">
                     {phase.activities.map((activity, activityIndex) => (
                       <motion.li
-                        className="text-light-text text-sm dark:text-dark-text"
-                        key={activity}
-                        initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ 
-                          duration: 0.3, 
-                          delay: 0.3 + (index * 0.1) + (activityIndex * 0.05),
-                          ease: ANIMATION_EASE_CUBIC 
+                        className="text-light-text text-sm dark:text-dark-text"
+                        initial={{ opacity: 0, x: -20 }}
+                        key={activity}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.3 + index * 0.1 + activityIndex * 0.05,
+                          ease: ANIMATION_EASE_CUBIC,
                         }}
                         whileHover={{ x: 5 }}
                       >
@@ -340,7 +343,6 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
           </motion.div>
         </div>
       </section>
-
 
       {/* Results */}
       <section className="border-light-mini/20 border-t py-16 dark:border-dark-mini/20">
@@ -364,53 +366,53 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
             >
               {caseStudy.results.beforeAfter.map((metric, index) => (
                 <motion.div
-                  className="group relative overflow-hidden rounded-xl bg-light-bg p-6 shadow-sm dark:bg-dark-bg"
-                  key={metric.metric}
-                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
+                  className="group relative overflow-hidden rounded-xl bg-light-bg p-6 shadow-sm dark:bg-dark-bg"
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  key={metric.metric}
+                  transition={{
+                    duration: 0.3,
                     delay: index * 0.1,
-                    ease: ANIMATION_EASE_CUBIC 
+                    ease: ANIMATION_EASE_CUBIC,
                   }}
                 >
                   <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
-                  <motion.h4 
+                  <motion.h4
+                    animate={{ opacity: 1, y: 0 }}
                     className="mb-4 font-semibold text-lg text-light-heading dark:text-dark-heading"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                    transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
                   >
                     {metric.metric}
                   </motion.h4>
                   <div className="mb-4 space-y-4">
                     {["before", "after"].map((k, kIndex) => (
-                      <motion.div 
-                        className="flex items-center justify-between" 
-                        key={k}
-                        initial={{ opacity: 0, x: k === "before" ? -20 : 20 }}
+                      <motion.div
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ 
-                          duration: 0.3, 
-                          delay: 0.2 + (index * 0.1) + (kIndex * 0.05),
-                          ease: ANIMATION_EASE_CUBIC 
+                        className="flex items-center justify-between"
+                        initial={{ opacity: 0, x: k === "before" ? -20 : 20 }}
+                        key={k}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.2 + index * 0.1 + kIndex * 0.05,
+                          ease: ANIMATION_EASE_CUBIC,
                         }}
                       >
-                        <span className="text-light-mini text-sm dark:text-dark-mini capitalize">
+                        <span className="text-light-mini text-sm capitalize dark:text-dark-mini">
                           {k}:
                         </span>
                         <motion.span
+                          animate={{ scale: 1 }}
                           className={`font-medium ${
                             k === "after"
                               ? "font-semibold text-light-heading dark:text-dark-heading"
                               : "text-light-text dark:text-dark-text"
                           }`}
                           initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ 
-                            duration: 0.2, 
-                            delay: 0.3 + (index * 0.1) + (kIndex * 0.05),
-                            ease: "backOut" 
+                          transition={{
+                            duration: 0.2,
+                            delay: 0.3 + index * 0.1 + kIndex * 0.05,
+                            ease: "backOut",
                           }}
                         >
                           {metric[k as keyof typeof metric]}
@@ -418,23 +420,23 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                       </motion.div>
                     ))}
                   </div>
-                  <motion.div 
+                  <motion.div
+                    animate={{ opacity: 1, scale: 1 }}
                     className="inline-flex items-center gap-2 rounded-full bg-light-mini/10 px-4 py-2 backdrop-blur-sm dark:bg-dark-mini/10"
                     initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ 
-                      duration: 0.3, 
-                      delay: 0.4 + (index * 0.1),
-                      ease: "backOut" 
+                    transition={{
+                      duration: 0.3,
+                      delay: 0.4 + index * 0.1,
+                      ease: "backOut",
                     }}
                   >
                     <motion.div
-                      initial={{ rotate: -180 }}
                       animate={{ rotate: 0 }}
-                      transition={{ 
-                        duration: 0.3, 
-                        delay: 0.5 + (index * 0.1),
-                        ease: "backOut" 
+                      initial={{ rotate: -180 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.5 + index * 0.1,
+                        ease: "backOut",
                       }}
                     >
                       <TrophyIcon className="h-4 w-4 text-light-mini dark:text-dark-mini" />
@@ -449,16 +451,16 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
 
             {/* Additional Metrics */}
             {caseStudy.results.metrics.length > 0 && (
-              <motion.div 
-                className="space-y-6" 
-                initial={{ opacity: 0, y: 30 }}
+              <motion.div
                 animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+                initial={{ opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, ease: ANIMATION_EASE_CUBIC }}
               >
-                <motion.h3 
+                <motion.h3
+                  animate={{ opacity: 1, x: 0 }}
                   className="font-medium text-lg text-light-heading dark:text-dark-heading"
                   initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, ease: ANIMATION_EASE_CUBIC }}
                 >
                   Additional Impact
@@ -466,35 +468,35 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {caseStudy.results.metrics.map((metric, index) => (
                     <motion.div
-                      className="group relative flex items-center gap-3 rounded-xl bg-light-bg p-4 shadow-sm dark:bg-dark-bg"
-                      key={metric}
-                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ 
-                        duration: 0.3, 
+                      className="group relative flex items-center gap-3 rounded-xl bg-light-bg p-4 shadow-sm dark:bg-dark-bg"
+                      initial={{ opacity: 0, y: 20 }}
+                      key={metric}
+                      transition={{
+                        duration: 0.3,
                         delay: index * 0.05,
-                        ease: ANIMATION_EASE_CUBIC 
+                        ease: ANIMATION_EASE_CUBIC,
                       }}
                     >
                       <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
-                        transition={{ 
-                          duration: 0.3, 
-                          delay: 0.1 + (index * 0.05),
-                          ease: "backOut" 
+                        initial={{ scale: 0, rotate: -180 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.1 + index * 0.05,
+                          ease: "backOut",
                         }}
                       >
                         <TrophyIcon className="h-5 w-5 text-light-mini dark:text-dark-mini" />
                       </motion.div>
-                      <motion.span 
+                      <motion.span
+                        animate={{ opacity: 1, x: 0 }}
                         className="text-light-text text-sm dark:text-dark-text"
                         initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ 
-                          duration: 0.3, 
-                          delay: 0.15 + (index * 0.05),
-                          ease: ANIMATION_EASE_CUBIC 
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.15 + index * 0.05,
+                          ease: ANIMATION_EASE_CUBIC,
                         }}
                       >
                         {metric}
@@ -506,81 +508,95 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
             )}
 
             {/* Testimonials */}
-            {caseStudy.results.testimonials && caseStudy.results.testimonials.length > 0 && (
-              <motion.div 
-                className="space-y-6"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: ANIMATION_EASE_CUBIC }}
-              >
-                <motion.h3 
-                  className="font-medium text-lg text-light-heading dark:text-dark-heading"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, ease: ANIMATION_EASE_CUBIC }}
+            {caseStudy.results.testimonials &&
+              caseStudy.results.testimonials.length > 0 && (
+                <motion.div
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, ease: ANIMATION_EASE_CUBIC }}
                 >
-                  Client Feedback
-                </motion.h3>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {caseStudy.results.testimonials.map((testimonial, index) => (
-                    <motion.div
-                      className="group relative rounded-xl bg-light-bg p-6 shadow-sm dark:bg-dark-bg"
-                      key={testimonial.name}
-                      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ 
-                        duration: 0.3, 
-                        delay: index * 0.1,
-                        ease: ANIMATION_EASE_CUBIC 
-                      }}
-                    >
-                      <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
-                      <motion.div 
-                        className="mb-3 flex items-center gap-1"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.1 + (index * 0.1) }}
-                      >
-                        {[...new Array(STAR_RATING_COUNT)].map((_, starIndex) => (
+                  <motion.h3
+                    animate={{ opacity: 1, x: 0 }}
+                    className="font-medium text-lg text-light-heading dark:text-dark-heading"
+                    initial={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.5, ease: ANIMATION_EASE_CUBIC }}
+                  >
+                    Client Feedback
+                  </motion.h3>
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {caseStudy.results.testimonials.map(
+                      (testimonial, index) => (
+                        <motion.div
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          className="group relative rounded-xl bg-light-bg p-6 shadow-sm dark:bg-dark-bg"
+                          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                          key={testimonial.name}
+                          transition={{
+                            duration: 0.3,
+                            delay: index * 0.1,
+                            ease: ANIMATION_EASE_CUBIC,
+                          }}
+                        >
+                          <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-light-heading/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-dark-heading/5" />
                           <motion.div
-                            key={`star-${starIndex}`}
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{ 
-                              duration: 0.2, 
-                              delay: 0.2 + (index * 0.1) + (starIndex * 0.05),
-                              ease: "backOut" 
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-3 flex items-center gap-1"
+                            initial={{ opacity: 0, y: 20 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: 0.1 + index * 0.1,
                             }}
                           >
-                            <StarIcon className="h-4 w-4 fill-light-mini text-light-mini dark:fill-dark-mini dark:text-dark-mini" />
+                            {[...new Array(STAR_RATING_COUNT)].map(
+                              (_, starIndex) => (
+                                <motion.div
+                                  animate={{ scale: 1, rotate: 0 }}
+                                  initial={{ scale: 0, rotate: -180 }}
+                                  key={`star-${starIndex}`}
+                                  transition={{
+                                    duration: 0.2,
+                                    delay: 0.2 + index * 0.1 + starIndex * 0.05,
+                                    ease: "backOut",
+                                  }}
+                                >
+                                  <StarIcon className="h-4 w-4 fill-light-mini text-light-mini dark:fill-dark-mini dark:text-dark-mini" />
+                                </motion.div>
+                              )
+                            )}
                           </motion.div>
-                        ))}
-                      </motion.div>
-                      <motion.p 
-                        className="mb-4 text-light-text italic dark:text-dark-text"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.3 + (index * 0.1) }}
-                      >
-                        &quot;{testimonial.quote}&quot;
-                      </motion.p>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.4 + (index * 0.1) }}
-                      >
-                        <p className="font-medium text-light-heading dark:text-dark-heading">
-                          {testimonial.name}
-                        </p>
-                        <p className="text-light-mini text-sm dark:text-dark-mini">
-                          {testimonial.role}
-                        </p>
-                      </motion.div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+                          <motion.p
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-4 text-light-text italic dark:text-dark-text"
+                            initial={{ opacity: 0, y: 20 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: 0.3 + index * 0.1,
+                            }}
+                          >
+                            &quot;{testimonial.quote}&quot;
+                          </motion.p>
+                          <motion.div
+                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: 0.4 + index * 0.1,
+                            }}
+                          >
+                            <p className="font-medium text-light-heading dark:text-dark-heading">
+                              {testimonial.name}
+                            </p>
+                            <p className="text-light-mini text-sm dark:text-dark-mini">
+                              {testimonial.role}
+                            </p>
+                          </motion.div>
+                        </motion.div>
+                      )
+                    )}
+                  </div>
+                </motion.div>
+              )}
           </motion.div>
         </div>
       </section>
@@ -598,72 +614,83 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
               <h2 className="mb-4 font-bold text-2xl text-light-heading dark:text-dark-heading">
                 Project Gallery
               </h2>
-              <p className="max-w-2xl mx-auto text-light-text leading-relaxed dark:text-dark-text">
+              <p className="mx-auto max-w-2xl text-light-text leading-relaxed dark:text-dark-text">
                 Visual documentation of the project process and outcomes
               </p>
             </motion.div>
 
             {/* Main Project Images */}
-            <motion.div
-              className="space-y-8"
-              variants={stagger}
-            >
+            <motion.div className="space-y-8" variants={stagger}>
               <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="group relative overflow-hidden rounded-xl"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: ANIMATION_EASE_CUBIC }}
               >
                 <Image
-                  alt={caseStudy.gallery.images[0]?.alt || "Project wireframes and planning"}
+                  alt={
+                    caseStudy.gallery.images[0]?.alt ||
+                    "Project wireframes and planning"
+                  }
                   className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
                   height={700}
                   src={caseStudy.gallery.images[0]?.src || "/my-website.webp"}
                   width={1200}
                 />
-                
+
                 {/* Image Title Overlay */}
                 <motion.div
+                  animate={{ opacity: 1, y: 0 }}
                   className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.2 
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.2,
                   }}
                 >
-                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
-                    {caseStudy.gallery.images[0]?.title || "Project wireframes and planning"}
+                  <p className="font-medium text-light-heading text-sm dark:text-dark-heading">
+                    {caseStudy.gallery.images[0]?.title ||
+                      "Project wireframes and planning"}
                   </p>
                 </motion.div>
               </motion.div>
-              
+
               <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="group relative overflow-hidden rounded-xl"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1, ease: ANIMATION_EASE_CUBIC }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.1,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
               >
                 <Image
-                  alt={caseStudy.gallery.images[1]?.alt || "Development process and code"}
+                  alt={
+                    caseStudy.gallery.images[1]?.alt ||
+                    "Development process and code"
+                  }
                   className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
                   height={700}
-                  src={caseStudy.gallery.images[1]?.src || "/new-hampshire.webp"}
+                  src={
+                    caseStudy.gallery.images[1]?.src || "/new-hampshire.webp"
+                  }
                   width={1200}
                 />
-                
+
                 {/* Image Title Overlay */}
                 <motion.div
+                  animate={{ opacity: 1, y: 0 }}
                   className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.3 
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.3,
                   }}
                 >
-                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
-                    {caseStudy.gallery.images[1]?.title || "Development process and code"}
+                  <p className="font-medium text-light-heading text-sm dark:text-dark-heading">
+                    {caseStudy.gallery.images[1]?.title ||
+                      "Development process and code"}
                   </p>
                 </motion.div>
               </motion.div>
@@ -671,96 +698,117 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
 
             {/* Challenge Analysis Image */}
             <motion.div
+              animate={{ opacity: 1, y: 0 }}
               className="group relative overflow-hidden rounded-xl"
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2, ease: ANIMATION_EASE_CUBIC }}
+              transition={{
+                duration: 0.4,
+                delay: 0.2,
+                ease: ANIMATION_EASE_CUBIC,
+              }}
             >
               <Image
-                alt={caseStudy.gallery.images[2]?.alt || "Challenge analysis and problem solving"}
+                alt={
+                  caseStudy.gallery.images[2]?.alt ||
+                  "Challenge analysis and problem solving"
+                }
                 className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
                 height={700}
                 src={caseStudy.gallery.images[2]?.src || "/promptearn.webp"}
                 width={1200}
               />
-              
+
               {/* Image Title Overlay */}
               <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.3, 
-                  delay: 0.4 
+                transition={{
+                  duration: 0.3,
+                  delay: 0.4,
                 }}
               >
-                <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
-                  {caseStudy.gallery.images[2]?.title || "Challenge analysis and problem solving"}
+                <p className="font-medium text-light-heading text-sm dark:text-dark-heading">
+                  {caseStudy.gallery.images[2]?.title ||
+                    "Challenge analysis and problem solving"}
                 </p>
               </motion.div>
             </motion.div>
 
             {/* Process Images */}
-            <motion.div
-              className="space-y-8"
-              variants={stagger}
-            >
+            <motion.div className="space-y-8" variants={stagger}>
               <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="group relative overflow-hidden rounded-xl"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3, ease: ANIMATION_EASE_CUBIC }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.3,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
               >
                 <Image
-                  alt={caseStudy.gallery.images[3]?.alt || "Development workflow and process"}
+                  alt={
+                    caseStudy.gallery.images[3]?.alt ||
+                    "Development workflow and process"
+                  }
                   className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
                   height={700}
                   src={caseStudy.gallery.images[3]?.src || "/craigwal.webp"}
                   width={1200}
                 />
-                
+
                 {/* Image Title Overlay */}
                 <motion.div
+                  animate={{ opacity: 1, y: 0 }}
                   className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.5 
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.5,
                   }}
                 >
-                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
-                    {caseStudy.gallery.images[3]?.title || "Development workflow and process"}
+                  <p className="font-medium text-light-heading text-sm dark:text-dark-heading">
+                    {caseStudy.gallery.images[3]?.title ||
+                      "Development workflow and process"}
                   </p>
                 </motion.div>
               </motion.div>
-              
+
               <motion.div
+                animate={{ opacity: 1, y: 0 }}
                 className="group relative overflow-hidden rounded-xl"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.4, ease: ANIMATION_EASE_CUBIC }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.4,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
               >
                 <Image
-                  alt={caseStudy.gallery.images[4]?.alt || "Testing and optimization phase"}
+                  alt={
+                    caseStudy.gallery.images[4]?.alt ||
+                    "Testing and optimization phase"
+                  }
                   className="h-[500px] w-full object-cover md:h-[600px] lg:h-[700px]"
                   height={700}
                   src={caseStudy.gallery.images[4]?.src || "/dubiss.webp"}
                   width={1200}
                 />
-                
+
                 {/* Image Title Overlay */}
                 <motion.div
+                  animate={{ opacity: 1, y: 0 }}
                   className="absolute bottom-4 left-4 rounded-lg bg-light-bg/90 px-3 py-2 backdrop-blur-sm dark:bg-dark-bg/90"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.6 
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.6,
                   }}
                 >
-                  <p className="font-medium text-sm text-light-heading dark:text-dark-heading">
-                    {caseStudy.gallery.images[4]?.title || "Testing and optimization phase"}
+                  <p className="font-medium text-light-heading text-sm dark:text-dark-heading">
+                    {caseStudy.gallery.images[4]?.title ||
+                      "Testing and optimization phase"}
                   </p>
                 </motion.div>
               </motion.div>

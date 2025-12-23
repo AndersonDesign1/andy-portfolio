@@ -63,7 +63,7 @@ export default function Navbar() {
                 <li key={label}>
                   <Link
                     aria-current={isActive ? "page" : undefined}
-                    className={`after:-bottom-1 relative px-3 py-1 font-medium text-light-heading transition-colors duration-200 after:absolute after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-blue-500 after:transition-transform after:duration-300 after:content-[''] dark:text-dark-heading ${
+                    className={`relative px-3 py-1 font-medium text-light-heading transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-blue-500 after:transition-transform after:duration-300 after:content-[''] dark:text-dark-heading ${
                       isActive
                         ? "after:scale-x-100"
                         : "after:scale-x-0 hover:after:scale-x-100"
@@ -97,7 +97,7 @@ export default function Navbar() {
         className={`absolute top-full right-0 left-0 z-50 mx-4 mt-2 flex flex-col gap-2 rounded-3xl border border-light-mini/10 bg-light-bg px-6 py-6 text-light-heading shadow-lg backdrop-blur-xs transition-all duration-300 md:hidden dark:border-dark-mini/10 dark:bg-dark-bg dark:text-dark-heading ${
           isOpen
             ? "pointer-events-auto translate-y-0 opacity-100"
-            : "-translate-y-4 pointer-events-none opacity-0"
+            : "pointer-events-none -translate-y-4 opacity-0"
         }`}
         id="mobile-menu"
         role="menu"

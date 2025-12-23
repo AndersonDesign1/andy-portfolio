@@ -15,11 +15,11 @@ import {
 } from "@/hooks/use-scroll-animation";
 import {
   SKILL_HOVER_SCALE,
+  SKILL_ICON_DISPLAY_SIZE,
   SKILL_ICON_HOVER_SCALE,
   SKILL_ICON_HOVER_Y,
-  SKILL_ROTATION_ANGLES,
   SKILL_ICON_SIZE,
-  SKILL_ICON_DISPLAY_SIZE,
+  SKILL_ROTATION_ANGLES,
 } from "@/lib/constants";
 
 type Skill = {

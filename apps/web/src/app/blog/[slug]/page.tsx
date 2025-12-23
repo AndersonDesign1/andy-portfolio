@@ -1,7 +1,7 @@
+import { client } from "@andy-portfolio/sanity-config";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPost from "@/components/blogpost";
-import { client } from "@andy-portfolio/sanity-config";
 
 export const revalidate = 60;
 

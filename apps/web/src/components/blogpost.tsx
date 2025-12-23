@@ -1,4 +1,5 @@
 "use client";
+import { urlFor } from "@andy-portfolio/sanity-config";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
@@ -6,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { ANIMATION_DURATION_LONG, ANIMATION_EASE_CUBIC } from "@/lib/constants";
-import { urlFor } from "@andy-portfolio/sanity-config";
 
 // PortableText block types
 type PortableTextBlock = {

@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  SPOTIFY_POLLING_INTERVAL_PLAYING,
   SPOTIFY_POLLING_INTERVAL_PAUSED,
+  SPOTIFY_POLLING_INTERVAL_PLAYING,
 } from "@/lib/constants";
 
 type SpotifyTrack = {
@@ -69,7 +69,9 @@ export default function SpotifyNowPlaying() {
       } else if (isActive) {
         // Restart polling when tab becomes visible
         fetchTrack();
-        const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
+        const interval = track?.isPlaying
+          ? SPOTIFY_POLLING_INTERVAL_PLAYING
+          : SPOTIFY_POLLING_INTERVAL_PAUSED;
         intervalRef.current = setInterval(fetchTrack, interval);
       }
     };
@@ -77,7 +79,9 @@ export default function SpotifyNowPlaying() {
     const handleUserActivity = () => {
       if (isActive && !intervalRef.current) {
         fetchTrack();
-        const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
+        const interval = track?.isPlaying
+          ? SPOTIFY_POLLING_INTERVAL_PLAYING
+          : SPOTIFY_POLLING_INTERVAL_PAUSED;
         intervalRef.current = setInterval(fetchTrack, interval);
       }
     };
@@ -86,7 +90,9 @@ export default function SpotifyNowPlaying() {
     fetchTrack();
 
     // Set up adaptive polling based on current playback state
-    const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
+    const interval = track?.isPlaying
+      ? SPOTIFY_POLLING_INTERVAL_PLAYING
+      : SPOTIFY_POLLING_INTERVAL_PAUSED;
     intervalRef.current = setInterval(fetchTrack, interval);
 
     // Listen for tab visibility changes
@@ -113,7 +119,9 @@ export default function SpotifyNowPlaying() {
   useEffect(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
-      const interval = track?.isPlaying ? SPOTIFY_POLLING_INTERVAL_PLAYING : SPOTIFY_POLLING_INTERVAL_PAUSED;
+      const interval = track?.isPlaying
+        ? SPOTIFY_POLLING_INTERVAL_PLAYING
+        : SPOTIFY_POLLING_INTERVAL_PAUSED;
       intervalRef.current = setInterval(fetchTrack, interval);
     }
   }, [track?.isPlaying, fetchTrack]);

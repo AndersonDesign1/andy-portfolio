@@ -22,7 +22,7 @@ export const SKILL_ICON_DISPLAY_SIZE = 6;
 
 // Spotify polling intervals (in milliseconds)
 export const SPOTIFY_POLLING_INTERVAL_PLAYING = 5000; // 5 seconds when playing
-export const SPOTIFY_POLLING_INTERVAL_PAUSED = 15000; // 15 seconds when paused
+export const SPOTIFY_POLLING_INTERVAL_PAUSED = 15_000; // 15 seconds when paused
 
 // Scroll provider constants
 export const SCROLL_DURATION = 1.2;
