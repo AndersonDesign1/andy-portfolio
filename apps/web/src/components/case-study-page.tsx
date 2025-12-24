@@ -64,7 +64,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
               </div>
               <div className="border-subtle border-b py-4 md:border-r md:border-b-0 md:py-6 md:pl-8">
                 <span className="mb-2 block font-mono text-muted text-xs uppercase tracking-widest">
-                  Timeline
+                  Duration
                 </span>
                 <span className="text-secondary text-sm md:text-base">
                   {caseStudy.hero.duration}
@@ -179,27 +179,22 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
                     className="group border-subtle border-t py-8 transition-colors first:border-t-0 hover:bg-secondary/5"
                     key={phase.name}
                   >
-                    <div className="flex flex-col gap-4 md:flex-row md:items-baseline md:gap-12">
-                      <span className="font-mono text-muted text-sm">
-                        0{index + 1}
-                      </span>
-                      <div className="flex-1 space-y-4">
-                        <div className="flex items-baseline justify-between">
-                          <h3 className="font-medium text-primary text-xl">
-                            {phase.name}
-                          </h3>
-                          <span className="font-mono text-muted text-xs">
-                            {phase.duration}
-                          </span>
-                        </div>
-                        <ul className="space-y-1">
-                          {phase.activities.map((act) => (
-                            <li className="text-secondary text-sm" key={act}>
-                              — {act}
-                            </li>
-                          ))}
-                        </ul>
+                    <div className="space-y-4">
+                      <div className="flex items-baseline justify-between">
+                        <h3 className="font-medium text-primary text-xl">
+                          {phase.name}
+                        </h3>
+                        <span className="font-mono text-muted text-sm">
+                          0{index + 1}
+                        </span>
                       </div>
+                      <ul className="space-y-1">
+                        {phase.activities.map((act) => (
+                          <li className="text-secondary text-sm" key={act}>
+                            — {act}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 ))}

@@ -61,11 +61,11 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                 </span>
 
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-2xl text-primary tracking-tight transition-colors group-hover:text-accent md:text-3xl">
+                  <h2 className="font-semibold text-2xl text-primary tracking-tight transition-opacity duration-200 group-hover:opacity-60 md:text-3xl">
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p className="h-0 max-w-xl -translate-y-2 transform overflow-hidden text-secondary text-sm leading-relaxed opacity-0 transition-all duration-300 group-hover:h-auto group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="max-w-xl text-base text-secondary leading-relaxed">
                       {post.excerpt}
                     </p>
                   )}
