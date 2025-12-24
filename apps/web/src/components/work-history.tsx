@@ -16,10 +16,10 @@ export default function WorkHistory() {
   return (
     <section className="bg-primary py-24 md:py-32" ref={workRef}>
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-32">
+        <div className="grid grid-cols-1 gap-20 md:grid-cols-2 md:gap-32">
           {/* Experience Column */}
           <div>
-            <h2 className="text-secondary text-sm font-mono tracking-widest uppercase mb-12 border-b border-subtle pb-4">
+            <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
               Experience
             </h2>
             <div className="flex flex-col gap-12">
@@ -27,7 +27,6 @@ export default function WorkHistory() {
                 .filter((job) => {
                   const title = job.position.toLowerCase();
                   const company = job.company.toLowerCase();
-                  // Keep Full Stack, SEO, and Training roles
                   return (
                     title.includes("full stack") ||
                     title.includes("developer") ||
@@ -35,30 +34,29 @@ export default function WorkHistory() {
                     title.includes("instructor") ||
                     title.includes("teacher") ||
                     title.includes("mentor") ||
-                     // Keep specific known relevant roles if any not covered above
                     company.includes("training")
                   );
                 })
                 .map((job) => (
                   <motion.div
-                    key={job.id}
                     initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    key={job.id}
                     transition={{ duration: 0.4 }}
+                    viewport={{ once: true }}
+                    whileInView={{ opacity: 1, y: 0 }}
                   >
                     <div className="flex flex-col gap-1">
-                      <h3 className="text-primary font-medium text-lg leading-tight">
+                      <h3 className="font-medium text-lg text-primary leading-tight">
                         {job.company}
                       </h3>
-                      <p className="text-secondary text-sm mb-2">
+                      <p className="mb-2 text-secondary text-sm">
                         {job.position}
                       </p>
-                      <p className="text-muted text-xs font-mono mb-4">
+                      <p className="mb-4 font-mono text-muted text-xs">
                         {formatDate(job.startDate)} —{" "}
                         {job.endDate ? formatDate(job.endDate) : "Present"}
                       </p>
-                      <p className="text-secondary/80 text-sm leading-relaxed max-w-sm">
+                      <p className="max-w-sm text-secondary/80 text-sm leading-relaxed">
                         {job.description}
                       </p>
                     </div>
@@ -69,41 +67,42 @@ export default function WorkHistory() {
             {/* Resume Button */}
             <div className="mt-12">
               <a
+                className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
                 href="/Anderson Joseph Resume.pdf"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-primary border border-subtle px-6 py-3 rounded-sm hover:bg-secondary/50 hover:backdrop-blur-sm hover:border-primary transition-all duration-300"
-                target="_blank"
                 rel="noopener noreferrer"
+                target="_blank"
               >
-                 View Resume
-                 <span className="text-muted transition-colors duration-300 group-hover:text-primary">↗</span>
+                View Resume
+                <span className="text-muted transition-colors duration-300 group-hover:text-primary">
+                  ↗
+                </span>
               </a>
             </div>
           </div>
 
           {/* Education Column */}
           <div>
-            <h2 className="text-secondary text-sm font-mono tracking-widest uppercase mb-12 border-b border-subtle pb-4">
+            <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
               Education
             </h2>
-             <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-12">
               {education.map((edu) => (
                 <motion.div
-                  key={edu.id}
                   initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  key={edu.id}
                   transition={{ duration: 0.4 }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
                 >
-                   <div className="flex flex-col gap-1">
-                     <h3 className="text-primary font-medium text-lg leading-tight">
-                        {edu.institution}
-                     </h3>
-                     <p className="text-secondary text-sm mb-2">
-                        {edu.degree}
-                     </p>
-                     <p className="text-muted text-xs font-mono">
-                        {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
-                     </p>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-medium text-lg text-primary leading-tight">
+                      {edu.institution}
+                    </h3>
+                    <p className="mb-2 text-secondary text-sm">{edu.degree}</p>
+                    <p className="font-mono text-muted text-xs">
+                      {formatDate(edu.startDate)} —{" "}
+                      {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                    </p>
                   </div>
                 </motion.div>
               ))}

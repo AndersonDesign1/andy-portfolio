@@ -71,21 +71,29 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="min-h-screen bg-primary pt-48 md:pt-64 pb-24">
+    <section className="min-h-screen bg-primary pt-48 pb-24 md:pt-64">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32">
+        <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
           {/* Header */}
           <div>
-             <h1 className="font-bold text-6xl md:text-8xl text-primary tracking-tighter leading-[0.9] mb-8">
-              Let's<br/>talk.
+            <h1 className="mb-8 font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl">
+              Let's
+              <br />
+              talk.
             </h1>
-            <p className="text-secondary text-lg md:text-xl leading-relaxed max-w-sm">
-              Have a project in mind or want to collaborate? I'm currently open to new opportunities.
+            <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
+              Have a project in mind or want to collaborate? I'm currently open
+              to new opportunities.
             </p>
-            
+
             <div className="mt-12 flex flex-col gap-4">
-              <span className="text-sm font-mono text-muted uppercase tracking-widest">Email</span>
-              <a href="mailto:hello@andersonjoseph.com" className="text-primary text-xl hover:text-accent transition-colors">
+              <span className="font-mono text-muted text-sm uppercase tracking-widest">
+                Email
+              </span>
+              <a
+                className="text-primary text-xl transition-colors hover:text-accent"
+                href="mailto:hello@andersonjoseph.com"
+              >
                 hello@andersonjoseph.com
               </a>
             </div>
@@ -125,13 +133,13 @@ export default function ContactForm() {
             ].map((field) => (
               <div className="space-y-2" key={field.name}>
                 <label
-                  className="font-mono text-xs text-muted uppercase tracking-widest"
+                  className="font-mono text-muted text-xs uppercase tracking-widest"
                   htmlFor={field.name}
                 >
                   {field.label} {field.label !== "Subject" && "*"}
                 </label>
                 <Input
-                  className={`bg-transparent border-x-0 border-t-0 border-b border-subtle rounded-none px-0 py-2 text-primary focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted/30 ${
+                  className={`rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-muted/30 focus-visible:border-primary focus-visible:ring-0 ${
                     field.error ? "border-red-500" : ""
                   }`}
                   id={field.name}
@@ -142,24 +150,24 @@ export default function ContactForm() {
                   value={field.value}
                 />
                 {field.error && (
-                  <p className="text-red-500 text-xs font-mono mt-1">
+                  <p className="mt-1 font-mono text-red-500 text-xs">
                     {field.error}
                   </p>
                 )}
               </div>
             ))}
-            
+
             <div className="space-y-2">
               <label
-                className="font-mono text-xs text-muted uppercase tracking-widest"
+                className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="message"
               >
                 Message *
               </label>
               <Textarea
-                className={`bg-transparent border-x-0 border-t-0 border-b border-subtle rounded-none px-0 py-2 text-primary focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted/30 min-h-[150px] resize-none ${
-                    errors.message ? "border-red-500" : ""
-                  }`}
+                className={`min-h-[150px] resize-none rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-muted/30 focus-visible:border-primary focus-visible:ring-0 ${
+                  errors.message ? "border-red-500" : ""
+                }`}
                 id="message"
                 name="message"
                 onChange={handleChange}
@@ -168,7 +176,7 @@ export default function ContactForm() {
                 value={form.message}
               />
               {errors.message && (
-                <p className="text-red-500 text-xs font-mono mt-1">
+                <p className="mt-1 font-mono text-red-500 text-xs">
                   {errors.message}
                 </p>
               )}
@@ -176,7 +184,7 @@ export default function ContactForm() {
 
             <div className="pt-8">
               <Button
-                className="w-full md:w-auto rounded-sm border border-subtle bg-transparent px-8 py-6 text-primary hover:bg-secondary/50 hover:backdrop-blur-sm hover:border-primary transition-all duration-300"
+                className="w-full border border-subtle bg-transparent px-8 py-6 text-primary transition-all duration-300 hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm md:w-auto"
                 disabled={isPending}
                 type="submit"
               >

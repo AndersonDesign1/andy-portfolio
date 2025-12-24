@@ -5,6 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { useMemo, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
 import {
   ANIMATION_DELAY_PROJECT,
@@ -12,8 +19,7 @@ import {
   ANIMATION_EASE_CUBIC,
 } from "@/lib/constants";
 
-// --- Types ---
-type Project = {
+interface Project {
   id: string;
   type: "case-study" | "standard";
   title: string;
@@ -26,9 +32,9 @@ type Project = {
     caseStudy?: string;
   };
   metrics?: Record<string, string>;
-};
+}
 
-type RawProject = {
+interface RawProject {
   id: string;
   type: string;
   title: string;
@@ -41,9 +47,8 @@ type RawProject = {
     caseStudy?: string;
   };
   metrics?: Record<string, unknown>;
-};
+}
 
-// Clean metrics and cast type for type safety
 const projects: Project[] = projectsDataJson.projects.map((p: RawProject) => ({
   ...p,
   type: p.type as "case-study" | "standard",
@@ -67,7 +72,6 @@ const gridVariants = {
 const ProjectsShowcase: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
-  // Filter by category, but keep original order
   const filteredProjects = useMemo(() => {
     if (activeCategory === "All") {
       return projects;
@@ -113,26 +117,24 @@ const ProjectsShowcase: React.FC = () => {
   return (
     <div className="min-h-screen bg-primary pt-48 md:pt-64">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-        <h1 className="font-bold text-6xl md:text-8xl text-primary tracking-tighter mb-16">
+        <h1 className="mb-16 font-bold text-6xl text-primary tracking-tighter md:text-8xl">
           Selected Work
         </h1>
 
         {/* Minimal Filters */}
-        <div className="mb-20 flex gap-8 border-b border-subtle pb-4 overflow-x-auto">
-          {categories.map((category) => (
-            <button
-              className={`text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
-                activeCategory === category
-                  ? "text-primary"
-                  : "text-muted hover:text-primary"
-              }`}
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              type="button"
-            >
-              {category}
-            </button>
-          ))}
+        <div className="mb-20">
+          <Select onValueChange={setActiveCategory} value={activeCategory}>
+            <SelectTrigger className="w-full border-subtle bg-transparent text-primary md:w-[200px]">
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Projects Grid */}
@@ -140,7 +142,7 @@ const ProjectsShowcase: React.FC = () => {
           <AnimatePresence mode="wait">
             <motion.div
               animate="animate"
-              className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24"
+              className="grid grid-cols-1 gap-x-12 gap-y-24 md:grid-cols-2"
               exit="exit"
               initial="initial"
               key={activeCategory}
@@ -161,7 +163,7 @@ const ProjectsShowcase: React.FC = () => {
                 >
                   {/* Project Image */}
                   <motion.div
-                    className="relative aspect-[16/10] overflow-hidden rounded-sm mb-6 bg-secondary/5"
+                    className="relative mb-6 aspect-[16/10] overflow-hidden rounded-sm bg-secondary/5"
                     transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
                     <Image
@@ -176,64 +178,66 @@ const ProjectsShowcase: React.FC = () => {
 
                   {/* Project Content */}
                   <div className="flex flex-col">
-                    <div className="flex items-baseline justify-between mb-2">
-                       <h3 className="text-xl font-medium text-primary">
-                          {project.title}
-                        </h3>
-                        <span className="text-xs font-mono text-muted uppercase tracking-widest">
-                           {project.type === 'case-study' ? 'Case Study' : 'Project'}
-                        </span>
+                    <div className="mb-2 flex items-baseline justify-between">
+                      <h3 className="font-medium text-primary text-xl">
+                        {project.title}
+                      </h3>
+                      <span className="font-mono text-muted text-xs uppercase tracking-widest">
+                        {project.type === "case-study"
+                          ? "Case Study"
+                          : "Project"}
+                      </span>
                     </div>
 
-                     <p className="text-secondary text-base leading-relaxed mb-6 line-clamp-2">
+                    <p className="mb-6 line-clamp-2 text-base text-secondary leading-relaxed">
                       {project.description}
                     </p>
 
-                    <div className="flex items-center justify-between border-t border-subtle pt-4 mt-auto">
-                        <p className="text-xs text-muted font-mono uppercase tracking-wider truncate max-w-[60%]">
-                            {project.techStack.slice(0, 3).join(" / ")}
-                        </p>
-                        <div className="flex gap-6">
-                            {project.links.caseStudy ? (
-                                <Link
-                                    href={project.links.caseStudy}
-                                    className="text-sm font-medium text-primary hover:text-muted transition-colors"
-                                >
-                                    Read Case Study
-                                </Link>
-                            ) : (
-                                <>
-                                    {project.links.live && (
-                                         <Link
-                                            href={project.links.live}
-                                            target="_blank"
-                                            className="text-sm font-medium text-primary hover:text-muted transition-colors"
-                                        >
-                                            Live Site
-                                        </Link>
-                                    )}
-                                     {project.links.github && (
-                                         <Link
-                                            href={project.links.github}
-                                            target="_blank"
-                                            className="text-sm font-medium text-primary hover:text-muted transition-colors"
-                                        >
-                                            Code
-                                        </Link>
-                                    )}
-                                </>
+                    <div className="mt-auto flex items-center justify-between border-subtle border-t pt-4">
+                      <p className="max-w-[60%] truncate font-mono text-muted text-xs uppercase tracking-wider">
+                        {project.techStack.slice(0, 3).join(" / ")}
+                      </p>
+                      <div className="flex gap-6">
+                        {project.links.caseStudy ? (
+                          <Link
+                            className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                            href={project.links.caseStudy}
+                          >
+                            Read Case Study
+                          </Link>
+                        ) : (
+                          <>
+                            {project.links.live && (
+                              <Link
+                                className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                                href={project.links.live}
+                                target="_blank"
+                              >
+                                Live Site
+                              </Link>
                             )}
-                        </div>
+                            {project.links.github && (
+                              <Link
+                                className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                                href={project.links.github}
+                                target="_blank"
+                              >
+                                Code
+                              </Link>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
           </AnimatePresence>
-          
+
           {filteredProjects.length === 0 && (
             <div className="py-24 text-center">
-              <p className="text-secondary text-lg">
+              <p className="text-lg text-secondary">
                 No projects found in this category.
               </p>
             </div>

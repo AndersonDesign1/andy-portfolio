@@ -8,34 +8,33 @@ import Link from "next/link";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { ANIMATION_DURATION_LONG, ANIMATION_EASE_CUBIC } from "@/lib/constants";
 
-// PortableText block types
-type PortableTextBlock = {
+interface PortableTextBlock {
   _type: string;
   _key: string;
   [key: string]: unknown;
-};
+}
 
-type SanityImage = {
+interface SanityImage {
   asset: { _ref: string; _type: string };
   alt?: string;
   caption?: string;
-};
+}
 
-type Category = {
+interface Category {
   _id: string;
   title: string;
   slug: { current: string };
   description?: string;
-};
+}
 
-type SanityPost = {
+interface SanityPost {
   title: string;
   body: PortableTextBlock[];
   _createdAt: string;
   publishedAt?: string;
   mainImage?: SanityImage;
   categories?: (Category | null)[];
-};
+}
 
 const components: PortableTextComponents = {
   types: {
@@ -60,7 +59,7 @@ const components: PortableTextComponents = {
           />
         </div>
         {value.caption && (
-          <figcaption className="mt-4 text-center text-muted text-sm font-mono">
+          <figcaption className="mt-4 text-center font-mono text-muted text-sm">
             {value.caption}
           </figcaption>
         )}
@@ -69,7 +68,7 @@ const components: PortableTextComponents = {
     code: ({ value }) => (
       <motion.pre
         animate={{ opacity: 1, y: 0 }}
-        className="my-8 overflow-x-auto rounded-sm bg-secondary/10 p-4 border border-subtle"
+        className="my-8 overflow-x-auto rounded-sm border border-subtle bg-secondary/10 p-4"
         initial={{ opacity: 0, y: 10 }}
         transition={{ duration: 0.4 }}
       >
@@ -79,27 +78,25 @@ const components: PortableTextComponents = {
   },
   block: {
     h1: ({ children }) => (
-      <h1 className="mt-12 mb-6 font-bold text-3xl md:text-4xl text-primary tracking-tight">
+      <h1 className="mt-12 mb-6 font-bold text-3xl text-primary tracking-tight md:text-4xl">
         {children}
       </h1>
     ),
     h2: ({ children }) => (
-      <h2 className="mt-12 mb-6 font-bold text-2xl md:text-3xl text-primary tracking-tight">
+      <h2 className="mt-12 mb-6 font-bold text-2xl text-primary tracking-tight md:text-3xl">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-8 mb-4 font-bold text-xl md:text-2xl text-primary tracking-tight">
+      <h3 className="mt-8 mb-4 font-bold text-primary text-xl tracking-tight md:text-2xl">
         {children}
       </h3>
     ),
     normal: ({ children }) => (
-      <p className="mb-6 text-secondary text-lg leading-relaxed">
-        {children}
-      </p>
+      <p className="mb-6 text-lg text-secondary leading-relaxed">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="my-8 border-l-2 border-primary pl-6 text-primary italic text-xl">
+      <blockquote className="my-8 border-primary border-l-2 pl-6 text-primary text-xl italic">
         {children}
       </blockquote>
     ),
@@ -111,7 +108,7 @@ const components: PortableTextComponents = {
         : "noreferrer noopener";
       return (
         <a
-          className="text-primary underline decoration-subtle underline-offset-4 hover:decoration-primary transition-all"
+          className="text-primary underline decoration-subtle underline-offset-4 transition-all hover:decoration-primary"
           href={value.href}
           rel={rel}
           target={value.href.startsWith("/") ? undefined : "_blank"}
@@ -126,19 +123,17 @@ const components: PortableTextComponents = {
       </code>
     ),
     strong: ({ children }) => (
-      <strong className="font-semibold text-primary">
-        {children}
-      </strong>
+      <strong className="font-semibold text-primary">{children}</strong>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="mb-6 list-outside list-disc space-y-2 pl-4 text-secondary text-lg">
+      <ul className="mb-6 list-outside list-disc space-y-2 pl-4 text-lg text-secondary">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="mb-6 list-outside list-decimal space-y-2 pl-4 text-secondary text-lg">
+      <ol className="mb-6 list-outside list-decimal space-y-2 pl-4 text-lg text-secondary">
         {children}
       </ol>
     ),
@@ -150,12 +145,12 @@ export default function BlogPost({ post }: { post: SanityPost }) {
 
   return (
     <section
-      className="min-h-screen bg-primary pt-48 md:pt-64 pb-24"
+      className="min-h-screen bg-primary pt-48 pb-24 md:pt-64"
       ref={postRef}
     >
       <div className="mx-auto max-w-screen-md px-6">
         <Link
-          className="mb-12 inline-flex items-center text-sm font-mono text-muted hover:text-primary transition-colors"
+          className="mb-12 inline-flex items-center font-mono text-muted text-sm transition-colors hover:text-primary"
           href="/blog"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -164,27 +159,26 @@ export default function BlogPost({ post }: { post: SanityPost }) {
 
         <article>
           {/* Header */}
-          <div className="mb-16 border-b border-subtle pb-8">
-            <h1 className="mb-8 font-bold text-4xl md:text-6xl text-primary tracking-tighter leading-tight">
+          <div className="mb-16 border-subtle border-b pb-8">
+            <h1 className="mb-8 font-bold text-4xl text-primary leading-tight tracking-tighter md:text-6xl">
               {post.title}
             </h1>
-            
-            <div className="flex flex-wrap items-center gap-6 text-sm font-mono text-muted">
+
+            <div className="flex flex-wrap items-center gap-6 font-mono text-muted text-sm">
               <span>
-                {new Date(post.publishedAt || post._createdAt).toLocaleDateString(
-                  "en-US",
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
+                {new Date(
+                  post.publishedAt || post._createdAt
+                ).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </span>
-              
+
               {post.categories && post.categories.length > 0 && (
                 <div className="flex items-center gap-2">
-                   <span>/</span>
-                   {post.categories
+                  <span>/</span>
+                  {post.categories
                     .filter((cat): cat is Category => !!cat)
                     .map((cat, i) => (
                       <span key={cat._id}>

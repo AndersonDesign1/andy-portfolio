@@ -7,7 +7,6 @@ import type {
   SlugField,
 } from "../lib/types";
 
-// Validation constants
 const MAX_TITLE_LENGTH = 100;
 const MAX_EXCERPT_LENGTH = 200;
 const MAX_SEO_DESCRIPTION_LENGTH = 160;

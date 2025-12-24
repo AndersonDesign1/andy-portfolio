@@ -1,5 +1,4 @@
-// types/case-study.ts
-export type CaseStudy = {
+export interface CaseStudy {
   id: string;
   hero: {
     title: string;
@@ -32,7 +31,7 @@ export type CaseStudy = {
       rationale: string;
     }>;
     research: string[];
-    wireframes?: string[]; // <-- Make this optional
+    wireframes?: string[];
     collaboration: string;
     iterations: string[];
     userFeedback: string;
@@ -60,8 +59,8 @@ export type CaseStudy = {
       title: string;
     }>;
   };
-};
+}
 
-export type CaseStudiesData = {
+export interface CaseStudiesData {
   caseStudies: Record<string, CaseStudy>;
-};
+}

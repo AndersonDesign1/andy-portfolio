@@ -1,14 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// Performance regex constants (moved to top level)
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Animation utilities
 export function getAnimationDelay(index: number, baseDelay = 100): string {
   return `${index * baseDelay}ms`;
 }
@@ -17,7 +15,6 @@ export function getStaggeredAnimation(index: number, stagger = 0.1): string {
   return `${index * stagger}s`;
 }
 
-// Validation utilities
 export function isValidEmail(email: string): boolean {
   return EMAIL_REGEX.test(email);
 }
@@ -35,7 +32,6 @@ export function validateMinLength(
     : `Must be at least ${minLength} characters`;
 }
 
-// Date formatting utilities
 export function formatDate(
   date: string | Date,
   options: Intl.DateTimeFormatOptions = {}
@@ -48,7 +44,6 @@ export function formatDate(
   return new Date(date).toLocaleDateString("en-US", defaultOptions);
 }
 
-// Performance utilities
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number

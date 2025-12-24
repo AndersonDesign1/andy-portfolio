@@ -44,9 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-type RootLayoutProps = {
+interface RootLayoutProps {
   children: ReactNode;
-};
+}
 
 export default function RootLayout({
   children,
@@ -54,7 +54,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider disableTransitionOnChange={false}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+          storageKey="andy-theme"
+        >
           <ScrollProvider>
             <Navbar />
             <main>{children}</main>
@@ -65,7 +71,7 @@ export default function RootLayout({
             <SpeedInsights />
 
             {/* Grain texture overlay for paper-like quality */}
-            <div className="grain-overlay" aria-hidden="true" />
+            <div aria-hidden="true" className="grain-overlay" />
 
             <Toaster
               position="top-right"

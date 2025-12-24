@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { label: "Home", link: "/" },
@@ -38,11 +39,11 @@ export default function Navbar() {
     <nav
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-primary/95 border-b border-subtle backdrop-blur-sm py-4"
+          ? "border-subtle border-b bg-primary/95 py-4 backdrop-blur-sm"
           : "bg-transparent py-6 md:py-8"
       }`}
     >
-      <div className="mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
+      <div className="relative z-50 mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
         {/* Logo - Aligned left */}
         <Link className="shrink-0" href="/" prefetch>
           {mounted && (
@@ -59,7 +60,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Menu - Centered or offset right */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden items-center gap-8 md:flex">
           <ul className="flex gap-6">
             {menuItems.map(({ label, link }) => {
               const isActive = pathname === link;
@@ -67,7 +68,7 @@ export default function Navbar() {
                 <li key={label}>
                   <Link
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative text-sm font-medium transition-colors duration-200 ${
+                    className={`relative font-medium text-sm transition-colors duration-200 ${
                       isActive
                         ? "text-primary"
                         : "text-muted hover:text-primary"
@@ -83,7 +84,7 @@ export default function Navbar() {
           </ul>
 
           {/* Theme Toggle & Mobile Menu Button */}
-          <div className="flex items-center gap-4 pl-4 border-l border-subtle">
+          <div className="flex items-center gap-4 border-subtle border-l pl-4">
             <ThemeToggle />
           </div>
         </div>
@@ -91,23 +92,24 @@ export default function Navbar() {
         {/* Mobile Toggle */}
         <div className="flex items-center gap-4 md:hidden">
           <ThemeToggle />
-          <button
+          <Button
             aria-controls="mobile-menu"
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
             className="text-primary text-xl focus:outline-none"
             onClick={() => setIsOpen((v) => !v)}
-            type="button"
+            size="icon"
+            variant="ghost"
           >
             {isOpen ? "✕" : "☰"}
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Mobile menu overlay */}
       <div
         aria-labelledby="menu-button"
-        className={`fixed inset-0 z-40 flex flex-col items-center justify-center bg-primary transition-all duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 flex flex-col items-center justify-center bg-background/95 backdrop-blur-[10px] transition-all duration-300 md:hidden ${
           isOpen
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
@@ -116,25 +118,23 @@ export default function Navbar() {
         role="menu"
       >
         <div className="flex flex-col items-center gap-8">
-        {menuItems.map(({ label, link }) => {
-          const isActive = pathname === link;
-          return (
-            <Link
-              aria-current={isActive ? "page" : undefined}
-              className={`text-2xl font-medium transition-colors duration-200 ${
-                isActive
-                  ? "text-primary"
-                  : "text-muted hover:text-primary"
-              }`}
-              href={link}
-              key={label}
-              onClick={() => setIsOpen(false)}
-              prefetch
-            >
-              {label}
-            </Link>
-          );
-        })}
+          {menuItems.map(({ label, link }) => {
+            const isActive = pathname === link;
+            return (
+              <Link
+                aria-current={isActive ? "page" : undefined}
+                className={`font-medium text-2xl transition-colors duration-200 ${
+                  isActive ? "text-primary" : "text-muted hover:text-primary"
+                }`}
+                href={link}
+                key={label}
+                onClick={() => setIsOpen(false)}
+                prefetch
+              >
+                {label}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </nav>

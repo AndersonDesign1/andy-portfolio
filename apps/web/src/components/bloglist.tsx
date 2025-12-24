@@ -2,63 +2,42 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import {
-  ANIMATION_DELAY_STAGGER,
-  ANIMATION_DURATION_MEDIUM,
-  ANIMATION_EASE_CUBIC,
-} from "@/lib/constants";
 
-type Category = {
+interface Category {
   _id: string;
   title: string;
   slug: { current: string };
   description?: string;
-};
-type SanityPost = {
+}
+interface SanityPost {
   title: string;
   slug: { current: string };
   excerpt?: string;
   _createdAt: string;
   publishedAt?: string;
   categories?: (Category | null)[];
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: ANIMATION_DURATION_MEDIUM,
-      ease: ANIMATION_EASE_CUBIC,
-      delay: i * ANIMATION_DELAY_STAGGER,
-    },
-  }),
-  hover: {
-    x: 6,
-    transition: { duration: 0.2, ease: "easeOut" },
-  },
-};
+}
 
 export default function BlogList({ posts }: { posts: SanityPost[] }) {
   const { ref: blogRef } = useScrollAnimation({ threshold: 0.1 });
 
   return (
     <section
-      className="min-h-screen bg-primary py-24 md:py-32 pt-48 md:pt-64"
+      className="min-h-screen bg-primary py-24 pt-48 md:py-32 md:pt-64"
       ref={blogRef}
     >
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
-        <div className="mb-24 flex items-end justify-between border-b border-subtle pb-8">
+        <div className="mb-24 flex items-end justify-between border-subtle border-b pb-8">
           <div>
-            <h1 className="text-primary text-sm font-mono tracking-widest uppercase mb-4">
+            <h1 className="mb-4 font-mono text-primary text-sm uppercase tracking-widest">
               Writing
             </h1>
-            <p className="text-secondary text-lg md:text-xl max-w-md leading-relaxed">
-              Thoughts, tutorials, and insights on engineering, design, and growing digital products.
+            <p className="max-w-md text-lg text-secondary leading-relaxed md:text-xl">
+              Thoughts, tutorials, and insights on engineering, design, and
+              growing digital products.
             </p>
           </div>
-          <span className="text-muted text-sm font-mono mb-1">
+          <span className="mb-1 font-mono text-muted text-sm">
             {posts.length} Posts
           </span>
         </div>
@@ -66,31 +45,30 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
         <div className="flex flex-col">
           {posts.map((post, i) => (
             <motion.div
+              className="group border-subtle border-b last:border-none"
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
               key={post.slug.current}
-              className="group border-b border-subtle last:border-none"
+              transition={{ delay: i * 0.05 }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               <Link
+                className="flex flex-col gap-4 py-8 md:flex-row md:items-baseline md:gap-16 md:py-12"
                 href={`/blog/${post.slug.current}`}
-                className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-16 py-8 md:py-12"
               >
-                <span className="font-mono text-sm text-muted shrink-0 w-24">
+                <span className="w-24 shrink-0 font-mono text-muted text-sm">
                   {new Date(post.publishedAt || post._createdAt).getFullYear()}
                 </span>
-                
+
                 <div className="flex flex-col gap-2">
-                  <h2 className="text-2xl md:text-3xl font-semibold text-primary tracking-tight transition-colors group-hover:text-accent">
+                  <h2 className="font-semibold text-2xl text-primary tracking-tight transition-colors group-hover:text-accent md:text-3xl">
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p className="text-secondary text-sm max-w-xl leading-relaxed opacity-0 transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 h-0 group-hover:h-auto overflow-hidden">
+                    <p className="h-0 max-w-xl -translate-y-2 transform overflow-hidden text-secondary text-sm leading-relaxed opacity-0 transition-all duration-300 group-hover:h-auto group-hover:translate-y-0 group-hover:opacity-100">
                       {post.excerpt}
                     </p>
                   )}
-                  {/* Mobile excerpt static if needed, but keeping it clean for now */}
                 </div>
               </Link>
             </motion.div>

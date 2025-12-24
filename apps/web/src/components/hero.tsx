@@ -41,7 +41,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative flex min-h-[90vh] items-end pb-32 md:pb-48 pt-40 md:pt-56 bg-primary"
+      className="relative flex min-h-[90vh] items-end bg-primary pt-40 pb-32 md:pt-56 md:pb-48"
       ref={heroRef}
     >
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
@@ -53,7 +53,7 @@ export default function Hero() {
         >
           {/* Name - Extreme Scale */}
           <motion.h1
-            className="text-primary text-[5rem] leading-[0.9] font-bold tracking-tighter md:text-[8rem] lg:text-[10rem] -ml-[0.05em]"
+            className="-ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]"
             variants={heroTextVariants}
           >
             Andy
@@ -61,13 +61,14 @@ export default function Hero() {
             Joseph
           </motion.h1>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mt-8 md:mt-16">
-             {/* Bio - Short and impactful */}
-             <motion.p
-              className="text-secondary max-w-md text-lg leading-relaxed md:text-xl"
+          <div className="mt-8 flex flex-col justify-between gap-12 md:mt-16 md:flex-row md:items-end">
+            {/* Bio - Short and impactful */}
+            <motion.p
+              className="max-w-md text-lg text-secondary leading-relaxed md:text-xl"
               variants={heroTextVariants}
             >
-              Building digital products with a focus on motion, interaction, and precise engineering.
+              Building digital products with a focus on motion, interaction, and
+              precise engineering.
             </motion.p>
 
             {/* Social Links - Minimal Row */}
@@ -76,14 +77,15 @@ export default function Hero() {
                 <motion.a
                   animate={{ opacity: 1, scale: 1 }}
                   aria-label={label}
-                  className="text-muted hover:text-primary transition-colors duration-200"
+                  className="text-muted transition-colors duration-200 hover:text-primary"
                   href={href}
                   initial={{ opacity: 0, scale: 0 }}
                   key={label}
                   rel="noopener noreferrer"
                   target="_blank"
                   transition={{
-                    delay: ANIMATION_DELAY_BASE + index * ANIMATION_DELAY_INCREMENT,
+                    delay:
+                      ANIMATION_DELAY_BASE + index * ANIMATION_DELAY_INCREMENT,
                     type: "spring",
                     stiffness: 200,
                     damping: 20,

@@ -7,15 +7,25 @@ import {
   useScrollAnimation,
 } from "@/hooks/use-scroll-animation";
 
-type SkillCategory = {
+interface SkillCategory {
   title: string;
   skills: string[];
-};
+}
 
 const skillsData: SkillCategory[] = [
   {
     title: "Development",
-    skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Node.js", "Astro", "Tailwind CSS"],
+    skills: [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Next.js",
+      "Node.js",
+      "Astro",
+      "Tailwind CSS",
+    ],
   },
   {
     title: "Backend & Database",
@@ -23,12 +33,26 @@ const skillsData: SkillCategory[] = [
   },
   {
     title: "Tools & DevOps",
-    skills: ["Git", "Docker", "AWS", "Vercel", "Cloudflare", "Postman", "Figma"],
+    skills: [
+      "Git",
+      "Docker",
+      "AWS",
+      "Vercel",
+      "Cloudflare",
+      "Postman",
+      "Figma",
+    ],
   },
   {
     title: "SEO & Performance",
-    skills: ["Technical SEO", "Google Analytics", "Search Console", "Core Web Vitals", "Ahrefs"],
-  }
+    skills: [
+      "Technical SEO",
+      "Google Analytics",
+      "Search Console",
+      "Core Web Vitals",
+      "Ahrefs",
+    ],
+  },
 ];
 
 export default function SkillsSection() {
@@ -39,35 +63,35 @@ export default function SkillsSection() {
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
         <motion.div
           animate="visible"
-          className="mb-20 border-b border-subtle pb-8 flex items-end justify-between"
+          className="mb-20 flex items-end justify-between border-subtle border-b pb-8"
           initial="hidden"
           variants={skillCategoryVariants}
         >
-          <h2 className="text-secondary text-sm font-mono tracking-widest uppercase">
+          <h2 className="font-mono text-secondary text-sm uppercase tracking-widest">
             Expertise
           </h2>
         </motion.div>
 
         <motion.div
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-y-24"
+          className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-y-24"
           initial="hidden"
           variants={skillsContainer}
         >
           {skillsData.map((category) => (
             <motion.div
+              className="group"
               key={category.title}
               variants={skillCategoryVariants}
-              className="group"
             >
-              <h3 className="text-primary text-xl font-medium mb-6">
+              <h3 className="mb-6 font-medium text-primary text-xl">
                 {category.title}
               </h3>
               <ul className="flex flex-col gap-3">
                 {category.skills.map((skill) => (
-                  <li 
-                    key={skill} 
-                    className="text-secondary text-base hover:text-primary transition-colors duration-200"
+                  <li
+                    className="text-base text-secondary transition-colors duration-200 hover:text-primary"
+                    key={skill}
                   >
                     {skill}
                   </li>

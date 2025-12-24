@@ -3,6 +3,8 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
+
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -13,38 +15,28 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button 
-        className="h-8 w-8 rounded-full"
-        type="button"
+      <Button
         aria-label="Toggle theme"
+        className="h-8 w-8 rounded-full"
+        size="icon"
+        variant="ghost"
       >
         <div className="h-4 w-4" />
-      </button>
+      </Button>
     );
   }
 
   const isDark = resolvedTheme === "dark";
 
   return (
-    <button
-      className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-200"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      type="button"
+    <Button
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-      style={{
-        color: "var(--text-muted)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = "var(--text-primary)";
-        e.currentTarget.style.backgroundColor = "var(--bg-secondary)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = "var(--text-muted)";
-        e.currentTarget.style.backgroundColor = "transparent";
-      }}
+      className="h-8 w-8 rounded-full transition-colors duration-200"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      size="icon"
+      variant="ghost"
     >
       {isDark ? (
-        // Moon icon for dark mode (clicking will switch to light)
         <svg
           className="h-4 w-4"
           fill="none"
@@ -60,7 +52,6 @@ export function ThemeToggle() {
           />
         </svg>
       ) : (
-        // Sun icon for light mode (clicking will switch to dark)
         <svg
           className="h-4 w-4"
           fill="none"
@@ -77,6 +68,6 @@ export function ThemeToggle() {
         </svg>
       )}
       <span className="sr-only">Toggle theme</span>
-    </button>
+    </Button>
   );
 }

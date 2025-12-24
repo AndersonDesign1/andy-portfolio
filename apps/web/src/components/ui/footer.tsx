@@ -31,19 +31,19 @@ const Footer: React.FC = () => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   return (
-    <footer className="relative border-t border-subtle py-12 md:py-24 bg-primary">
-      <div className="mx-auto max-w-screen-lg px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="relative border-subtle border-t bg-primary py-12 md:py-24">
+      <div className="mx-auto flex max-w-screen-lg flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
         {/* Copyright - Left aligned on desktop */}
-        <p className="text-muted text-sm font-mono tracking-tight order-2 md:order-1">
+        <p className="order-2 font-mono text-muted text-sm tracking-tight md:order-1">
           © {currentYear} Anderson Joseph
         </p>
 
         {/* Social links - Right aligned on desktop */}
-        <div className="flex justify-center gap-6 order-1 md:order-2">
+        <div className="order-1 flex justify-center gap-6 md:order-2">
           {socialLinks.map((link) => (
             <a
               aria-label={link.label}
-              className="text-muted hover:text-primary transition-colors duration-200"
+              className="text-muted transition-colors duration-200 hover:text-primary"
               href={link.href}
               key={link.href}
               rel="noopener noreferrer"
