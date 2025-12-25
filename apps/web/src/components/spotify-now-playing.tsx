@@ -121,13 +121,26 @@ export default function SpotifyNowPlaying() {
           >
             <div className="mb-4 flex gap-4">
               <div className="relative">
-                <Image
-                  alt={track.album.name}
-                  className="h-16 w-16 rounded-sm object-cover grayscale"
-                  height={64}
-                  src={track.album.images[1]?.url || track.album.images[0]?.url}
-                  width={64}
-                />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={track.album.images[1]?.url || track.album.images[0]?.url}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative"
+                  >
+                    <Image
+                      alt={track.album.name}
+                      className="h-16 w-16 rounded-sm object-cover grayscale"
+                      height={64}
+                      src={
+                        track.album.images[1]?.url || track.album.images[0]?.url
+                      }
+                      width={64}
+                    />
+                  </motion.div>
+                </AnimatePresence>
                 <div className="absolute -right-2 -bottom-2 flex h-4 w-4 items-end justify-center gap-0.5 rounded-full border border-white/10 bg-black/40 p-0.5 backdrop-blur-sm">
                   <div
                     className={`w-0.5 bg-white ${track.isPlaying ? "h-full animate-[music-bar_0.8s_ease-in-out_infinite]" : "h-1/2"}`}
@@ -140,13 +153,23 @@ export default function SpotifyNowPlaying() {
                   />
                 </div>
               </div>
-              <div className="flex min-w-0 flex-1 flex-col justify-center">
-                <h4 className="truncate font-semibold text-primary">
-                  {track.name}
-                </h4>
-                <p className="truncate text-secondary text-sm">
-                  {track.artists.map((a) => a.name).join(", ")}
-                </p>
+              <div className="flex min-w-0 flex-1 flex-col justify-center overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={track.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <h4 className="truncate font-semibold text-primary">
+                      {track.name}
+                    </h4>
+                    <p className="truncate text-secondary text-sm">
+                      {track.artists.map((a) => a.name).join(", ")}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
 
@@ -194,7 +217,7 @@ export default function SpotifyNowPlaying() {
           <div className="absolute inset-0 z-10 m-auto h-2 w-2 rounded-full border border-subtle bg-primary" />
         </div>
 
-        <div className="flex flex-col items-start gap-1 text-left">
+        <div className="flex flex-col items-start gap-1 text-left overflow-hidden">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] text-muted uppercase leading-tight tracking-widest">
               {track.isPlaying ? "Now Playing" : "Last Played"}
@@ -211,9 +234,18 @@ export default function SpotifyNowPlaying() {
               />
             </div>
           </div>
-          <span className="max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent">
-            {track.name}
-          </span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={track.name}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.2 }}
+              className="max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent block"
+            >
+              {track.name}
+            </motion.span>
+          </AnimatePresence>
         </div>
       </button>
     </div>
