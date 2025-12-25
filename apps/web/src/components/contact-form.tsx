@@ -139,7 +139,7 @@ export default function ContactForm() {
                   {field.label} {field.label !== "Subject" && "*"}
                 </label>
                 <Input
-                  className={`rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-muted/30 focus-visible:border-primary focus-visible:ring-0 ${
+                  className={`rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
                     field.error ? "border-red-500" : ""
                   }`}
                   id={field.name}
@@ -165,7 +165,7 @@ export default function ContactForm() {
                 Message *
               </label>
               <Textarea
-                className={`min-h-[150px] resize-none rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-muted/30 focus-visible:border-primary focus-visible:ring-0 ${
+                className={`min-h-[150px] resize-none rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
                   errors.message ? "border-red-500" : ""
                 }`}
                 id="message"

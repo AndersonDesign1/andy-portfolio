@@ -123,12 +123,14 @@ export default function SpotifyNowPlaying() {
               <div className="relative">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={track.album.images[1]?.url || track.album.images[0]?.url}
-                    initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3 }}
                     className="relative"
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    key={
+                      track.album.images[1]?.url || track.album.images[0]?.url
+                    }
+                    transition={{ duration: 0.3 }}
                   >
                     <Image
                       alt={track.album.name}
@@ -156,10 +158,10 @@ export default function SpotifyNowPlaying() {
               <div className="flex min-w-0 flex-1 flex-col justify-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={track.name}
-                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    key={track.name}
                     transition={{ duration: 0.2 }}
                   >
                     <h4 className="truncate font-semibold text-primary">
@@ -217,7 +219,7 @@ export default function SpotifyNowPlaying() {
           <div className="absolute inset-0 z-10 m-auto h-2 w-2 rounded-full border border-subtle bg-primary" />
         </div>
 
-        <div className="flex flex-col items-start gap-1 text-left overflow-hidden">
+        <div className="flex flex-col items-start gap-1 overflow-hidden text-left">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] text-muted uppercase leading-tight tracking-widest">
               {track.isPlaying ? "Now Playing" : "Last Played"}
@@ -236,12 +238,12 @@ export default function SpotifyNowPlaying() {
           </div>
           <AnimatePresence mode="wait">
             <motion.span
-              key={track.name}
-              initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
+              className="block max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent"
               exit={{ opacity: 0, y: -5 }}
+              initial={{ opacity: 0, y: 5 }}
+              key={track.name}
               transition={{ duration: 0.2 }}
-              className="max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent block"
             >
               {track.name}
             </motion.span>
