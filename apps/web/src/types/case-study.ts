@@ -7,6 +7,7 @@ export interface CaseStudy {
     overview: string;
     heroImage: string;
     technologies: string[];
+    liveUrl?: string;
   };
   challenge: {
     problem: string;
@@ -58,6 +59,17 @@ export interface CaseStudy {
       alt: string;
       title: string;
     }>;
+  };
+}
+
+export interface CaseStudyNavigation {
+  prev?: {
+    slug: string;
+    title: string;
+  };
+  next?: {
+    slug: string;
+    title: string;
   };
 }
 

@@ -1,10 +1,14 @@
 "use client";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  GlobeAltIcon,
+} from "@heroicons/react/24/outline";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ANIMATION_EASE_CUBIC } from "@/lib/constants";
-import type { CaseStudy } from "@/types/case-study";
+import type { CaseStudy, CaseStudyNavigation } from "@/types/case-study";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -26,22 +30,40 @@ const stagger = {
   },
 };
 
-export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
+export default function CaseStudyPage({
+  caseStudy,
+  navigation,
+}: {
+  caseStudy: CaseStudy;
+  navigation?: CaseStudyNavigation;
+}) {
   return (
     <div className="min-h-screen bg-primary pt-48 md:pt-64">
       <div className="mx-auto mb-20 max-w-screen-xl px-6 md:px-12">
         <motion.div
           animate={{ opacity: 1, x: 0 }}
+          className="flex items-center justify-between"
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
         >
           <Link
-            className="inline-flex items-center gap-2 text-secondary text-sm transition-colors duration-300 hover:text-primary"
+            className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/projects"
           >
             <ArrowLeftIcon className="h-4 w-4" />
             Back to Projects
           </Link>
+
+          {caseStudy.hero.liveUrl && (
+            <Link
+              className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
+              href={caseStudy.hero.liveUrl}
+              target="_blank"
+            >
+              <GlobeAltIcon className="h-4 w-4" />
+              Live Site
+            </Link>
+          )}
         </motion.div>
       </div>
 
@@ -72,7 +94,7 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
               </div>
               <div className="py-4 md:col-span-2 md:py-6 md:pl-8">
                 <span className="mb-2 block font-mono text-muted text-xs uppercase tracking-widest">
-                  Role & Tech
+                  Tech
                 </span>
                 <div className="flex flex-wrap gap-x-4 text-secondary text-sm md:text-base">
                   {caseStudy.hero.technologies.slice(0, 4).map((t) => (
@@ -213,14 +235,14 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
               </h2>
             </div>
             <div className="py-12 md:col-span-8 md:py-24 md:pl-12">
-              <div className="grid grid-cols-1 gap-x-12 gap-y-16 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-2">
                 {caseStudy.results.beforeAfter.map((metric) => (
-                  <div className="space-y-4" key={metric.metric}>
+                  <div className="space-y-1" key={metric.metric}>
                     <h3 className="font-mono text-muted text-xs uppercase tracking-widest">
                       {metric.metric}
                     </h3>
                     <div className="flex items-baseline gap-4">
-                      <span className="font-bold text-4xl text-primary tracking-tight md:text-6xl">
+                      <span className="font-bold text-2xl text-primary tracking-tight md:text-4xl">
                         {metric.after}
                       </span>
                     </div>
@@ -279,6 +301,55 @@ export default function CaseStudyPage({ caseStudy }: { caseStudy: CaseStudy }) {
           </div>
         </div>
       </section>
+
+      {navigation && (navigation.prev || navigation.next) && (
+        <section className="border-subtle border-t">
+          <div className="mx-auto max-w-screen-xl px-4 md:px-8">
+            <div className="grid grid-cols-2">
+              <div className="group border-subtle border-r py-12 pr-6 transition-colors hover:bg-secondary/5 md:py-24">
+                {navigation.prev ? (
+                  <Link
+                    className="block h-full"
+                    href={`/case-studies/${navigation.prev.slug}`}
+                  >
+                    <span className="mb-4 block font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
+                      Previous Case Study
+                    </span>
+                    <div className="flex items-center gap-4">
+                      <ArrowLeftIcon className="h-5 w-5 text-secondary transition-transform duration-300 group-hover:-translate-x-2" />
+                      <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
+                        {navigation.prev.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="select-none opacity-0">Placeholder</div>
+                )}
+              </div>
+              <div className="group border-subtle py-12 pl-6 text-right transition-colors hover:bg-secondary/5 md:py-24 md:pl-12">
+                {navigation.next ? (
+                  <Link
+                    className="block h-full"
+                    href={`/case-studies/${navigation.next.slug}`}
+                  >
+                    <span className="mb-4 block font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
+                      Next Case Study
+                    </span>
+                    <div className="flex items-center justify-end gap-4">
+                      <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
+                        {navigation.next.title}
+                      </h3>
+                      <ArrowRightIcon className="h-5 w-5 text-secondary transition-transform duration-300 group-hover:translate-x-2" />
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="select-none opacity-0">Placeholder</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

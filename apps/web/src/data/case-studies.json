@@ -1,190 +1,5 @@
 {
   "caseStudies": {
-    "prompt-earn": {
-      "id": "prompt-earn",
-      "hero": {
-        "title": "SEO Growth for PromptEarn",
-        "client": "PromptEarn",
-        "duration": "6 months",
-        "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic, top 5 keyword rankings, and a 45% uplift in sales through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
-        "heroImage": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "technologies": [
-          "Ahrefs",
-          "Google Search Console",
-          "Google Analytics",
-          "Screaming Frog",
-          "PageSpeed Insights",
-          "Mailchimp"
-        ]
-      },
-      "challenge": {
-        "problem": "PromptEarn needed to boost organic traffic and affiliate-driven sales in a competitive market. The site suffered from slow load times, suboptimal SEO, and a stagnant affiliate network.",
-        "constraints": [
-          "Aggressive 6-month timeline",
-          "Large legacy affiliate base",
-          "Need for measurable, rapid results"
-        ],
-        "context": "Affiliate marketing and SEO are highly competitive in the Nigerian fintech space. PromptEarn aimed to outpace rivals by improving technical SEO and expanding its affiliate network.",
-        "metrics": [
-          "Organic traffic: 10,000/month",
-          "Affiliate partners: 40,000",
-          "Average PageSpeed score: 45",
-          "Bounce rate: 70%"
-        ]
-      },
-      "goals": {
-        "primary": [
-          "Increase organic traffic by 200%+",
-          "Expand affiliate network to 90,000+",
-          "Improve PageSpeed score by 30+ points",
-          "Achieve top 5 rankings for target keywords"
-        ],
-        "stakeholder": [
-          "Higher affiliate engagement",
-          "Improved user experience",
-          "Increased sales from organic and referral channels"
-        ],
-        "success": [
-          "250% organic traffic growth",
-          "Affiliate network doubled",
-          "Bounce rate reduced by 50%",
-          "45% increase in sales"
-        ]
-      },
-      "approach": {
-        "methodology": "Agile, data-driven SEO and affiliate marketing with weekly sprints and continuous measurement.",
-        "phases": [
-          {
-            "name": "SEO Audit & Quick Wins",
-            "duration": "2 weeks",
-            "activities": [
-              "Technical SEO audit",
-              "Core Web Vitals optimization",
-              "On-page SEO improvements"
-            ]
-          },
-          {
-            "name": "Affiliate Network Expansion",
-            "duration": "4 weeks",
-            "activities": [
-              "Targeted email campaigns",
-              "Affiliate onboarding improvements",
-              "Referral incentives"
-            ]
-          },
-          {
-            "name": "Content & Link Building",
-            "duration": "6 weeks",
-            "activities": [
-              "Keyword research",
-              "Content optimization",
-              "Outreach for backlinks"
-            ]
-          },
-          {
-            "name": "Performance & Reporting",
-            "duration": "4 weeks",
-            "activities": [
-              "Monitor rankings and traffic",
-              "A/B test landing pages",
-              "Monthly stakeholder reports"
-            ]
-          }
-        ],
-        "keyDecisions": [
-          {
-            "decision": "Prioritized Core Web Vitals",
-            "rationale": "Improved rankings and reduced bounce rate"
-          },
-          {
-            "decision": "Automated affiliate onboarding",
-            "rationale": "Enabled rapid network growth"
-          }
-        ],
-        "research": [
-          "Competitor analysis for top keywords",
-          "User feedback on site speed and navigation"
-        ],
-        "collaboration": "Weekly syncs with marketing and dev teams, monthly reviews with stakeholders.",
-        "iterations": [
-          "Refined landing pages based on bounce rate data",
-          "Streamlined affiliate sign-up flow"
-        ],
-        "userFeedback": "Affiliate partners and users reported improved site speed and easier navigation."
-      },
-      "results": {
-        "beforeAfter": [
-          {
-            "metric": "Organic Traffic",
-            "before": "10,000/month",
-            "after": "35,000/month",
-            "improvement": "+250%"
-          },
-          {
-            "metric": "Affiliate Partners",
-            "before": "40,000",
-            "after": "93,000",
-            "improvement": "+132%"
-          },
-          {
-            "metric": "PageSpeed Score",
-            "before": "45",
-            "after": "80",
-            "improvement": "+35 points"
-          },
-          {
-            "metric": "Bounce Rate",
-            "before": "70%",
-            "after": "35%",
-            "improvement": "-50%"
-          }
-        ],
-        "metrics": [
-          "45% increase in sales",
-          "60% improvement in user engagement",
-          "Top 5 ranking for key keywords"
-        ],
-        "deliverables": [
-          "SEO audit report",
-          "Affiliate onboarding flow",
-          "Optimized landing pages"
-        ],
-        "achievements": [
-          "Doubled affiliate network",
-          "250% organic traffic growth",
-          "Bounce rate halved"
-        ]
-      },
-      "gallery": {
-        "images": [
-          {
-            "src": "/my-website.webp",
-            "alt": "PromptEarn website homepage showing affiliate marketing platform",
-            "title": "Homepage Design"
-          },
-          {
-            "src": "/new-hampshire.webp",
-            "alt": "SEO dashboard and analytics interface for PromptEarn",
-            "title": "Analytics Dashboard"
-          },
-          {
-            "src": "/promptearn.webp",
-            "alt": "Affiliate partner onboarding and management system",
-            "title": "Partner Management"
-          },
-          {
-            "src": "/craigwal.webp",
-            "alt": "Mobile-responsive design and user experience improvements",
-            "title": "Mobile Experience"
-          },
-          {
-            "src": "/dubiss.webp",
-            "alt": "Performance optimization and Core Web Vitals improvements",
-            "title": "Performance Optimization"
-          }
-        ]
-      }
-    },
     "welup-digital": {
       "id": "welup-digital",
       "hero": {
@@ -203,7 +18,8 @@
           "Ahrefs",
           "Google Search Console",
           "PageSpeed Insights"
-        ]
+        ],
+        "liveUrl": "https://welupdigital.com"
       },
       "challenge": {
         "problem": "Welup Digital’s original site was static HTML/CSS/JS, limiting SEO, scalability, and content management. The business needed a modern, dynamic platform to support growth, content, and client delivery, while also withstanding DDoS attacks.",
@@ -391,6 +207,192 @@
             "src": "/dubiss.webp",
             "alt": "DDoS protection and uptime monitoring system",
             "title": "Security & Uptime"
+          }
+        ]
+      }
+    },
+    "prompt-earn": {
+      "id": "prompt-earn",
+      "hero": {
+        "title": "SEO Growth for PromptEarn",
+        "client": "PromptEarn",
+        "duration": "6 months",
+        "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic, top 5 keyword rankings, and a 45% uplift in sales through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
+        "heroImage": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "technologies": [
+          "Ahrefs",
+          "Google Search Console",
+          "Google Analytics",
+          "Screaming Frog",
+          "PageSpeed Insights",
+          "Mailchimp"
+        ],
+        "liveUrl": "https://promptearn.com"
+      },
+      "challenge": {
+        "problem": "PromptEarn needed to boost organic traffic and affiliate-driven sales in a competitive market. The site suffered from slow load times, suboptimal SEO, and a stagnant affiliate network.",
+        "constraints": [
+          "Aggressive 6-month timeline",
+          "Large legacy affiliate base",
+          "Need for measurable, rapid results"
+        ],
+        "context": "Affiliate marketing and SEO are highly competitive in the Nigerian fintech space. PromptEarn aimed to outpace rivals by improving technical SEO and expanding its affiliate network.",
+        "metrics": [
+          "Organic traffic: 10,000/month",
+          "Affiliate partners: 40,000",
+          "Average PageSpeed score: 45",
+          "Bounce rate: 70%"
+        ]
+      },
+      "goals": {
+        "primary": [
+          "Increase organic traffic by 200%+",
+          "Expand affiliate network to 90,000+",
+          "Improve PageSpeed score by 30+ points",
+          "Achieve top 5 rankings for target keywords"
+        ],
+        "stakeholder": [
+          "Higher affiliate engagement",
+          "Improved user experience",
+          "Increased sales from organic and referral channels"
+        ],
+        "success": [
+          "250% organic traffic growth",
+          "Affiliate network doubled",
+          "Bounce rate reduced by 50%",
+          "45% increase in sales"
+        ]
+      },
+      "approach": {
+        "methodology": "Agile, data-driven SEO and affiliate marketing with weekly sprints and continuous measurement.",
+        "phases": [
+          {
+            "name": "SEO Audit & Quick Wins",
+            "duration": "2 weeks",
+            "activities": [
+              "Technical SEO audit",
+              "Core Web Vitals optimization",
+              "On-page SEO improvements"
+            ]
+          },
+          {
+            "name": "Affiliate Network Expansion",
+            "duration": "4 weeks",
+            "activities": [
+              "Targeted email campaigns",
+              "Affiliate onboarding improvements",
+              "Referral incentives"
+            ]
+          },
+          {
+            "name": "Content & Link Building",
+            "duration": "6 weeks",
+            "activities": [
+              "Keyword research",
+              "Content optimization",
+              "Outreach for backlinks"
+            ]
+          },
+          {
+            "name": "Performance & Reporting",
+            "duration": "4 weeks",
+            "activities": [
+              "Monitor rankings and traffic",
+              "A/B test landing pages",
+              "Monthly stakeholder reports"
+            ]
+          }
+        ],
+        "keyDecisions": [
+          {
+            "decision": "Prioritized Core Web Vitals",
+            "rationale": "Improved rankings and reduced bounce rate"
+          },
+          {
+            "decision": "Automated affiliate onboarding",
+            "rationale": "Enabled rapid network growth"
+          }
+        ],
+        "research": [
+          "Competitor analysis for top keywords",
+          "User feedback on site speed and navigation"
+        ],
+        "collaboration": "Weekly syncs with marketing and dev teams, monthly reviews with stakeholders.",
+        "iterations": [
+          "Refined landing pages based on bounce rate data",
+          "Streamlined affiliate sign-up flow"
+        ],
+        "userFeedback": "Affiliate partners and users reported improved site speed and easier navigation."
+      },
+      "results": {
+        "beforeAfter": [
+          {
+            "metric": "Organic Traffic",
+            "before": "10,000/month",
+            "after": "35,000/month",
+            "improvement": "+250%"
+          },
+          {
+            "metric": "Affiliate Partners",
+            "before": "40,000",
+            "after": "93,000",
+            "improvement": "+132%"
+          },
+          {
+            "metric": "PageSpeed Score",
+            "before": "45",
+            "after": "80",
+            "improvement": "+35 points"
+          },
+          {
+            "metric": "Bounce Rate",
+            "before": "70%",
+            "after": "35%",
+            "improvement": "-50%"
+          }
+        ],
+        "metrics": [
+          "45% increase in sales",
+          "60% improvement in user engagement",
+          "Top 5 ranking for key keywords"
+        ],
+        "deliverables": [
+          "SEO audit report",
+          "Affiliate onboarding flow",
+          "Optimized landing pages"
+        ],
+        "achievements": [
+          "Doubled affiliate network",
+          "250% organic traffic growth",
+          "Bounce rate halved"
+        ]
+      },
+      "gallery": {
+        "images": [
+          {
+            "src": "/my-website.webp",
+            "alt": "PromptEarn website homepage showing affiliate marketing platform",
+            "title": "Homepage Design"
+          },
+          {
+            "src": "/new-hampshire.webp",
+            "alt": "SEO dashboard and analytics interface for PromptEarn",
+            "title": "Analytics Dashboard"
+          },
+          {
+            "src": "/promptearn.webp",
+            "alt": "Affiliate partner onboarding and management system",
+            "title": "Partner Management"
+          },
+          {
+            "src": "/craigwal.webp",
+            "alt": "Mobile-responsive design and user experience improvements",
+            "title": "Mobile Experience"
+          },
+          {
+            "src": "/dubiss.webp",
+            "alt": "Performance optimization and Core Web Vitals improvements",
+            "title": "Performance Optimization"
           }
         ]
       }

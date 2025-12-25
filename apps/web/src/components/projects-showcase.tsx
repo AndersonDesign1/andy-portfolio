@@ -169,22 +169,50 @@ const ProjectsShowcase: React.FC = () => {
                     className="relative mb-6 aspect-[16/10] overflow-hidden rounded-sm bg-secondary/5"
                     transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
-                    <Image
-                      alt={project.title}
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      fill
-                      priority={index < 2 && activeCategory === "All"}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      src={project.thumbnail}
-                    />
+                    {project.links.caseStudy ? (
+                      <Link
+                        className="block h-full w-full"
+                        href={project.links.caseStudy}
+                      >
+                        <Image
+                          alt={project.title}
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          fill
+                          priority={index < 2 && activeCategory === "All"}
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          src={project.thumbnail}
+                        />
+                      </Link>
+                    ) : (
+                      <Image
+                        alt={project.title}
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        fill
+                        priority={index < 2 && activeCategory === "All"}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        src={project.thumbnail}
+                      />
+                    )}
                   </motion.div>
 
                   {/* Project Content */}
                   <div className="flex flex-col">
                     <div className="mb-2 flex items-baseline justify-between">
-                      <h3 className="font-medium text-primary text-xl">
-                        {project.title}
-                      </h3>
+                      {project.links.caseStudy ? (
+                        <Link
+                          className="group/title"
+                          href={project.links.caseStudy}
+                        >
+                          <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover/title:opacity-70">
+                            {project.title}
+                          </h3>
+                        </Link>
+                      ) : (
+                        <h3 className="font-medium text-primary text-xl">
+                          {project.title}
+                        </h3>
+                      )}
+
                       <span className="font-mono text-muted text-xs uppercase tracking-widest">
                         {project.type === "case-study"
                           ? "Case Study"
@@ -201,34 +229,31 @@ const ProjectsShowcase: React.FC = () => {
                         {project.techStack.slice(0, 3).join(" / ")}
                       </p>
                       <div className="flex gap-6">
-                        {project.links.caseStudy ? (
+                        {project.links.caseStudy && (
                           <Link
-                            className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.caseStudy}
                           >
                             Read Case Study
                           </Link>
-                        ) : (
-                          <>
-                            {project.links.live && (
-                              <Link
-                                className="font-medium text-primary text-sm transition-colors hover:text-muted"
-                                href={project.links.live}
-                                target="_blank"
-                              >
-                                Live Site
-                              </Link>
-                            )}
-                            {project.links.github && (
-                              <Link
-                                className="font-medium text-primary text-sm transition-colors hover:text-muted"
-                                href={project.links.github}
-                                target="_blank"
-                              >
-                                Code
-                              </Link>
-                            )}
-                          </>
+                        )}
+                        {project.links.live && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            href={project.links.live}
+                            target="_blank"
+                          >
+                            Live Site
+                          </Link>
+                        )}
+                        {project.links.github && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            href={project.links.github}
+                            target="_blank"
+                          >
+                            Code
+                          </Link>
                         )}
                       </div>
                     </div>
