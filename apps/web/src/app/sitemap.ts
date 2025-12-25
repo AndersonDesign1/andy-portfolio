@@ -1,5 +1,5 @@
 import { client } from "@andy-portfolio/sanity-config";
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 import caseStudiesData from "../data/case-studies.json";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
