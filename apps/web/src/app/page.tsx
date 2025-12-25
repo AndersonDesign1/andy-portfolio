@@ -1,3 +1,4 @@
+import CtaSection from "@/components/cta-section";
 import Hero from "@/components/hero";
 import ProjectsGrid from "@/components/projects-grid";
 import SkillsSection from "@/components/skills-section";
@@ -10,6 +11,7 @@ export default function Home() {
       <ProjectsGrid />
       <WorkHistory />
       <SkillsSection />
+      <CtaSection />
     </main>
   );
 }

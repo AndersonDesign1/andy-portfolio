@@ -3,10 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 
-// Animation constants
 const ANIMATION_DELAY_MULTIPLIER = 0.1;
 
-type Post = {
+interface Post {
   _id: string;
   title: string;
   slug: { current: string };
@@ -23,11 +22,11 @@ type Post = {
     slug: { current: string };
     description?: string;
   }>;
-};
+}
 
-type BlogListProps = {
+interface BlogListProps {
   posts: Post[];
-};
+}
 
 export default function BlogList({ posts }: BlogListProps) {
   return (

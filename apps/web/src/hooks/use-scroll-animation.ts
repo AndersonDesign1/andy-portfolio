@@ -3,12 +3,12 @@
 import { useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-type UseScrollAnimationOptions = {
+interface UseScrollAnimationOptions {
   threshold?: number;
   triggerOnce?: boolean;
   delay?: number;
   stagger?: number;
-};
+}
 
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   const {
@@ -39,7 +39,6 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   };
 }
 
-// Hero-specific animations - dramatic entrance
 export const heroVariants = {
   hidden: { opacity: 0, y: 60, scale: 0.95 },
   visible: {
@@ -81,7 +80,6 @@ export const heroTextVariants = {
   },
 };
 
-// Projects-specific animations - staggered reveal with bounce
 export const projectsContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -124,7 +122,6 @@ export const projectHeaderVariants = {
   },
 };
 
-// Skills-specific animations - cascading reveal with scale
 export const skillsContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -167,7 +164,6 @@ export const skillItemVariants = {
   },
 };
 
-// Work history animations - timeline reveal
 export const workContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -209,7 +205,6 @@ export const timelineDotVariants = {
   },
 };
 
-// General purpose animations
 export const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: {

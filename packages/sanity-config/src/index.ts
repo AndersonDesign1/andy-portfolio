@@ -1,4 +1,3 @@
-// Barrel export for all Sanity configuration
 export { schema, schemaTypes } from "./schemaTypes";
 export { client } from "./lib/client";
 export { urlFor } from "./lib/image";

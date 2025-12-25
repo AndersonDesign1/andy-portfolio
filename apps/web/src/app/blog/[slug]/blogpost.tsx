@@ -5,14 +5,13 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
-// PortableText block types
-type PortableTextBlock = {
+interface PortableTextBlock {
   _type: string;
   _key: string;
   [key: string]: unknown;
-};
+}
 
-type Post = {
+interface Post {
   _id: string;
   title: string;
   slug: { current: string };
@@ -31,11 +30,11 @@ type Post = {
     slug: { current: string };
     description?: string;
   }>;
-};
+}
 
-type BlogPostProps = {
+interface BlogPostProps {
   post: Post;
-};
+}
 
 export default function BlogPost({ post }: BlogPostProps) {
   return (
