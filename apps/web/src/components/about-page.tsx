@@ -75,7 +75,7 @@ const AboutPage: React.FC = () => (
           >
             I&apos;m a passionate full-stack developer with expertise in SEO and
             infrastructure. My journey started after winning a scholarship to
-            learn a tech skill for a year—choosing development because of a
+            learn a tech skill for a year, choosing development because of a
             childhood obsession with computers and how things work. Now, I
             create digital experiences that look beautiful and perform
             exceptionally well.

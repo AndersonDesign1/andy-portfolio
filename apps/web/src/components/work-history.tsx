@@ -56,9 +56,6 @@ export default function WorkHistory() {
                         {formatDate(job.startDate)} —{" "}
                         {job.endDate ? formatDate(job.endDate) : "Present"}
                       </p>
-                      <p className="max-w-sm text-secondary/80 text-sm leading-relaxed">
-                        {job.description}
-                      </p>
                     </div>
                   </motion.div>
                 ))}

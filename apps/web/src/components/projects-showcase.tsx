@@ -114,6 +114,9 @@ const ProjectsShowcase: React.FC = () => {
     return [];
   }, [activeCategory]);
 
+  const featuredProjects = filteredProjects.slice(0, 4);
+  const otherProjects = filteredProjects.slice(4);
+
   return (
     <div className="min-h-screen bg-primary pt-48 md:pt-64">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
@@ -148,7 +151,7 @@ const ProjectsShowcase: React.FC = () => {
               key={activeCategory}
               variants={gridVariants}
             >
-              {filteredProjects.map((project, index) => (
+              {featuredProjects.map((project, index) => (
                 <motion.div
                   className="group"
                   initial={{ opacity: 0, y: 24 }}
@@ -234,6 +237,67 @@ const ProjectsShowcase: React.FC = () => {
               ))}
             </motion.div>
           </AnimatePresence>
+
+          {/* Other Projects List */}
+          {otherProjects.length > 0 && (
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-32 space-y-8"
+              initial={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <h2 className="mb-12 font-mono text-muted text-xs uppercase tracking-widest">
+                Other Projects
+              </h2>
+              <div className="grid grid-cols-1 gap-4">
+                {otherProjects.map((project, index) => (
+                  <motion.div
+                    className="group flex flex-col items-start justify-between border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:flex-row md:items-center"
+                    initial={{ opacity: 0, y: 10 }}
+                    key={project.id}
+                    transition={{ delay: index * 0.05 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                  >
+                    <div className="mb-4 md:mb-0 md:flex-1">
+                      <h3 className="font-medium text-lg text-primary">
+                        {project.title}
+                      </h3>
+                      <p className="line-clamp-1 max-w-md text-secondary text-sm">
+                        {project.description}
+                      </p>
+                    </div>
+
+                    <div className="flex w-full items-center justify-between gap-8 md:w-auto md:justify-end">
+                      <p className="hidden font-mono text-muted text-xs uppercase tracking-wider md:block">
+                        {project.techStack.slice(0, 3).join(" / ")}
+                      </p>
+
+                      <div className="flex gap-6">
+                        {project.links.live && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                            href={project.links.live}
+                            target="_blank"
+                          >
+                            Visit
+                          </Link>
+                        )}
+                        {project.links.github && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                            href={project.links.github}
+                            target="_blank"
+                          >
+                            Code
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {filteredProjects.length === 0 && (
             <div className="py-24 text-center">
