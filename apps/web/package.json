@@ -25,6 +25,7 @@
     "@sanity/image-url": "^2.0.2",
     "@sanity/types": "^5.0.1",
     "@vercel/analytics": "^1.4.1",
+    "@vercel/og": "^0.8.6",
     "@vercel/speed-insights": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
