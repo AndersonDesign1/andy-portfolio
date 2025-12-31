@@ -307,10 +307,12 @@ const ProjectsShowcase: React.FC = () => {
                             Visit
                           </Link>
                         )}
-                        {project.links.github && (
                           <Link
                             className="font-medium text-primary text-sm transition-colors hover:text-muted"
                             href={project.links.github}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
                             target="_blank"
                           >
                             Code
