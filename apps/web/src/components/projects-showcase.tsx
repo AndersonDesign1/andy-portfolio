@@ -250,7 +250,9 @@ const ProjectsShowcase: React.FC = () => {
                           <Link
                             className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.github}
+                            rel="noopener noreferrer"
                             target="_blank"
+                          >
                           >
                             Code
                           </Link>
