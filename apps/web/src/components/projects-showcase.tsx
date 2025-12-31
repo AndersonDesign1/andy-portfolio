@@ -176,7 +176,7 @@ const ProjectsShowcase: React.FC = () => {
                       >
                         <Image
                           alt={project.title}
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="object-contain transition-transform duration-700 group-hover:scale-105"
                           fill
                           priority={index < 2 && activeCategory === "All"}
                           sizes="(max-width: 768px) 100vw, 50vw"
@@ -186,7 +186,7 @@ const ProjectsShowcase: React.FC = () => {
                     ) : (
                       <Image
                         alt={project.title}
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="object-contain transition-transform duration-700 group-hover:scale-105"
                         fill
                         priority={index < 2 && activeCategory === "All"}
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -241,6 +241,7 @@ const ProjectsShowcase: React.FC = () => {
                           <Link
                             className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.live}
+                            rel="noopener noreferrer"
                             target="_blank"
                           >
                             Live Site
@@ -250,6 +251,7 @@ const ProjectsShowcase: React.FC = () => {
                           <Link
                             className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.github}
+                            rel="noopener noreferrer"
                             target="_blank"
                           >
                             Code
@@ -302,6 +304,7 @@ const ProjectsShowcase: React.FC = () => {
                           <Link
                             className="font-medium text-primary text-sm transition-colors hover:text-muted"
                             href={project.links.live}
+                            rel="noopener noreferrer"
                             target="_blank"
                           >
                             Visit
@@ -311,6 +314,7 @@ const ProjectsShowcase: React.FC = () => {
                           <Link
                             className="font-medium text-primary text-sm transition-colors hover:text-muted"
                             href={project.links.github}
+                            rel="noopener noreferrer"
                             target="_blank"
                           >
                             Code

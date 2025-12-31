@@ -58,6 +58,7 @@ export default function CaseStudyPage({
             <Link
               className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
               href={caseStudy.hero.liveUrl}
+              rel="noopener noreferrer"
               target="_blank"
             >
               <GlobeAltIcon className="h-4 w-4" />
@@ -121,7 +122,7 @@ export default function CaseStudyPage({
           >
             <Image
               alt={caseStudy.hero.title}
-              className="object-cover"
+              className="object-contain"
               fill
               priority
               src={caseStudy.hero.heroImage}
@@ -285,7 +286,7 @@ export default function CaseStudyPage({
                 <div className="relative aspect-video w-full overflow-hidden border border-subtle bg-secondary/5">
                   <Image
                     alt={image.alt || `Project image ${i + 1}`}
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                    className="object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                     fill
                     src={image.src}
                   />

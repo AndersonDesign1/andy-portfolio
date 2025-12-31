@@ -59,7 +59,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 
           {/* Right: Tech & Year (or Arrow) */}
           <div className="flex items-center gap-8 md:gap-16">
-            <p className="hidden translate-y-2 transform font-mono text-secondary text-sm tracking-tight opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:block">
+            <p className="hidden font-mono text-secondary text-sm tracking-tight md:block">
               {project.techStack.slice(0, 3).join(" / ")}
             </p>
             <ArrowUpRight
@@ -79,7 +79,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
         >
           <Image
             alt={project.title}
-            className="object-cover"
+            className="object-contain"
             fill
             sizes="(max-width: 768px) 100vw, 450px"
             src={project.thumbnail}

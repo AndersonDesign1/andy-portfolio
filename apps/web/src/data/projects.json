@@ -4,8 +4,8 @@
       "id": "1",
       "type": "case-study",
       "title": "Full-Stack Web & SEO Architect at Welup Digital",
-      "description": "Built and fine-tuned Welup Digital’s core platforms for top-notch SEO, speed, and UX. Also crafted and optimized client sites, boosting traffic and online impact with smart, modern web strategies.",
-      "thumbnail": "/welup-digital.webp",
+      "description": "Founding engineer and lead for a modern Next.js transition, focused on SEO, performance, and instructor leadership at Welup Academy.",
+      "thumbnail": "/welup-main.png",
       "techStack": [
         "Next.js",
         "TypeScript",
@@ -30,8 +30,8 @@
       "id": "2",
       "type": "case-study",
       "title": "SEO & Growth Specialist at PromptEarn",
-      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and a 45% sales increase.",
-      "thumbnail": "/promptearn.webp",
+      "description": "Organic traffic growth and search engine dominance through technical SEO and Core Web Vitals optimization.",
+      "thumbnail": "/promptearn-1.png",
       "techStack": [
         "Ahrefs",
         "Google Search Console",
@@ -54,20 +54,26 @@
     {
       "id": "3",
       "type": "standard",
-      "title": "Portfolio Website",
-      "description": "A minimalist portfolio website showcasing projects and skills with a clean, responsive design and smooth animations.",
-      "thumbnail": "/my-website.webp",
-      "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      "title": "Full-Stack Engineer at Devan",
+      "description": "Engineered a high-performance urban-chic e-commerce platform with a robust Node.js backend and seamless Sanity CMS integration.",
+      "thumbnail": "/Devan-main.png",
+      "techStack": [
+        "Node.js",
+        "PostgreSQL",
+        "Tanstack Query",
+        "Sanity CMS",
+        "Next.js",
+        "Tailwind CSS"
+      ],
       "links": {
-        "live": "https://www.andersonjoseph.com/",
-        "github": "https://github.com/AndersonDesign1/My-Portfolio"
+        "live": "https://www.thebranddevan.com/"
       }
     },
     {
       "id": "4",
       "type": "standard",
       "title": "WordPress Developer at The Wealthy Post",
-      "description": "Revamped The Wealthy Post’s website with advanced WordPress techniques, boosting engagement and organic traffic through responsive design, SEO, and performance optimization.",
+      "description": "Technical SEO and performance architecture for a high-concurrency Nigerian news portal.",
       "thumbnail": "/the-wealthy-post.webp",
       "techStack": [
         "WordPress",

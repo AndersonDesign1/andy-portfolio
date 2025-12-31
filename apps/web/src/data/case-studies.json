@@ -7,7 +7,7 @@
         "client": "Welup Digital",
         "duration": "Ongoing",
         "overview": "As the founding engineer and first developer hire, I co-developed the initial platform before leading the sole transition to a modern Next.js architecture. I managed everything from the scalable Sanity CMS implementation to technical SEO, while also mentoring the next generation of talent as an instructor at Welup Academy.",
-        "heroImage": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "heroImage": "/welup-main.png",
         "technologies": [
           "Next.js",
           "TypeScript",
@@ -186,29 +186,44 @@
       "gallery": {
         "images": [
           {
-            "src": "/my-website.webp",
-            "alt": "Welup Digital modernized website homepage with Next.js",
-            "title": "Modern Homepage"
+            "src": "/welup-main.png",
+            "alt": "Welup Digital main hero image showing the refined platform",
+            "title": "Redesigned Hero"
           },
           {
-            "src": "/new-hampshire.webp",
-            "alt": "Sanity CMS interface for content management",
-            "title": "CMS Interface"
+            "src": "/welup-digital-old-1.webp",
+            "alt": "Original Welup Digital homepage before the Next.js rewrite",
+            "title": "Original Homepage (V1)"
           },
           {
-            "src": "/promptearn.webp",
-            "alt": "Client website examples built with the new platform",
-            "title": "Client Websites"
+            "src": "/welup-digital-old-2.png",
+            "alt": "Legacy service and about sections from the initial version",
+            "title": "Legacy Layout"
           },
           {
-            "src": "/craigwal.webp",
-            "alt": "SEO optimization and performance monitoring dashboard",
-            "title": "SEO Dashboard"
+            "src": "/welup-redesign-1.jpg",
+            "alt": "Initial redesign phase focusing on typography and layout",
+            "title": "Redesigned Course landing page hero"
           },
           {
-            "src": "/dubiss.webp",
-            "alt": "DDoS protection and uptime monitoring system",
-            "title": "Security & Uptime"
+            "src": "/welup-redesign-2.png",
+            "alt": "User experience and navigation overhaul for the new platform",
+            "title": "Redesigned blog cards and Newsletter"
+          },
+          {
+            "src": "/welup-redesign-3.jpg",
+            "alt": "Component development and system architecture implementation",
+            "title": "Redesigned Course cards"
+          },
+          {
+            "src": "/welup-redesign-4.jpg",
+            "alt": "Final aesthetic polish and visual identity integration",
+            "title": "Visual Identity"
+          },
+          {
+            "src": "/welup-redesign-5.png",
+            "alt": "The completed Next.js platform ready for launch",
+            "title": "Redesigned Dialog"
           }
         ]
       }
@@ -220,9 +235,9 @@
         "client": "PromptEarn",
         "duration": "6 months",
         "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic and top 5 keyword rankings through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
-        "heroImage": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "heroImage": "/promptearn-1.png",
         "technologies": [
-          "Ahrefs",
+          "Semrush",
           "Google Search Console",
           "Google Analytics",
           "Screaming Frog",
@@ -372,29 +387,29 @@
       "gallery": {
         "images": [
           {
-            "src": "/my-website.webp",
-            "alt": "PromptEarn website homepage showing affiliate marketing platform",
-            "title": "Homepage Design"
+            "src": "/promptearn-1.png",
+            "alt": "PromptEarn platform interface and key metrics",
+            "title": "Hero Image"
           },
           {
-            "src": "/new-hampshire.webp",
-            "alt": "SEO dashboard and analytics interface for PromptEarn",
-            "title": "Analytics Dashboard"
+            "src": "/promptearn-2.png",
+            "alt": "SEO performance and traffic growth analytics",
+            "title": "Semrush on-page seo report"
           },
           {
-            "src": "/promptearn.webp",
-            "alt": "Affiliate partner onboarding and management system",
-            "title": "Partner Management"
+            "src": "/promptearn-3.png",
+            "alt": "Affiliate network and partner management dashboard",
+            "title": "Semrush Keywords report"
           },
           {
-            "src": "/craigwal.webp",
-            "alt": "Mobile-responsive design and user experience improvements",
-            "title": "Mobile Experience"
+            "src": "/promptearn-4.png",
+            "alt": "Technical SEO and site audit results",
+            "title": "Technical SEO Audit"
           },
           {
-            "src": "/dubiss.webp",
-            "alt": "Performance optimization and Core Web Vitals improvements",
-            "title": "Performance Optimization"
+            "src": "/promptearn-5.png",
+            "alt": "Core Web Vitals and PageSpeed optimization",
+            "title": "Backlinks and Competitor report"
           }
         ]
       }
