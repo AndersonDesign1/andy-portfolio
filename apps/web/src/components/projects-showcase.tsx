@@ -252,9 +252,7 @@ const ProjectsShowcase: React.FC = () => {
                             className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.github}
                             rel="noopener noreferrer"
-                            rel="noopener noreferrer"
                             target="_blank"
-                          >
                           >
                             Code
                           </Link>
@@ -312,12 +310,11 @@ const ProjectsShowcase: React.FC = () => {
                             Visit
                           </Link>
                         )}
+                        {project.links.github && (
                           <Link
                             className="font-medium text-primary text-sm transition-colors hover:text-muted"
                             href={project.links.github}
                             rel="noopener noreferrer"
-                            target="_blank"
-                          >
                             target="_blank"
                           >
                             Code
