@@ -95,6 +95,23 @@ const AboutPage: React.FC = () => (
             <div className="space-y-12">
               <div>
                 <h3 className="mb-4 font-medium text-primary text-xl">
+                  Full-Stack Development
+                </h3>
+                <p className="mb-4 text-base text-secondary leading-relaxed">
+                  I build scalable web applications for{" "}
+                  <span className="text-primary">millions of users</span>,
+                  writing clean, maintainable code and prioritizing performance
+                  and UX.
+                </p>
+                <ul className="space-y-2 font-mono text-muted text-sm">
+                  <li>— Built tens of web applications using modern stacks</li>
+                  <li>— Developed real-time analytics dashboards</li>
+                  <li>— Created microservices to reduce server costs</li>
+                  <li>— Implemented CI/CD pipelines</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="mb-4 font-medium text-primary text-xl">
                   SEO Optimization Expert
                 </h3>
                 <p className="mb-4 text-base text-secondary leading-relaxed">
@@ -110,23 +127,6 @@ const AboutPage: React.FC = () => (
                   </li>
                   <li>— Built SEO automation tools to speed up audits</li>
                   <li>— Recovered 5+ websites from Google penalties</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="mb-4 font-medium text-primary text-xl">
-                  Full-Stack Development
-                </h3>
-                <p className="mb-4 text-base text-secondary leading-relaxed">
-                  I build scalable web applications for{" "}
-                  <span className="text-primary">millions of users</span>,
-                  writing clean, maintainable code and prioritizing performance
-                  and UX.
-                </p>
-                <ul className="space-y-2 font-mono text-muted text-sm">
-                  <li>— Built tens of web applications using modern stacks</li>
-                  <li>— Developed real-time analytics dashboards</li>
-                  <li>— Created microservices to reduce server costs</li>
-                  <li>— Implemented CI/CD pipelines</li>
                 </ul>
               </div>
             </div>

@@ -287,7 +287,7 @@ const ProjectsShowcase: React.FC = () => {
                       <h3 className="font-medium text-lg text-primary">
                         {project.title}
                       </h3>
-                      <p className="line-clamp-1 max-w-md text-secondary text-sm">
+                      <p className="max-w-2xl text-secondary text-sm">
                         {project.description}
                       </p>
                     </div>
