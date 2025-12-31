@@ -3,8 +3,8 @@
     {
       "id": "1",
       "type": "case-study",
-      "title": "Full-Stack Web & SEO Architect at Welup Digital",
-      "description": "Built and fine-tuned Welup Digital’s core platforms for top-notch SEO, speed, and UX. Also crafted and optimized client sites, boosting traffic and online impact with smart, modern web strategies.",
+      "title": "Founding Engineer & SEO Expert at Welup Digital",
+      "description": "As the first developer hire and founding engineer, I co-developed the initial platform before leading the sole transition to a modern Next.js architecture. Optimized for peak SEO and performance, while also teaching at Welup Academy.",
       "thumbnail": "/welup-digital.webp",
       "techStack": [
         "Next.js",
@@ -23,14 +23,14 @@
         "Website Traffic": "+300% increase after relaunch",
         "User Engagement": "+40% improvement in session duration",
         "Site Speed": "50% faster load times",
-        "Client Sites": "10+ client websites built and optimized"
+        "Impact": "Successfully mentored students at Welup Academy"
       }
     },
     {
       "id": "2",
       "type": "case-study",
       "title": "SEO & Growth Specialist at PromptEarn",
-      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and a 45% sales increase.",
+      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and massive search engine dominance.",
       "thumbnail": "/promptearn.webp",
       "techStack": [
         "Ahrefs",

@@ -3,10 +3,10 @@
     "welup-digital": {
       "id": "welup-digital",
       "hero": {
-        "title": "Modernizing Welup Digital’s Web Platform",
+        "title": "Founding Engineer at Welup Digital",
         "client": "Welup Digital",
         "duration": "Ongoing",
-        "overview": "Leading the ongoing rewrite of Welup Digital’s website from static HTML to Next.js, building a scalable CMS with Sanity for blogs and landing pages, and delivering major SEO, performance, and reliability improvements for the company and its clients.",
+        "overview": "As the founding engineer and first developer hire, I co-developed the initial platform before leading the sole transition to a modern Next.js architecture. I managed everything from the scalable Sanity CMS implementation to technical SEO, while also mentoring the next generation of talent as an instructor at Welup Academy.",
         "heroImage": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1200",
         "technologies": [
           "Next.js",
@@ -95,10 +95,11 @@
             ]
           },
           {
-            "name": "SEO & Client Delivery",
+            "name": "SEO & Academy Instruction",
             "duration": "Ongoing",
             "activities": [
               "Technical SEO optimization",
+              "Teaching web development and SEO at Welup Academy",
               "Launching and optimizing client websites",
               "Continuous performance and UX improvements"
             ]
@@ -122,12 +123,12 @@
           "Benchmarked SEO and performance against top digital agencies",
           "Analyzed user feedback for navigation and speed"
         ],
-        "collaboration": "Working with founders and content team; leading all web, CMS, and SEO initiatives.",
+        "collaboration": "Joined as the first hire and founding engineer. Co-developed the initial version with another teammate before taking sole ownership of the Next.js rewrite and full technical stack.",
         "iterations": [
           "Continuous SEO and performance tuning",
           "Refining CMS and UX based on analytics and feedback"
         ],
-        "userFeedback": "Team and clients praise the new CMS, site speed, and improved search visibility."
+        "userFeedback": "The founders and academy students praise the new platform for its speed, clarity, and robust SEO foundations."
       },
       "results": {
         "beforeAfter": [
@@ -176,9 +177,10 @@
           "Multiple client websites"
         ],
         "achievements": [
-          "Zero downtime migration",
+          "Solo lead for Next.js migration",
           "Major SEO and client delivery wins",
-          "CMS and content system for the team"
+          "Lead Instructor at Welup Academy",
+          "Built foundational CMS and content systems"
         ]
       },
       "gallery": {
@@ -217,7 +219,7 @@
         "title": "SEO Growth for PromptEarn",
         "client": "PromptEarn",
         "duration": "6 months",
-        "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic, top 5 keyword rankings, and a 45% uplift in sales through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
+        "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic and top 5 keyword rankings through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
         "heroImage": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200",
         "technologies": [
           "Ahrefs",
@@ -260,7 +262,7 @@
           "250% organic traffic growth",
           "Affiliate network doubled",
           "Bounce rate reduced by 50%",
-          "45% increase in sales"
+          "Top search visibility for core fintech terms"
         ]
       },
       "approach": {
@@ -352,7 +354,7 @@
           }
         ],
         "metrics": [
-          "45% increase in sales",
+          "Top 1% search visibility for niche keywords",
           "60% improvement in user engagement",
           "Top 5 ranking for key keywords"
         ],
@@ -364,7 +366,7 @@
         "achievements": [
           "Doubled affiliate network",
           "250% organic traffic growth",
-          "Bounce rate halved"
+          "Dominant search presence for target keywords"
         ]
       },
       "gallery": {
