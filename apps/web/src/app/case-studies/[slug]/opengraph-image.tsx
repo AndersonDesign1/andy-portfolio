@@ -20,7 +20,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
   const title = caseStudy?.hero?.title || "Case Study";
   const subtitle = caseStudy?.hero?.client
     ? `Client: ${caseStudy.hero.client}`
-    : "Andeson Joseph Portfolio";
+    : "Anderson Joseph Portfolio";
 
   return new ImageResponse(
     <div
