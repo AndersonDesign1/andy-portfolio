@@ -52,8 +52,8 @@ async function fetchAttachments(
         filename: attachment.filename,
         content: buffer.toString("base64"),
       });
-    } catch (err) {
-      console.error(`Failed to download: ${attachment.filename}`, err);
+    } catch {
+      // Silently skip failed attachment downloads
     }
   }
 
@@ -129,7 +129,6 @@ export async function POST(request: NextRequest) {
       await resend.emails.receiving.get(email_id);
 
     if (emailError || !email) {
-      console.error("Failed to fetch email:", emailError);
       return NextResponse.json(
         { error: "Failed to fetch email" },
         { status: 500 }
@@ -156,14 +155,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error("Failed to forward email:", error);
       return NextResponse.json({ error: "Failed to forward" }, { status: 500 });
     }
 
-    console.log(`Email forwarded: ${subject} from ${from}`);
+
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Webhook error:", error);
+  } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }
