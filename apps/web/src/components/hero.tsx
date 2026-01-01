@@ -67,7 +67,7 @@ export default function Hero() {
               className="max-w-md text-lg text-secondary leading-relaxed md:text-xl"
               variants={heroTextVariants}
             >
-              Building digital products with a focus on motion, interaction, and
+              Building digital products with a focus on growth, interaction, and
               precise engineering.
             </motion.p>
 

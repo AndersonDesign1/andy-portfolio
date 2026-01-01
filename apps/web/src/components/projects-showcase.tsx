@@ -203,12 +203,12 @@ const ProjectsShowcase: React.FC = () => {
                           className="group/title"
                           href={project.links.caseStudy}
                         >
-                          <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover/title:opacity-70">
+                          <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70">
                             {project.title}
                           </h3>
                         </Link>
                       ) : (
-                        <h3 className="font-medium text-primary text-xl">
+                        <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70">
                           {project.title}
                         </h3>
                       )}
@@ -225,7 +225,7 @@ const ProjectsShowcase: React.FC = () => {
                     </p>
 
                     <div className="mt-auto flex items-center justify-between border-subtle border-t pt-4">
-                      <p className="max-w-[60%] truncate font-mono text-muted text-xs uppercase tracking-wider">
+                      <p className="max-w-[60%] truncate font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary">
                         {project.techStack.slice(0, 3).join(" / ")}
                       </p>
                       <div className="flex gap-6">
@@ -274,7 +274,7 @@ const ProjectsShowcase: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <h2 className="mb-12 font-mono text-muted text-xs uppercase tracking-widest">
-                Other Projects
+                Freelance & Individual Projects
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 {otherProjects.map((project, index) => (
@@ -286,7 +286,7 @@ const ProjectsShowcase: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                   >
                     <div className="mb-4 md:mb-0 md:flex-1">
-                      <h3 className="font-medium text-lg text-primary">
+                      <h3 className="font-medium text-lg text-primary transition-opacity duration-300 group-hover:opacity-70">
                         {project.title}
                       </h3>
                       <p className="max-w-2xl text-secondary text-sm">
@@ -295,14 +295,14 @@ const ProjectsShowcase: React.FC = () => {
                     </div>
 
                     <div className="flex w-full items-center justify-between gap-8 md:w-auto md:justify-end">
-                      <p className="hidden font-mono text-muted text-xs uppercase tracking-wider md:block">
+                      <p className="hidden font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary md:block">
                         {project.techStack.slice(0, 3).join(" / ")}
                       </p>
 
                       <div className="flex gap-6">
                         {project.links.live && (
                           <Link
-                            className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.live}
                             rel="noopener noreferrer"
                             target="_blank"
@@ -312,7 +312,7 @@ const ProjectsShowcase: React.FC = () => {
                         )}
                         {project.links.github && (
                           <Link
-                            className="font-medium text-primary text-sm transition-colors hover:text-muted"
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.github}
                             rel="noopener noreferrer"
                             target="_blank"

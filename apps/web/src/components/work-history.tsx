@@ -30,6 +30,9 @@ export default function WorkHistory() {
                   return (
                     title.includes("full stack") ||
                     title.includes("developer") ||
+                    title.includes("engineer") ||
+                    title.includes("founding") ||
+                    title.includes("backend") ||
                     title.includes("seo") ||
                     title.includes("instructor") ||
                     title.includes("teacher") ||

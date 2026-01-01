@@ -8,19 +8,37 @@
       "location": "Online",
       "startDate": "2024-07-01",
       "endDate": "2024-07-31",
-      "institutionUrl": "https://www.mckinsey.com/forward",
-      "logoUrl": "https://cdn.brandfetch.io/iddTc-lesG/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667571666573"
+      "institutionUrl": "https://www.credly.com/badges/f53b20bf-4c27-4bea-978d-14eb62fae194/public_url"
     },
     {
-      "id": "coursera-advanced-seo-tactics",
-      "institution": "Coursera",
-      "degree": "Certificate",
-      "field": "Advanced Content and Social Tactics to Optimize SEO",
+      "id": "meta-frontend-engineer",
+      "institution": "Meta (via Coursera)",
+      "degree": "Professional Certificate",
+      "field": "Meta Front-End Engineer",
       "location": "Online",
-      "startDate": "2024-01-01",
+      "startDate": "2023-06-01",
+      "endDate": "2024-02-28",
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/XTVZTQ6UX54K"
+    },
+    {
+      "id": "uc-davis-seo-specialization",
+      "institution": "UC Davis (via Coursera)",
+      "degree": "Professional Certificate",
+      "field": "Search Engine Optimization (SEO) Specialization",
+      "location": "Online",
+      "startDate": "2023-01-01",
       "endDate": "2024-01-31",
-      "institutionUrl": "https://coursera.org/verify/QGGVKP45U9MW",
-      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/3H7ZVVUWS6Q6"
+    },
+    {
+      "id": "google-project-management",
+      "institution": "Google (via Coursera)",
+      "degree": "Professional Certificate",
+      "field": "Project Management",
+      "location": "Online",
+      "startDate": "2023-02-01",
+      "endDate": "2023-05-31",
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/UFLKEBTWKXAS"
     },
     {
       "id": "freecodecamp-js-algorithms",
@@ -30,41 +48,7 @@
       "location": "Online",
       "startDate": "2023-01-01",
       "endDate": "2023-12-31",
-      "institutionUrl": "https://freecodecamp.org/certification/fccb3aeb8e2-e79c-4716-a0eb-ab81a2aeccc1/javascript-algorithms-and-data-structures",
-      "logoUrl": "https://cdn.brandfetch.io/idXgCW-Dlx/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1749503779562"
-    },
-    {
-      "id": "coursera-optimize-google-search",
-      "institution": "Coursera",
-      "degree": "Certificate",
-      "field": "Optimizing a Website for Google Search",
-      "location": "Online",
-      "startDate": "2023-09-01",
-      "endDate": "2023-09-30",
-      "institutionUrl": "https://coursera.org/verify/3H7ZVVUWS6Q6",
-      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
-    },
-    {
-      "id": "coursera-intro-google-seo",
-      "institution": "Coursera",
-      "degree": "Certificate",
-      "field": "Introduction to Google SEO",
-      "location": "Online",
-      "startDate": "2023-01-01",
-      "endDate": "2023-12-31",
-      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WHCFRV6J3MW9",
-      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
-    },
-    {
-      "id": "coursera-google-seo-fundamentals",
-      "institution": "Coursera",
-      "degree": "Certificate",
-      "field": "Google SEO Fundamentals",
-      "location": "Online",
-      "startDate": "2023-01-01",
-      "endDate": "2023-12-31",
-      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/WXVUPBHNSW6Y",
-      "logoUrl": "https://cdn.brandfetch.io/idTHfL51P-/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1667591275632"
+      "institutionUrl": "https://freecodecamp.org/certification/fccb3aeb8e2-e79c-4716-a0eb-ab81a2aeccc1/javascript-algorithms-and-data-structures"
     },
     {
       "id": "nabteb-computer-science",
@@ -74,8 +58,7 @@
       "location": "Benin City, Edo state",
       "startDate": "2021-04-01",
       "endDate": "2022-04-30",
-      "institutionUrl": "https://nabteb.gov.ng",
-      "logoUrl": "https://cdn.brandfetch.io/id5AAmrQuD/w/120/h/130/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1748815183924"
+      "institutionUrl": "https://nabteb.gov.ng"
     },
     {
       "id": "edobits-ict-academy",
@@ -85,8 +68,7 @@
       "location": "Benin City, Edo state",
       "startDate": "2020-09-01",
       "endDate": "2021-09-30",
-      "institutionUrl": "https://edobits.com",
-      "logoUrl": "/edobits-logo.webp"
+      "institutionUrl": "https://edobits.com"
     }
   ]
 }

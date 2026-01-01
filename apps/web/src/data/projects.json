@@ -3,7 +3,7 @@
     {
       "id": "1",
       "type": "case-study",
-      "title": "Full-Stack Web & SEO Architect at Welup Digital",
+      "title": "Founding Engineer & SEO Expert at Welup Digital",
       "description": "Founding engineer and lead for a modern Next.js transition, focused on SEO, performance, and instructor leadership at Welup Academy.",
       "thumbnail": "/welup-main.png",
       "techStack": [
@@ -52,9 +52,32 @@
       }
     },
     {
+      "id": "zumera",
+      "type": "case-study",
+      "title": "Full-Stack Developer at Zumera",
+      "description": "Developed a high-performance investment platform using Next.js and Tailwind CSS. Implemented complex financial dashboards and interactive investment tracking features with Shadcn UI components.",
+      "thumbnail": "/zumera-main.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Shadcn UI",
+        "Framer Motion",
+        "Lucide React"
+      ],
+      "links": {
+        "live": "https://www.zumerainvestment.com/"
+      },
+      "metrics": {
+        "Performance": "Optimized for high-concurrency access",
+        "UI/UX": "Seamless investment tracking dashboards",
+        "Architecture": "Scalable Next.js & Tailwind CSS foundation"
+      }
+    },
+    {
       "id": "3",
       "type": "standard",
-      "title": "Full-Stack Engineer at Devan",
+      "title": "Backend Engineer at Devan",
       "description": "Engineered a high-performance urban-chic e-commerce platform with a robust Node.js backend and seamless Sanity CMS integration.",
       "thumbnail": "/Devan-main.png",
       "techStack": [
@@ -67,26 +90,6 @@
       ],
       "links": {
         "live": "https://www.thebranddevan.com/"
-      }
-    },
-    {
-      "id": "4",
-      "type": "standard",
-      "title": "WordPress Developer at The Wealthy Post",
-      "description": "Technical SEO and performance architecture for a high-concurrency Nigerian news portal.",
-      "thumbnail": "/the-wealthy-post.webp",
-      "techStack": [
-        "WordPress",
-        "Yoast SEO",
-        "Google Analytics",
-        "PageSpeed Insights"
-      ],
-      "links": {
-        "live": "https://thewealthypost.com/"
-      },
-      "metrics": {
-        "Organic Traffic": "200% increase post-launch",
-        "Load Time": "Reduced from 15s to 3s"
       }
     }
   ]

@@ -52,9 +52,32 @@
       }
     },
     {
+      "id": "zumera",
+      "type": "case-study",
+      "title": "Full-Stack Developer at Zumera",
+      "description": "Developed a high-performance investment platform using Next.js and Tailwind CSS. Implemented complex financial dashboards and interactive investment tracking features with Shadcn UI components.",
+      "thumbnail": "/zumera-main.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Shadcn UI",
+        "Framer Motion",
+        "Lucide React"
+      ],
+      "links": {
+        "live": "https://www.zumerainvestment.com/"
+      },
+      "metrics": {
+        "Performance": "Optimized for high-concurrency access",
+        "UI/UX": "Seamless investment tracking dashboards",
+        "Architecture": "Scalable Next.js & Tailwind CSS foundation"
+      }
+    },
+    {
       "id": "3",
       "type": "standard",
-      "title": "Full-Stack Engineer at Devan",
+      "title": "Backend Engineer at Devan",
       "description": "Engineered a high-performance urban-chic e-commerce platform with a robust Node.js backend and seamless Sanity CMS integration.",
       "thumbnail": "/Devan-main.png",
       "techStack": [
