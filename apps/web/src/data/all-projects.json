@@ -3,9 +3,9 @@
     {
       "id": "1",
       "type": "case-study",
-      "title": "Full-Stack Web & SEO Architect at Welup Digital",
-      "description": "Built and fine-tuned Welup Digital’s core platforms for top-notch SEO, speed, and UX. Also crafted and optimized client sites, boosting traffic and online impact with smart, modern web strategies.",
-      "thumbnail": "/welup-digital.webp",
+      "title": "Founding Engineer & SEO Expert at Welup Digital",
+      "description": "As the first developer hire and founding engineer, I co-developed the initial platform before leading the sole transition to a modern Next.js architecture. Optimized for peak SEO and performance, while also teaching at Welup Academy.",
+      "thumbnail": "/welup-main.png",
       "techStack": [
         "Next.js",
         "TypeScript",
@@ -23,15 +23,15 @@
         "Website Traffic": "+300% increase after relaunch",
         "User Engagement": "+40% improvement in session duration",
         "Site Speed": "50% faster load times",
-        "Client Sites": "10+ client websites built and optimized"
+        "Impact": "Successfully mentored students at Welup Academy"
       }
     },
     {
       "id": "2",
       "type": "case-study",
       "title": "SEO & Growth Specialist at PromptEarn",
-      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and a 45% sales increase.",
-      "thumbnail": "/promptearn.webp",
+      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and massive search engine dominance.",
+      "thumbnail": "/promptearn-1.png",
       "techStack": [
         "Ahrefs",
         "Google Search Console",
@@ -52,22 +52,51 @@
       }
     },
     {
+      "id": "zumera",
+      "type": "case-study",
+      "title": "Full-Stack Developer at Zumera",
+      "description": "Developed a high-performance investment platform using Next.js and Tailwind CSS. Implemented complex financial dashboards and interactive investment tracking features with Shadcn UI components.",
+      "thumbnail": "/zumera-main.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Shadcn UI",
+        "Framer Motion",
+        "Lucide React"
+      ],
+      "links": {
+        "live": "https://www.zumerainvestment.com/"
+      },
+      "metrics": {
+        "Performance": "Optimized for high-concurrency access",
+        "UI/UX": "Seamless investment tracking dashboards",
+        "Architecture": "Scalable Next.js & Tailwind CSS foundation"
+      }
+    },
+    {
       "id": "3",
       "type": "standard",
-      "title": "Portfolio Website",
-      "description": "A minimalist portfolio website showcasing projects and skills with a clean, responsive design and smooth animations.",
-      "thumbnail": "/my-website.webp",
-      "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      "title": "Backend Engineer at Devan",
+      "description": "Engineered a high-performance urban-chic e-commerce platform with a robust Node.js backend and seamless Sanity CMS integration.",
+      "thumbnail": "/Devan-main.png",
+      "techStack": [
+        "Node.js",
+        "PostgreSQL",
+        "Tanstack Query",
+        "Sanity CMS",
+        "Next.js",
+        "Tailwind CSS"
+      ],
       "links": {
-        "live": "https://www.andersonjoseph.com/",
-        "github": "https://github.com/AndersonDesign1/My-Portfolio"
+        "live": "https://www.thebranddevan.com/"
       }
     },
     {
       "id": "4",
       "type": "standard",
       "title": "WordPress Developer at The Wealthy Post",
-      "description": "Revamped The Wealthy Post’s website with advanced WordPress techniques, boosting engagement and organic traffic through responsive design, SEO, and performance optimization.",
+      "description": "Technical SEO and performance architecture for a high-concurrency Nigerian news portal.",
       "thumbnail": "/the-wealthy-post.webp",
       "techStack": [
         "WordPress",
@@ -87,7 +116,7 @@
       "id": "5",
       "type": "standard",
       "title": "Corporate Website for Dubiss Forex Academy",
-      "description": "Built a modern, trust-focused website for Dubiss Forex Academy, highlighting their global reach, educational programs, and client testimonials. Enhanced credibility and user engagement with a clean, professional design.",
+      "description": "Prestige-first digital platform for a forex academy, focused on intuitive educational discovery.",
       "thumbnail": "/dubiss.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -103,7 +132,7 @@
       "id": "6",
       "type": "standard",
       "title": "Corporate Website for Craigwal Petreshore",
-      "description": "Developed a robust corporate site for Craigwal Petreshore, showcasing engineering, procurement, and construction capabilities. Integrated downloadable company profile and clear service breakdowns.",
+      "description": "Robust corporate showcase for an EPC engineering firm, emphasizing industrial clarity and service depth.",
       "thumbnail": "/craigwal.webp",
       "techStack": ["WordPress", "Custom Theme", "SEO Optimization"],
       "links": {
@@ -119,7 +148,7 @@
       "id": "7",
       "type": "standard",
       "title": "Corporate Website for New Hampshire Capital",
-      "description": "Designed and built a modern site for New Hampshire Capital, highlighting their expertise in asset management, infrastructure, and energy projects. Focused on clarity, trust, and sector impact.",
+      "description": "Sophisticated gateway for asset management, communicating sector-wide impact in energy and infrastructure.",
       "thumbnail": "/new-hampshire.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -135,7 +164,7 @@
       "id": "8",
       "type": "standard",
       "title": "Corporate Website for Urabus Renewable Energies",
-      "description": "Developed a clean, mission-driven website for Urabus Renewable Energies, focusing on their impact in healthcare, mobility, and sustainability. Showcased projects, testimonials, and SDG alignment.",
+      "description": "Mission-critical platform for renewable energy, merging healthcare and sustainability advocacy.",
       "thumbnail": "/urabus-energies.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -151,7 +180,7 @@
       "id": "9",
       "type": "standard",
       "title": "Corporate Website for Aristeia Properties",
-      "description": "Built a visually engaging site for Aristeia Properties, emphasizing their mission, vision, and core values. Enhanced investor trust and showcased real estate expertise.",
+      "description": "Minimalist real estate portal for architectural vision, featuring an imagery-first investor interface.",
       "thumbnail": "/aristeia.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -167,7 +196,7 @@
       "id": "10",
       "type": "standard",
       "title": "Lead Developer at Kyrus Recycling",
-      "description": "Led a team to build a recycling web app that incentivizes users to recycle waste for rewards. Delivered the MVP in 3 months, driving 500+ user sign-ups in the first month.",
+      "description": "Full-stack MVP for a recycling incentive app, engineered for scalability and real-time user rewards.",
       "thumbnail": "/trashpoint.webp",
       "techStack": [
         "React",

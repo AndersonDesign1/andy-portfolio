@@ -33,8 +33,32 @@ export default async function CaseStudyPageComponent({
 }) {
   const { slug } = await params;
   const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
+
   if (!cs) {
     notFound();
   }
-  return <CaseStudyPage caseStudy={cs} />;
+
+  const slugs = Object.keys(caseStudiesData.caseStudies);
+  const currentIndex = slugs.indexOf(slug);
+
+  const prevSlug = currentIndex > 0 ? slugs[currentIndex - 1] : undefined;
+  const nextSlug =
+    currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : undefined;
+
+  const navigation = {
+    prev: prevSlug
+      ? {
+          slug: prevSlug,
+          title: caseStudiesData.caseStudies[prevSlug].hero.title,
+        }
+      : undefined,
+    next: nextSlug
+      ? {
+          slug: nextSlug,
+          title: caseStudiesData.caseStudies[nextSlug].hero.title,
+        }
+      : undefined,
+  };
+
+  return <CaseStudyPage caseStudy={cs} navigation={navigation} />;
 }

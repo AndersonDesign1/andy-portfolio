@@ -2,9 +2,8 @@ import { client } from "@andy-portfolio/sanity-config";
 import type { Metadata } from "next";
 import BlogList from "@/components/bloglist";
 
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const revalidate = 60;
 
-// Using generateMetadata enables streaming for performance
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Blog | Andy Portfolio",

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -44,7 +44,6 @@ const CardTitle = React.forwardRef<
 ));
 CardTitle.displayName = "CardTitle";
 
-// Using explicit interface from master branch for better type safety
 interface CardDescriptionProps
   extends React.HTMLAttributes<HTMLParagraphElement> {}
 
@@ -60,7 +59,6 @@ const CardDescription = React.forwardRef<
 ));
 CardDescription.displayName = "CardDescription";
 
-// Using explicit interface from master branch for better type safety
 interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
@@ -70,7 +68,6 @@ const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
 );
 CardContent.displayName = "CardContent";
 
-// Using explicit interface and definition from master/new-design combined
 interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(

@@ -9,21 +9,20 @@ import {
   SCROLL_EASING_EXPONENT,
 } from "@/lib/constants";
 
-type ScrollContextType = {
+interface ScrollContextType {
   lenis: Lenis | null;
-};
+}
 
 const ScrollContext = createContext<ScrollContextType>({ lenis: null });
 
-type ScrollProviderProps = {
+interface ScrollProviderProps {
   children: React.ReactNode;
-};
+}
 
 export default function ScrollProvider({ children }: ScrollProviderProps) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Always initialize Lenis, but use CSS media queries to control behavior
     lenisRef.current = new Lenis({
       duration: SCROLL_DURATION,
       easing: (t) =>
@@ -36,14 +35,12 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
       infinite: false,
     });
 
-    // RAF loop for smooth animations
     function raf(time: number) {
       lenisRef.current?.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
 
-    // Cleanup
     return () => {
       if (lenisRef.current) {
         lenisRef.current.destroy();
@@ -58,7 +55,6 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
   );
 }
 
-// Hook to access Lenis instance
 export const useLenis = () => {
   const context = useContext(ScrollContext);
   if (!context) {

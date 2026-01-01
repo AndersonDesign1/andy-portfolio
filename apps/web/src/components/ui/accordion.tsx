@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 
-type AccordionContextType = {
+interface AccordionContextType {
   openItems: string[];
   toggleItem: (value: string) => void;
-};
+}
 
 const AccordionContext = React.createContext<AccordionContextType | undefined>(
   undefined
@@ -20,14 +20,14 @@ const useAccordion = () => {
   return context;
 };
 
-type AccordionProps = {
+interface AccordionProps {
   children: React.ReactNode;
   type?: "single" | "multiple";
   collapsible?: boolean;
   value?: string;
   onValueChange?: (value: string) => void;
   className?: string;
-};
+}
 
 const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
   (
@@ -60,20 +60,16 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
             newValue = itemValue;
             setOpenItems(newItems);
           }
+        } else if (openItems.includes(itemValue)) {
+          const newItems = openItems.filter((item) => item !== itemValue);
+          newValue = newItems.join(",");
+          setOpenItems(newItems);
         } else {
-          // multiple type
-          if (openItems.includes(itemValue)) {
-            const newItems = openItems.filter((item) => item !== itemValue);
-            newValue = newItems.join(",");
-            setOpenItems(newItems);
-          } else {
-            const newItems = [...openItems, itemValue];
-            newValue = newItems.join(",");
-            setOpenItems(newItems);
-          }
+          const newItems = [...openItems, itemValue];
+          newValue = newItems.join(",");
+          setOpenItems(newItems);
         }
 
-        // Call onValueChange after state update to avoid setState during render
         if (onValueChange) {
           onValueChange(newValue);
         }
@@ -81,7 +77,6 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
       [type, collapsible, openItems, onValueChange]
     );
 
-    // Sync with external value
     React.useEffect(() => {
       if (value !== undefined) {
         setOpenItems(value ? [value] : []);
@@ -99,12 +94,12 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
 );
 Accordion.displayName = "Accordion";
 
-type AccordionItemProps = {
+interface AccordionItemProps {
   children: React.ReactNode;
   value: string;
   className?: string;
   asChild?: boolean;
-};
+}
 
 const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
   ({ children, value, className, asChild = false, ...props }, ref) => {
@@ -117,7 +112,9 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
       <Comp {...itemProps}>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child, { value } as any);
+            return React.cloneElement(child, { value } as React.Attributes & {
+              value: string;
+            });
           }
           return child;
         })}
@@ -127,12 +124,12 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 );
 AccordionItem.displayName = "AccordionItem";
 
-type AccordionTriggerProps = {
+interface AccordionTriggerProps {
   children: React.ReactNode;
   value: string;
   className?: string;
   asChild?: boolean;
-};
+}
 
 const AccordionTrigger = React.forwardRef<
   HTMLButtonElement,
@@ -160,12 +157,12 @@ const AccordionTrigger = React.forwardRef<
 });
 AccordionTrigger.displayName = "AccordionTrigger";
 
-type AccordionContentProps = {
+interface AccordionContentProps {
   children: React.ReactNode;
   value: string;
   className?: string;
   asChild?: boolean;
-};
+}
 
 const AccordionContent = React.forwardRef<
   HTMLDivElement,

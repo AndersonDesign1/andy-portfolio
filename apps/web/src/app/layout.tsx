@@ -16,7 +16,13 @@ const inter = Inter({ subsets: ["latin"] });
 export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL("https://andersonjoseph.com"),
-    title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+    alternates: {
+      canonical: "/",
+    },
+    title: {
+      default: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+      template: "%s | Anderson Joseph",
+    },
     description:
       "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
     keywords: [
@@ -25,28 +31,52 @@ export async function generateMetadata(): Promise<Metadata> {
       "SEO Specialist",
       "Web Performance",
       "No-code Developer",
+      "Next.js Developer",
+      "React Developer",
     ],
+    authors: [{ name: "Anderson Joseph" }],
     openGraph: {
       title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
       description:
         "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
       url: "https://andersonjoseph.com",
+      siteName: "Anderson Joseph",
+      locale: "en_US",
       type: "website",
-      images: ["/Andy.webp"],
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Anderson Joseph Portfolio",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
       description:
         "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
-      images: ["/Andy.webp"],
+      images: ["/opengraph-image"],
+      creator: "@andersonjoseph",
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
 
-type RootLayoutProps = {
+interface RootLayoutProps {
   children: ReactNode;
-};
+}
 
 export default function RootLayout({
   children,
@@ -54,7 +84,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider disableTransitionOnChange={false}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+          storageKey="andy-theme"
+        >
           <ScrollProvider>
             <Navbar />
             <main>{children}</main>
@@ -63,6 +99,9 @@ export default function RootLayout({
 
             <Analytics />
             <SpeedInsights />
+
+            {/* Grain texture overlay for paper-like quality */}
+            <div aria-hidden="true" className="grain-overlay" />
 
             <Toaster
               position="top-right"

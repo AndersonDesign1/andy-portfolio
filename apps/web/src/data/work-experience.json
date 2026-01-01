@@ -3,7 +3,7 @@
     {
       "id": "welup-digital-fullstack-developer",
       "company": "Welup Digital",
-      "position": "Full Stack Developer",
+      "position": "Founding Engineer",
       "startDate": "2021-09-01",
       "endDate": null,
       "description": "Implemented responsive design principles across all platforms and developed/optimized dynamic client websites using effective SEO strategies.",
@@ -18,13 +18,12 @@
         "Next.js",
         "Framer Motion"
       ],
-      "companyUrl": "https://welupdigital.com",
-      "logoUrl": "https://cdn.brandfetch.io/idYTEqy25B/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1747176757030"
+      "companyUrl": "https://welupdigital.com"
     },
     {
       "id": "welup-digital-seo-specialist",
       "company": "Welup Digital",
-      "position": "SEO Specialist",
+      "position": "SEO Expert",
       "startDate": "2023-01-01",
       "endDate": null,
       "description": "Developed and executed comprehensive SEO strategies to significantly boost website traffic, visibility, and user engagement.",
@@ -35,28 +34,12 @@
         "SEMrush",
         "Search Console"
       ],
-      "companyUrl": "https://welupdigital.com",
-      "logoUrl": "https://cdn.brandfetch.io/idYTEqy25B/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1747176757030"
-    },
-    {
-      "id": "kyrus-recycling-lead-developer",
-      "company": "Kyrus Recycling",
-      "position": "Lead Developer",
-      "startDate": "2024-09-01",
-      "endDate": "2024-12-31",
-      "description": "Led a team of full-stack developers in designing and building a recycling web application that incentivizes users to recycle waste.",
-      "technologies": [
-        "Full-stack Development",
-        "Web Application Development",
-        "Project Management"
-      ],
-      "companyUrl": "https://kyrusrecycling.com",
-      "logoUrl": "/Kyrus-logo.png"
+      "companyUrl": "https://welupdigital.com"
     },
     {
       "id": "promptearn-seo-specialist",
       "company": "PromptEarn",
-      "position": "SEO Specialist",
+      "position": "SEO & Growth Specialist",
       "startDate": "2024-05-01",
       "endDate": "2024-10-31",
       "description": "Spearheaded a comprehensive marketing campaign using email, social media, and affiliate marketing strategies, and optimized website performance for SEO.",
@@ -68,52 +51,12 @@
         "Google Core Web Vitals",
         "PageSpeed"
       ],
-      "companyUrl": "https://promptearn.com",
-      "logoUrl": "https://cdn.brandfetch.io/idIZtYXRr2/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1749243988033"
-    },
-    {
-      "id": "eng4careers-wix-developer",
-      "company": "Eng4Careers",
-      "position": "Wix Developer",
-      "startDate": "2024-05-01",
-      "endDate": "2024-07-31",
-      "description": "Revamped the corporate website using Wix, implementing a streamlined UI/UX design to enhance user navigation.",
-      "technologies": ["Wix", "UI/UX Design", "User Testing"],
-      "companyUrl": "https://eng4careers.com",
-      "logoUrl": "https://cdn.brandfetch.io/idI-hdjU5f/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1718024401291"
-    },
-    {
-      "id": "the-wealthy-post-wordpress-developer",
-      "company": "The Wealthy Post",
-      "position": "WordPress Developer",
-      "startDate": "2023-12-01",
-      "endDate": "2024-03-31",
-      "description": "Revamped the company website using advanced WordPress techniques, implementing responsive design, and optimizing performance.",
-      "technologies": ["WordPress", "SEO", "Responsive Design"],
-      "companyUrl": "https://wealthypost.com",
-      "logoUrl": "/wealthypost-logo.webp"
-    },
-    {
-      "id": "mentorparters-developer",
-      "company": "Mentorparters",
-      "position": "Developer",
-      "startDate": "2024-01-01",
-      "endDate": "2024-06-30",
-      "description": "Developed and maintained web applications using modern technologies, contributing to the company's digital transformation initiatives.",
-      "technologies": [
-        "React",
-        "TypeScript",
-        "Node.js",
-        "MongoDB",
-        "REST APIs"
-      ],
-      "companyUrl": "https://mentorparters.com",
-      "logoUrl": "https://cdn.brandfetch.io/idRZP4H_NP/w/225/h/210/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1739475229996"
+      "companyUrl": "https://promptearn.com"
     },
     {
       "id": "zumera-developer",
       "company": "Zumera",
-      "position": "Developer",
+      "position": "Full-Stack Developer",
       "startDate": "2025-03-01",
       "endDate": "2025-08-31",
       "description": "Built scalable web applications and contributed to the development of innovative digital solutions for clients.",
@@ -124,30 +67,26 @@
         "Firebase",
         "TypeScript"
       ],
-      "companyUrl": "https://zumera.com",
-      "logoUrl": "https://cdn.brandfetch.io/idbFck9FmG/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1748026974700"
+      "companyUrl": "https://zumera.com"
     },
     {
-      "id": "smedan-developer",
-      "company": "Smedan",
-      "position": "Developer",
-      "startDate": "2024-02-01",
-      "endDate": "2024-07-31",
-      "description": "Developed digital solutions to support small and medium enterprises, contributing to the organization's mission of business development.",
-      "technologies": ["Vue.js", "Laravel", "MySQL", "Docker", "Git"],
-      "companyUrl": "https://smedan.gov.ng",
-      "logoUrl": "https://cdn.brandfetch.io/idDLKUFFNe/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1740903801616"
-    },
-    {
-      "id": "iomun-skills-trainer",
-      "company": "IOMUN",
-      "position": "Skills Trainer",
-      "startDate": "2022-01-01",
-      "endDate": "2022-12-31",
-      "description": "Conducted ICT and graphic design training for underserved populations, empowering individuals with essential digital skills.",
-      "technologies": ["ICT", "Graphic Design", "Training & Development"],
-      "companyUrl": "https://iomun.org",
-      "logoUrl": "/IOM-logo.svg"
+      "id": "freelance-fullstack-developer",
+      "company": "Freelance",
+      "position": "Full Stack Developer",
+      "startDate": "2020-09-01",
+      "endDate": null,
+      "description": "Successfully delivered multiple digital solutions including corporate websites, news portals, and e-commerce platforms for diverse clients across energy, finance, and recycling sectors.",
+      "technologies": [
+        "React",
+        "Node.js",
+        "WordPress",
+        "Laravel",
+        "Next.js",
+        "Express.js",
+        "SEO",
+        "UI/UX Design"
+      ],
+      "companyUrl": "#"
     }
   ]
 }

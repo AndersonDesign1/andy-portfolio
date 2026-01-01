@@ -5,7 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
 import {
   ANIMATION_DELAY_PROJECT,
@@ -13,8 +19,7 @@ import {
   ANIMATION_EASE_CUBIC,
 } from "@/lib/constants";
 
-// --- Types ---
-type Project = {
+interface Project {
   id: string;
   type: "case-study" | "standard";
   title: string;
@@ -27,9 +32,9 @@ type Project = {
     caseStudy?: string;
   };
   metrics?: Record<string, string>;
-};
+}
 
-type RawProject = {
+interface RawProject {
   id: string;
   type: string;
   title: string;
@@ -42,9 +47,8 @@ type RawProject = {
     caseStudy?: string;
   };
   metrics?: Record<string, unknown>;
-};
+}
 
-// Clean metrics and cast type for type safety
 const projects: Project[] = projectsDataJson.projects.map((p: RawProject) => ({
   ...p,
   type: p.type as "case-study" | "standard",
@@ -68,7 +72,6 @@ const gridVariants = {
 const ProjectsShowcase: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
-  // Filter by category, but keep original order
   const filteredProjects = useMemo(() => {
     if (activeCategory === "All") {
       return projects;
@@ -111,53 +114,46 @@ const ProjectsShowcase: React.FC = () => {
     return [];
   }, [activeCategory]);
 
-  return (
-    <div className="min-h-screen bg-light-bg pt-28 transition-colors duration-300 dark:bg-dark-bg">
-      {/* Header */}
-      <div className="mx-auto max-w-screen-xl px-4 pt-8 sm:px-8 md:px-16 lg:px-[150px]">
-        <h1 className="mb-4 font-semibold text-3xl text-light-heading dark:text-dark-heading">
-          Projects
-        </h1>
-        {/* Responsive, single-line, scrollable category selector */}
-        <div className="mb-8 flex gap-1 overflow-x-auto whitespace-nowrap sm:gap-3">
-          {categories.map((category) => (
-            <Button
-              className={`px-2 py-1 text-xs shadow-none transition-colors duration-200 sm:px-4 sm:py-2 sm:text-sm ${
-                activeCategory === category
-                  ? "font-bold text-light-heading dark:text-dark-heading"
-                  : "text-light-mini dark:text-dark-mini"
-              }hover:text-blue-600 dark:hover:text-blue-400`}
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              style={{
-                background: "none",
-                border: "none",
-                boxShadow: "none",
-                minWidth: "70px",
-              }}
-              variant="ghost"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
-      </div>
+  const featuredProjects = filteredProjects.slice(0, 4);
+  const otherProjects = filteredProjects.slice(4);
 
-      {/* Projects Grid with AnimatePresence */}
-      <section className="pb-20">
-        <div className="mx-auto max-w-screen-xl px-4 sm:px-8 md:px-16 lg:px-[150px]">
+  return (
+    <div className="min-h-screen bg-primary pt-48 md:pt-64">
+      <div className="mx-auto max-w-screen-xl px-6 md:px-12">
+        <h1 className="mb-16 font-bold text-6xl text-primary tracking-tighter md:text-8xl">
+          Selected Work
+        </h1>
+
+        {/* Minimal Filters */}
+        <div className="mb-20">
+          <Select onValueChange={setActiveCategory} value={activeCategory}>
+            <SelectTrigger className="w-full border-subtle bg-transparent text-primary md:w-[200px]">
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Projects Grid */}
+        <section className="pb-32">
           <AnimatePresence mode="wait">
             <motion.div
               animate="animate"
-              className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:gap-16"
+              className="grid grid-cols-1 gap-x-12 gap-y-24 md:grid-cols-2"
               exit="exit"
               initial="initial"
               key={activeCategory}
               variants={gridVariants}
             >
-              {filteredProjects.map((project, index) => (
+              {featuredProjects.map((project, index) => (
                 <motion.div
-                  className="group space-y-6"
+                  className="group"
                   initial={{ opacity: 0, y: 24 }}
                   key={project.id}
                   transition={{
@@ -165,127 +161,182 @@ const ProjectsShowcase: React.FC = () => {
                     ease: ANIMATION_EASE_CUBIC,
                     delay: index * ANIMATION_DELAY_PROJECT,
                   }}
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: true, amount: 0.1 }}
                   whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Project Image */}
                   <motion.div
-                    className="relative aspect-[4/3] min-h-[200px] overflow-hidden rounded-lg"
+                    className="relative mb-6 aspect-[16/10] overflow-hidden rounded-sm bg-secondary/5"
                     transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
-                    <Image
-                      alt={project.title}
-                      className="object-contain"
-                      fill
-                      priority={index < 2 && activeCategory === "All"}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      src={project.thumbnail}
-                    />
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10"
-                    />
-                  </motion.div>
-                  {/* Project Content */}
-                  <div className="space-y-4">
-                    <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
-                      <motion.h3
-                        className="font-medium text-lg text-light-heading transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400"
-                        transition={{ duration: 0.18, ease: "easeOut" }}
-                        whileHover={{ x: 2 }}
+                    {project.links.caseStudy ? (
+                      <Link
+                        className="block h-full w-full"
+                        href={project.links.caseStudy}
                       >
-                        {project.title}
-                      </motion.h3>
-                      <div className="flex flex-shrink-0 flex-wrap gap-4">
-                        {project.links.github && (
-                          <motion.a
-                            className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
-                            href={project.links.github}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            transition={{ duration: 0.18 }}
-                            whileHover={{ x: 2 }}
+                        <Image
+                          alt={project.title}
+                          className="object-contain transition-transform duration-700 group-hover:scale-105"
+                          fill
+                          priority={index < 2 && activeCategory === "All"}
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          src={project.thumbnail}
+                        />
+                      </Link>
+                    ) : (
+                      <Image
+                        alt={project.title}
+                        className="object-contain transition-transform duration-700 group-hover:scale-105"
+                        fill
+                        priority={index < 2 && activeCategory === "All"}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        src={project.thumbnail}
+                      />
+                    )}
+                  </motion.div>
+
+                  {/* Project Content */}
+                  <div className="flex flex-col">
+                    <div className="mb-2 flex items-baseline justify-between">
+                      {project.links.caseStudy ? (
+                        <Link
+                          className="group/title"
+                          href={project.links.caseStudy}
+                        >
+                          <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70">
+                            {project.title}
+                          </h3>
+                        </Link>
+                      ) : (
+                        <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70">
+                          {project.title}
+                        </h3>
+                      )}
+
+                      <span className="font-mono text-muted text-xs uppercase tracking-widest">
+                        {project.type === "case-study"
+                          ? "Case Study"
+                          : "Project"}
+                      </span>
+                    </div>
+
+                    <p className="mb-6 line-clamp-2 text-base text-secondary leading-relaxed">
+                      {project.description}
+                    </p>
+
+                    <div className="mt-auto flex items-center justify-between border-subtle border-t pt-4">
+                      <p className="max-w-[60%] truncate font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary">
+                        {project.techStack.slice(0, 3).join(" / ")}
+                      </p>
+                      <div className="flex gap-6">
+                        {project.links.caseStudy && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            href={project.links.caseStudy}
                           >
-                            GitHub ↗
-                          </motion.a>
+                            Read Case Study
+                          </Link>
                         )}
                         {project.links.live && (
-                          <motion.a
-                            className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
                             href={project.links.live}
                             rel="noopener noreferrer"
                             target="_blank"
-                            transition={{ duration: 0.18 }}
-                            whileHover={{ x: 2 }}
                           >
-                            View ↗
-                          </motion.a>
+                            Live Site
+                          </Link>
                         )}
-                        {project.links.caseStudy && (
-                          <motion.div
-                            transition={{ duration: 0.18 }}
-                            whileHover={{ x: 2 }}
+                        {project.links.github && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            href={project.links.github}
+                            rel="noopener noreferrer"
+                            target="_blank"
                           >
-                            <Link
-                              className="text-light-mini text-sm transition-colors duration-300 hover:underline dark:text-dark-mini"
-                              href={project.links.caseStudy}
-                            >
-                              Case Study ↗
-                            </Link>
-                          </motion.div>
+                            Code
+                          </Link>
                         )}
                       </div>
-                    </div>
-                    <p className="text-light-text text-sm leading-relaxed dark:text-dark-text">
-                      {project.description}
-                    </p>
-                    {/* Metrics for Case Studies */}
-                    {project.type === "case-study" && project.metrics && (
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-light-heading text-sm transition-colors duration-300 dark:text-dark-heading">
-                          Key Results
-                        </h4>
-                        <div className="space-y-1">
-                          {Object.entries(project.metrics).map(
-                            ([key, value]) => (
-                              <div
-                                className="text-light-text text-sm transition-colors duration-300 dark:text-dark-text"
-                                key={key}
-                              >
-                                <span className="capitalize">{key}:</span>
-                                <span className="ml-2 font-medium">
-                                  {value}
-                                </span>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    {/* Tech Stack */}
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-light-heading text-sm transition-colors duration-300 dark:text-dark-heading">
-                        Tech Stack
-                      </h4>
-                      <p className="break-words text-light-mini text-xs transition-colors duration-300 dark:text-dark-mini">
-                        {project.techStack.join(" / ")}
-                      </p>
                     </div>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
           </AnimatePresence>
-          {/* Empty State */}
+
+          {/* Other Projects List */}
+          {otherProjects.length > 0 && (
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-32 space-y-8"
+              initial={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <h2 className="mb-12 font-mono text-muted text-xs uppercase tracking-widest">
+                Freelance & Individual Projects
+              </h2>
+              <div className="grid grid-cols-1 gap-4">
+                {otherProjects.map((project, index) => (
+                  <motion.div
+                    className="group flex flex-col items-start justify-between border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:flex-row md:items-center"
+                    initial={{ opacity: 0, y: 10 }}
+                    key={project.id}
+                    transition={{ delay: index * 0.05 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                  >
+                    <div className="mb-4 md:mb-0 md:flex-1">
+                      <h3 className="font-medium text-lg text-primary transition-opacity duration-300 group-hover:opacity-70">
+                        {project.title}
+                      </h3>
+                      <p className="max-w-2xl text-secondary text-sm">
+                        {project.description}
+                      </p>
+                    </div>
+
+                    <div className="flex w-full items-center justify-between gap-8 md:w-auto md:justify-end">
+                      <p className="hidden font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary md:block">
+                        {project.techStack.slice(0, 3).join(" / ")}
+                      </p>
+
+                      <div className="flex gap-6">
+                        {project.links.live && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            href={project.links.live}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            Visit
+                          </Link>
+                        )}
+                        {project.links.github && (
+                          <Link
+                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            href={project.links.github}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            Code
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
           {filteredProjects.length === 0 && (
-            <div className="py-16 text-center">
-              <p className="text-light-text dark:text-dark-text">
+            <div className="py-24 text-center">
+              <p className="text-lg text-secondary">
                 No projects found in this category.
               </p>
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };
