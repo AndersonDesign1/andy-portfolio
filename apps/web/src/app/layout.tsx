@@ -4,6 +4,7 @@ import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import GiveawayBanner from "@/components/giveaway-banner";
 import ScrollProvider from "@/components/scroll-provider";
 import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -92,6 +93,7 @@ export default function RootLayout({
           storageKey="andy-theme"
         >
           <ScrollProvider>
+            <GiveawayBanner />
             <Navbar />
             <main>{children}</main>
             <Footer />

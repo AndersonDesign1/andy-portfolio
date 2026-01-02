@@ -46,7 +46,7 @@
     "styled-components": "^6.1.17",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^4.1.9"
+    "zod": "^4.3.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
