@@ -1,123 +1,59 @@
-# My Personal Portfolio
+# Andy Portfolio
 
-A modern full-stack Portfolio built using:
+My personal portfolio and blog. A high-performance monorepo built with Bun, Turbo, and Next.js.
 
-- [Next.js 15+](https://nextjs.org/)
-- [Sanity](https://www.sanity.io/)
-- [shadcn/ui](https://ui.shadcn.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [PNPM](https://pnpm.io/) (Fast, disk-efficient package manager)
+## ⚡ Tech Stack
 
-## ✨ Features
-
-- Out-of-the-box content management with Sanity
-- Beautiful UI components using shadcn/ui
-- Scalable backend using Sanity
-- Folder structure ready for production apps
-- Strict TypeScript setup
-- App Router support (Next.js 15+)
-- Spotify "Now Playing" integration to show your recent songs
+- **Monorepo**: [Turbo](https://turbo.build/) + [Bun](https://bun.sh/)
+- **Frontend**: [Next.js 16](https://nextjs.org/) (App Router)
+- **CMS**: [Sanity](https://www.sanity.io/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.dev/)
+- **Interactions**: [Motion](https://motion.dev/) + [Lenis](https://github.com/darkroomengineering/lenis)
 
 ---
 
-##  Getting Started
+## 🏗️ Structure
 
-### 1. Clone the Repository
-
-```
-git clone [<your-repo-url>](https://github.com/AndersonDesign1/andy-portfolio.git)
-```
-
-### 2. Install Dependencies with PNPM
-
-> This project uses [PNPM](https://pnpm.io/) for faster and more efficient package management.
-
-#### Install PNPM globally (if not installed)
-
-```
-npm install -g pnpm
+```text
+├── apps/
+│   ├── web/          # Next.js frontend
+│   └── studio/       # Sanity CMS
+├── packages/
+│   └── sanity-config/# Shared Sanity logic & schemas
+├── turbo.json        # Build orchestration
+└── biome.jsonc       # Lint/Format config
 ```
 
-#### Then install dependencies:
-
-```
-pnpm install
-```
+- [**apps/web**](./apps/web): Next.js frontend with dynamic OG images and Sanity integration.
+- [**apps/studio**](./apps/studio): Sanity Studio for content management.
+- [**packages/sanity-config**](./packages/sanity-config): Shared schemas and configuration.
 
 ---
 
-##  Setup Sanity
+## 🚀 Quick Start
 
-1. Go to [Sanity.io](https://www.sanity.io/) and create a free account.
-2. Create a new project.
-3. In the `.env.local` file (rename `env.example` to `.env.local`), add the following values from your Sanity project dashboard:
+```bash
+# Install dependencies
+bun install
 
-```env
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_sanity_project_id
-NEXT_PUBLIC_SANITY_DATASET=your_sanity_dataset
+# Setup environment
+cp .env.example .env.local # Fill in your keys
+
+# Run development mode
+bun dev
 ```
 
----
-
-## Setup Spotify Now Playing
-
-1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and create a new application.
-2. In the `.env.local` file, add the following values from your Spotify application dashboard:
-
-```env
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-SPOTIFY_REFRESH_TOKEN=your_spotify_refresh_token
-```
+Visit `http://localhost:3000` (Web) and `http://localhost:3333` (Studio).
 
 ---
 
-##  Run the App
+## 🛠️ Main Commands
 
+- `bun dev` - Start dev servers
+- `bun build` - Production build
+- `bun lint` - Lint all projects
+- `bun format` - Format codebase
 
-Visit `http://localhost:3000` to view the app in the browser.
+## 📄 License
 
----
-
-##  Project Structure
-
-```
-.
-├── src/
-│   ├── app/              # App router structure
-│   ├── components/       # UI components (shadcn/ui)
-│   ├── lib/              # Utility functions
-│   ├── sanity/           # Sanity schema and client
-│   └── types/            # TypeScript types
-├── public/           # Static files
-├── .env.example        # Environment variables
-├── package.json
-├── pnpm-lock.yaml
-└── README.md
-```
-
----
-
-##  Customization Tips
-
-- Add more shadcn components by running:
-  ```
-  pnpm dlx shadcn-ui@latest add [component]
-  ```
-- Extend the Sanity schema in `src/sanity/schemaTypes` as needed.
-
----
-
-##  Deployment
-
-You can deploy this app to:
-
-- [Vercel](https://vercel.com/) — seamless for Next.js
-- [Netlify](https://netlify.com/)
-- [Render](https://render.com/)
-
----
-
-##  License
-
-MIT License
+MIT © [Anderson Joseph](https://andersonjoseph.com)

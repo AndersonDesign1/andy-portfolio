@@ -4,28 +4,13 @@ import BlogList from "@/components/bloglist";
 
 export const revalidate = 60;
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Blog",
-    description:
-      "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
-    openGraph: {
-      title: "Blog | Andy Joseph",
-      description:
-        "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
-      url: "https://www.andersonjoseph.com/blog",
-      type: "website",
-      images: ["/Andy.webp"],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Blog | Andy Joseph",
-      description:
-        "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
-      images: ["/Andy.webp"],
-    },
-  };
-}
+import { constructMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Blog",
+  description:
+    "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
+});
 
 async function getPosts() {
   try {

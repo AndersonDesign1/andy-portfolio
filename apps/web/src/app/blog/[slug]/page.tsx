@@ -41,6 +41,8 @@ async function getPost(slug: string) {
   }
 }
 
+import { constructMetadata } from "@/lib/metadata";
+
 export async function generateMetadata({
   params,
 }: {
@@ -51,15 +53,15 @@ export async function generateMetadata({
   try {
     const post = await getPost(slug);
 
-    return {
-      title: post?.title ? `${post.title} | Andy Portfolio` : "Blog Post",
+    return constructMetadata({
+      title: post?.title,
       description: post?.excerpt || "Read this blog post",
-    };
+    });
   } catch {
-    return {
-      title: "Blog Post | Andy Portfolio",
+    return constructMetadata({
+      title: "Blog Post",
       description: "Read this blog post",
-    };
+    });
   }
 }
 
