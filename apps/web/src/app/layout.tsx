@@ -14,66 +14,11 @@ import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    metadataBase: new URL("https://andersonjoseph.com"),
-    alternates: {
-      canonical: "/",
-    },
-    title: {
-      default: "Andy Joseph | Full Stack Developer & SEO Expert",
-      template: "%s | Andy Joseph",
-    },
-    description:
-      "Building digital products with a focus on growth, interaction, and precise engineering. Full stack developer specializing in Next.js, React, and SEO optimization.",
-    keywords: [
-      "Anderson Joseph",
-      "Web Developer",
-      "SEO Specialist",
-      "Web Performance",
-      "No-code Developer",
-      "Next.js Developer",
-      "React Developer",
-    ],
-    authors: [{ name: "Anderson Joseph" }],
-    openGraph: {
-      title: "Andy Joseph | Full Stack Developer & SEO Expert",
-      description:
-        "Building digital products with a focus on growth, interaction, and precise engineering. Full stack developer specializing in Next.js, React, and SEO optimization.",
-      url: "https://andersonjoseph.com",
-      siteName: "Anderson Joseph",
-      locale: "en_US",
-      type: "website",
-      images: [
-        {
-          url: "/opengraph-image",
-          width: 1200,
-          height: 630,
-          alt: "Anderson Joseph Portfolio",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Andy Joseph | Full Stack Developer & SEO Expert",
-      description:
-        "Building digital products with a focus on growth, interaction, and precise engineering. Full stack developer specializing in Next.js, React, and SEO optimization.",
-      images: ["/opengraph-image"],
-      creator: "@andersonjoseph",
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
-  };
-}
+import { constructMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = constructMetadata();
+
+// REMOVE generateMetadata if it was async and needed specific logic, but here it seems static
 
 interface RootLayoutProps {
   children: ReactNode;

@@ -11,6 +11,8 @@ export async function generateStaticParams() {
   return Object.keys(caseStudiesData.caseStudies).map((slug) => ({ slug }));
 }
 
+import { constructMetadata } from "@/lib/metadata";
+
 export async function generateMetadata({
   params,
 }: {
@@ -18,12 +20,11 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
-  return cs
-    ? {
-        title: `${cs.hero.title} - Case Study`,
-        description: cs.hero.overview,
-      }
-    : { title: "Case Study Not Found" };
+
+  return constructMetadata({
+    title: cs ? `${cs.hero.title} - Case Study` : "Case Study Not Found",
+    description: cs?.hero.overview || "Anderson Joseph Case Study",
+  });
 }
 
 export default async function CaseStudyPageComponent({
