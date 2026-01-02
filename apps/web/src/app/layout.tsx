@@ -21,11 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: "/",
     },
     title: {
-      default: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
-      template: "%s | Anderson Joseph",
+      default: "Andy Joseph | Full Stack Developer & SEO Expert",
+      template: "%s | Andy Joseph",
     },
     description:
-      "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+      "Building digital products with a focus on growth, interaction, and precise engineering. Full stack developer specializing in Next.js, React, and SEO optimization.",
     keywords: [
       "Anderson Joseph",
       "Web Developer",
@@ -37,9 +37,9 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     authors: [{ name: "Anderson Joseph" }],
     openGraph: {
-      title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+      title: "Andy Joseph | Full Stack Developer & SEO Expert",
       description:
-        "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+        "Building digital products with a focus on growth, interaction, and precise engineering. Full stack developer specializing in Next.js, React, and SEO optimization.",
       url: "https://andersonjoseph.com",
       siteName: "Anderson Joseph",
       locale: "en_US",
@@ -55,9 +55,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Anderson Joseph | Elevating Businesses with Web Dev & SEO",
+      title: "Andy Joseph | Full Stack Developer & SEO Expert",
       description:
-        "Your Friendly Neighbourhood Developer, creating secure, responsive websites and using SEO to boost business rankings and growth online.",
+        "Building digital products with a focus on growth, interaction, and precise engineering. Full stack developer specializing in Next.js, React, and SEO optimization.",
       images: ["/opengraph-image"],
       creator: "@andersonjoseph",
     },

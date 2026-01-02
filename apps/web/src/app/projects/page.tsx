@@ -3,9 +3,9 @@ import ProjectsShowcase from "@/components/projects-showcase";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Projects - Andy | Full Stack Developer & SEO Expert",
+    title: "Projects",
     description:
-      "Explore my portfolio of web development projects, SEO campaigns, and design work. From e-commerce platforms to analytics dashboards, see how I create solutions that drive results.",
+      "A curated selection of web development projects, from e-commerce platforms to custom dashboards. See the work behind the code.",
     keywords: [
       "Andy",
       "Anderson Joseph",
@@ -19,18 +19,18 @@ export async function generateMetadata(): Promise<Metadata> {
       "SEO Expert",
     ],
     openGraph: {
-      title: "Projects - Andy | Full Stack Developer & SEO Expert",
+      title: "Projects | Andy Joseph",
       description:
-        "Explore my portfolio of web development projects, SEO campaigns, and design work. From e-commerce platforms to analytics dashboards, see how I create solutions that drive results.",
+        "A curated selection of web development projects, from e-commerce platforms to custom dashboards. See the work behind the code.",
       url: "https://andersonjoseph.com/projects",
       type: "website",
       images: ["/Andy.webp"],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Projects - Andy | Full Stack Developer & SEO Expert",
+      title: "Projects | Andy Joseph",
       description:
-        "Explore my portfolio of web development projects, SEO campaigns, and design work. From e-commerce platforms to analytics dashboards, see how I create solutions that drive results.",
+        "A curated selection of web development projects, from e-commerce platforms to custom dashboards. See the work behind the code.",
       images: ["/Andy.webp"],
     },
   };
