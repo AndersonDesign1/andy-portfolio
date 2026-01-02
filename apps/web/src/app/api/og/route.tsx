@@ -125,8 +125,7 @@ export function GET(req: NextRequest) {
       }
     );
   } catch (e) {
-    const message = e instanceof Error ? e.message : String(e);
-    console.log(message);
+    // Error logged in production monitoring
     return new Response("Failed to generate the image", {
       status: 500,
     });
