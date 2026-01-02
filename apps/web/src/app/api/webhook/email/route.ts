@@ -158,7 +158,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to forward" }, { status: 500 });
     }
 
-
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

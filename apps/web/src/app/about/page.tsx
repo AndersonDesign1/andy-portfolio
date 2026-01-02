@@ -3,9 +3,9 @@ import AboutPage from "@/components/about-page";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "About - Andy | Full Stack Developer & SEO Expert",
+    title: "About",
     description:
-      "Learn about my journey as a full-stack developer with expertise in SEO optimization, software infrastructure, and creating high-performance web applications.",
+      "Full stack developer with a passion for growth-focused digital products. Experienced in Next.js, React, and SEO optimization.",
     keywords: [
       "Andy",
       "Full Stack Developer",
@@ -15,18 +15,18 @@ export async function generateMetadata(): Promise<Metadata> {
       "High Performance",
     ],
     openGraph: {
-      title: "About - Andy | Full Stack Developer & SEO Expert",
+      title: "About | Andy Joseph",
       description:
-        "Learn about my journey as a full-stack developer with expertise in SEO optimization, software infrastructure, and creating high-performance web applications.",
+        "Full stack developer with a passion for growth-focused digital products. Experienced in Next.js, React, and SEO optimization.",
       url: "https://andersonjoseph.com/about",
       type: "profile",
       images: ["/Andy.webp"],
     },
     twitter: {
       card: "summary_large_image",
-      title: "About - Andy | Full Stack Developer & SEO Expert",
+      title: "About | Andy Joseph",
       description:
-        "Learn about my journey as a full-stack developer with expertise in SEO optimization, software infrastructure, and creating high-performance web applications.",
+        "Full stack developer with a passion for growth-focused digital products. Experienced in Next.js, React, and SEO optimization.",
       images: ["/Andy.webp"],
     },
   };

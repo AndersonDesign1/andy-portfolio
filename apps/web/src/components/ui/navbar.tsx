@@ -1,10 +1,13 @@
 "use client";
 
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useGiveawayStatus } from "@/components/giveaway-banner";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
@@ -22,6 +25,10 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
+  const { status: giveawayStatus } = useGiveawayStatus();
+
+  // Show banner if giveaway is pending or active
+  const showBanner = giveawayStatus !== "ended";
 
   useEffect(() => {
     setMounted(true);
@@ -30,113 +37,158 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setIsOpen(false), []);
+  // Close menu on route change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is intentionally used as trigger to close menu on navigation
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const logoSrc =
     resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
 
   return (
-    <nav
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "border-subtle border-b bg-primary/95 py-4 backdrop-blur-sm"
-          : "bg-transparent py-6 md:py-8"
-      }`}
-    >
-      <div className="relative z-50 mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
-        {/* Logo - Aligned left */}
-        <Link className="shrink-0" href="/" prefetch>
-          {mounted && (
-            <Image
-              alt="Logo"
-              className="object-contain"
-              height={40}
-              key={logoSrc}
-              priority
-              src={logoSrc}
-              width={90}
-            />
-          )}
-        </Link>
+    <>
+      {/* Navbar */}
+      <nav
+        className={`fixed inset-x-0 z-50 transition-all duration-300 ${
+          showBanner ? "top-[76px]" : "top-0"
+        } ${
+          scrolled
+            ? "border-subtle border-b bg-primary/95 py-6 backdrop-blur-sm"
+            : "py-6"
+        }`}
+      >
+        <div className="mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
+          {/* Logo */}
+          <Link className="shrink-0" href="/" prefetch>
+            {mounted && (
+              <Image
+                alt="Logo"
+                className="object-contain"
+                height={40}
+                key={logoSrc}
+                priority
+                src={logoSrc}
+                width={90}
+              />
+            )}
+          </Link>
 
-        {/* Desktop Menu - Centered or offset right */}
-        <div className="hidden items-center gap-8 md:flex">
-          <ul className="flex gap-6">
-            {menuItems.map(({ label, link }) => {
-              const isActive = pathname === link;
-              return (
-                <li key={label}>
-                  <Link
-                    aria-current={isActive ? "page" : undefined}
-                    className={`relative font-medium text-sm transition-colors duration-200 ${
-                      isActive
-                        ? "text-primary"
-                        : "text-muted hover:text-primary"
-                    }`}
-                    href={link}
-                    prefetch
-                  >
-                    {label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          {/* Desktop Menu */}
+          <div className="hidden items-center gap-8 md:flex">
+            <ul className="flex gap-6">
+              {menuItems.map(({ label, link }) => {
+                const isActive = pathname === link;
+                return (
+                  <li key={label}>
+                    <Link
+                      aria-current={isActive ? "page" : undefined}
+                      className={`relative font-medium text-sm transition-colors duration-200 ${
+                        isActive
+                          ? "text-primary"
+                          : "text-muted hover:text-primary"
+                      }`}
+                      href={link}
+                      prefetch
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
 
-          {/* Theme Toggle & Mobile Menu Button */}
-          <div className="flex items-center gap-4 border-subtle border-l pl-4">
+            <div className="flex items-center gap-4 border-subtle border-l pl-4">
+              <ThemeToggle />
+            </div>
+          </div>
+
+          {/* Mobile Toggle */}
+          <div className="flex items-center gap-4 md:hidden">
             <ThemeToggle />
+            <Button
+              aria-controls="mobile-menu"
+              aria-expanded={isOpen}
+              aria-label="Toggle navigation menu"
+              className="text-primary text-xl focus:outline-none"
+              onClick={() => setIsOpen(true)}
+              size="icon"
+              variant="ghost"
+            >
+              ☰
+            </Button>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Toggle */}
-        <div className="flex items-center gap-4 md:hidden">
-          <ThemeToggle />
-          <Button
-            aria-controls="mobile-menu"
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation menu"
-            className="text-primary text-xl focus:outline-none"
-            onClick={() => setIsOpen((v) => !v)}
-            size="icon"
-            variant="ghost"
+      {/* Mobile Menu Overlay with smooth animation */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[200] flex flex-col bg-background md:hidden"
+            exit={{ opacity: 0 }}
+            id="mobile-menu"
+            initial={{ opacity: 0 }}
+            role="menu"
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
-            {isOpen ? "✕" : "☰"}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile menu overlay */}
-      <div
-        aria-labelledby="menu-button"
-        className={`fixed inset-0 z-40 flex flex-col items-center justify-center bg-background/95 backdrop-blur-[10px] transition-all duration-300 md:hidden ${
-          isOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
-        id="mobile-menu"
-        role="menu"
-      >
-        <div className="flex flex-col items-center gap-8">
-          {menuItems.map(({ label, link }) => {
-            const isActive = pathname === link;
-            return (
-              <Link
-                aria-current={isActive ? "page" : undefined}
-                className={`font-medium text-2xl transition-colors duration-200 ${
-                  isActive ? "text-primary" : "text-muted hover:text-primary"
-                }`}
-                href={link}
-                key={label}
+            {/* Close button at top right */}
+            <div className="flex items-center justify-end px-6 py-6">
+              <Button
+                aria-label="Close menu"
+                className="text-primary"
                 onClick={() => setIsOpen(false)}
-                prefetch
+                size="icon"
+                variant="ghost"
               >
-                {label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </nav>
+                <XMarkIcon className="h-6 w-6" />
+              </Button>
+            </div>
+
+            {/* Menu items centered with staggered animation */}
+            <div className="flex flex-1 flex-col items-center justify-center gap-8">
+              {menuItems.map(({ label, link }, index) => {
+                const isActive = pathname === link;
+                return (
+                  <motion.div
+                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    key={label}
+                    transition={{ delay: index * 0.05, duration: 0.2 }}
+                  >
+                    <Link
+                      aria-current={isActive ? "page" : undefined}
+                      className={`font-medium text-2xl transition-colors duration-200 ${
+                        isActive
+                          ? "text-primary"
+                          : "text-muted hover:text-primary"
+                      }`}
+                      href={link}
+                      onClick={() => setIsOpen(false)}
+                      prefetch
+                    >
+                      {label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

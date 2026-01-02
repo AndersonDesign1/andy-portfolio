@@ -6,22 +6,22 @@ export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Blog | Andy Portfolio",
+    title: "Blog",
     description:
-      "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
+      "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
     openGraph: {
-      title: "Blog | Andy Portfolio",
+      title: "Blog | Andy Joseph",
       description:
-        "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
+        "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
       url: "https://www.andersonjoseph.com/blog",
       type: "website",
       images: ["/Andy.webp"],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Blog | Andy Portfolio",
+      title: "Blog | Andy Joseph",
       description:
-        "Insights, tutorials, and stories from my journey in engineering, design, and SEO.",
+        "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
       images: ["/Andy.webp"],
     },
   };

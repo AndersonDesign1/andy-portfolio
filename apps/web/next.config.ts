@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
     ],
   },
   trailingSlash: false,
+  skipTrailingSlashRedirect: true,
   reactCompiler: true,
   compress: true,
   poweredByHeader: false,
