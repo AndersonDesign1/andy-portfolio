@@ -27,8 +27,9 @@ export default function Navbar() {
   const { resolvedTheme } = useTheme();
   const { status: giveawayStatus } = useGiveawayStatus();
 
-  // Show banner if giveaway is pending or active
-  const showBanner = giveawayStatus !== "ended";
+  // Show banner offset if giveaway is active AND we're not on giveaway pages
+  const isGiveawayPage = pathname?.startsWith("/giveaway");
+  const showBanner = giveawayStatus !== "ended" && !isGiveawayPage;
 
   useEffect(() => {
     setMounted(true);
@@ -63,7 +64,7 @@ export default function Navbar() {
       {/* Navbar */}
       <nav
         className={`fixed inset-x-0 z-50 transition-all duration-300 ${
-          showBanner ? "top-[76px]" : "top-0"
+          showBanner ? "top-[52px]" : "top-0"
         } ${
           scrolled
             ? "border-subtle border-b bg-primary/95 py-6 backdrop-blur-sm"

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Giveaway: Jan 2, 2026 12:00 PM Nigeria Time (WAT = UTC+1) to Jan 9, 2026 12:00 PM
@@ -117,8 +118,12 @@ export function CountdownDisplay({
 
 export default function GiveawayBanner() {
   const { status, timeLeft } = useGiveawayStatus();
+  const pathname = usePathname();
 
-  if (status === "ended") {
+  // Hide banner on giveaway pages (they have their own countdown)
+  const isGiveawayPage = pathname?.startsWith("/giveaway");
+
+  if (status === "ended" || isGiveawayPage) {
     return null;
   }
 
