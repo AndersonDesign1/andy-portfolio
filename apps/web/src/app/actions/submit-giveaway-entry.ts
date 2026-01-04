@@ -6,6 +6,8 @@ import { env } from "@/lib/env";
 
 const resend = new Resend(env.RESEND_API_KEY);
 
+const WORD_COUNT_REGEX = /\s+/;
+
 const entrySchema = z.object({
   name: z
     .string()
@@ -18,8 +20,11 @@ const entrySchema = z.object({
   description: z
     .string()
     .min(1, "Please tell me about your project")
-    .min(20, "Please provide at least 20 characters")
-    .max(5000),
+    .refine((val) => {
+      const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
+      return wordCount >= 30;
+    }, "Please provide at least 30 words about your project")
+    .refine((val) => val.length <= 5000, "Description is too long"),
 });
 
 function escapeHtml(text: string): string {

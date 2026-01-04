@@ -51,11 +51,12 @@ export default function RootLayout({
             <div aria-hidden="true" className="grain-overlay" />
 
             <Toaster
+              offset="80px"
               position="top-right"
               toastOptions={{
                 style: {
-                  background: "hsl(var(--background))",
-                  color: "hsl(var(--foreground))",
+                  background: "hsl(var(--popover))",
+                  color: "hsl(var(--popover-foreground))",
                   border: "1px solid hsl(var(--border))",
                 },
               }}
