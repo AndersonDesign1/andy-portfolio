@@ -2,6 +2,7 @@
 
 import { Resend } from "resend";
 import { z } from "zod";
+import GiveawayFeedback from "@/emails/giveaway-feedback";
 import { env } from "@/lib/env";
 
 const resend = new Resend(env.RESEND_API_KEY);
@@ -149,6 +150,14 @@ export async function submitGiveawayEntry(
           </p>
         </div>
       `,
+    });
+
+    // Send Feedback Request Email
+    await resend.emails.send({
+      from: "Anderson Joseph <hello@andersonjoseph.com>",
+      to: [email],
+      subject: "One quick thing...",
+      react: GiveawayFeedback({ name: safeName }),
     });
 
     return {
