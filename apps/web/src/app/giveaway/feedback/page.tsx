@@ -3,7 +3,7 @@
 import { ArrowLeftIcon } from "lucide-react";
 import { motion } from "motion/react"; // Assuming this is the correct import based on previous files
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { submitGiveawayFeedback } from "@/app/actions/submit-giveaway-feedback";
@@ -38,6 +38,7 @@ const feedbackSchema = z.object({
 
 export default function GiveawayFeedbackPage() {
   const [isPending, startTransition] = useTransition();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,12 +64,47 @@ export default function GiveawayFeedbackPage() {
     startTransition(async () => {
       const res = await submitGiveawayFeedback(formData);
       if (res.success) {
-        toast.success(res.message);
-        (event.target as HTMLFormElement).reset();
+        setIsSubmitted(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         toast.error(res.message);
       }
     });
+  }
+
+  if (isSubmitted) {
+    return (
+      <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
+        <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
+          <motion.div
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center justify-center space-y-6"
+            initial={{ opacity: 0, scale: 0.95 }}
+          >
+            <div className="rounded-full bg-secondary/10 p-4">
+              <span className="text-4xl">🎉</span>
+            </div>
+            <h1 className="font-bold text-4xl text-primary md:text-5xl">
+              Thank You!
+            </h1>
+            <p className="mx-auto max-w-lg text-lg text-secondary">
+              Your feedback has been received. This information will help me
+              verify that you're a perfect candidate for the free website. I'll
+              be reviewing everything soon!
+            </p>
+            <div className="pt-8">
+              <Link
+                className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
+                href="/"
+              >
+                <ArrowLeftIcon className="h-4 w-4" />
+                Return to Home
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    );
   }
 
   return (
