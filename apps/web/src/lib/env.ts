@@ -6,7 +6,7 @@ const envSchema = z.object({
   SPOTIFY_REFRESH_TOKEN: z.string().min(1, "Spotify Refresh Token is required"),
 
   RESEND_API_KEY: z.string().min(1, "Resend API Key is required"),
-  CONTACT_EMAIL: z.string().email().optional(),
+  CONTACT_EMAIL: z.email().optional(),
 
   NODE_ENV: z
     .enum(["development", "production", "test"])

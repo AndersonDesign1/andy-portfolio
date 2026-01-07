@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <FontAwesomeIcon className="h-4 w-4" icon={link.icon} />
+              <FontAwesomeIcon className="size-4" icon={link.icon} />
             </a>
           ))}
         </div>

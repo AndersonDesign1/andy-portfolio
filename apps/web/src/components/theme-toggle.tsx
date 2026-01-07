@@ -21,7 +21,7 @@ export function ThemeToggle() {
         size="icon"
         variant="ghost"
       >
-        <div className="h-4 w-4" />
+        <div className="size-4" />
       </Button>
     );
   }
@@ -38,7 +38,7 @@ export function ThemeToggle() {
     >
       {isDark ? (
         <svg
-          className="h-4 w-4"
+          className="size-4"
           fill="none"
           stroke="currentColor"
           strokeWidth={1.5}
@@ -53,7 +53,7 @@ export function ThemeToggle() {
         </svg>
       ) : (
         <svg
-          className="h-4 w-4"
+          className="size-4"
           fill="none"
           stroke="currentColor"
           strokeWidth={1.5}

@@ -51,7 +51,7 @@ export default function BlogPost({ post }: BlogPostProps) {
             className="inline-flex items-center gap-2 text-light-mini text-sm transition-colors duration-300 hover:text-light-heading dark:text-dark-mini dark:hover:text-dark-heading"
             href="/blog"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon className="size-4" />
             Back to Blog
           </Link>
         </motion.div>

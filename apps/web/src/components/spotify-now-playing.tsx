@@ -143,7 +143,7 @@ export default function SpotifyNowPlaying() {
                     />
                   </motion.div>
                 </AnimatePresence>
-                <div className="absolute -right-2 -bottom-2 flex h-4 w-4 items-end justify-center gap-0.5 rounded-full border border-white/10 bg-black/40 p-0.5 backdrop-blur-sm">
+                <div className="absolute -right-2 -bottom-2 flex size-4 items-end justify-center gap-0.5 rounded-full border border-white/10 bg-black/40 p-0.5 backdrop-blur-sm">
                   <div
                     className={`w-0.5 bg-white ${track.isPlaying ? "h-full animate-[music-bar_0.8s_ease-in-out_infinite]" : "h-1/2"}`}
                   />

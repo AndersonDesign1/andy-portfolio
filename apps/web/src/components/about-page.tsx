@@ -22,7 +22,7 @@ const AboutPage: React.FC = () => (
           className="inline-flex items-center gap-2 text-secondary text-sm transition-colors duration-300 hover:text-primary"
           href="/"
         >
-          <ArrowLeftIcon className="h-4 w-4" />
+          <ArrowLeftIcon className="size-4" />
           Back to Home
         </Link>
       </motion.div>
