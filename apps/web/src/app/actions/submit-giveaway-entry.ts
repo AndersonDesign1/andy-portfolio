@@ -157,7 +157,7 @@ export async function submitGiveawayEntry(
       from: "Anderson Joseph <hello@andersonjoseph.com>",
       to: [email],
       subject: "One quick thing...",
-      react: GiveawayFeedback({ name: safeName }),
+      react: GiveawayFeedback({ name }),
     });
 
     return {
