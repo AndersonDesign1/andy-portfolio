@@ -190,7 +190,7 @@ export default function ContactForm() {
               >
                 {isPending ? (
                   <span className="flex items-center gap-2">
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <span className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                     Sending...
                   </span>
                 ) : (

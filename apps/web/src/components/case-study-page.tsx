@@ -50,7 +50,7 @@ export default function CaseStudyPage({
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/projects"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon className="size-4" />
             Back to Projects
           </Link>
 
@@ -61,7 +61,7 @@ export default function CaseStudyPage({
               rel="noopener noreferrer"
               target="_blank"
             >
-              <GlobeAltIcon className="h-4 w-4" />
+              <GlobeAltIcon className="size-4" />
               Live Site
             </Link>
           )}

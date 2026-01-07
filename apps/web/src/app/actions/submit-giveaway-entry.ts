@@ -15,7 +15,7 @@ const entrySchema = z.object({
     .min(1, "Name is required")
     .min(2, "Name must be at least 2 characters")
     .max(100),
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   websiteType: z.string().min(1, "Please select a website type"),
   projectName: z.string().max(200).optional(),
   description: z
@@ -157,7 +157,7 @@ export async function submitGiveawayEntry(
       from: "Anderson Joseph <hello@andersonjoseph.com>",
       to: [email],
       subject: "One quick thing...",
-      react: GiveawayFeedback({ name: safeName }),
+      react: GiveawayFeedback({ name }),
     });
 
     return {

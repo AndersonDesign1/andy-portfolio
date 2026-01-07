@@ -17,7 +17,7 @@ const WORD_COUNT_REGEX = /\s+/;
 
 const feedbackSchema = z.object({
   name: z.string().optional(),
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   brandDescription: z
     .string()
     .min(10, "Please provide a bit more detail (at least 10 characters)")
@@ -97,7 +97,7 @@ export default function GiveawayFeedbackPage() {
                 className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
                 href="/"
               >
-                <ArrowLeftIcon className="h-4 w-4" />
+                <ArrowLeftIcon className="size-4" />
                 Return to Home
               </Link>
             </div>
@@ -121,7 +121,7 @@ export default function GiveawayFeedbackPage() {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon className="size-4" />
             Back to Giveaway
           </Link>
         </motion.div>

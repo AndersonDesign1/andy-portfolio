@@ -143,7 +143,7 @@ export default function GiveawayEntryForm() {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon className="size-4" />
             Back to Giveaway
           </Link>
         </motion.div>
@@ -357,7 +357,7 @@ export default function GiveawayEntryForm() {
               >
                 {isPending ? (
                   <span className="flex items-center gap-2">
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <span className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                     Submitting...
                   </span>
                 ) : (

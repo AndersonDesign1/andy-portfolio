@@ -153,7 +153,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
           className="mb-12 inline-flex items-center font-mono text-muted text-sm transition-colors hover:text-primary"
           href="/blog"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="mr-2 size-4" />
           Back to Writing
         </Link>
 
