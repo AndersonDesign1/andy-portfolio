@@ -17,7 +17,7 @@ const WORD_COUNT_REGEX = /\s+/;
 
 const feedbackSchema = z.object({
   name: z.string().optional(),
-  email: z.email("Invalid email address"),
+  email: z.string().email("Invalid email address"),
   brandDescription: z
     .string()
     .min(10, "Please provide a bit more detail (at least 10 characters)")
@@ -109,11 +109,10 @@ export default function GiveawayFeedbackPage() {
 
   return (
     <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
-      <div className="mx-auto w-full max-w-screen-md px-6 md:px-12">
+      <div className="mx-auto flex w-full max-w-screen-md flex-col gap-12 px-6 md:px-12">
         {/* Back Link */}
         <motion.div
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
         >
@@ -126,8 +125,8 @@ export default function GiveawayFeedbackPage() {
           </Link>
         </motion.div>
 
-        <div className="mb-12">
-          <h1 className="mb-4 font-bold text-4xl text-primary leading-tight md:text-5xl">
+        <div className="flex flex-col gap-4">
+          <h1 className="font-bold text-4xl text-primary leading-tight md:text-5xl">
             Help Me Build Your Vision
           </h1>
           <p className="text-lg text-secondary leading-relaxed">
@@ -137,14 +136,14 @@ export default function GiveawayFeedbackPage() {
           </p>
         </div>
 
-        <form className="space-y-12" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-12" onSubmit={handleSubmit}>
           {/* Basics */}
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             <h2 className="border-subtle border-b pb-2 font-semibold text-primary text-xl">
               The Basics
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Label className="text-primary" htmlFor="name">
                   Name (Optional)
                 </Label>
@@ -155,7 +154,7 @@ export default function GiveawayFeedbackPage() {
                   placeholder="Your Name"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Label className="text-primary" htmlFor="email">
                   Email Address *
                 </Label>
@@ -172,12 +171,12 @@ export default function GiveawayFeedbackPage() {
           </div>
 
           {/* Project Details */}
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             <h2 className="border-subtle border-b pb-2 font-semibold text-primary text-xl">
               Project Details
             </h2>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label className="text-primary" htmlFor="brandDescription">
                 Describe what the website should do for you or your brand * (min
                 80 words)
@@ -191,7 +190,7 @@ export default function GiveawayFeedbackPage() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label className="text-primary" htmlFor="features">
                 What specific features do you want? *
               </Label>
@@ -204,14 +203,14 @@ export default function GiveawayFeedbackPage() {
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="flex flex-col gap-5">
               <Label className="text-primary">Do you have a domain name?</Label>
               <RadioGroup
-                className="flex flex-col gap-3"
+                className="flex flex-col gap-4"
                 defaultValue="no"
                 name="domainStatus"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-3">
                   <RadioGroupItem id="domain-yes" value="yes" />
                   <Label
                     className="font-normal text-secondary"
@@ -220,7 +219,7 @@ export default function GiveawayFeedbackPage() {
                     Yes, I already have one
                   </Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-3">
                   <RadioGroupItem id="domain-no" value="no" />
                   <Label
                     className="font-normal text-secondary"
@@ -229,7 +228,7 @@ export default function GiveawayFeedbackPage() {
                     No, not yet
                   </Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-3">
                   <RadioGroupItem id="domain-help" value="need_help" />
                   <Label
                     className="font-normal text-secondary"
@@ -241,7 +240,7 @@ export default function GiveawayFeedbackPage() {
               </RadioGroup>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label className="text-primary" htmlFor="benefits">
                 How will this website benefit you? * (min 30 words)
               </Label>

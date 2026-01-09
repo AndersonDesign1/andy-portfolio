@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import GiveawayPage from "@/components/giveaway-page";
+import GiveawayEnded from "@/components/giveaway-ended";
 
 import { constructMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = constructMetadata({
-  title: "New Year Giveaway | Free Website",
+  title: "Giveaway Ended | Anderson Joseph",
   description:
-    "Celebrating 2026 with a giveaway! Enter for a chance to win a free custom website — design, development, and hosting included.",
+    "The New Year Giveaway has officially ended. Stay tuned for future updates and opportunities!",
 });
 
 export default function Giveaway() {
-  return <GiveawayPage />;
+  return <GiveawayEnded />;
 }
