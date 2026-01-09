@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeftIcon } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import {
   ANIMATION_DURATION_MEDIUM,
@@ -9,17 +9,23 @@ import {
 } from "@/lib/constants";
 
 export default function GiveawayEnded() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
       <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
         <motion.div
-          animate={{ opacity: 1, scale: 1 }}
+          animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
           className="flex flex-col items-center justify-center gap-6"
-          initial={{ opacity: 0, scale: 0.95 }}
-          transition={{
-            duration: ANIMATION_DURATION_MEDIUM,
-            ease: ANIMATION_EASE_CUBIC,
-          }}
+          initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
+          transition={
+            prefersReducedMotion
+              ? { duration: 0 }
+              : {
+                  duration: ANIMATION_DURATION_MEDIUM,
+                  ease: ANIMATION_EASE_CUBIC,
+                }
+          }
         >
           <div className="rounded-full bg-secondary/10 p-4">
             <span className="text-4xl">⏳</span>

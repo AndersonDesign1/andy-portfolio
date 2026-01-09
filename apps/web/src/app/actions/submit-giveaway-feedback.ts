@@ -21,7 +21,7 @@ const WORD_COUNT_REGEX = /\s+/;
 
 const feedbackSchema = z.object({
   name: z.string().optional(),
-  email: z.email("Invalid email address"),
+  email: z.string().email("Invalid email address"),
   brandDescription: z
     .string()
     .min(10, "Please provide a bit more detail (at least 10 characters)")

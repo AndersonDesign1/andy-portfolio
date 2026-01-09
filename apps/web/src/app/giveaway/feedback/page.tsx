@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeftIcon } from "lucide-react";
-import { motion } from "motion/react"; // Assuming this is the correct import based on previous files
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -39,6 +39,7 @@ const feedbackSchema = z.object({
 export default function GiveawayFeedbackPage() {
   const [isPending, startTransition] = useTransition();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -77,9 +78,9 @@ export default function GiveawayFeedbackPage() {
       <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
         <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
           <motion.div
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center space-y-6"
-            initial={{ opacity: 0, scale: 0.95 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+            className="flex flex-col items-center justify-center gap-6"
+            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
           >
             <div className="rounded-full bg-secondary/10 p-4">
               <span className="text-4xl">🎉</span>
@@ -112,9 +113,9 @@ export default function GiveawayFeedbackPage() {
       <div className="mx-auto flex w-full max-w-screen-md flex-col gap-12 px-6 md:px-12">
         {/* Back Link */}
         <motion.div
-          animate={{ opacity: 1, x: 0 }}
-          initial={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.4 }}
+          animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
+          initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }}
         >
           <Link
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
