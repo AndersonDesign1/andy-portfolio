@@ -120,24 +120,26 @@ const ProjectsShowcase: React.FC = () => {
   return (
     <div className="min-h-screen bg-primary pt-48 md:pt-64">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-        <h1 className="mb-16 font-bold text-6xl text-primary tracking-tighter md:text-8xl">
+        <h1 className="font-bold text-6xl text-primary tracking-tighter md:text-8xl">
           Selected Work
         </h1>
 
         {/* Minimal Filters */}
-        <div className="mb-20">
-          <Select onValueChange={setActiveCategory} value={activeCategory}>
-            <SelectTrigger className="w-full border-subtle bg-transparent text-primary md:w-[200px]">
-              <SelectValue placeholder="Select Category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex flex-col gap-20 pt-16">
+          <div>
+            <Select onValueChange={setActiveCategory} value={activeCategory}>
+              <SelectTrigger className="w-full border-subtle bg-transparent text-primary md:w-[200px]">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Projects Grid */}
@@ -165,10 +167,7 @@ const ProjectsShowcase: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Project Image */}
-                  <motion.div
-                    className="relative mb-6 aspect-[16/10] overflow-hidden rounded-sm bg-secondary/5"
-                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                  >
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-sm bg-secondary/5">
                     {project.links.caseStudy ? (
                       <Link
                         className="block h-full w-full"
@@ -193,11 +192,11 @@ const ProjectsShowcase: React.FC = () => {
                         src={project.thumbnail}
                       />
                     )}
-                  </motion.div>
+                  </div>
 
                   {/* Project Content */}
-                  <div className="flex flex-col">
-                    <div className="mb-2 flex items-baseline justify-between">
+                  <div className="flex flex-col gap-6 pt-6">
+                    <div className="flex items-baseline justify-between gap-2">
                       {project.links.caseStudy ? (
                         <Link
                           className="group/title"
@@ -220,7 +219,7 @@ const ProjectsShowcase: React.FC = () => {
                       </span>
                     </div>
 
-                    <p className="mb-6 line-clamp-2 text-base text-secondary leading-relaxed">
+                    <p className="line-clamp-2 text-base text-secondary leading-relaxed">
                       {project.description}
                     </p>
 
@@ -269,11 +268,11 @@ const ProjectsShowcase: React.FC = () => {
           {otherProjects.length > 0 && (
             <motion.div
               animate={{ opacity: 1, y: 0 }}
-              className="mt-32 space-y-8"
+              className="flex flex-col gap-8 pt-32"
               initial={{ opacity: 0, y: 30 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <h2 className="mb-12 font-mono text-muted text-xs uppercase tracking-widest">
+              <h2 className="pb-12 font-mono text-muted text-xs uppercase tracking-widest">
                 Freelance & Individual Projects
               </h2>
               <div className="grid grid-cols-1 gap-4">
@@ -285,7 +284,7 @@ const ProjectsShowcase: React.FC = () => {
                     transition={{ delay: index * 0.05 }}
                     whileInView={{ opacity: 1, y: 0 }}
                   >
-                    <div className="mb-4 md:mb-0 md:flex-1">
+                    <div className="flex flex-col gap-4 md:flex-1 md:flex-row md:items-center">
                       <h3 className="font-medium text-lg text-primary transition-opacity duration-300 group-hover:opacity-70">
                         {project.title}
                       </h3>

@@ -63,7 +63,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
               {project.techStack.slice(0, 3).join(" / ")}
             </p>
             <ArrowUpRight
-              className="h-6 w-6 shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent"
+              className="size-6 shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent"
               strokeWidth={2}
             />
           </div>
@@ -96,37 +96,39 @@ export default function ProjectsGrid() {
   return (
     <section className="bg-primary py-24 md:py-32" ref={gridRef}>
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
-        <div className="mb-24 flex items-end justify-between border-subtle border-b pb-8">
-          <h2 className="font-mono text-primary text-sm uppercase tracking-widest">
-            Selected Works
-          </h2>
-          <span className="font-mono text-muted text-sm">
-            {projectsData.projects.length} Projects
-          </span>
-        </div>
+        <div className="flex flex-col gap-24">
+          <div className="flex items-end justify-between border-subtle border-b pb-8">
+            <h2 className="font-mono text-primary text-sm uppercase tracking-widest">
+              Selected Works
+            </h2>
+            <span className="font-mono text-muted text-sm">
+              {projectsData.projects.length} Projects
+            </span>
+          </div>
 
-        <div className="flex flex-col">
-          {projectsData.projects.map((project, index) => (
-            <ProjectRow
-              index={index}
-              key={project.id}
-              project={{
-                ...project,
-                type: project.type as "case-study" | "standard",
-              }}
-            />
-          ))}
-        </div>
+          <div className="flex flex-col">
+            {projectsData.projects.map((project, index) => (
+              <ProjectRow
+                index={index}
+                key={project.id}
+                project={{
+                  ...project,
+                  type: project.type as "case-study" | "standard",
+                }}
+              />
+            ))}
+          </div>
 
-        <div className="mt-24 text-center">
-          <Button asChild className="group gap-2" variant="outline">
-            <Link href="/projects">
-              View All Projects
-              <span className="text-muted transition-colors duration-300 group-hover:text-primary">
-                ↗
-              </span>
-            </Link>
-          </Button>
+          <div className="pt-24 text-center">
+            <Button asChild className="group gap-2" variant="outline">
+              <Link href="/projects">
+                View All Projects
+                <span className="text-muted transition-colors duration-300 group-hover:text-primary">
+                  ↗
+                </span>
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>

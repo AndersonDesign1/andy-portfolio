@@ -61,7 +61,7 @@ export default function Hero() {
             Joseph
           </motion.h1>
 
-          <div className="mt-8 flex flex-col justify-between gap-12 md:mt-16 md:flex-row md:items-end">
+          <div className="flex flex-col justify-between gap-12 pt-8 md:flex-row md:items-end md:pt-16">
             {/* Bio - Short and impactful */}
             <motion.p
               className="max-w-md text-lg text-secondary leading-relaxed md:text-xl"
@@ -93,7 +93,7 @@ export default function Hero() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Icon className="h-6 w-6" />
+                  <Icon className="size-6" />
                 </motion.a>
               ))}
             </motion.div>

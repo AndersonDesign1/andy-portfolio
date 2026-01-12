@@ -59,7 +59,7 @@ const components: PortableTextComponents = {
           />
         </div>
         {value.caption && (
-          <figcaption className="mt-4 text-center font-mono text-muted text-sm">
+          <figcaption className="pt-4 text-center font-mono text-muted text-sm">
             {value.caption}
           </figcaption>
         )}
@@ -128,12 +128,12 @@ const components: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="mb-6 list-outside list-disc space-y-2 pl-4 text-lg text-secondary">
+      <ul className="mb-6 flex list-outside list-disc flex-col gap-2 pl-4 text-lg text-secondary">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="mb-6 list-outside list-decimal space-y-2 pl-4 text-lg text-secondary">
+      <ol className="mb-6 flex list-outside list-decimal flex-col gap-2 pl-4 text-lg text-secondary">
         {children}
       </ol>
     ),
@@ -150,80 +150,80 @@ export default function BlogPost({ post }: { post: SanityPost }) {
     >
       <div className="mx-auto max-w-screen-md px-6">
         <Link
-          className="mb-12 inline-flex items-center font-mono text-muted text-sm transition-colors hover:text-primary"
+          className="inline-flex items-center gap-2 font-mono text-muted text-sm transition-colors hover:text-primary"
           href="/blog"
         >
-          <ArrowLeft className="mr-2 size-4" />
+          <ArrowLeft className="size-4" />
           Back to Writing
         </Link>
+        <div className="pt-12">
+          <article>
+            {/* Header */}
+            <div className="border-subtle border-b pb-8">
+              <h1 className="pb-8 font-bold text-4xl text-primary leading-tight tracking-tighter md:text-6xl">
+                {post.title}
+              </h1>
 
-        <article>
-          {/* Header */}
-          <div className="mb-16 border-subtle border-b pb-8">
-            <h1 className="mb-8 font-bold text-4xl text-primary leading-tight tracking-tighter md:text-6xl">
-              {post.title}
-            </h1>
+              <div className="flex flex-wrap items-center gap-6 font-mono text-muted text-sm">
+                <span>
+                  {new Date(
+                    post.publishedAt || post._createdAt
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
 
-            <div className="flex flex-wrap items-center gap-6 font-mono text-muted text-sm">
-              <span>
-                {new Date(
-                  post.publishedAt || post._createdAt
-                ).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-
-              {post.categories && post.categories.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span>/</span>
-                  {post.categories
-                    .filter((cat): cat is Category => !!cat)
-                    .map((cat, i) => (
-                      <span key={cat._id}>
-                        {cat.title}
-                        {i < (post.categories?.length || 0) - 1 && ", "}
-                      </span>
-                    ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Main Image */}
-          {post.mainImage && (
-            <motion.figure
-              animate={{ opacity: 1, scale: 1 }}
-              className="mb-16"
-              initial={{ opacity: 0, scale: 1.05 }}
-              transition={{
-                duration: ANIMATION_DURATION_LONG,
-                ease: ANIMATION_EASE_CUBIC,
-              }}
-            >
-              <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
-                <Image
-                  alt={post.mainImage.alt || post.title}
-                  className="h-auto w-full object-cover"
-                  height={600}
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                  src={
-                    urlFor(post.mainImage).url() ||
-                    "/placeholder.svg?height=600&width=1200"
-                  }
-                  width={1200}
-                />
+                {post.categories && post.categories.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span>/</span>
+                    {post.categories
+                      .filter((cat): cat is Category => !!cat)
+                      .map((cat, i) => (
+                        <span key={cat._id}>
+                          {cat.title}
+                          {i < (post.categories?.length || 0) - 1 && ", "}
+                        </span>
+                      ))}
+                  </div>
+                )}
               </div>
-            </motion.figure>
-          )}
+            </div>
 
-          {/* Content */}
-          <div className="prose prose-lg max-w-none">
-            <PortableText components={components} value={post.body} />
-          </div>
-        </article>
+            {post.mainImage && (
+              <motion.figure
+                animate={{ opacity: 1, scale: 1 }}
+                className="pt-16"
+                initial={{ opacity: 0, scale: 1.05 }}
+                transition={{
+                  duration: ANIMATION_DURATION_LONG,
+                  ease: ANIMATION_EASE_CUBIC,
+                }}
+              >
+                <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
+                  <Image
+                    alt={post.mainImage.alt || post.title}
+                    className="h-auto w-full object-cover"
+                    height={600}
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                    src={
+                      urlFor(post.mainImage).url() ||
+                      "/placeholder.svg?height=600&width=1200"
+                    }
+                    width={1200}
+                  />
+                </div>
+              </motion.figure>
+            )}
+
+            {/* Content */}
+            <div className="prose prose-lg max-w-none">
+              <PortableText components={components} value={post.body} />
+            </div>
+          </article>
+        </div>
       </div>
     </section>
   );

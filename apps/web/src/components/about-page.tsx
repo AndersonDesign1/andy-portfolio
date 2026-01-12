@@ -33,6 +33,7 @@ const AboutPage: React.FC = () => (
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
         <motion.div
           animate="visible"
+          className="flex flex-col gap-12"
           initial="hidden"
           variants={{
             hidden: {},
@@ -44,7 +45,7 @@ const AboutPage: React.FC = () => (
           }}
         >
           <motion.h1
-            className="mb-12 font-bold text-6xl text-primary tracking-tighter md:text-8xl lg:text-9xl"
+            className="font-bold text-6xl text-primary tracking-tighter md:text-8xl lg:text-9xl"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: {
@@ -89,38 +90,38 @@ const AboutPage: React.FC = () => (
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
         <div className="grid grid-cols-1 gap-20 md:grid-cols-2">
           <div>
-            <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
               Professional Journey
             </h2>
-            <div className="space-y-12">
-              <div>
-                <h3 className="mb-4 font-medium text-primary text-xl">
+            <div className="flex flex-col gap-12 pt-12">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-medium text-primary text-xl">
                   Full-Stack Development
                 </h3>
-                <p className="mb-4 text-base text-secondary leading-relaxed">
+                <p className="text-base text-secondary leading-relaxed">
                   I build scalable web applications for{" "}
                   <span className="text-primary">millions of users</span>,
                   writing clean, maintainable code and prioritizing performance
                   and UX.
                 </p>
-                <ul className="space-y-2 font-mono text-muted text-sm">
+                <ul className="flex flex-col gap-2 font-mono text-muted text-sm">
                   <li>— Built tens of web applications using modern stacks</li>
                   <li>— Developed real-time analytics dashboards</li>
                   <li>— Created microservices to reduce server costs</li>
                   <li>— Implemented CI/CD pipelines</li>
                 </ul>
               </div>
-              <div>
-                <h3 className="mb-4 font-medium text-primary text-xl">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-medium text-primary text-xl">
                   SEO Optimization Expert
                 </h3>
-                <p className="mb-4 text-base text-secondary leading-relaxed">
+                <p className="text-base text-secondary leading-relaxed">
                   I&apos;ve helped businesses increase their organic traffic by
                   an average of <span className="text-primary">285%</span>. My
                   approach combines technical SEO mastery with content strategy,
                   focusing on sustainable, white-hat techniques.
                 </p>
-                <ul className="space-y-2 font-mono text-muted text-sm">
+                <ul className="flex flex-col gap-2 font-mono text-muted text-sm">
                   <li>— Improved Core Web Vitals for 20+ websites</li>
                   <li>
                     — Increased organic traffic by 400% for an e-commerce client
@@ -134,30 +135,28 @@ const AboutPage: React.FC = () => (
 
           {/* Technical Expertise */}
           <div>
-            <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
               Technical Expertise
             </h2>
-            <div className="space-y-12">
-              <div>
-                <h4 className="mb-6 font-medium text-primary">
-                  Cloud & DevOps
-                </h4>
+            <div className="flex flex-col gap-12 pt-12">
+              <div className="flex flex-col gap-6">
+                <h4 className="font-medium text-primary">Cloud & DevOps</h4>
                 <ul className="grid grid-cols-2 gap-y-2 text-secondary text-sm">
                   <li>AWS/GCP architecture</li>
                   <li>Docker & Kubernetes</li>
                   <li>Infrastructure as Code</li>
                 </ul>
               </div>
-              <div>
-                <h4 className="mb-6 font-medium text-primary">Performance</h4>
+              <div className="flex flex-col gap-6">
+                <h4 className="font-medium text-primary">Performance</h4>
                 <ul className="grid grid-cols-2 gap-y-2 text-secondary text-sm">
                   <li>Database optimization</li>
                   <li>Redis / CDN Caching</li>
                   <li>Load balancing</li>
                 </ul>
               </div>
-              <div>
-                <h4 className="mb-6 font-medium text-primary">Technical SEO</h4>
+              <div className="flex flex-col gap-6">
+                <h4 className="font-medium text-primary">Technical SEO</h4>
                 <ul className="grid grid-cols-2 gap-y-2 text-secondary text-sm">
                   <li>Core Web Vitals</li>
                   <li>Schema markup</li>
@@ -174,10 +173,10 @@ const AboutPage: React.FC = () => (
     {/* Philosophy */}
     <section className="py-20 pb-32">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-        <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+        <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
           Philosophy
         </h2>
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-12 pt-12 md:grid-cols-2">
           <p className="font-medium text-2xl text-primary leading-tight md:text-3xl">
             I believe in methodical, creative problem-solving and continuous
             learning. My curiosity about &ldquo;how things work&rdquo; fuels my

@@ -115,7 +115,9 @@ export default function GiveawayFeedbackPage() {
         <motion.div
           animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
           initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }}
+          transition={
+            prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }
+          }
         >
           <Link
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
