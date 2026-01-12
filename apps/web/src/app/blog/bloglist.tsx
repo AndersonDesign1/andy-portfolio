@@ -34,11 +34,11 @@ export default function BlogList({ posts }: BlogListProps) {
       <div className="mx-auto max-w-screen-xl px-4 py-20 sm:px-8 md:px-16 lg:px-[150px]">
         <motion.div
           animate={{ opacity: 1, y: 0 }}
-          className="mb-16 text-center"
+          className="flex flex-col gap-4 pb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="mb-4 font-bold text-4xl text-light-heading dark:text-dark-heading">
+          <h1 className="font-bold text-4xl text-light-heading dark:text-dark-heading">
             Blog
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-light-text dark:text-dark-text">
@@ -71,8 +71,8 @@ export default function BlogList({ posts }: BlogListProps) {
                     />
                   )}
                 </div>
-                <div className="p-6">
-                  <div className="mb-3 flex items-center gap-2 text-light-mini text-sm dark:text-dark-mini">
+                <div className="flex flex-col gap-3 p-6">
+                  <div className="flex items-center gap-2 text-light-mini text-sm dark:text-dark-mini">
                     <span>{formatDate(post.publishedAt)}</span>
                     {post.categories && post.categories.length > 0 && (
                       <>
@@ -81,7 +81,7 @@ export default function BlogList({ posts }: BlogListProps) {
                       </>
                     )}
                   </div>
-                  <h2 className="mb-3 font-semibold text-light-heading text-xl transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400">
+                  <h2 className="font-semibold text-light-heading text-xl transition-colors duration-300 group-hover:text-blue-600 dark:text-dark-heading dark:group-hover:text-blue-400">
                     {post.title}
                   </h2>
                   {post.excerpt && (

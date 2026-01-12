@@ -155,7 +155,7 @@ export default function Navbar() {
                 size="icon"
                 variant="ghost"
               >
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="size-6" />
               </Button>
             </div>
 

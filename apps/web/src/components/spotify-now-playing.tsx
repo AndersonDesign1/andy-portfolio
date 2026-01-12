@@ -134,7 +134,7 @@ export default function SpotifyNowPlaying() {
                   >
                     <Image
                       alt={track.album.name}
-                      className="h-16 w-16 rounded-sm object-cover grayscale"
+                      className="size-16 rounded-sm object-cover grayscale"
                       height={64}
                       src={
                         track.album.images[1]?.url || track.album.images[0]?.url
@@ -207,16 +207,16 @@ export default function SpotifyNowPlaying() {
         type="button"
       >
         <div
-          className={`relative h-8 w-8 overflow-hidden rounded-full ${track.isPlaying ? "" : "grayscale"}`}
+          className={`relative size-8 overflow-hidden rounded-full ${track.isPlaying ? "" : "grayscale"}`}
         >
           <Image
             alt={track.name}
-            className={`h-full w-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
+            className={`size-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
             height={32}
             src={track.album.images[2]?.url || track.album.images[0]?.url}
             width={32}
           />
-          <div className="absolute inset-0 z-10 m-auto h-2 w-2 rounded-full border border-subtle bg-primary" />
+          <div className="absolute inset-0 z-10 m-auto size-2 rounded-full border border-subtle bg-primary" />
         </div>
 
         <div className="flex flex-col items-start gap-1 overflow-hidden text-left">

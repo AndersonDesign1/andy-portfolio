@@ -17,11 +17,11 @@ export function ThemeToggle() {
     return (
       <Button
         aria-label="Toggle theme"
-        className="h-8 w-8 rounded-full"
+        className="size-8 rounded-full"
         size="icon"
         variant="ghost"
       >
-        <div className="size-4" />
+        <div className="size-5" />
       </Button>
     );
   }
@@ -31,7 +31,7 @@ export function ThemeToggle() {
   return (
     <Button
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-      className="h-8 w-8 rounded-full transition-colors duration-200"
+      className="size-8 rounded-full transition-colors duration-200"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       size="icon"
       variant="ghost"

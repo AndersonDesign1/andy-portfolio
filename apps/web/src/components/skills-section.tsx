@@ -63,7 +63,7 @@ export default function SkillsSection() {
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
         <motion.div
           animate="visible"
-          className="mb-20 flex items-end justify-between border-subtle border-b pb-8"
+          className="flex items-end justify-between border-subtle border-b pb-8"
           initial="hidden"
           variants={skillCategoryVariants}
         >
@@ -72,34 +72,36 @@ export default function SkillsSection() {
           </h2>
         </motion.div>
 
-        <motion.div
-          animate="visible"
-          className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-y-24"
-          initial="hidden"
-          variants={skillsContainer}
-        >
-          {skillsData.map((category) => (
-            <motion.div
-              className="group"
-              key={category.title}
-              variants={skillCategoryVariants}
-            >
-              <h3 className="mb-6 font-medium text-primary text-xl">
-                {category.title}
-              </h3>
-              <ul className="flex flex-col gap-3">
-                {category.skills.map((skill) => (
-                  <li
-                    className="text-base text-secondary transition-colors duration-200 hover:text-primary"
-                    key={skill}
-                  >
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </motion.div>
+        <div className="pt-20">
+          <motion.div
+            animate="visible"
+            className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-y-24"
+            initial="hidden"
+            variants={skillsContainer}
+          >
+            {skillsData.map((category) => (
+              <motion.div
+                className="group"
+                key={category.title}
+                variants={skillCategoryVariants}
+              >
+                <h3 className="pb-6 font-medium text-primary text-xl">
+                  {category.title}
+                </h3>
+                <ul className="flex flex-col gap-3">
+                  {category.skills.map((skill) => (
+                    <li
+                      className="text-base text-secondary transition-colors duration-200 hover:text-primary"
+                      key={skill}
+                    >
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

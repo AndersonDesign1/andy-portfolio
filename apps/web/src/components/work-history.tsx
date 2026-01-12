@@ -19,10 +19,10 @@ export default function WorkHistory() {
         <div className="grid grid-cols-1 gap-20 md:grid-cols-2 md:gap-32">
           {/* Experience Column */}
           <div>
-            <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
               Experience
             </h2>
-            <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-12 pt-12">
               {workExperience
                 .filter((job) => {
                   const title = job.position.toLowerCase();
@@ -52,10 +52,10 @@ export default function WorkHistory() {
                       <h3 className="font-medium text-lg text-primary leading-tight">
                         {job.company}
                       </h3>
-                      <p className="mb-2 text-secondary text-sm">
+                      <p className="pb-2 text-secondary text-sm">
                         {job.position}
                       </p>
-                      <p className="mb-4 font-mono text-muted text-xs">
+                      <p className="pb-4 font-mono text-muted text-xs">
                         {formatDate(job.startDate)} —{" "}
                         {job.endDate ? formatDate(job.endDate) : "Present"}
                       </p>
@@ -65,7 +65,7 @@ export default function WorkHistory() {
             </div>
 
             {/* Resume Button */}
-            <div className="mt-12">
+            <div className="pt-12">
               <a
                 className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
                 href="/Anderson Joseph Resume.pdf"
@@ -82,10 +82,10 @@ export default function WorkHistory() {
 
           {/* Education Column */}
           <div>
-            <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
               Education
             </h2>
-            <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-12 pt-12">
               {education.map((edu) => (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -98,7 +98,7 @@ export default function WorkHistory() {
                     <h3 className="font-medium text-lg text-primary leading-tight">
                       {edu.institution}
                     </h3>
-                    <p className="mb-2 text-secondary text-sm">{edu.degree}</p>
+                    <p className="pb-2 text-secondary text-sm">{edu.degree}</p>
                     <p className="font-mono text-muted text-xs">
                       {formatDate(edu.startDate)} —{" "}
                       {edu.endDate ? formatDate(edu.endDate) : "Present"}

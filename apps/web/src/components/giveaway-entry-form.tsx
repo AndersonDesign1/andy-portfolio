@@ -135,7 +135,6 @@ export default function GiveawayEntryForm() {
         {/* Back Navigation */}
         <motion.div
           animate={{ opacity: 1, x: 0 }}
-          className="mb-12"
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
         >
@@ -148,38 +147,40 @@ export default function GiveawayEntryForm() {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
+        <div className="grid grid-cols-1 gap-16 pt-12 md:grid-cols-2 md:gap-32">
           {/* Header */}
           <div>
-            <h1 className="mb-8 font-bold text-5xl text-primary leading-[0.95] tracking-tighter md:text-7xl">
+            <h1 className="font-bold text-5xl text-primary leading-[0.95] tracking-tighter md:text-7xl">
               Enter the
               <br />
               Giveaway
             </h1>
-            <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
-              Fill out the form below to enter. Don't forget to read the{" "}
-              <Link
-                className="text-primary transition-opacity hover:opacity-70"
-                href="/giveaway"
-              >
-                instructions
-              </Link>{" "}
-              if you haven't already!
-            </p>
+            <div className="flex flex-col gap-8 pt-8">
+              <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
+                Fill out the form below to enter. Don&apos;t forget to read the{" "}
+                <Link
+                  className="text-primary transition-opacity hover:opacity-70"
+                  href="/giveaway"
+                >
+                  instructions
+                </Link>{" "}
+                if you haven&apos;t already!
+              </p>
 
-            {/* Countdown */}
-            {timeLeft && (
-              <div className="mt-8">
-                <p className="mb-3 font-mono text-muted text-sm uppercase tracking-widest">
-                  {status === "pending"
-                    ? "Giveaway starts in"
-                    : "Time remaining — Hurry!"}
-                </p>
-                <CountdownDisplay timeLeft={timeLeft} />
-              </div>
-            )}
+              {/* Countdown */}
+              {timeLeft && (
+                <div>
+                  <p className="pb-3 font-mono text-muted text-sm uppercase tracking-widest">
+                    {status === "pending"
+                      ? "Giveaway starts in"
+                      : "Time remaining — Hurry!"}
+                  </p>
+                  <CountdownDisplay timeLeft={timeLeft} />
+                </div>
+              )}
+            </div>
 
-            <div className="mt-12 space-y-6">
+            <div className="mt-12 flex flex-col gap-6">
               <div className="flex flex-col gap-2">
                 <span className="font-mono text-muted text-sm uppercase tracking-widest">
                   Questions?
@@ -213,7 +214,7 @@ export default function GiveawayEntryForm() {
             ref={formRef}
           >
             {/* Name */}
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="name"
@@ -239,7 +240,7 @@ export default function GiveawayEntryForm() {
             </div>
 
             {/* Email */}
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="email"
@@ -265,7 +266,7 @@ export default function GiveawayEntryForm() {
             </div>
 
             {/* Website Type - Using shadcn Select */}
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="websiteType"
@@ -281,7 +282,7 @@ export default function GiveawayEntryForm() {
                     errors.websiteType ? "border-red-500" : ""
                   }`}
                 >
-                  <SelectValue placeholder="Select website type..." />
+                  <SelectValue placeholder="Select website type…" />
                 </SelectTrigger>
                 <SelectContent>
                   {websiteTypes.map((type) => (
@@ -305,7 +306,7 @@ export default function GiveawayEntryForm() {
             </div>
 
             {/* Project Name */}
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="projectName"
@@ -324,7 +325,7 @@ export default function GiveawayEntryForm() {
             </div>
 
             {/* Description */}
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="description"
@@ -358,7 +359,7 @@ export default function GiveawayEntryForm() {
                 {isPending ? (
                   <span className="flex items-center gap-2">
                     <span className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    Submitting...
+                    Submitting…
                   </span>
                 ) : (
                   "Submit Entry"

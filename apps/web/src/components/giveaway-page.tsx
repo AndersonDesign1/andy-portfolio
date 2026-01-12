@@ -75,7 +75,7 @@ function FAQItem({
       >
         <span className="font-medium text-lg text-primary">{question}</span>
         <ChevronDownIcon
-          className={`h-5 w-5 text-muted transition-transform duration-300 ${
+          className={`size-5 text-muted transition-transform duration-300 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -116,6 +116,7 @@ export default function GiveawayPage() {
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
           <motion.div
             animate="visible"
+            className="flex flex-col gap-8"
             initial="hidden"
             variants={{
               hidden: {},
@@ -127,7 +128,7 @@ export default function GiveawayPage() {
             }}
           >
             <motion.h1
-              className="mb-8 font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl"
+              className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl"
               variants={{
                 hidden: { opacity: 0, y: 30 },
                 visible: {
@@ -165,7 +166,7 @@ export default function GiveawayPage() {
             {/* Countdown */}
             {timeLeft && (
               <motion.div
-                className="mt-12"
+                className="pt-12"
                 variants={{
                   hidden: { opacity: 0, y: 30 },
                   visible: {
@@ -178,7 +179,7 @@ export default function GiveawayPage() {
                   },
                 }}
               >
-                <p className="mb-4 font-mono text-muted text-sm uppercase tracking-widest">
+                <p className="pb-4 font-mono text-muted text-sm uppercase tracking-widest">
                   {status === "pending"
                     ? "Giveaway starts in"
                     : "Time remaining"}
@@ -199,31 +200,31 @@ export default function GiveawayPage() {
       <section className="py-20">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
-            <div>
-              <h2 className="mb-8 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
-                Why I'm Doing This
+            <div className="flex flex-col gap-6">
+              <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+                Why I&apos;m Doing This
               </h2>
-              <p className="mb-6 text-lg text-secondary leading-relaxed">
+              <p className="text-lg text-secondary leading-relaxed">
                 2025 was a year of growth. I rebuilt my portfolio, worked with
                 amazing clients, and received incredible feedback on my work.
               </p>
-              <p className="mb-6 text-lg text-secondary leading-relaxed">
+              <p className="text-lg text-secondary leading-relaxed">
                 This giveaway is my way of saying{" "}
                 <span className="text-primary">thank you</span> — and helping
                 others kickstart their online presence without worrying about
                 the cost.
               </p>
               <p className="text-lg text-secondary leading-relaxed">
-                Whether you're starting a blog, showcasing your portfolio, or
-                launching a business — I want to help you get online.
+                Whether you&apos;re starting a blog, showcasing your portfolio,
+                or launching a business — I want to help you get online.
               </p>
             </div>
 
-            <div>
-              <h2 className="mb-8 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <div className="flex flex-col gap-8">
+              <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
                 What You Get
               </h2>
-              <ul className="space-y-4">
+              <ul className="flex flex-col gap-4">
                 {[
                   "Custom website design & development",
                   "Hosting included (I'll handle it)",
@@ -241,12 +242,12 @@ export default function GiveawayPage() {
                 ))}
               </ul>
 
-              <div className="mt-12">
-                <h3 className="mb-4 font-medium text-primary">How It Works</h3>
+              <div className="flex flex-col gap-4">
+                <h3 className="font-medium text-primary">How It Works</h3>
                 <p className="text-secondary leading-relaxed">
-                  Enter the giveaway by filling out the form. If you're selected
-                  as a winner, I'll reach out and guide you through purchasing
-                  your domain. Then I handle everything else!
+                  Enter the giveaway by filling out the form. If you&apos;re
+                  selected as a winner, I&apos;ll reach out and guide you
+                  through purchasing your domain. Then I handle everything else!
                 </p>
               </div>
             </div>
@@ -257,10 +258,10 @@ export default function GiveawayPage() {
       {/* FAQ Section */}
       <section className="py-20">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-          <h2 className="mb-12 border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+          <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
             Frequently Asked Questions
           </h2>
-          <div className="max-w-3xl">
+          <div className="max-w-3xl pt-12">
             {faqs.map((faq, index) => (
               <FAQItem
                 answer={faq.answer}
@@ -279,12 +280,13 @@ export default function GiveawayPage() {
       <section className="py-20 pb-32">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="mb-4 font-bold text-4xl text-primary tracking-tighter md:text-5xl">
+            <div className="flex flex-col gap-4">
+              <h2 className="font-bold text-4xl text-primary tracking-tighter md:text-5xl">
                 Ready to enter?
               </h2>
               <p className="max-w-md text-lg text-secondary">
-                Fill out the form and you're in. Hurry — only one week left!
+                Fill out the form and you&apos;re in. Hurry — only one week
+                left!
               </p>
             </div>
             <Link

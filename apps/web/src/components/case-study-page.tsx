@@ -39,7 +39,7 @@ export default function CaseStudyPage({
 }) {
   return (
     <div className="min-h-screen bg-primary pt-48 md:pt-64">
-      <div className="mx-auto mb-20 max-w-screen-xl px-6 md:px-12">
+      <div className="mx-auto max-w-screen-xl px-6 pb-20 md:px-12">
         <motion.div
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center justify-between"
@@ -68,14 +68,17 @@ export default function CaseStudyPage({
         </motion.div>
       </div>
 
-      <section className="mx-auto mb-24 max-w-screen-xl px-4 md:mb-32 md:px-8">
+      <section className="mx-auto max-w-screen-xl px-4 pb-24 md:px-8 md:pb-32">
         <motion.div
           animate="visible"
-          className="space-y-12 md:space-y-24"
+          className="flex flex-col gap-12 md:gap-24"
           initial="hidden"
           variants={stagger}
         >
-          <motion.div className="space-y-8 md:space-y-12" variants={fadeInUp}>
+          <motion.div
+            className="flex flex-col gap-8 md:gap-12"
+            variants={fadeInUp}
+          >
             <div className="grid grid-cols-1 border-subtle border-y md:grid-cols-4">
               <div className="border-subtle border-b py-4 md:border-r md:border-b-0 md:py-6">
                 <span className="mb-2 block font-mono text-muted text-xs uppercase tracking-widest">
@@ -140,17 +143,17 @@ export default function CaseStudyPage({
               </h2>
             </div>
 
-            <div className="space-y-16 py-12 md:col-span-8 md:py-24 md:pl-12">
-              <div className="space-y-8">
+            <div className="flex flex-col gap-16 py-12 md:col-span-8 md:py-24 md:pl-12">
+              <div className="flex flex-col gap-8">
                 <h3 className="font-medium text-3xl text-primary leading-tight md:text-4xl">
                   {caseStudy.challenge.problem}
                 </h3>
                 <div className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2">
                   <div>
-                    <h4 className="mb-4 font-mono text-muted text-sm uppercase">
+                    <h4 className="pb-4 font-mono text-muted text-sm uppercase">
                       Constraints
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className="flex flex-col gap-2">
                       {caseStudy.challenge.constraints.map((constraint) => (
                         <li
                           className="border-subtle border-l py-1 pl-4 text-secondary text-sm"
@@ -162,7 +165,7 @@ export default function CaseStudyPage({
                     </ul>
                   </div>
                   <div>
-                    <h4 className="mb-4 font-mono text-muted text-sm uppercase">
+                    <h4 className="pb-4 font-mono text-muted text-sm uppercase">
                       Goals
                     </h4>
                     <ul className="space-y-2">
@@ -192,17 +195,17 @@ export default function CaseStudyPage({
               </h2>
             </div>
             <div className="py-12 md:col-span-8 md:py-24 md:pl-12">
-              <p className="mb-16 text-secondary text-xl leading-relaxed">
+              <p className="pb-16 text-secondary text-xl leading-relaxed">
                 {caseStudy.approach.methodology}
               </p>
 
-              <div className="space-y-0">
+              <div className="flex flex-col gap-0">
                 {caseStudy.approach.phases.map((phase, index) => (
                   <div
                     className="group border-subtle border-t py-8 transition-colors first:border-t-0 hover:bg-secondary/5"
                     key={phase.name}
                   >
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                       <div className="flex items-baseline justify-between">
                         <h3 className="font-medium text-primary text-xl">
                           {phase.name}
@@ -211,7 +214,7 @@ export default function CaseStudyPage({
                           0{index + 1}
                         </span>
                       </div>
-                      <ul className="space-y-1">
+                      <ul className="flex flex-col gap-1">
                         {phase.activities.map((act) => (
                           <li className="text-secondary text-sm" key={act}>
                             — {act}
@@ -238,7 +241,7 @@ export default function CaseStudyPage({
             <div className="py-12 md:col-span-8 md:py-24 md:pl-12">
               <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-2">
                 {caseStudy.results.beforeAfter.map((metric) => (
-                  <div className="space-y-1" key={metric.metric}>
+                  <div className="flex flex-col gap-1" key={metric.metric}>
                     <h3 className="font-mono text-muted text-xs uppercase tracking-widest">
                       {metric.metric}
                     </h3>
@@ -259,7 +262,7 @@ export default function CaseStudyPage({
               </div>
 
               {caseStudy.results.metrics.length > 0 && (
-                <div className="mt-20 grid grid-cols-2 gap-8 border-subtle border-t pt-12">
+                <div className="grid grid-cols-2 gap-8 border-subtle border-t pt-12 pt-20">
                   {caseStudy.results.metrics.map((m) => (
                     <p
                       className="border-primary border-l-2 py-2 pl-6 font-light text-lg text-primary"
@@ -277,12 +280,12 @@ export default function CaseStudyPage({
 
       <section className="py-24">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-          <h2 className="mb-12 font-mono text-muted text-xs uppercase tracking-widest">
+          <h2 className="pb-12 font-mono text-muted text-xs uppercase tracking-widest">
             Gallery
           </h2>
-          <div className="space-y-32">
+          <div className="flex flex-col gap-32">
             {caseStudy.gallery.images.map((image, i) => (
-              <div className="group space-y-4" key={image.src}>
+              <div className="group flex flex-col gap-4" key={image.src}>
                 <div className="relative aspect-video w-full overflow-hidden border border-subtle bg-secondary/5">
                   <Image
                     alt={image.alt || `Project image ${i + 1}`}
@@ -313,11 +316,11 @@ export default function CaseStudyPage({
                     className="block h-full"
                     href={`/case-studies/${navigation.prev.slug}`}
                   >
-                    <span className="mb-4 block font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
+                    <span className="block pb-4 font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
                       Previous Case Study
                     </span>
                     <div className="flex items-center gap-4">
-                      <ArrowLeftIcon className="h-5 w-5 text-secondary transition-transform duration-300 group-hover:-translate-x-2" />
+                      <ArrowLeftIcon className="size-5 text-secondary transition-transform duration-300 group-hover:-translate-x-2" />
                       <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
                         {navigation.prev.title}
                       </h3>
@@ -333,14 +336,14 @@ export default function CaseStudyPage({
                     className="block h-full"
                     href={`/case-studies/${navigation.next.slug}`}
                   >
-                    <span className="mb-4 block font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
+                    <span className="block pb-4 font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
                       Next Case Study
                     </span>
                     <div className="flex items-center justify-end gap-4">
                       <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
                         {navigation.next.title}
                       </h3>
-                      <ArrowRightIcon className="h-5 w-5 text-secondary transition-transform duration-300 group-hover:translate-x-2" />
+                      <ArrowRightIcon className="size-5 text-secondary transition-transform duration-300 group-hover:translate-x-2" />
                     </div>
                   </Link>
                 ) : (

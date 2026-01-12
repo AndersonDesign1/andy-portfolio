@@ -76,26 +76,28 @@ export default function ContactForm() {
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
           {/* Header */}
           <div>
-            <h1 className="mb-8 font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl">
-              Let's
+            <h1 className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl">
+              Let&apos;s
               <br />
               talk.
             </h1>
-            <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
-              Have a project in mind or want to collaborate? I'm currently open
-              to new opportunities.
-            </p>
+            <div className="flex flex-col gap-12 pt-8">
+              <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
+                Have a project in mind or want to collaborate? I&apos;m
+                currently open to new opportunities.
+              </p>
 
-            <div className="mt-12 flex flex-col gap-4">
-              <span className="font-mono text-muted text-sm uppercase tracking-widest">
-                Email
-              </span>
-              <a
-                className="text-primary text-xl transition-colors hover:text-accent"
-                href="mailto:hello@andersonjoseph.com"
-              >
-                hello@andersonjoseph.com
-              </a>
+              <div className="flex flex-col gap-4">
+                <span className="font-mono text-muted text-sm uppercase tracking-widest">
+                  Email
+                </span>
+                <a
+                  className="text-primary text-xl transition-colors hover:text-accent"
+                  href="mailto:hello@andersonjoseph.com"
+                >
+                  hello@andersonjoseph.com
+                </a>
+              </div>
             </div>
           </div>
 
@@ -131,7 +133,7 @@ export default function ContactForm() {
                 placeholder: "Project Inquiry",
               },
             ].map((field) => (
-              <div className="space-y-2" key={field.name}>
+              <div className="flex flex-col gap-2" key={field.name}>
                 <label
                   className="font-mono text-muted text-xs uppercase tracking-widest"
                   htmlFor={field.name}
@@ -157,7 +159,7 @@ export default function ContactForm() {
               </div>
             ))}
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-mono text-muted text-xs uppercase tracking-widest"
                 htmlFor="message"
@@ -171,7 +173,7 @@ export default function ContactForm() {
                 id="message"
                 name="message"
                 onChange={handleChange}
-                placeholder="Tell me about your project..."
+                placeholder="Tell me about your project…"
                 rows={4}
                 value={form.message}
               />
@@ -191,7 +193,7 @@ export default function ContactForm() {
                 {isPending ? (
                   <span className="flex items-center gap-2">
                     <span className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    Sending...
+                    Sending…
                   </span>
                 ) : (
                   "Send Message"
