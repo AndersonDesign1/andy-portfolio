@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
 
+export const dynamic = "force-dynamic";
+
 const HTTP_STATUS_NO_CONTENT = 204;
 const HTTP_STATUS_BAD_REQUEST = 400;
 
@@ -34,7 +36,7 @@ export async function GET(_req: NextRequest) {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
-      next: { revalidate: 30 },
+      next: { revalidate: 10 },
     }
   );
 

@@ -7,7 +7,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { useGiveawayStatus } from "@/components/giveaway-banner";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
@@ -19,21 +18,23 @@ const menuItems = [
   { label: "Contact", link: "/contact" },
 ];
 
+import { debounce } from "@/lib/utils";
+
+// ... existing imports
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
-  const { status: giveawayStatus } = useGiveawayStatus();
-
-  // Show banner offset if giveaway is active AND we're not on giveaway pages
-  const isGiveawayPage = pathname?.startsWith("/giveaway");
-  const showBanner = giveawayStatus !== "ended" && !isGiveawayPage;
 
   useEffect(() => {
     setMounted(true);
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = debounce(() => {
+      setScrolled(window.scrollY > 20);
+    }, 10);
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -63,9 +64,7 @@ export default function Navbar() {
     <>
       {/* Navbar */}
       <nav
-        className={`fixed inset-x-0 z-50 transition-all duration-300 ${
-          showBanner ? "top-[52px]" : "top-0"
-        } ${
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
           scrolled
             ? "border-subtle border-b bg-primary/95 py-6 backdrop-blur-sm"
             : "py-6"

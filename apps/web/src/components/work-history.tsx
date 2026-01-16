@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useMemo } from "react";
 import educationData from "@/data/education.json" with { type: "json" };
 import workExperienceData from "@/data/work-experience.json" with {
   type: "json",
@@ -13,6 +14,25 @@ export default function WorkHistory() {
   const workExperience = workExperienceData.workExperience;
   const education = educationData.education;
 
+  const filteredExperience = useMemo(() => {
+    return workExperience.filter((job) => {
+      const title = job.position.toLowerCase();
+      const company = job.company.toLowerCase();
+      return (
+        title.includes("full stack") ||
+        title.includes("developer") ||
+        title.includes("engineer") ||
+        title.includes("founding") ||
+        title.includes("backend") ||
+        title.includes("seo") ||
+        title.includes("instructor") ||
+        title.includes("teacher") ||
+        title.includes("mentor") ||
+        company.includes("training")
+      );
+    });
+  }, [workExperience]);
+
   return (
     <section className="bg-primary py-24 md:py-32" ref={workRef}>
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
@@ -23,45 +43,28 @@ export default function WorkHistory() {
               Experience
             </h2>
             <div className="flex flex-col gap-12 pt-12">
-              {workExperience
-                .filter((job) => {
-                  const title = job.position.toLowerCase();
-                  const company = job.company.toLowerCase();
-                  return (
-                    title.includes("full stack") ||
-                    title.includes("developer") ||
-                    title.includes("engineer") ||
-                    title.includes("founding") ||
-                    title.includes("backend") ||
-                    title.includes("seo") ||
-                    title.includes("instructor") ||
-                    title.includes("teacher") ||
-                    title.includes("mentor") ||
-                    company.includes("training")
-                  );
-                })
-                .map((job) => (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    key={job.id}
-                    transition={{ duration: 0.4 }}
-                    viewport={{ once: true }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                  >
-                    <div className="flex flex-col gap-1">
-                      <h3 className="font-medium text-lg text-primary leading-tight">
-                        {job.company}
-                      </h3>
-                      <p className="pb-2 text-secondary text-sm">
-                        {job.position}
-                      </p>
-                      <p className="pb-4 font-mono text-muted text-xs">
-                        {formatDate(job.startDate)} —{" "}
-                        {job.endDate ? formatDate(job.endDate) : "Present"}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
+              {filteredExperience.map((job) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  key={job.id}
+                  transition={{ duration: 0.4 }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                >
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-medium text-lg text-primary leading-tight">
+                      {job.company}
+                    </h3>
+                    <p className="pb-2 text-secondary text-sm">
+                      {job.position}
+                    </p>
+                    <p className="pb-4 font-mono text-muted text-xs">
+                      {formatDate(job.startDate)} —{" "}
+                      {job.endDate ? formatDate(job.endDate) : "Present"}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
 
             {/* Resume Button */}

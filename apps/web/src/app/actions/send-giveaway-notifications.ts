@@ -21,7 +21,7 @@ export async function sendGiveawayNotifications(testEmail?: string): Promise<{
 }> {
   // giveawayData is currently removed. To use this action, restore giveaway-results.json
   // or provide an alternative data source.
-  const participants: Participant[] = []; 
+  const participants: Participant[] = [];
 
   const winners = participants.filter((p) => p.category !== "Disqualified");
   const consolation = participants.filter((p) => p.category === "Disqualified");

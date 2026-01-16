@@ -58,7 +58,9 @@ export default function SpotifyNowPlaying() {
 
   const fetchTrack = useCallback(async () => {
     try {
-      const res = await fetch("/api/spotify/now-playing");
+      const res = await fetch("/api/spotify/now-playing", {
+        cache: "no-store",
+      });
       if (res.ok) {
         const data = await res.json();
         updateTrack(data);
