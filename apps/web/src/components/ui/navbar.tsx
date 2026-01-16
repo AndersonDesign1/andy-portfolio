@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { debounce } from "@/lib/utils";
 
 const menuItems = [
   { label: "Home", link: "/" },
@@ -17,10 +18,6 @@ const menuItems = [
   { label: "Blog", link: "/blog" },
   { label: "Contact", link: "/contact" },
 ];
-
-import { debounce } from "@/lib/utils";
-
-// ... existing imports
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
