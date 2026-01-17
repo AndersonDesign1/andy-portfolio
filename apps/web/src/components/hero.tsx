@@ -54,6 +54,7 @@ export default function Hero() {
           {/* Name - Extreme Scale */}
           <motion.h1
             className="-ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]"
+            initial="visible"
             variants={heroTextVariants}
           >
             Andy
