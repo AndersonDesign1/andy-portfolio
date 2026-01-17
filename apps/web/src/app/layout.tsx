@@ -34,7 +34,6 @@ export default function RootLayout({
           defaultTheme="system"
           disableTransitionOnChange
           enableSystem
-          storageKey="andy-theme"
         >
           <ScrollProvider>
             <Navbar />
