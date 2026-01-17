@@ -2,6 +2,7 @@
 
 import { Indicator, Item, Root } from "@radix-ui/react-radio-group";
 import { Circle } from "lucide-react";
+// biome-ignore lint/performance/noNamespaceImport: shadcn component requires namespace import
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
