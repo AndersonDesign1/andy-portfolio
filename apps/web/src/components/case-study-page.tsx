@@ -3,10 +3,12 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   GlobeAltIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { ANIMATION_EASE_CUBIC } from "@/lib/constants";
 import type { CaseStudy, CaseStudyNavigation } from "@/types/case-study";
 
@@ -37,6 +39,8 @@ export default function CaseStudyPage({
   caseStudy: CaseStudy;
   navigation?: CaseStudyNavigation;
 }) {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-primary pt-48 md:pt-64">
       <div className="mx-auto max-w-screen-xl px-6 pb-20 md:px-12">
@@ -286,14 +290,18 @@ export default function CaseStudyPage({
           <div className="flex flex-col gap-32">
             {caseStudy.gallery.images.map((image, i) => (
               <div className="group flex flex-col gap-4" key={image.src}>
-                <div className="relative aspect-video w-full overflow-hidden border border-subtle bg-secondary/5">
+                <button
+                  className="relative aspect-video w-full cursor-zoom-in overflow-hidden border border-subtle bg-secondary/5"
+                  onClick={() => setSelectedImage(image.src)}
+                  type="button"
+                >
                   <Image
                     alt={image.alt || `Project image ${i + 1}`}
                     className="object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                     fill
                     src={image.src}
                   />
-                </div>
+                </button>
                 <div className="flex items-baseline justify-between border-subtle border-b pb-4">
                   <p className="font-medium text-primary text-sm uppercase tracking-wide">
                     {image.title}
@@ -315,6 +323,7 @@ export default function CaseStudyPage({
                   <Link
                     className="block h-full"
                     href={`/case-studies/${navigation.prev.slug}`}
+                    scroll={false}
                   >
                     <span className="block pb-4 font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
                       Previous Case Study
@@ -335,6 +344,7 @@ export default function CaseStudyPage({
                   <Link
                     className="block h-full"
                     href={`/case-studies/${navigation.next.slug}`}
+                    scroll={false}
                   >
                     <span className="block pb-4 font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
                       Next Case Study
@@ -354,6 +364,44 @@ export default function CaseStudyPage({
           </div>
         </section>
       )}
+
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+          >
+            <button
+              className="absolute top-4 right-4 z-50 p-2 text-white/70 transition-colors hover:text-white"
+              onClick={() => setSelectedImage(null)}
+              type="button"
+            >
+              <XMarkIcon className="size-8" />
+              <span className="sr-only">Close</span>
+            </button>
+            <motion.div
+              animate={{ scale: 1, opacity: 1 }}
+              className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
+              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              transition={{ type: "spring", duration: 0.5 }}
+            >
+              <Image
+                alt="Enlarged gallery view"
+                className="object-contain"
+                fill
+                priority
+                sizes="100vw"
+                src={selectedImage}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

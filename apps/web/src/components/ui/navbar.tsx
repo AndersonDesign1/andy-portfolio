@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -22,12 +21,9 @@ const menuItems = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    setMounted(true);
     const onScroll = debounce(() => {
       setScrolled(window.scrollY > 20);
     }, 10);
@@ -54,9 +50,6 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  const logoSrc =
-    resolvedTheme === "dark" ? "/logo-white.png" : "/logo-black.png";
-
   return (
     <>
       {/* Navbar */}
@@ -70,17 +63,22 @@ export default function Navbar() {
         <div className="mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
           {/* Logo */}
           <Link className="shrink-0" href="/" prefetch>
-            {mounted && (
-              <Image
-                alt="Logo"
-                className="object-contain"
-                height={40}
-                key={logoSrc}
-                priority
-                src={logoSrc}
-                width={90}
-              />
-            )}
+            <Image
+              alt="Logo"
+              className="object-contain dark:hidden"
+              height={40}
+              priority
+              src="/logo-black.png"
+              width={90}
+            />
+            <Image
+              alt="Logo"
+              className="hidden object-contain dark:block"
+              height={40}
+              priority
+              src="/logo-white.png"
+              width={90}
+            />
           </Link>
 
           {/* Desktop Menu */}
@@ -92,10 +90,10 @@ export default function Navbar() {
                   <li key={label}>
                     <Link
                       aria-current={isActive ? "page" : undefined}
-                      className={`relative font-medium text-sm transition-colors duration-200 ${
+                      className={`font-medium text-sm transition-colors duration-200 ${
                         isActive
                           ? "text-primary"
-                          : "text-muted hover:text-primary"
+                          : "text-muted hover:text-accent"
                       }`}
                       href={link}
                       prefetch

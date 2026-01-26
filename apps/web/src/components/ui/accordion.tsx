@@ -42,46 +42,46 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
     },
     ref
   ) => {
-    const [openItems, setOpenItems] = React.useState<string[]>(
+    const [internalOpenItems, setInternalOpenItems] = React.useState<string[]>(
       value ? [value] : []
     );
+
+    let openItems = internalOpenItems;
+    if (value !== undefined) {
+      openItems = value ? [value] : [];
+    }
 
     const toggleItem = React.useCallback(
       (itemValue: string) => {
         let newValue: string;
+        let newItems: string[];
 
         if (type === "single") {
           if (collapsible && openItems.includes(itemValue)) {
-            const newItems = openItems.filter((item) => item !== itemValue);
+            newItems = openItems.filter((item) => item !== itemValue);
             newValue = "";
-            setOpenItems(newItems);
           } else {
-            const newItems = [itemValue];
+            newItems = [itemValue];
             newValue = itemValue;
-            setOpenItems(newItems);
           }
         } else if (openItems.includes(itemValue)) {
-          const newItems = openItems.filter((item) => item !== itemValue);
+          newItems = openItems.filter((item) => item !== itemValue);
           newValue = newItems.join(",");
-          setOpenItems(newItems);
         } else {
-          const newItems = [...openItems, itemValue];
+          newItems = [...openItems, itemValue];
           newValue = newItems.join(",");
-          setOpenItems(newItems);
         }
 
         if (onValueChange) {
           onValueChange(newValue);
         }
-      },
-      [type, collapsible, openItems, onValueChange]
-    );
 
-    React.useEffect(() => {
-      if (value !== undefined) {
-        setOpenItems(value ? [value] : []);
-      }
-    }, [value]);
+        if (value === undefined) {
+          setInternalOpenItems(newItems);
+        }
+      },
+      [type, collapsible, openItems, onValueChange, value]
+    );
 
     return (
       <AccordionContext.Provider value={{ openItems, toggleItem }}>

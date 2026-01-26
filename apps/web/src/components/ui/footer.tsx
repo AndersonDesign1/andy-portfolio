@@ -6,6 +6,7 @@ import {
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "motion/react";
 import type React from "react";
 import { useMemo } from "react";
 
@@ -41,16 +42,20 @@ const Footer: React.FC = () => {
         {/* Social links - Right aligned on desktop */}
         <div className="order-1 flex justify-center gap-6 md:order-2">
           {socialLinks.map((link) => (
-            <a
+            <motion.a
               aria-label={link.label}
-              className="text-muted transition-colors duration-200 hover:text-primary"
+              className="text-muted transition-colors duration-200 hover:text-accent"
               href={link.href}
               key={link.href}
               rel="noopener noreferrer"
               target="_blank"
+              whileHover={{
+                y: -3,
+                transition: { duration: 0.2 },
+              }}
             >
               <FontAwesomeIcon className="size-4" icon={link.icon} />
-            </a>
+            </motion.a>
           ))}
         </div>
       </div>
