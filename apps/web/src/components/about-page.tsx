@@ -77,8 +77,17 @@ const AboutPage: React.FC = () => (
             I&apos;m a passionate full-stack developer with expertise in SEO and
             infrastructure. My journey started after winning a scholarship to
             learn a tech skill for a year, choosing development because of a
-            childhood obsession with computers and how things work. Now, I
-            create digital experiences that look beautiful and perform
+            childhood obsession with computers and how things work. Now, as the
+            Founding Engineer at{" "}
+            <a
+              className="font-medium text-primary underline decoration-subtle underline-offset-4 transition-colors hover:decoration-primary"
+              href="https://welupdigital.com"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Welup Digital
+            </a>
+            , I create digital experiences that look beautiful and perform
             exceptionally well.
           </motion.p>
         </motion.div>
@@ -163,6 +172,23 @@ const AboutPage: React.FC = () => (
                   <li>Technical audits</li>
                   <li>International SEO</li>
                 </ul>
+              </div>
+
+              <div className="border-subtle border-t pt-12">
+                <div className="flex flex-col gap-6">
+                  <h4 className="font-medium text-primary">Global Context</h4>
+                  <ul className="flex flex-col gap-2 text-secondary text-sm">
+                    <li>
+                      Based in{" "}
+                      <span className="font-medium text-primary">Nigeria</span>
+                    </li>
+                    <li>
+                      Working in{" "}
+                      <span className="font-medium text-primary">GMT+1</span>{" "}
+                      (Available for global syncs)
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

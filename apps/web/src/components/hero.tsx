@@ -51,6 +51,22 @@ export default function Hero() {
           initial="hidden"
           variants={heroStagger}
         >
+          {/* Status Badge */}
+          <motion.a
+            className="flex items-center gap-2 self-start rounded-full border border-subtle bg-secondary/5 px-4 py-2 font-mono text-secondary text-xs uppercase tracking-widest backdrop-blur-sm transition-colors hover:border-primary hover:bg-secondary/10"
+            href="https://welupdigital.com"
+            rel="noopener noreferrer"
+            target="_blank"
+            variants={heroTextVariants}
+          >
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+            </span>
+            Founding Engineer at{" "}
+            <span className="font-bold text-primary">Welup Digital</span>
+          </motion.a>
+
           {/* Name - Extreme Scale */}
           <motion.h1
             className="-ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]"
@@ -76,23 +92,29 @@ export default function Hero() {
             <motion.div className="flex gap-6" variants={heroTextVariants}>
               {socialLinks.map(({ icon: Icon, href, label }, index) => (
                 <motion.a
-                  animate={{ opacity: 1, scale: 1 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    transition: {
+                      delay:
+                        ANIMATION_DELAY_BASE +
+                        index * ANIMATION_DELAY_INCREMENT,
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25,
+                    },
+                  }}
                   aria-label={label}
-                  className="text-muted transition-colors duration-200 hover:text-primary"
+                  className="text-muted transition-colors duration-200 hover:text-accent"
                   href={href}
                   initial={{ opacity: 0, scale: 0 }}
                   key={label}
                   rel="noopener noreferrer"
                   target="_blank"
-                  transition={{
-                    delay:
-                      ANIMATION_DELAY_BASE + index * ANIMATION_DELAY_INCREMENT,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 20,
+                  whileHover={{
+                    y: -3,
+                    transition: { delay: 0, duration: 0.2 },
                   }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <Icon className="size-6" />
                 </motion.a>
