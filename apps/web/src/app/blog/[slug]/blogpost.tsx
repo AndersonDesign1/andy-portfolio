@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowLeft } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -51,7 +51,7 @@ export default function BlogPost({ post }: BlogPostProps) {
             className="inline-flex items-center gap-2 text-light-mini text-sm transition-colors duration-300 hover:text-light-heading dark:text-dark-mini dark:hover:text-dark-heading"
             href="/blog"
           >
-            <ArrowLeftIcon className="size-4" />
+            <ArrowLeft className="size-4" />
             Back to Blog
           </Link>
         </motion.div>

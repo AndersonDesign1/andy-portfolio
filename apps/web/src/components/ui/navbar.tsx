@@ -1,6 +1,6 @@
 "use client";
 
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -122,7 +122,7 @@ export default function Navbar() {
               size="icon"
               variant="ghost"
             >
-              ☰
+              <Menu className="size-6" />
             </Button>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function Navbar() {
                 size="icon"
                 variant="ghost"
               >
-                <XMarkIcon className="size-6" />
+                <X className="size-6" />
               </Button>
             </div>
 

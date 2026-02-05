@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo } from "react";
 import educationData from "@/data/education.json" with { type: "json" };
@@ -76,9 +77,7 @@ export default function WorkHistory() {
                 target="_blank"
               >
                 View Resume
-                <span className="text-muted transition-colors duration-300 group-hover:text-primary">
-                  ↗
-                </span>
+                <ArrowUpRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
               </a>
             </div>
           </div>

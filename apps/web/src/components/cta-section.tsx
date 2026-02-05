@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import {
@@ -45,9 +46,7 @@ export default function CtaSection() {
               href="/contact"
             >
               Get in Touch
-              <span className="text-muted transition-colors duration-300 group-hover:text-primary">
-                ↗
-              </span>
+              <ArrowUpRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
             </Link>
           </motion.div>
         </motion.div>

@@ -70,17 +70,18 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
         </div>
 
         <div
-          className={`pointer-events-none absolute top-1/2 right-10 z-20 h-[200px] w-[300px] -translate-y-1/2 overflow-hidden rounded-lg transition-all duration-500 ease-out md:h-[300px] md:w-[450px] ${
-            isHovered
-              ? "rotate-2 scale-100 opacity-100"
-              : "rotate-0 scale-90 opacity-0"
+          className={`pointer-events-none absolute top-1/2 right-10 z-20 h-[200px] w-[300px] -translate-y-1/2 overflow-hidden rounded-lg opacity-0 transition-all duration-500 ease-out md:h-[300px] md:w-[450px] ${
+            isHovered ? "opacity-100" : "opacity-0"
           }`}
           style={{ transformOrigin: "center center" }}
         >
           <Image
             alt={project.title}
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSIzMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg=="
             className="object-contain"
             fill
+            loading="lazy"
+            placeholder="blur"
             sizes="(max-width: 768px) 100vw, 450px"
             src={project.thumbnail}
           />
@@ -123,9 +124,7 @@ export default function ProjectsGrid() {
             <Button asChild className="group gap-2" variant="outline">
               <Link href="/projects">
                 View All Projects
-                <span className="text-muted transition-colors duration-300 group-hover:text-primary">
-                  ↗
-                </span>
+                <ArrowUpRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
               </Link>
             </Button>
           </div>

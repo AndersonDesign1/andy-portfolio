@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ComputerDesktopIcon,
-  MoonIcon,
-  SunIcon,
-} from "@heroicons/react/24/outline";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -43,26 +39,26 @@ export function ThemeToggle() {
         aria-label="Select theme"
         className="size-8 rounded-full border-none bg-transparent p-0 text-muted shadow-none ring-offset-0 transition-colors hover:text-primary focus:ring-0 focus:ring-offset-0 [&>span]:hidden"
       >
-        {theme === "light" && <SunIcon className="size-4" />}
-        {theme === "dark" && <MoonIcon className="size-4" />}
-        {theme === "system" && <ComputerDesktopIcon className="size-4" />}
+        {theme === "light" && <Sun className="size-4" />}
+        {theme === "dark" && <Moon className="size-4" />}
+        {theme === "system" && <Monitor className="size-4" />}
       </SelectTrigger>
       <SelectContent align="end">
         <SelectItem value="light">
           <div className="flex items-center gap-2">
-            <SunIcon className="size-4" />
+            <Sun className="size-4" />
             <span>Light</span>
           </div>
         </SelectItem>
         <SelectItem value="dark">
           <div className="flex items-center gap-2">
-            <MoonIcon className="size-4" />
+            <Moon className="size-4" />
             <span>Dark</span>
           </div>
         </SelectItem>
         <SelectItem value="system">
           <div className="flex items-center gap-2">
-            <ComputerDesktopIcon className="size-4" />
+            <Monitor className="size-4" />
             <span>System</span>
           </div>
         </SelectItem>

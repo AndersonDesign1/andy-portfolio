@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -98,7 +98,7 @@ export default function GiveawayFeedbackPage() {
                 className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
                 href="/"
               >
-                <ArrowLeftIcon className="size-4" />
+                <ArrowLeft className="size-4" />
                 Return to Home
               </Link>
             </div>
@@ -123,7 +123,7 @@ export default function GiveawayFeedbackPage() {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
-            <ArrowLeftIcon className="size-4" />
+            <ArrowLeft className="size-4" />
             Back to Giveaway
           </Link>
         </motion.div>

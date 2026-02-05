@@ -1,10 +1,5 @@
 "use client";
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  GlobeAltIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowLeft, ArrowRight, Globe, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,7 +49,7 @@ export default function CaseStudyPage({
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/projects"
           >
-            <ArrowLeftIcon className="size-4" />
+            <ArrowLeft className="size-4" />
             Back to Projects
           </Link>
 
@@ -65,7 +60,7 @@ export default function CaseStudyPage({
               rel="noopener noreferrer"
               target="_blank"
             >
-              <GlobeAltIcon className="size-4" />
+              <Globe className="size-4" />
               Live Site
             </Link>
           )}
@@ -258,7 +253,7 @@ export default function CaseStudyPage({
                       <span className="text-muted line-through decoration-subtle">
                         {metric.before}
                       </span>
-                      <span>→</span>
+                      <ArrowRight className="inline size-4" />
                       <span>Result</span>
                     </div>
                   </div>
@@ -299,6 +294,8 @@ export default function CaseStudyPage({
                     alt={image.alt || `Project image ${i + 1}`}
                     className="object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                     fill
+                    loading="lazy"
+                    sizes="(max-width: 1200px) 100vw, 1200px"
                     src={image.src}
                   />
                 </button>
@@ -329,7 +326,7 @@ export default function CaseStudyPage({
                       Previous Case Study
                     </span>
                     <div className="flex items-center gap-4">
-                      <ArrowLeftIcon className="size-5 text-secondary transition-transform duration-300 group-hover:-translate-x-2" />
+                      <ArrowLeft className="size-5 text-secondary transition-transform duration-300 group-hover:-translate-x-2" />
                       <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
                         {navigation.prev.title}
                       </h3>
@@ -353,7 +350,7 @@ export default function CaseStudyPage({
                       <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
                         {navigation.next.title}
                       </h3>
-                      <ArrowRightIcon className="size-5 text-secondary transition-transform duration-300 group-hover:translate-x-2" />
+                      <ArrowRight className="size-5 text-secondary transition-transform duration-300 group-hover:translate-x-2" />
                     </div>
                   </Link>
                 ) : (
@@ -379,7 +376,7 @@ export default function CaseStudyPage({
               onClick={() => setSelectedImage(null)}
               type="button"
             >
-              <XMarkIcon className="size-8" />
+              <X className="size-8" />
               <span className="sr-only">Close</span>
             </button>
             <motion.div

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ArrowRight, Check, ChevronDown } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -74,7 +74,7 @@ function FAQItem({
         type="button"
       >
         <span className="font-medium text-lg text-primary">{question}</span>
-        <ChevronDownIcon
+        <ChevronDown
           className={`size-5 text-muted transition-transform duration-300 ${
             isOpen ? "rotate-180" : ""
           }`}
@@ -95,7 +95,7 @@ function FAQItem({
                 className="text-primary transition-opacity hover:opacity-70"
                 href="/contact"
               >
-                Contact me →
+                Contact me <ArrowRight className="inline size-4" />
               </Link>
             </>
           )}
@@ -187,7 +187,7 @@ export default function GiveawayPage() {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
                   <CountdownDisplay timeLeft={timeLeft} />
                   <p className="text-secondary text-sm md:text-base">
-                    Read till the end to see how to enter →
+                    Read till the end to see how to enter <ArrowRight className="inline size-4" />
                   </p>
                 </div>
               </motion.div>
@@ -236,7 +236,7 @@ export default function GiveawayPage() {
                     className="flex items-start gap-3 text-lg text-secondary"
                     key={item}
                   >
-                    <span className="mt-1 text-primary">✓</span>
+                    <Check className="mt-1 size-4 text-primary" />
                     {item}
                   </li>
                 ))}
@@ -294,9 +294,7 @@ export default function GiveawayPage() {
               href="/giveaway/enter"
             >
               Enter Giveaway
-              <span className="text-muted transition-colors duration-300 group-hover:text-primary">
-                →
-              </span>
+              <ArrowRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
             </Link>
           </div>
         </div>

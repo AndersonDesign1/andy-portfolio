@@ -2,7 +2,8 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import {
   SPOTIFY_POLLING_INTERVAL_PAUSED,
@@ -17,14 +18,52 @@ interface SpotifyTrack {
   isPlaying?: boolean;
 }
 
+const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) return null;
+  return res.json();
+};
+
+// Skeleton component for loading state
+function SpotifySkeleton() {
+  return (
+    <div className="fixed right-6 bottom-6 z-50">
+      <button
+        className="group flex animate-pulse items-center gap-3 rounded-full border border-subtle bg-background/95 py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px]"
+        disabled
+        type="button"
+      >
+        <div className="size-8 rounded-full bg-muted" />
+        <div className="flex flex-col gap-1.5">
+          <div className="h-2 w-16 rounded bg-muted" />
+          <div className="h-2.5 w-24 rounded bg-muted" />
+        </div>
+      </button>
+    </div>
+  );
+}
+
 export default function SpotifyNowPlaying() {
-  const [track, setTrack] = useState<SpotifyTrack | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const lastTrackRef = useRef<string>("");
-  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  // Use SWR for data fetching with automatic caching and deduplication
+  const { data: track, error } = useSWR<SpotifyTrack | null>(
+    "/api/spotify/now-playing",
+    fetcher,
+    {
+      refreshInterval: (latestData) =>
+        latestData?.isPlaying
+          ? SPOTIFY_POLLING_INTERVAL_PLAYING
+          : SPOTIFY_POLLING_INTERVAL_PAUSED,
+      refreshWhenHidden: false, // Stop polling when tab is hidden
+      revalidateOnFocus: true, // Revalidate when tab becomes visible
+      dedupingInterval: 2000, // Dedupe requests within 2 seconds
+      suspense: false,
+    }
+  );
+
+  // Handle click outside to close
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -38,76 +77,13 @@ export default function SpotifyNowPlaying() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const updateTrack = useCallback((newTrack: SpotifyTrack | null) => {
-    if (!newTrack) {
-      setTrack(null);
-      setIsLoading(false);
-      return;
-    }
+  // Show skeleton while loading (no data yet and no error)
+  if (!(track || error)) {
+    return <SpotifySkeleton />;
+  }
 
-    const newTrackKey = `${newTrack.name}-${newTrack.artists
-      .map((a) => a.name)
-      .join(",")}-${newTrack.isPlaying}`;
-
-    if (newTrackKey !== lastTrackRef.current) {
-      setTrack(newTrack);
-      lastTrackRef.current = newTrackKey;
-    }
-    setIsLoading(false);
-  }, []);
-
-  const fetchTrack = useCallback(async () => {
-    try {
-      const res = await fetch("/api/spotify/now-playing", {
-        cache: "no-store",
-      });
-      if (res.ok) {
-        const data = await res.json();
-        updateTrack(data);
-      } else {
-        updateTrack(null);
-      }
-    } catch (_error) {
-      updateTrack(null);
-    }
-  }, [updateTrack]);
-
-  useEffect(() => {
-    let isActive = true;
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = undefined;
-        }
-      } else if (isActive) {
-        fetchTrack();
-        const interval = track?.isPlaying
-          ? SPOTIFY_POLLING_INTERVAL_PLAYING
-          : SPOTIFY_POLLING_INTERVAL_PAUSED;
-        intervalRef.current = setInterval(fetchTrack, interval);
-      }
-    };
-
-    fetchTrack();
-    const interval = track?.isPlaying
-      ? SPOTIFY_POLLING_INTERVAL_PLAYING
-      : SPOTIFY_POLLING_INTERVAL_PAUSED;
-    intervalRef.current = setInterval(fetchTrack, interval);
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      isActive = false;
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [fetchTrack, track?.isPlaying]);
-
-  if (isLoading || !track) {
+  // Don't render if no track data
+  if (!track) {
     return null;
   }
 
