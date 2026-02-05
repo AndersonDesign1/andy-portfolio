@@ -53,6 +53,7 @@ const components: PortableTextComponents = {
             alt={value.alt || "Blog post image"}
             className="h-auto w-full object-contain"
             height={500}
+            loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
             src={urlFor(value).url() || "/placeholder.svg?height=500&width=800"}
             width={800}
@@ -145,7 +146,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
 
   return (
     <section
-      className="min-h-screen bg-primary pt-48 pb-24 md:pt-64"
+      className="min-h-screen bg-primary pt-40 pb-24 md:pt-48"
       ref={postRef}
     >
       <div className="mx-auto max-w-screen-md px-6">

@@ -71,7 +71,7 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="min-h-screen bg-primary pt-48 pb-24 md:pt-64">
+    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
           {/* Header */}

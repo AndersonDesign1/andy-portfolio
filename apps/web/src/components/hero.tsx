@@ -1,8 +1,19 @@
 "use client";
 
 import { motion } from "motion/react";
-import { FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { Github, Linkedin, Mail } from "lucide-react";
+
+// X (Twitter) logo as inline SVG since lucide doesn't include it
+const XIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 import {
   heroStagger,
   heroTextVariants,
@@ -15,22 +26,22 @@ import {
 
 const socialLinks = [
   {
-    icon: FaGithub,
+    icon: Github,
     href: "https://github.com/AndersonDesign1",
     label: "GitHub",
   },
   {
-    icon: FaXTwitter,
+    icon: XIcon,
     href: "https://twitter.com/HeyItsAndersonJ",
-    label: "Twitter",
+    label: "X (Twitter)",
   },
   {
-    icon: FaLinkedin,
+    icon: Linkedin,
     href: "https://linkedin.com/in/anderson-josh",
     label: "LinkedIn",
   },
   {
-    icon: FaEnvelope,
+    icon: Mail,
     href: "mailto:hello@andersonjoseph.com",
     label: "Email",
   },
@@ -41,7 +52,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative flex min-h-[90vh] items-end bg-primary pt-52 pb-32 md:pt-64 md:pb-48"
+      className="relative flex min-h-[70vh] items-end bg-primary pt-40 pb-20 md:pt-48 md:pb-32"
       ref={heroRef}
     >
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">

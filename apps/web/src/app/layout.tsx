@@ -11,7 +11,11 @@ import Footer from "@/components/ui/footer";
 import Navbar from "@/components/ui/navbar";
 import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 import { constructMetadata } from "@/lib/metadata";
 
@@ -28,7 +32,7 @@ export default function RootLayout({
 }: RootLayoutProps): ReactElement {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

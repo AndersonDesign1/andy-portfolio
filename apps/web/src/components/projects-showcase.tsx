@@ -118,7 +118,7 @@ const ProjectsShowcase: React.FC = () => {
   const otherProjects = filteredProjects.slice(4);
 
   return (
-    <div className="min-h-screen bg-primary pt-48 md:pt-64">
+    <div className="min-h-screen bg-primary pt-40 md:pt-48">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
         <h1 className="font-bold text-6xl text-primary tracking-tighter md:text-8xl">
           Selected Work
@@ -278,48 +278,49 @@ const ProjectsShowcase: React.FC = () => {
               <div className="grid grid-cols-1 gap-4">
                 {otherProjects.map((project, index) => (
                   <motion.div
-                    className="group flex flex-col items-start justify-between border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:flex-row md:items-center"
+                    className="group grid grid-cols-1 items-start gap-4 border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:grid-cols-12 md:items-center"
                     initial={{ opacity: 0, y: 10 }}
                     key={project.id}
                     transition={{ delay: index * 0.05 }}
                     whileInView={{ opacity: 1, y: 0 }}
                   >
-                    <div className="flex flex-col gap-4 md:flex-1 md:flex-row md:items-center">
-                      <h3 className="font-medium text-lg text-primary transition-opacity duration-300 group-hover:opacity-70">
-                        {project.title}
-                      </h3>
-                      <p className="max-w-2xl text-secondary text-sm">
-                        {project.description}
-                      </p>
-                    </div>
+                    {/* Title - 3 columns */}
+                    <h3 className="font-medium text-lg text-primary transition-opacity duration-300 group-hover:opacity-70 md:col-span-3">
+                      {project.title}
+                    </h3>
 
-                    <div className="flex w-full items-center justify-between gap-8 md:w-auto md:justify-end">
-                      <p className="hidden font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary md:block">
-                        {project.techStack.slice(0, 3).join(" / ")}
-                      </p>
+                    {/* Description - 5 columns */}
+                    <p className="text-secondary text-sm md:col-span-5">
+                      {project.description}
+                    </p>
 
-                      <div className="flex gap-6">
-                        {project.links.live && (
-                          <Link
-                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
-                            href={project.links.live}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            Visit
-                          </Link>
-                        )}
-                        {project.links.github && (
-                          <Link
-                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
-                            href={project.links.github}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            Code
-                          </Link>
-                        )}
-                      </div>
+                    {/* Tech Stack - 2 columns */}
+                    <p className="font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary md:col-span-2">
+                      {project.techStack.slice(0, 3).join(" / ")}
+                    </p>
+
+                    {/* Links - 2 columns */}
+                    <div className="flex items-center justify-start gap-6 md:col-span-2 md:justify-end">
+                      {project.links.live && (
+                        <Link
+                          className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                          href={project.links.live}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Visit
+                        </Link>
+                      )}
+                      {project.links.github && (
+                        <Link
+                          className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                          href={project.links.github}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Code
+                        </Link>
+                      )}
                     </div>
                   </motion.div>
                 ))}

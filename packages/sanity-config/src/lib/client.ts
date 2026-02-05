@@ -8,7 +8,7 @@ const clientConfig = {
   projectId: projectId!,
   dataset: dataset || "production",
   apiVersion: "2024-01-01",
-  useCdn: false,
+  useCdn: process.env.NODE_ENV === "production",
 };
 
 /**

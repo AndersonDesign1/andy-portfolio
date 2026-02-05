@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import type React from "react";
@@ -142,7 +142,7 @@ export default function GiveawayEntryForm() {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
-            <ArrowLeftIcon className="size-4" />
+            <ArrowLeft className="size-4" />
             Back to Giveaway
           </Link>
         </motion.div>

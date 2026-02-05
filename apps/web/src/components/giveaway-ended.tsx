@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import {
@@ -12,7 +12,7 @@ export default function GiveawayEnded() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
+    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
       <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
         <motion.div
           animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
@@ -43,7 +43,7 @@ export default function GiveawayEnded() {
               className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
               href="/"
             >
-              <ArrowLeftIcon className="size-4" />
+              <ArrowLeft className="size-4" />
               Return to Home
             </Link>
           </div>

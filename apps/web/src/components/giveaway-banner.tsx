@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -154,7 +155,7 @@ export default function GiveawayBanner() {
             href="/giveaway"
           >
             {status === "pending" ? "Learn More" : "Enter Now"}
-            <span className="ml-0.5">→</span>
+            <ArrowRight className="inline size-4" />
           </Link>
         </div>
       </div>
