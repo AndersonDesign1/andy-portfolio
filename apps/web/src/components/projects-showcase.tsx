@@ -118,7 +118,7 @@ const ProjectsShowcase: React.FC = () => {
   const otherProjects = filteredProjects.slice(4);
 
   return (
-    <div className="min-h-screen bg-primary pt-48 md:pt-64">
+    <div className="min-h-screen bg-primary pt-40 md:pt-48">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
         <h1 className="font-bold text-6xl text-primary tracking-tighter md:text-8xl">
           Selected Work

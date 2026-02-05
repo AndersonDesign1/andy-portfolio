@@ -146,7 +146,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
 
   return (
     <section
-      className="min-h-screen bg-primary pt-48 pb-24 md:pt-64"
+      className="min-h-screen bg-primary pt-40 pb-24 md:pt-48"
       ref={postRef}
     >
       <div className="mx-auto max-w-screen-md px-6">

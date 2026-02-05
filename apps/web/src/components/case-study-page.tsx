@@ -37,7 +37,7 @@ export default function CaseStudyPage({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-primary pt-48 md:pt-64">
+    <div className="min-h-screen bg-primary pt-40 md:pt-48">
       <div className="mx-auto max-w-screen-xl px-6 pb-20 md:px-12">
         <motion.div
           animate={{ opacity: 1, x: 0 }}

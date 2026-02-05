@@ -23,7 +23,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
 
   return (
     <section
-      className="min-h-screen bg-primary py-24 pt-48 md:py-32 md:pt-64"
+      className="min-h-screen bg-primary py-24 pt-40 md:py-32 md:pt-48"
       ref={blogRef}
     >
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">

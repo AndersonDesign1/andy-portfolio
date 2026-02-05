@@ -12,7 +12,7 @@ export default function GiveawayEnded() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
+    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
       <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
         <motion.div
           animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}

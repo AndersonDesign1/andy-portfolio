@@ -10,7 +10,7 @@ import {
 } from "@/lib/constants";
 
 const AboutPage: React.FC = () => (
-  <div className="min-h-screen bg-primary pt-48 md:pt-64">
+  <div className="min-h-screen bg-primary pt-40 md:pt-48">
     {/* Back Navigation */}
     <div className="mx-auto max-w-screen-xl px-6 md:px-12">
       <motion.div
@@ -29,7 +29,7 @@ const AboutPage: React.FC = () => (
     </div>
 
     {/* Hero Section */}
-    <section className="py-20 md:py-32">
+    <section className="pt-8 pb-20 md:pt-12 md:pb-32">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
         <motion.div
           animate="visible"

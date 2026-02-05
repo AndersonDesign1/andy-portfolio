@@ -52,7 +52,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative flex min-h-[90vh] items-end bg-primary pt-52 pb-32 md:pt-64 md:pb-48"
+      className="relative flex min-h-[70vh] items-end bg-primary pt-40 pb-20 md:pt-48 md:pb-32"
       ref={heroRef}
     >
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
