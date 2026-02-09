@@ -1,6 +1,6 @@
 "use client";
-import { ArrowLeft } from "lucide-react";
 import { PortableText } from "@portabletext/react";
+import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";

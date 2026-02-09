@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export function constructMetadata({
-  title = "Andy Joseph | Full Stack Developer & SEO Expert",
+  title = "Anderson Joseph | Full Stack Developer & SEO Expert",
   description = "Building digital products with a focus on growth, interaction, and precise engineering.",
   image = "/api/og",
   icons = "/favicon.ico",

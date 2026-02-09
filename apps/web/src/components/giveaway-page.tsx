@@ -187,7 +187,8 @@ export default function GiveawayPage() {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
                   <CountdownDisplay timeLeft={timeLeft} />
                   <p className="text-secondary text-sm md:text-base">
-                    Read till the end to see how to enter <ArrowRight className="inline size-4" />
+                    Read till the end to see how to enter{" "}
+                    <ArrowRight className="inline size-4" />
                   </p>
                 </div>
               </motion.div>

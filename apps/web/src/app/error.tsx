@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 export default function ErrorBoundary({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -11,7 +11,7 @@ export default function ErrorBoundary({
 }) {
   useEffect(() => {
     // Error is automatically logged by Next.js
-  }, [error]);
+  }, []);
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-6">
