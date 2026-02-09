@@ -3,15 +3,18 @@
 import { useEffect } from "react";
 
 export default function ErrorBoundary({
-  error: _error,
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: error triggers effect re-run per error
   useEffect(() => {
     // Error is automatically logged by Next.js
-  }, []);
+    // Future: Add custom error tracking here if needed
+    console.error(error);
+  }, [error]);
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-6">

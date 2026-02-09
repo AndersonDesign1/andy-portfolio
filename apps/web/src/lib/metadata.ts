@@ -13,7 +13,8 @@ export function constructMetadata({
   icons?: string;
   noIndex?: boolean;
 } = {}): Metadata {
-  const ogUrl = new URL("https://andersonjoseph.com/api/og");
+  const baseUrl = "https://andersonjoseph.com";
+  const ogUrl = new URL(`${baseUrl}/api/og`);
   if (title) {
     ogUrl.searchParams.set("title", title);
   }
@@ -21,7 +22,13 @@ export function constructMetadata({
     ogUrl.searchParams.set("description", description);
   }
 
-  const finalImage = title || description ? ogUrl.toString() : image;
+  // Always use absolute URL for OG images (required by social crawlers)
+  const finalImage =
+    title || description
+      ? ogUrl.toString()
+      : image.startsWith("http")
+        ? image
+        : `${baseUrl}${image}`;
 
   return {
     title,

@@ -26,6 +26,20 @@ const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
   return res.json();
 };
 
+// Placeholder image when no album art is available
+const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect fill='%23333' width='64' height='64'/%3E%3C/svg%3E";
+
+// Helper to safely get album image URL
+function getAlbumImageUrl(
+  images: { url: string }[] | undefined,
+  preferredIndex = 0
+): string {
+  if (!images || images.length === 0) {
+    return PLACEHOLDER_IMAGE;
+  }
+  return images[preferredIndex]?.url || images[0]?.url || PLACEHOLDER_IMAGE;
+}
+
 // Music bars animation component
 function MusicBars({
   isPlaying,
@@ -71,7 +85,7 @@ function SpotifySkeleton() {
 
 // Expanded card component
 function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
-  const albumImage = track.album.images[1]?.url || track.album.images[0]?.url;
+  const albumImage = getAlbumImageUrl(track.album.images, 1);
 
   return (
     <motion.div
@@ -158,8 +172,7 @@ function SpotifyMiniPlayer({
   track: SpotifyTrack;
   onClick: () => void;
 }) {
-  const thumbnailImage =
-    track.album.images[2]?.url || track.album.images[0]?.url;
+  const thumbnailImage = getAlbumImageUrl(track.album.images, 2);
 
   return (
     <button
