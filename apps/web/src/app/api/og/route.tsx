@@ -51,28 +51,19 @@ export function GET(req: NextRequest) {
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-start",
+            justifyContent: "center",
+            flex: 1,
             zIndex: 10,
             maxWidth: "950px",
           }}
         >
           <div
             style={{
-              fontSize: 32,
-              fontWeight: 500,
-              letterSpacing: "-0.02em",
-              color: "#737373", // muted
-              marginBottom: 40,
-            }}
-          >
-            Anderson Joseph
-          </div>
-          <div
-            style={{
               fontSize: 80,
               fontWeight: 800,
               letterSpacing: "-0.04em",
               lineHeight: 1.1,
-              color: "#ededed", // foreground
+              color: "#ededed",
               marginBottom: 24,
             }}
           >
@@ -84,7 +75,7 @@ export function GET(req: NextRequest) {
               fontWeight: 400,
               letterSpacing: "-0.02em",
               lineHeight: 1.4,
-              color: "#a3a3a3", // secondary-foreground
+              color: "#a3a3a3",
               maxWidth: "800px",
             }}
           >
@@ -96,19 +87,11 @@ export function GET(req: NextRequest) {
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             width: "100%",
             zIndex: 10,
           }}
         >
-          <div
-            style={{
-              fontSize: 24,
-              color: "#737373",
-            }}
-          >
-            Full Stack Developer & SEO Specialist
-          </div>
           <div
             style={{
               fontSize: 24,
