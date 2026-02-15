@@ -1,12 +1,6 @@
 "use client";
 
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
+import { inter } from "@/lib/fonts";
 
 export default function GlobalError({
   error,

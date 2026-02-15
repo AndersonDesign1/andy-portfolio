@@ -372,7 +372,7 @@ export default function CaseStudyPage({
             onClick={() => setSelectedImage(null)}
           >
             <button
-              className="absolute top-4 right-4 z-[100] p-2 text-white/70 transition-colors hover:text-white"
+              className="absolute top-4 right-4 p-2 text-white/70 transition-colors hover:text-white"
               onClick={() => setSelectedImage(null)}
               type="button"
             >
