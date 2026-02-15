@@ -18,11 +18,15 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} font-sans antialiased`}
+        className={inter.variable}
         style={{
           backgroundColor: "#050505",
           color: "#ededed",
           margin: 0,
+          fontFamily:
+            "var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif",
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
         }}
       >
         <div
