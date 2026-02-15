@@ -366,13 +366,13 @@ export default function CaseStudyPage({
         {selectedImage && (
           <motion.div
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
           >
             <button
-              className="absolute top-4 right-4 z-50 p-2 text-white/70 transition-colors hover:text-white"
+              className="absolute top-4 right-4 p-2 text-white/70 transition-colors hover:text-white"
               onClick={() => setSelectedImage(null)}
               type="button"
             >
