@@ -55,11 +55,14 @@ export default function RootLayout({
             <Toaster
               offset="80px"
               position="top-right"
+              style={{ zIndex: 9998 }}
               toastOptions={{
                 style: {
-                  background: "hsl(var(--popover))",
-                  color: "hsl(var(--popover-foreground))",
-                  border: "1px solid hsl(var(--border))",
+                  background: "var(--muted)",
+                  color: "var(--foreground)",
+                  border: "1px solid var(--border)",
+                  boxShadow:
+                    "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
                 },
               }}
             />
