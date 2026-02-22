@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <LazyMotion features={domAnimation} strict>
+        <LazyMotion features={domAnimation}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

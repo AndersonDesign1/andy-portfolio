@@ -104,6 +104,9 @@ const components: PortableTextComponents = {
   },
   marks: {
     link: ({ children, value }) => {
+      if (!value?.href || typeof value.href !== "string") {
+        return <span>{children}</span>;
+      }
       const isInternal = value.href.startsWith("/");
       if (isInternal) {
         return (
