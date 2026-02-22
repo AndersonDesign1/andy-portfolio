@@ -6,17 +6,11 @@ import { useRef } from "react";
 interface UseScrollAnimationOptions {
   threshold?: number;
   triggerOnce?: boolean;
-  delay?: number;
   stagger?: number;
 }
 
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
-  const {
-    threshold = 0.1,
-    triggerOnce = true,
-    delay = 0,
-    stagger = 0,
-  } = options;
+  const { threshold = 0.1, triggerOnce = true, stagger = 0 } = options;
 
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: threshold, once: triggerOnce });

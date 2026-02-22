@@ -12,9 +12,7 @@ export default function GlobalError({
   return (
     <html lang="en">
       <head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
+        <style>{`
               .error-btn:focus-visible {
                 outline: 2px solid #3b82f6;
                 outline-offset: 2px;
@@ -22,9 +20,7 @@ export default function GlobalError({
               .error-btn:hover {
                 background-color: rgba(255, 255, 255, 0.05);
               }
-            `,
-          }}
-        />
+            `}</style>
       </head>
       <body
         className={inter.variable}

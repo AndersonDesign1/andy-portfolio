@@ -32,7 +32,7 @@ export default function WorkHistory() {
         company.includes("training")
       );
     });
-  }, [workExperience]);
+  }, []);
 
   return (
     <section className="bg-primary py-24 md:py-32" ref={workRef}>
