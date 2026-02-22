@@ -108,7 +108,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
             >
               <Image
                 alt={track.album.name}
-                className="size-16 rounded-sm object-cover grayscale"
+                className={`size-16 rounded-sm object-cover ${track.isPlaying ? "" : "grayscale"}`}
                 height={64}
                 src={albumImage}
                 width={64}
