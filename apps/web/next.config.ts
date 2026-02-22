@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
@@ -14,24 +15,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "images.pexels.com",
-        port: "",
-        pathname: "/photos/**",
-      },
-
-      {
-        protocol: "https",
         hostname: "mosaic.scdn.co",
         pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "i.scdn.co",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.brandfetch.io",
         pathname: "/**",
       },
     ],

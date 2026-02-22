@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Link from "next/link";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
@@ -44,7 +44,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
 
         <div className="flex flex-col">
           {posts.map((post, i) => (
-            <motion.div
+            <m.div
               className="group border-subtle border-b last:border-none"
               initial={{ opacity: 0, y: 20 }}
               key={post.slug.current}
@@ -71,7 +71,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                   )}
                 </div>
               </Link>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

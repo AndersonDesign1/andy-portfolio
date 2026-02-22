@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import {
   skillCategoryVariants,
   skillsContainer,
@@ -61,7 +61,7 @@ export default function SkillsSection() {
   return (
     <section className="bg-primary py-24 md:py-32" ref={skillsRef}>
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
-        <motion.div
+        <m.div
           animate="visible"
           className="flex items-end justify-between border-subtle border-b pb-8"
           initial="hidden"
@@ -70,17 +70,17 @@ export default function SkillsSection() {
           <h2 className="font-mono text-secondary text-sm uppercase tracking-widest">
             Expertise
           </h2>
-        </motion.div>
+        </m.div>
 
         <div className="pt-20">
-          <motion.div
+          <m.div
             animate="visible"
             className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-y-24"
             initial="hidden"
             variants={skillsContainer}
           >
             {skillsData.map((category) => (
-              <motion.div
+              <m.div
                 className="group"
                 key={category.title}
                 variants={skillCategoryVariants}
@@ -98,9 +98,9 @@ export default function SkillsSection() {
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
@@ -32,7 +32,7 @@ export default function BlogList({ posts }: BlogListProps) {
   return (
     <div className="min-h-screen bg-light-bg pt-24 transition-colors duration-300 dark:bg-dark-bg">
       <div className="mx-auto max-w-screen-xl px-4 py-20 sm:px-8 md:px-16 lg:px-[150px]">
-        <motion.div
+        <m.div
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col gap-4 pb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -45,11 +45,11 @@ export default function BlogList({ posts }: BlogListProps) {
             Thoughts, insights, and lessons learned from my journey in web
             development and SEO.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (
-            <motion.article
+            <m.article
               animate={{ opacity: 1, y: 0 }}
               className="group overflow-hidden rounded-lg bg-light-bg shadow-sm transition-all duration-300 hover:shadow-md dark:bg-dark-bg"
               initial={{ opacity: 0, y: 20 }}
@@ -91,7 +91,7 @@ export default function BlogList({ posts }: BlogListProps) {
                   )}
                 </div>
               </Link>
-            </motion.article>
+            </m.article>
           ))}
         </div>
       </div>

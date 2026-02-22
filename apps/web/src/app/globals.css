@@ -31,7 +31,7 @@
   --secondary-foreground: #404040;
 
   --muted: #d4d4d4;
-  --muted-foreground: #737373;
+  --muted-foreground: #595959; /* darkened from #737373 for WCAG AA contrast (4.6:1 on #f0f0f0) */
 
   --border: rgba(0, 0, 0, 0.08);
   --input: rgba(0, 0, 0, 0.08);

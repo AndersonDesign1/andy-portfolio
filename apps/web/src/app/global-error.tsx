@@ -11,6 +11,17 @@ export default function GlobalError({
 }) {
   return (
     <html lang="en">
+      <head>
+        <style>{`
+              .error-btn:focus-visible {
+                outline: 2px solid #3b82f6;
+                outline-offset: 2px;
+              }
+              .error-btn:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+              }
+            `}</style>
+      </head>
       <body
         className={inter.variable}
         style={{
@@ -78,6 +89,7 @@ export default function GlobalError({
             }}
           >
             <button
+              className="error-btn"
               onClick={() => reset()}
               style={{
                 padding: "10px 32px",
@@ -88,7 +100,7 @@ export default function GlobalError({
                 border: "1px solid rgba(255, 255, 255, 0.08)",
                 borderRadius: "6px",
                 cursor: "pointer",
-                transition: "background-color 0.2s",
+                transition: "background-color 0.2s, box-shadow 0.2s",
               }}
               type="button"
             >

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useMemo } from "react";
 import educationData from "@/data/education.json" with { type: "json" };
 import workExperienceData from "@/data/work-experience.json" with {
@@ -32,7 +32,7 @@ export default function WorkHistory() {
         company.includes("training")
       );
     });
-  }, [workExperience]);
+  }, []);
 
   return (
     <section className="bg-primary py-24 md:py-32" ref={workRef}>
@@ -45,7 +45,7 @@ export default function WorkHistory() {
             </h2>
             <div className="flex flex-col gap-12 pt-12">
               {filteredExperience.map((job) => (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 10 }}
                   key={job.id}
                   transition={{ duration: 0.4 }}
@@ -64,7 +64,7 @@ export default function WorkHistory() {
                       {job.endDate ? formatDate(job.endDate) : "Present"}
                     </p>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
 
@@ -89,7 +89,7 @@ export default function WorkHistory() {
             </h2>
             <div className="flex flex-col gap-12 pt-12">
               {education.map((edu) => (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 10 }}
                   key={edu.id}
                   transition={{ duration: 0.4 }}
@@ -106,7 +106,7 @@ export default function WorkHistory() {
                       {edu.endDate ? formatDate(edu.endDate) : "Present"}
                     </p>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
           </div>

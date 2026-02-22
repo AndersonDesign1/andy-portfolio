@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
@@ -27,7 +27,8 @@ const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
 };
 
 // Placeholder image when no album art is available
-const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect fill='%23333' width='64' height='64'/%3E%3C/svg%3E";
+const PLACEHOLDER_IMAGE =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect fill='%23333' width='64' height='64'/%3E%3C/svg%3E";
 
 // Helper to safely get album image URL
 function getAlbumImageUrl(
@@ -88,7 +89,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
   const albumImage = getAlbumImageUrl(track.album.images, 1);
 
   return (
-    <motion.div
+    <m.div
       animate={{ opacity: 1, y: 0, scale: 1 }}
       className="absolute right-0 bottom-full mb-4 w-72 rounded-sm border border-subtle bg-primary p-6 shadow-2xl"
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -97,7 +98,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
       <div className="mb-4 flex gap-4">
         <div className="relative">
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               animate={{ opacity: 1, scale: 1 }}
               className="relative"
               exit={{ opacity: 0, scale: 0.8 }}
@@ -107,12 +108,12 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
             >
               <Image
                 alt={track.album.name}
-                className="size-16 rounded-sm object-cover grayscale"
+                className={`size-16 rounded-sm object-cover ${track.isPlaying ? "" : "grayscale"}`}
                 height={64}
                 src={albumImage}
                 width={64}
               />
-            </motion.div>
+            </m.div>
           </AnimatePresence>
           <div className="absolute -right-2 -bottom-2 flex size-4 items-end justify-center gap-0.5 rounded-full border border-white/10 bg-black/40 p-0.5 backdrop-blur-sm">
             <MusicBars isPlaying={track.isPlaying ?? false} variant="light" />
@@ -120,7 +121,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-center overflow-hidden">
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               initial={{ opacity: 0, y: 10 }}
@@ -133,7 +134,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
               <p className="truncate text-secondary text-sm">
                 {track.artists.map((a) => a.name).join(", ")}
               </p>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
         </div>
       </div>
@@ -160,7 +161,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
           Open Spotify
         </a>
       </Button>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -201,7 +202,7 @@ function SpotifyMiniPlayer({
           <MusicBars isPlaying={track.isPlaying ?? false} variant="dark" />
         </div>
         <AnimatePresence mode="wait">
-          <motion.span
+          <m.span
             animate={{ opacity: 1, y: 0 }}
             className="block max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent"
             exit={{ opacity: 0, y: -5 }}
@@ -210,7 +211,7 @@ function SpotifyMiniPlayer({
             transition={{ duration: 0.2 }}
           >
             {track.name}
-          </motion.span>
+          </m.span>
         </AnimatePresence>
       </div>
     </button>

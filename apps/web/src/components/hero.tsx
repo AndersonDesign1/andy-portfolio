@@ -1,7 +1,7 @@
 "use client";
 
 import { Github, Linkedin, Mail } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 
 // X (Twitter) logo as inline SVG since lucide doesn't include it
 const XIcon = ({ className }: { className?: string }) => (
@@ -59,14 +59,14 @@ export default function Hero() {
       ref={heroRef}
     >
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
-        <motion.div
+        <m.div
           animate="visible"
           className="flex flex-col gap-8"
           initial="hidden"
           variants={heroStagger}
         >
           {/* Status Badge */}
-          <motion.a
+          <m.a
             className="flex items-center gap-2 self-start rounded-full border border-subtle bg-secondary/5 px-4 py-2 font-mono text-secondary text-xs uppercase tracking-widest backdrop-blur-sm transition-colors hover:border-primary hover:bg-secondary/10"
             href="https://welupdigital.com"
             rel="noopener noreferrer"
@@ -79,10 +79,10 @@ export default function Hero() {
             </span>
             Founding Engineer at{" "}
             <span className="font-bold text-primary">Welup Digital</span>
-          </motion.a>
+          </m.a>
 
           {/* Name - Extreme Scale */}
-          <motion.h1
+          <m.h1
             className="-ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]"
             initial="visible"
             variants={heroTextVariants}
@@ -90,22 +90,22 @@ export default function Hero() {
             Anderson
             <br />
             Joseph
-          </motion.h1>
+          </m.h1>
 
           <div className="flex flex-col justify-between gap-12 pt-8 md:flex-row md:items-end md:pt-16">
             {/* Bio - Short and impactful */}
-            <motion.p
+            <m.p
               className="max-w-md text-lg text-secondary leading-relaxed md:text-xl"
               variants={heroTextVariants}
             >
               Building digital products with a focus on growth, interaction, and
               precise engineering.
-            </motion.p>
+            </m.p>
 
             {/* Social Links - Minimal Row */}
-            <motion.div className="flex gap-6" variants={heroTextVariants}>
+            <m.div className="flex gap-6" variants={heroTextVariants}>
               {socialLinks.map(({ icon: Icon, href, label }, index) => (
-                <motion.a
+                <m.a
                   animate={{
                     opacity: 1,
                     scale: 1,
@@ -121,7 +121,7 @@ export default function Hero() {
                   aria-label={label}
                   className="text-muted transition-colors duration-200 hover:text-accent"
                   href={href}
-                  initial={{ opacity: 0, scale: 0 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   key={label}
                   rel="noopener noreferrer"
                   target="_blank"
@@ -131,11 +131,11 @@ export default function Hero() {
                   }}
                 >
                   <Icon className="size-6" />
-                </motion.a>
+                </m.a>
               ))}
-            </motion.div>
+            </m.div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

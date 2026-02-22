@@ -23,12 +23,14 @@ export function constructMetadata({
   }
 
   // Always use absolute URL for OG images (required by social crawlers)
-  const finalImage =
-    title || description
-      ? ogUrl.toString()
-      : image.startsWith("http")
-        ? image
-        : `${baseUrl}${image}`;
+  let finalImage: string;
+  if (title || description) {
+    finalImage = ogUrl.toString();
+  } else if (image.startsWith("http")) {
+    finalImage = image;
+  } else {
+    finalImage = `${baseUrl}${image}`;
+  }
 
   return {
     title,

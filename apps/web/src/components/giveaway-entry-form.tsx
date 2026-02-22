@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Link from "next/link";
 import type React from "react";
 import { useRef, useState, useTransition } from "react";
@@ -133,7 +133,7 @@ export default function GiveawayEntryForm() {
     <section className="min-h-screen bg-primary pt-48 pb-24 md:pt-64">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         {/* Back Navigation */}
-        <motion.div
+        <m.div
           animate={{ opacity: 1, x: 0 }}
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
@@ -145,7 +145,7 @@ export default function GiveawayEntryForm() {
             <ArrowLeft className="size-4" />
             Back to Giveaway
           </Link>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 gap-16 pt-12 md:grid-cols-2 md:gap-32">
           {/* Header */}

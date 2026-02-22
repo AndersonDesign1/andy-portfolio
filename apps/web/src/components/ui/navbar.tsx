@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -131,7 +131,7 @@ export default function Navbar() {
       {/* Mobile Menu Overlay with smooth animation */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-[200] flex flex-col bg-background md:hidden"
             exit={{ opacity: 0 }}
@@ -158,7 +158,7 @@ export default function Navbar() {
               {menuItems.map(({ label, link }, index) => {
                 const isActive = pathname === link;
                 return (
-                  <motion.div
+                  <m.div
                     animate={{ opacity: 1, y: 0 }}
                     initial={{ opacity: 0, y: 20 }}
                     key={label}
@@ -177,11 +177,11 @@ export default function Navbar() {
                     >
                       {label}
                     </Link>
-                  </motion.div>
+                  </m.div>
                 );
               })}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>
