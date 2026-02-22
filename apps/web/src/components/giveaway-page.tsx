@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -80,7 +80,7 @@ function FAQItem({
           }`}
         />
       </button>
-      <motion.div
+      <m.div
         animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
         className="overflow-hidden"
         initial={false}
@@ -100,7 +100,7 @@ function FAQItem({
             </>
           )}
         </p>
-      </motion.div>
+      </m.div>
     </div>
   );
 }
@@ -114,7 +114,7 @@ export default function GiveawayPage() {
       {/* Hero Section */}
       <section className="py-20 md:py-32">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-          <motion.div
+          <m.div
             animate="visible"
             className="flex flex-col gap-8"
             initial="hidden"
@@ -127,7 +127,7 @@ export default function GiveawayPage() {
               },
             }}
           >
-            <motion.h1
+            <m.h1
               className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl"
               variants={{
                 hidden: { opacity: 0, y: 30 },
@@ -144,8 +144,8 @@ export default function GiveawayPage() {
               New Year,
               <br />
               Free Websites.
-            </motion.h1>
-            <motion.p
+            </m.h1>
+            <m.p
               className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl"
               variants={{
                 hidden: { opacity: 0, y: 30 },
@@ -161,11 +161,11 @@ export default function GiveawayPage() {
             >
               Celebrating 2026 by giving back. I'm building free websites for a
               few lucky winners — no catch, just good vibes.
-            </motion.p>
+            </m.p>
 
             {/* Countdown */}
             {timeLeft && (
-              <motion.div
+              <m.div
                 className="pt-12"
                 variants={{
                   hidden: { opacity: 0, y: 30 },
@@ -191,9 +191,9 @@ export default function GiveawayPage() {
                     <ArrowRight className="inline size-4" />
                   </p>
                 </div>
-              </motion.div>
+              </m.div>
             )}
-          </motion.div>
+          </m.div>
         </div>
       </section>
 

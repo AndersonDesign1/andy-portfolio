@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
@@ -145,7 +145,7 @@ const ProjectsShowcase: React.FC = () => {
         {/* Projects Grid */}
         <section className="pb-32">
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               animate="animate"
               className="grid grid-cols-1 gap-x-12 gap-y-24 md:grid-cols-2"
               exit="exit"
@@ -154,7 +154,7 @@ const ProjectsShowcase: React.FC = () => {
               variants={gridVariants}
             >
               {featuredProjects.map((project, index) => (
-                <motion.div
+                <m.div
                   className="group"
                   initial={{ opacity: 0, y: 24 }}
                   key={project.id}
@@ -259,14 +259,14 @@ const ProjectsShowcase: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
+            </m.div>
           </AnimatePresence>
 
           {/* Other Projects List */}
           {otherProjects.length > 0 && (
-            <motion.div
+            <m.div
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col gap-8 pt-32"
               initial={{ opacity: 0, y: 30 }}
@@ -277,7 +277,7 @@ const ProjectsShowcase: React.FC = () => {
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 {otherProjects.map((project, index) => (
-                  <motion.div
+                  <m.div
                     className="group grid grid-cols-1 items-start gap-4 border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:grid-cols-12 md:items-center"
                     initial={{ opacity: 0, y: 10 }}
                     key={project.id}
@@ -322,10 +322,10 @@ const ProjectsShowcase: React.FC = () => {
                         </Link>
                       )}
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           )}
 
           {filteredProjects.length === 0 && (

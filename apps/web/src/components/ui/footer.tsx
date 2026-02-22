@@ -1,7 +1,7 @@
 "use client";
 
 import { Github, Linkedin } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import type React from "react";
 import { useMemo } from "react";
 
@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
         {/* Social links - Right aligned on desktop */}
         <div className="order-1 flex justify-center gap-6 md:order-2">
           {socialLinks.map((link) => (
-            <motion.a
+            <m.a
               aria-label={link.label}
               className="text-muted transition-colors duration-200 hover:text-accent"
               href={link.href}
@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
               }}
             >
               <link.icon className="size-4" />
-            </motion.a>
+            </m.a>
           ))}
         </div>
       </div>

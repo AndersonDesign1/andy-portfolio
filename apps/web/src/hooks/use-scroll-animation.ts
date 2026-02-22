@@ -1,7 +1,7 @@
 "use client";
 
 import { useInView } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 interface UseScrollAnimationOptions {
   threshold?: number;
@@ -20,21 +20,10 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
 
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: threshold, once: triggerOnce });
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  useEffect(() => {
-    if (isInView && !hasAnimated) {
-      const timer = setTimeout(() => {
-        setHasAnimated(true);
-      }, delay);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isInView, hasAnimated, delay]);
 
   return {
     ref,
-    isInView: isInView || hasAnimated,
+    isInView,
     stagger,
   };
 }
@@ -191,7 +180,7 @@ export const workItemVariants = {
 };
 
 export const timelineDotVariants = {
-  hidden: { opacity: 0, scale: 0, rotate: -180 },
+  hidden: { opacity: 0, scale: 0.95, rotate: -180 },
   visible: {
     opacity: 1,
     scale: 1,

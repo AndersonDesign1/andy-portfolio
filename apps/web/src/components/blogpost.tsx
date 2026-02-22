@@ -2,7 +2,7 @@
 import { urlFor } from "@andy-portfolio/sanity-config";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { ArrowLeft } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
@@ -39,7 +39,7 @@ interface SanityPost {
 const components: PortableTextComponents = {
   types: {
     image: ({ value }) => (
-      <motion.figure
+      <m.figure
         animate={{ opacity: 1, scale: 1 }}
         className="my-12 md:my-16"
         initial={{ opacity: 0, scale: 1.05 }}
@@ -64,17 +64,17 @@ const components: PortableTextComponents = {
             {value.caption}
           </figcaption>
         )}
-      </motion.figure>
+      </m.figure>
     ),
     code: ({ value }) => (
-      <motion.pre
+      <m.pre
         animate={{ opacity: 1, y: 0 }}
         className="my-8 overflow-x-auto rounded-sm border border-subtle bg-secondary/10 p-4"
         initial={{ opacity: 0, y: 10 }}
         transition={{ duration: 0.4 }}
       >
         <code className="font-mono text-primary text-sm">{value.code}</code>
-      </motion.pre>
+      </m.pre>
     ),
   },
   block: {
@@ -104,15 +104,23 @@ const components: PortableTextComponents = {
   },
   marks: {
     link: ({ children, value }) => {
-      const rel = value.href.startsWith("/")
-        ? undefined
-        : "noreferrer noopener";
+      const isInternal = value.href.startsWith("/");
+      if (isInternal) {
+        return (
+          <Link
+            className="text-primary underline decoration-subtle underline-offset-4 transition-all hover:decoration-primary"
+            href={value.href}
+          >
+            {children}
+          </Link>
+        );
+      }
       return (
         <a
           className="text-primary underline decoration-subtle underline-offset-4 transition-all hover:decoration-primary"
           href={value.href}
-          rel={rel}
-          target={value.href.startsWith("/") ? undefined : "_blank"}
+          rel="noreferrer noopener"
+          target="_blank"
         >
           {children}
         </a>
@@ -193,7 +201,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
             </div>
 
             {post.mainImage && (
-              <motion.figure
+              <m.figure
                 animate={{ opacity: 1, scale: 1 }}
                 className="pt-16"
                 initial={{ opacity: 0, scale: 1.05 }}
@@ -216,7 +224,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
                     width={1200}
                   />
                 </div>
-              </motion.figure>
+              </m.figure>
             )}
 
             {/* Content */}

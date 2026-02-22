@@ -1,6 +1,6 @@
 "use client";
 import { ArrowLeft, ArrowRight, Globe, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -39,7 +39,7 @@ export default function CaseStudyPage({
   return (
     <div className="min-h-screen bg-primary pt-40 md:pt-48">
       <div className="mx-auto max-w-screen-xl px-6 pb-20 md:px-12">
-        <motion.div
+        <m.div
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center justify-between"
           initial={{ opacity: 0, x: -20 }}
@@ -64,20 +64,17 @@ export default function CaseStudyPage({
               Live Site
             </Link>
           )}
-        </motion.div>
+        </m.div>
       </div>
 
       <section className="mx-auto max-w-screen-xl px-4 pb-24 md:px-8 md:pb-32">
-        <motion.div
+        <m.div
           animate="visible"
           className="flex flex-col gap-12 md:gap-24"
           initial="hidden"
           variants={stagger}
         >
-          <motion.div
-            className="flex flex-col gap-8 md:gap-12"
-            variants={fadeInUp}
-          >
+          <m.div className="flex flex-col gap-8 md:gap-12" variants={fadeInUp}>
             <div className="grid grid-cols-1 border-subtle border-y md:grid-cols-4">
               <div className="border-subtle border-b py-4 md:border-r md:border-b-0 md:py-6">
                 <span className="mb-2 block font-mono text-muted text-xs uppercase tracking-widest">
@@ -114,9 +111,9 @@ export default function CaseStudyPage({
             <p className="ml-auto max-w-2xl font-light text-secondary text-xl leading-relaxed md:text-2xl">
               {caseStudy.hero.overview}
             </p>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             animate={{ opacity: 1, scale: 1 }}
             className="relative aspect-video w-full border border-subtle bg-secondary/5"
             initial={{ opacity: 0 }}
@@ -127,10 +124,11 @@ export default function CaseStudyPage({
               className="object-contain"
               fill
               priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
               src={caseStudy.hero.heroImage}
             />
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </section>
 
       <section className="border-subtle border-t">
@@ -364,7 +362,7 @@ export default function CaseStudyPage({
 
       <AnimatePresence>
         {selectedImage && (
-          <motion.div
+          <m.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
             exit={{ opacity: 0 }}
@@ -379,7 +377,7 @@ export default function CaseStudyPage({
               <X className="size-8" />
               <span className="sr-only">Close</span>
             </button>
-            <motion.div
+            <m.div
               animate={{ scale: 1, opacity: 1 }}
               className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
               exit={{ scale: 0.9, opacity: 0 }}
@@ -395,8 +393,8 @@ export default function CaseStudyPage({
                 sizes="100vw"
                 src={selectedImage}
               />
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

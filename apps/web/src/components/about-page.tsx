@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Link from "next/link";
 import type React from "react";
 import {
@@ -13,7 +13,7 @@ const AboutPage: React.FC = () => (
   <div className="min-h-screen bg-primary pt-40 md:pt-48">
     {/* Back Navigation */}
     <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-      <motion.div
+      <m.div
         animate={{ opacity: 1, x: 0 }}
         initial={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.4 }}
@@ -25,13 +25,13 @@ const AboutPage: React.FC = () => (
           <ArrowLeft className="size-4" />
           Back to Home
         </Link>
-      </motion.div>
+      </m.div>
     </div>
 
     {/* Hero Section */}
     <section className="pt-8 pb-20 md:pt-12 md:pb-32">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-        <motion.div
+        <m.div
           animate="visible"
           className="flex flex-col gap-12"
           initial="hidden"
@@ -44,7 +44,7 @@ const AboutPage: React.FC = () => (
             },
           }}
         >
-          <motion.h1
+          <m.h1
             className="font-bold text-6xl text-primary tracking-tighter md:text-8xl lg:text-9xl"
             variants={{
               hidden: { opacity: 0, y: 30 },
@@ -59,8 +59,8 @@ const AboutPage: React.FC = () => (
             }}
           >
             About Me
-          </motion.h1>
-          <motion.p
+          </m.h1>
+          <m.p
             className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl"
             variants={{
               hidden: { opacity: 0, y: 30 },
@@ -89,8 +89,8 @@ const AboutPage: React.FC = () => (
             </a>
             , I create digital experiences that look beautiful and perform
             exceptionally well.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
       </div>
     </section>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -77,7 +77,7 @@ export default function GiveawayFeedbackPage() {
     return (
       <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
         <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
-          <motion.div
+          <m.div
             animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
             className="flex flex-col items-center justify-center gap-6"
             initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
@@ -102,7 +102,7 @@ export default function GiveawayFeedbackPage() {
                 Return to Home
               </Link>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
     );
@@ -112,7 +112,7 @@ export default function GiveawayFeedbackPage() {
     <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
       <div className="mx-auto flex w-full max-w-screen-md flex-col gap-12 px-6 md:px-12">
         {/* Back Link */}
-        <motion.div
+        <m.div
           animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
           initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
           transition={
@@ -126,7 +126,7 @@ export default function GiveawayFeedbackPage() {
             <ArrowLeft className="size-4" />
             Back to Giveaway
           </Link>
-        </motion.div>
+        </m.div>
 
         <div className="flex flex-col gap-4">
           <h1 className="font-bold text-4xl text-primary leading-tight md:text-5xl">
