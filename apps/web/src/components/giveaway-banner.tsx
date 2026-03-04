@@ -64,7 +64,6 @@ export function useGiveawayStatus() {
   useEffect(() => {
     const updateStatus = () => setState(getGiveawayState());
 
-    updateStatus();
     const interval = setInterval(updateStatus, 1000);
     return () => clearInterval(interval);
   }, []);

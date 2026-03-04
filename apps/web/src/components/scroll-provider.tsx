@@ -63,6 +63,18 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     let cleanupEnableTriggers: (() => void) | null = null;
     let started = false;
 
+    const syncLenis = (nextLenis: Lenis | null) => {
+      lenisRef.current = nextLenis;
+      setLenis((currentLenis) =>
+        currentLenis === nextLenis ? currentLenis : nextLenis
+      );
+    };
+
+    const destroyLenis = () => {
+      lenisRef.current?.destroy();
+      syncLenis(null);
+    };
+
     const startLenis = () => {
       if (started || prefersReducedMotion) {
         return;
@@ -84,8 +96,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         infinite: false,
       });
 
-      lenisRef.current = lenisInstance;
-      setLenis(lenisInstance);
+      syncLenis(lenisInstance);
 
       let lastTime = 0;
       const targetFps = 60;
@@ -128,11 +139,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
-        lenisRef.current = null;
-      }
-      queueMicrotask(() => setLenis(null));
+      destroyLenis();
       return;
     }
 
@@ -190,12 +197,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         removeVisibilityListener();
       }
 
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
-        lenisRef.current = null;
-      }
-
-      setLenis(null);
+      destroyLenis();
     };
   }, [prefersReducedMotion]);
 
@@ -212,9 +214,4 @@ export const useLenis = () => {
     throw new Error("useLenis must be used within a ScrollProvider");
   }
   return context.lenis;
-};
-
-export const useReducedMotion = () => {
-  const { prefersReducedMotion } = useContext(ScrollContext);
-  return prefersReducedMotion;
 };

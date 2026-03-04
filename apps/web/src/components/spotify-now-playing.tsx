@@ -144,9 +144,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
               <h4 className="truncate font-semibold text-primary">
                 {trackName}
               </h4>
-              <p className="truncate text-secondary text-sm">
-                {artistNames}
-              </p>
+              <p className="truncate text-secondary text-sm">{artistNames}</p>
             </m.div>
           </AnimatePresence>
         </div>
@@ -155,9 +153,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
       <div className="mb-6 flex flex-col gap-2 font-mono text-muted text-xs uppercase tracking-wider">
         <div className="flex justify-between">
           <span>Album</span>
-          <span className="max-w-[120px] truncate text-right">
-            {albumName}
-          </span>
+          <span className="max-w-[120px] truncate text-right">{albumName}</span>
         </div>
       </div>
 
@@ -166,11 +162,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
         className="h-auto w-full py-3 font-mono text-xs uppercase tracking-widest"
         variant="outline"
       >
-        <a
-          href={spotifyUrl}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <a href={spotifyUrl} rel="noopener noreferrer" target="_blank">
           Open Spotify
         </a>
       </Button>

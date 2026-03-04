@@ -27,17 +27,9 @@ const stagger = {
   },
 };
 
-export default function CaseStudyPage({
-  caseStudy,
-  navigation,
-}: {
-  caseStudy: CaseStudy;
-  navigation?: CaseStudyNavigation;
-}) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
+function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
   return (
-    <div className="min-h-screen bg-primary pt-40 md:pt-48">
+    <>
       <div className="mx-auto max-w-screen-xl px-6 pb-20 md:px-12">
         <m.div
           animate={{ opacity: 1, x: 0 }}
@@ -97,8 +89,8 @@ export default function CaseStudyPage({
                   Tech
                 </span>
                 <div className="flex flex-wrap gap-x-4 text-secondary text-sm md:text-base">
-                  {caseStudy.hero.technologies.slice(0, 4).map((t) => (
-                    <span key={t}>{t}</span>
+                  {caseStudy.hero.technologies.slice(0, 4).map((technology) => (
+                    <span key={technology}>{technology}</span>
                   ))}
                 </div>
               </div>
@@ -130,7 +122,21 @@ export default function CaseStudyPage({
           </m.div>
         </m.div>
       </section>
+    </>
+  );
+}
 
+function CaseStudyContent({
+  caseStudy,
+  navigation,
+  onSelectImage,
+}: {
+  caseStudy: CaseStudy;
+  navigation?: CaseStudyNavigation;
+  onSelectImage: (src: string) => void;
+}) {
+  return (
+    <>
       <section className="border-subtle border-t">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
           <div className="grid min-h-[50vh] grid-cols-1 md:grid-cols-12">
@@ -212,9 +218,9 @@ export default function CaseStudyPage({
                         </span>
                       </div>
                       <ul className="flex flex-col gap-1">
-                        {phase.activities.map((act) => (
-                          <li className="text-secondary text-sm" key={act}>
-                            — {act}
+                        {phase.activities.map((activity) => (
+                          <li className="text-secondary text-sm" key={activity}>
+                            — {activity}
                           </li>
                         ))}
                       </ul>
@@ -260,12 +266,12 @@ export default function CaseStudyPage({
 
               {caseStudy.results.metrics.length > 0 && (
                 <div className="grid grid-cols-2 gap-8 border-subtle border-t pt-12 pt-20">
-                  {caseStudy.results.metrics.map((m) => (
+                  {caseStudy.results.metrics.map((metric) => (
                     <p
                       className="border-primary border-l-2 py-2 pl-6 font-light text-lg text-primary"
-                      key={m}
+                      key={metric}
                     >
-                      {m}
+                      {metric}
                     </p>
                   ))}
                 </div>
@@ -281,15 +287,15 @@ export default function CaseStudyPage({
             Gallery
           </h2>
           <div className="flex flex-col gap-32">
-            {caseStudy.gallery.images.map((image, i) => (
+            {caseStudy.gallery.images.map((image, index) => (
               <div className="group flex flex-col gap-4" key={image.src}>
                 <button
                   className="relative aspect-video w-full cursor-zoom-in overflow-hidden border border-subtle bg-secondary/5"
-                  onClick={() => setSelectedImage(image.src)}
+                  onClick={() => onSelectImage(image.src)}
                   type="button"
                 >
                   <Image
-                    alt={image.alt || `Project image ${i + 1}`}
+                    alt={image.alt || `Project image ${index + 1}`}
                     className="object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                     fill
                     loading="lazy"
@@ -301,7 +307,9 @@ export default function CaseStudyPage({
                   <p className="font-medium text-primary text-sm uppercase tracking-wide">
                     {image.title}
                   </p>
-                  <span className="font-mono text-muted text-xs">0{i + 1}</span>
+                  <span className="font-mono text-muted text-xs">
+                    0{index + 1}
+                  </span>
                 </div>
               </div>
             ))}
@@ -359,44 +367,79 @@ export default function CaseStudyPage({
           </div>
         </section>
       )}
+    </>
+  );
+}
 
-      <AnimatePresence>
-        {selectedImage && (
-          <m.div
-            animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            onClick={() => setSelectedImage(null)}
+function CaseStudyLightbox({
+  selectedImage,
+  onClose,
+}: {
+  selectedImage: string | null;
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {selectedImage && (
+        <m.div
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <button
+            className="absolute top-4 right-4 p-2 text-white/70 transition-colors hover:text-white"
+            onClick={onClose}
+            type="button"
           >
-            <button
-              className="absolute top-4 right-4 p-2 text-white/70 transition-colors hover:text-white"
-              onClick={() => setSelectedImage(null)}
-              type="button"
-            >
-              <X className="size-8" />
-              <span className="sr-only">Close</span>
-            </button>
-            <m.div
-              animate={{ scale: 1, opacity: 1 }}
-              className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
-              exit={{ scale: 0.9, opacity: 0 }}
-              initial={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              transition={{ type: "spring", duration: 0.5 }}
-            >
-              <Image
-                alt="Enlarged gallery view"
-                className="object-contain"
-                fill
-                priority
-                sizes="100vw"
-                src={selectedImage}
-              />
-            </m.div>
+            <X className="size-8" />
+            <span className="sr-only">Close</span>
+          </button>
+          <m.div
+            animate={{ scale: 1, opacity: 1 }}
+            className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
+            exit={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
+            onClick={(event) => event.stopPropagation()}
+            transition={{ type: "spring", duration: 0.5 }}
+          >
+            <Image
+              alt="Enlarged gallery view"
+              className="object-contain"
+              fill
+              priority
+              sizes="100vw"
+              src={selectedImage}
+            />
           </m.div>
-        )}
-      </AnimatePresence>
+        </m.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+export default function CaseStudyPage({
+  caseStudy,
+  navigation,
+}: {
+  caseStudy: CaseStudy;
+  navigation?: CaseStudyNavigation;
+}) {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  return (
+    <div className="min-h-screen bg-primary pt-40 md:pt-48">
+      <CaseStudyHeader caseStudy={caseStudy} />
+      <CaseStudyContent
+        caseStudy={caseStudy}
+        navigation={navigation}
+        onSelectImage={setSelectedImage}
+      />
+      <CaseStudyLightbox
+        onClose={() => setSelectedImage(null)}
+        selectedImage={selectedImage}
+      />
     </div>
   );
 }
