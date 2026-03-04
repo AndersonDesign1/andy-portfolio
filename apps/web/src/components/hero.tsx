@@ -17,11 +17,7 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-import {
-  heroStagger,
-  heroTextVariants,
-  useScrollAnimation,
-} from "@/hooks/use-scroll-animation";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import {
   ANIMATION_DELAY_BASE,
   ANIMATION_DELAY_INCREMENT,
@@ -35,7 +31,7 @@ const socialLinks = [
   },
   {
     icon: XIcon,
-    href: "https://twitter.com/HeyItsAndersonJ",
+    href: "https://x.com/_Andersonjosh",
     label: "X (Twitter)",
   },
   {
@@ -59,19 +55,13 @@ export default function Hero() {
       ref={heroRef}
     >
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
-        <m.div
-          animate="visible"
-          className="flex flex-col gap-8"
-          initial="hidden"
-          variants={heroStagger}
-        >
+        <div className="flex flex-col gap-8">
           {/* Status Badge */}
-          <m.a
+          <a
             className="flex items-center gap-2 self-start rounded-full border border-subtle bg-secondary/5 px-4 py-2 font-mono text-secondary text-xs uppercase tracking-widest backdrop-blur-sm transition-colors hover:border-primary hover:bg-secondary/10"
             href="https://welupdigital.com"
             rel="noopener noreferrer"
             target="_blank"
-            variants={heroTextVariants}
           >
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -79,31 +69,24 @@ export default function Hero() {
             </span>
             Founding Engineer at{" "}
             <span className="font-bold text-primary">Welup Digital</span>
-          </m.a>
+          </a>
 
           {/* Name - Extreme Scale */}
-          <m.h1
-            className="-ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]"
-            initial="visible"
-            variants={heroTextVariants}
-          >
+          <h1 className="hero-title -ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]">
             Anderson
             <br />
             Joseph
-          </m.h1>
+          </h1>
 
           <div className="flex flex-col justify-between gap-12 pt-8 md:flex-row md:items-end md:pt-16">
             {/* Bio - Short and impactful */}
-            <m.p
-              className="max-w-md text-lg text-secondary leading-relaxed md:text-xl"
-              variants={heroTextVariants}
-            >
+            <p className="hero-subtitle max-w-md text-lg text-secondary leading-relaxed md:text-xl">
               Building digital products with a focus on growth, interaction, and
               precise engineering.
-            </m.p>
+            </p>
 
             {/* Social Links - Minimal Row */}
-            <m.div className="flex gap-6" variants={heroTextVariants}>
+            <m.div className="flex gap-6">
               {socialLinks.map(({ icon: Icon, href, label }, index) => (
                 <m.a
                   animate={{
@@ -135,7 +118,7 @@ export default function Hero() {
               ))}
             </m.div>
           </div>
-        </m.div>
+        </div>
       </div>
     </section>
   );

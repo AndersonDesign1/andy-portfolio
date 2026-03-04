@@ -1,6 +1,6 @@
 "use client";
 
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import type React from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
@@ -27,6 +27,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
   const lenisRef = useRef<Lenis | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [shouldEnableLenis, setShouldEnableLenis] = useState(false);
 
   // Check for reduced motion preference
   useEffect(() => {
@@ -41,64 +42,112 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  // Initialize Lenis
+  // Defer Lenis setup until browser is idle to reduce work on initial paint
   useEffect(() => {
-    // Skip Lenis if user prefers reduced motion
     if (prefersReducedMotion) {
+      setShouldEnableLenis(false);
       return;
     }
 
-    lenisRef.current = new Lenis({
-      duration: SCROLL_DURATION,
-      easing: (t) =>
-        Math.min(1, SCROLL_EASING_CONSTANT - 2 ** (SCROLL_EASING_EXPONENT * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-      infinite: false,
-    });
+    const requestIdle = globalThis.requestIdleCallback;
+    const cancelIdle = globalThis.cancelIdleCallback;
 
-    let lastTime = 0;
-    const targetFps = 60;
-    const frameInterval = 1000 / targetFps;
+    if (requestIdle && cancelIdle) {
+      const idleId = requestIdle(() => {
+        setShouldEnableLenis(true);
+      });
 
-    function raf(time: number) {
-      // Throttle RAF to 60fps max to save battery
-      if (time - lastTime >= frameInterval) {
-        lenisRef.current?.raf(time);
-        lastTime = time;
-      }
-      rafIdRef.current = requestAnimationFrame(raf);
+      return () => cancelIdle(idleId);
     }
 
-    rafIdRef.current = requestAnimationFrame(raf);
+    const timeoutId = globalThis.setTimeout(() => {
+      setShouldEnableLenis(true);
+    }, 300);
 
-    // Pause when tab is hidden
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        if (rafIdRef.current) {
-          cancelAnimationFrame(rafIdRef.current);
-          rafIdRef.current = null;
+    return () => globalThis.clearTimeout(timeoutId);
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!shouldEnableLenis) {
+      return;
+    }
+
+    let mounted = true;
+    let removeVisibilityListener: (() => void) | null = null;
+
+    const initLenis = async () => {
+      const { default: Lenis } = await import("lenis");
+      if (!mounted) {
+        return;
+      }
+
+      lenisRef.current = new Lenis({
+        duration: SCROLL_DURATION,
+        easing: (t) =>
+          Math.min(
+            1,
+            SCROLL_EASING_CONSTANT - 2 ** (SCROLL_EASING_EXPONENT * t)
+          ),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+        infinite: false,
+      });
+
+      let lastTime = 0;
+      const targetFps = 60;
+      const frameInterval = 1000 / targetFps;
+
+      function raf(time: number) {
+        // Throttle RAF to 60fps max to save battery
+        if (time - lastTime >= frameInterval) {
+          lenisRef.current?.raf(time);
+          lastTime = time;
         }
-      } else if (!rafIdRef.current) {
         rafIdRef.current = requestAnimationFrame(raf);
       }
+
+      rafIdRef.current = requestAnimationFrame(raf);
+
+      // Pause when tab is hidden
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+          }
+        } else if (!rafIdRef.current) {
+          rafIdRef.current = requestAnimationFrame(raf);
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      removeVisibilityListener = () => {
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange
+        );
+      };
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    initLenis();
 
     return () => {
+      mounted = false;
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
       }
       if (lenisRef.current) {
         lenisRef.current.destroy();
+        lenisRef.current = null;
       }
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (removeVisibilityListener) {
+        removeVisibilityListener();
+      }
     };
-  }, [prefersReducedMotion]);
+  }, [shouldEnableLenis]);
 
   return (
     <ScrollContext.Provider
