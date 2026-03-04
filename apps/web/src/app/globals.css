@@ -134,6 +134,25 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .giveaway-feedback-success {
+    animation: giveaway-feedback-success-enter 360ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .giveaway-feedback-back-link {
+    animation: giveaway-feedback-back-link-enter 320ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .giveaway-feedback-success,
+  .giveaway-feedback-back-link {
+    animation: none;
+  }
+}
+
 @layer utilities {
   .bg-primary {
     @apply bg-background;
@@ -230,6 +249,28 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes giveaway-feedback-success-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes giveaway-feedback-back-link-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 

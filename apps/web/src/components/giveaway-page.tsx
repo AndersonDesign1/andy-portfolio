@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
-import { m } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -76,27 +75,28 @@ function FAQItem({
           }`}
         />
       </button>
-      <m.div
-        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-        className="overflow-hidden"
-        initial={false}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+      <div
+        className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
       >
-        <p className="pb-6 text-secondary leading-relaxed">
-          {answer}
-          {hasContactLink && (
-            <>
-              {" "}
-              <Link
-                className="text-primary transition-opacity hover:opacity-70"
-                href="/contact"
-              >
-                Contact me <ArrowRight className="inline size-4" />
-              </Link>
-            </>
-          )}
-        </p>
-      </m.div>
+        <div className="overflow-hidden">
+          <p className="pb-6 text-secondary leading-relaxed">
+            {answer}
+            {hasContactLink && (
+              <>
+                {" "}
+                <Link
+                  className="text-primary transition-opacity hover:opacity-70"
+                  href="/contact"
+                >
+                  Contact me <ArrowRight className="inline size-4" />
+                </Link>
+              </>
+            )}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
