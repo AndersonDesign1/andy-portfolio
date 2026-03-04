@@ -4,7 +4,6 @@ import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { domAnimation, LazyMotion } from "motion/react";
 import DeferredGrainOverlay from "@/components/deferred-grain-overlay";
 import ScrollProvider from "@/components/scroll-provider";
 import SpotifyLazy from "@/components/spotify-lazy";
@@ -29,42 +28,40 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <LazyMotion features={domAnimation}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            disableTransitionOnChange
-            enableSystem
-            storageKey="andy-theme"
-          >
-            <ScrollProvider>
-              <Navbar />
-              <main>{children}</main>
-              <Footer />
-              <SpotifyLazy />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+          storageKey="andy-theme"
+        >
+          <ScrollProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <SpotifyLazy />
 
-              <Analytics />
-              <SpeedInsights />
+            <Analytics />
+            <SpeedInsights />
 
-              <DeferredGrainOverlay />
+            <DeferredGrainOverlay />
 
-              <Toaster
-                offset="80px"
-                position="top-right"
-                style={{ zIndex: 9998 }}
-                toastOptions={{
-                  style: {
-                    background: "var(--muted)",
-                    color: "var(--foreground)",
-                    border: "1px solid var(--border)",
-                    boxShadow:
-                      "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
-                  },
-                }}
-              />
-            </ScrollProvider>
-          </ThemeProvider>
-        </LazyMotion>
+            <Toaster
+              offset="80px"
+              position="top-right"
+              style={{ zIndex: 9998 }}
+              toastOptions={{
+                style: {
+                  background: "var(--muted)",
+                  color: "var(--foreground)",
+                  border: "1px solid var(--border)",
+                  boxShadow:
+                    "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
+                },
+              }}
+            />
+          </ScrollProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
