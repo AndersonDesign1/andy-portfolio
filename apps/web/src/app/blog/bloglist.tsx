@@ -1,9 +1,6 @@
-import { m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
-
-const ANIMATION_DELAY_MULTIPLIER = 0.1;
 
 interface Post {
   _id: string;
@@ -32,12 +29,7 @@ export default function BlogList({ posts }: BlogListProps) {
   return (
     <div className="min-h-screen bg-light-bg pt-24 transition-colors duration-300 dark:bg-dark-bg">
       <div className="mx-auto max-w-screen-xl px-4 py-20 sm:px-8 md:px-16 lg:px-[150px]">
-        <m.div
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-4 pb-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="flex flex-col gap-4 pb-16 text-center">
           <h1 className="font-bold text-4xl text-light-heading dark:text-dark-heading">
             Blog
           </h1>
@@ -45,19 +37,13 @@ export default function BlogList({ posts }: BlogListProps) {
             Thoughts, insights, and lessons learned from my journey in web
             development and SEO.
           </p>
-        </m.div>
+        </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, index) => (
-            <m.article
-              animate={{ opacity: 1, y: 0 }}
+          {posts.map((post) => (
+            <article
               className="group overflow-hidden rounded-lg bg-light-bg shadow-sm transition-all duration-300 hover:shadow-md dark:bg-dark-bg"
-              initial={{ opacity: 0, y: 20 }}
               key={post._id}
-              transition={{
-                duration: 0.5,
-                delay: index * ANIMATION_DELAY_MULTIPLIER,
-              }}
             >
               <Link href={`/blog/${post.slug.current}`}>
                 <div className="relative aspect-[16/9] overflow-hidden">
@@ -91,7 +77,7 @@ export default function BlogList({ posts }: BlogListProps) {
                   )}
                 </div>
               </Link>
-            </m.article>
+            </article>
           ))}
         </div>
       </div>

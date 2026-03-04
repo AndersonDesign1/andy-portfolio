@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+const GRAIN_IDLE_TIMEOUT_MS = 1200;
+const GRAIN_FALLBACK_DELAY_MS = 350;
+
 export default function DeferredGrainOverlay() {
   const [showOverlay, setShowOverlay] = useState(false);
 
@@ -10,16 +13,19 @@ export default function DeferredGrainOverlay() {
     const cancelIdle = globalThis.cancelIdleCallback;
 
     if (requestIdle && cancelIdle) {
-      const idleId = requestIdle(() => {
-        setShowOverlay(true);
-      });
+      const idleId = requestIdle(
+        () => {
+          setShowOverlay(true);
+        },
+        { timeout: GRAIN_IDLE_TIMEOUT_MS }
+      );
 
       return () => cancelIdle(idleId);
     }
 
     const timeoutId = globalThis.setTimeout(() => {
       setShowOverlay(true);
-    }, 350);
+    }, GRAIN_FALLBACK_DELAY_MS);
 
     return () => globalThis.clearTimeout(timeoutId);
   }, []);
