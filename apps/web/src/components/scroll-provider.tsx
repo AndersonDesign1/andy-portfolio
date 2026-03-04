@@ -9,6 +9,9 @@ import {
   SCROLL_EASING_EXPONENT,
 } from "@/lib/constants";
 
+const LENIS_IDLE_TIMEOUT_MS = 1200;
+const LENIS_FALLBACK_DELAY_MS = 300;
+
 interface ScrollContextType {
   lenis: Lenis | null;
   prefersReducedMotion: boolean;
@@ -26,6 +29,7 @@ interface ScrollProviderProps {
 export default function ScrollProvider({ children }: ScrollProviderProps) {
   const lenisRef = useRef<Lenis | null>(null);
   const rafIdRef = useRef<number | null>(null);
+  const [lenis, setLenis] = useState<Lenis | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [shouldEnableLenis, setShouldEnableLenis] = useState(false);
 
@@ -53,16 +57,19 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     const cancelIdle = globalThis.cancelIdleCallback;
 
     if (requestIdle && cancelIdle) {
-      const idleId = requestIdle(() => {
-        setShouldEnableLenis(true);
-      });
+      const idleId = requestIdle(
+        () => {
+          setShouldEnableLenis(true);
+        },
+        { timeout: LENIS_IDLE_TIMEOUT_MS }
+      );
 
       return () => cancelIdle(idleId);
     }
 
     const timeoutId = globalThis.setTimeout(() => {
       setShouldEnableLenis(true);
-    }, 300);
+    }, LENIS_FALLBACK_DELAY_MS);
 
     return () => globalThis.clearTimeout(timeoutId);
   }, [prefersReducedMotion]);
@@ -81,7 +88,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         return;
       }
 
-      lenisRef.current = new Lenis({
+      const lenisInstance = new Lenis({
         duration: SCROLL_DURATION,
         easing: (t) =>
           Math.min(
@@ -95,6 +102,9 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         touchMultiplier: 2,
         infinite: false,
       });
+
+      lenisRef.current = lenisInstance;
+      setLenis(lenisInstance);
 
       let lastTime = 0;
       const targetFps = 60;
@@ -143,6 +153,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         lenisRef.current.destroy();
         lenisRef.current = null;
       }
+      setLenis(null);
       if (removeVisibilityListener) {
         removeVisibilityListener();
       }
@@ -150,9 +161,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
   }, [shouldEnableLenis]);
 
   return (
-    <ScrollContext.Provider
-      value={{ lenis: lenisRef.current, prefersReducedMotion }}
-    >
+    <ScrollContext.Provider value={{ lenis, prefersReducedMotion }}>
       {children}
     </ScrollContext.Provider>
   );
