@@ -116,7 +116,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
       }
 
       const lenisInstance = new Lenis({
-        duration: SCROLL_DURATION,
+        duration: SCROLL_DURATION * 1.35,
         easing: (t) =>
           Math.min(
             1,
@@ -125,8 +125,8 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         orientation: "vertical",
         gestureOrientation: "vertical",
         smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 2,
+        wheelMultiplier: 0.85,
+        touchMultiplier: 1.6,
         infinite: false,
       });
 
