@@ -12,11 +12,10 @@ export default function ErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  if (process.env.NODE_ENV !== "production") {
-    throw error;
-  }
-
   useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      throw error;
+    }
     console.error(error);
   }, [error]);
 
