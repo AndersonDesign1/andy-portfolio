@@ -32,12 +32,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close menu on route change
-  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is intentionally used as trigger to close menu on navigation
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
   // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
