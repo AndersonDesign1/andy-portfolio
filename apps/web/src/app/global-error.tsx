@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { inter } from "@/lib/fonts";
 
 export default function GlobalError({
@@ -9,6 +10,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  if (process.env.NODE_ENV !== "production") {
+    throw error;
+  }
+
   return (
     <html lang="en">
       <head>
@@ -107,7 +112,7 @@ export default function GlobalError({
               Try again
             </button>
 
-            <a
+            <Link
               href="/"
               style={{
                 padding: "10px 32px",
@@ -124,7 +129,7 @@ export default function GlobalError({
               }}
             >
               Go home
-            </a>
+            </Link>
           </div>
         </div>
       </body>

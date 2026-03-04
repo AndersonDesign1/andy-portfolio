@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import projectsData from "@/data/projects.json" with { type: "json" };
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 interface Project {
   id: string;
@@ -35,24 +34,28 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
   return (
     <m.div
       className="relative border-subtle border-b last:border-none"
-      initial={{ opacity: 0, y: 20 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      transition={{ delay: index * 0.1 }}
-      viewport={{ once: true }}
+      initial={{ opacity: 0, y: 24 }}
+      transition={{
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
+        delay: index * 0.05,
+      }}
+      viewport={{ once: true, amount: 0.2 }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       <Link
         className="group block w-full py-12 focus:outline-none md:py-16"
         href={primaryLink}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div className="flex items-center justify-between gap-8">
           {/* Left: Index & Title */}
-          <div className="flex items-baseline gap-8 transition-transform duration-300 group-hover:translate-x-4 md:gap-16">
+          <div className="flex items-baseline gap-8 transition-transform duration-300 ease-out group-hover:translate-x-4 md:gap-16">
             <span className="font-mono text-muted text-sm">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <h3 className="font-semibold text-3xl text-primary tracking-tight transition-colors group-hover:text-accent md:text-5xl">
+            <h3 className="font-semibold text-3xl text-primary tracking-tight transition-colors duration-200 ease-out group-hover:text-accent md:text-5xl">
               {project.title}
             </h3>
           </div>
@@ -63,14 +66,14 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
               {project.techStack.slice(0, 3).join(" / ")}
             </p>
             <ArrowUpRight
-              className="size-6 shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent"
+              className="size-6 shrink-0 text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent"
               strokeWidth={2}
             />
           </div>
         </div>
 
         <div
-          className={`pointer-events-none absolute top-1/2 right-10 z-20 h-[200px] w-[300px] -translate-y-1/2 overflow-hidden rounded-lg opacity-0 transition-all duration-500 ease-out md:h-[300px] md:w-[450px] ${
+          className={`pointer-events-none absolute top-1/2 right-10 z-20 h-[200px] w-[300px] -translate-y-1/2 overflow-hidden rounded-lg opacity-0 transition-all duration-300 ease-out md:h-[300px] md:w-[450px] ${
             isHovered ? "opacity-100" : "opacity-0"
           }`}
           style={{ transformOrigin: "center center" }}
@@ -92,10 +95,8 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 }
 
 export default function ProjectsGrid() {
-  const { ref: gridRef } = useScrollAnimation({ threshold: 0.1 });
-
   return (
-    <section className="bg-primary py-24 md:py-32" ref={gridRef}>
+    <section className="bg-primary py-24 md:py-32">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
         <div className="flex flex-col gap-24">
           <div className="flex items-end justify-between border-subtle border-b pb-8">
@@ -124,7 +125,7 @@ export default function ProjectsGrid() {
             <Button asChild className="group gap-2" variant="outline">
               <Link href="/projects">
                 View All Projects
-                <ArrowUpRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
+                <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
               </Link>
             </Button>
           </div>

@@ -1,10 +1,10 @@
+import { domAnimation, LazyMotion } from "motion/react";
 import type { Metadata } from "next";
-
 import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { domAnimation, LazyMotion } from "motion/react";
+import DeferredGrainOverlay from "@/components/deferred-grain-overlay";
 import ScrollProvider from "@/components/scroll-provider";
 import SpotifyLazy from "@/components/spotify-lazy";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -18,8 +18,6 @@ import { constructMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = constructMetadata();
 
-// REMOVE generateMetadata if it was async and needed specific logic, but here it seems static
-
 interface RootLayoutProps {
   children: ReactNode;
 }
@@ -30,14 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <LazyMotion features={domAnimation}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            disableTransitionOnChange
-            enableSystem
-            storageKey="andy-theme"
-          >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+          storageKey="andy-theme"
+        >
+          <LazyMotion features={domAnimation} strict>
             <ScrollProvider>
               <Navbar />
               <main>{children}</main>
@@ -47,7 +45,7 @@ export default function RootLayout({
               <Analytics />
               <SpeedInsights />
 
-              <div aria-hidden="true" className="grain-overlay" />
+              <DeferredGrainOverlay />
 
               <Toaster
                 offset="80px"
@@ -64,8 +62,8 @@ export default function RootLayout({
                 }}
               />
             </ScrollProvider>
-          </ThemeProvider>
-        </LazyMotion>
+          </LazyMotion>
+        </ThemeProvider>
       </body>
     </html>
   );

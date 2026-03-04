@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 async function getPost(slug: string) {
   try {
-    const post = await client.fetch(
+    return await client.fetch(
       `*[_type == "post" && slug.current == $slug][0]{
         _id,
         title,
@@ -30,14 +30,8 @@ async function getPost(slug: string) {
       }`,
       { slug }
     );
-
-    if (!post) {
-      notFound();
-    }
-
-    return post;
   } catch (_error) {
-    notFound();
+    return null;
   }
 }
 
@@ -49,20 +43,19 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const post = await getPost(slug);
 
-  try {
-    const post = await getPost(slug);
-
-    return constructMetadata({
-      title: post?.title,
-      description: post?.excerpt || "Read this blog post",
-    });
-  } catch {
+  if (!post) {
     return constructMetadata({
       title: "Blog Post",
       description: "Read this blog post",
     });
   }
+
+  return constructMetadata({
+    title: post.title,
+    description: post.excerpt || "Read this blog post",
+  });
 }
 
 export async function generateStaticParams() {

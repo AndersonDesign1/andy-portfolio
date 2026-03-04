@@ -13,6 +13,9 @@ export default function ErrorBoundary({
   reset: () => void;
 }) {
   useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      throw error;
+    }
     console.error(error);
   }, [error]);
 

@@ -1,17 +1,12 @@
 "use client";
 
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
-import { m } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 import {
   CountdownDisplay,
   useGiveawayStatus,
 } from "@/components/giveaway-banner";
-import {
-  ANIMATION_DURATION_MEDIUM,
-  ANIMATION_EASE_CUBIC,
-} from "@/lib/constants";
 
 const faqs = [
   {
@@ -80,27 +75,28 @@ function FAQItem({
           }`}
         />
       </button>
-      <m.div
-        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-        className="overflow-hidden"
-        initial={false}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+      <div
+        className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
       >
-        <p className="pb-6 text-secondary leading-relaxed">
-          {answer}
-          {hasContactLink && (
-            <>
-              {" "}
-              <Link
-                className="text-primary transition-opacity hover:opacity-70"
-                href="/contact"
-              >
-                Contact me <ArrowRight className="inline size-4" />
-              </Link>
-            </>
-          )}
-        </p>
-      </m.div>
+        <div className="overflow-hidden">
+          <p className="pb-6 text-secondary leading-relaxed">
+            {answer}
+            {hasContactLink && (
+              <>
+                {" "}
+                <Link
+                  className="text-primary transition-opacity hover:opacity-70"
+                  href="/contact"
+                >
+                  Contact me <ArrowRight className="inline size-4" />
+                </Link>
+              </>
+            )}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -114,71 +110,20 @@ export default function GiveawayPage() {
       {/* Hero Section */}
       <section className="py-20 md:py-32">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-          <m.div
-            animate="visible"
-            className="flex flex-col gap-8"
-            initial="hidden"
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
-              },
-            }}
-          >
-            <m.h1
-              className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl"
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    duration: ANIMATION_DURATION_MEDIUM,
-                    ease: ANIMATION_EASE_CUBIC,
-                  },
-                },
-              }}
-            >
+          <div className="flex flex-col gap-8">
+            <h1 className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl">
               New Year,
               <br />
               Free Websites.
-            </m.h1>
-            <m.p
-              className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl"
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    duration: ANIMATION_DURATION_MEDIUM,
-                    ease: ANIMATION_EASE_CUBIC,
-                  },
-                },
-              }}
-            >
+            </h1>
+            <p className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl">
               Celebrating 2026 by giving back. I'm building free websites for a
               few lucky winners — no catch, just good vibes.
-            </m.p>
+            </p>
 
             {/* Countdown */}
             {timeLeft && (
-              <m.div
-                className="pt-12"
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      duration: ANIMATION_DURATION_MEDIUM,
-                      ease: ANIMATION_EASE_CUBIC,
-                    },
-                  },
-                }}
-              >
+              <div className="pt-12">
                 <p className="pb-4 font-mono text-muted text-sm uppercase tracking-widest">
                   {status === "pending"
                     ? "Giveaway starts in"
@@ -191,9 +136,9 @@ export default function GiveawayPage() {
                     <ArrowRight className="inline size-4" />
                   </p>
                 </div>
-              </m.div>
+              </div>
             )}
-          </m.div>
+          </div>
         </div>
       </section>
 

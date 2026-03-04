@@ -1,12 +1,10 @@
 "use client";
+
 import { urlFor } from "@andy-portfolio/sanity-config";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { ArrowLeft } from "lucide-react";
-import { m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { ANIMATION_DURATION_LONG, ANIMATION_EASE_CUBIC } from "@/lib/constants";
 
 interface PortableTextBlock {
   _type: string;
@@ -39,15 +37,7 @@ interface SanityPost {
 const components: PortableTextComponents = {
   types: {
     image: ({ value }) => (
-      <m.figure
-        animate={{ opacity: 1, scale: 1 }}
-        className="my-12 md:my-16"
-        initial={{ opacity: 0, scale: 1.05 }}
-        transition={{
-          duration: ANIMATION_DURATION_LONG,
-          ease: ANIMATION_EASE_CUBIC,
-        }}
-      >
+      <figure className="my-12 md:my-16">
         <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
           <Image
             alt={value.alt || "Blog post image"}
@@ -64,17 +54,12 @@ const components: PortableTextComponents = {
             {value.caption}
           </figcaption>
         )}
-      </m.figure>
+      </figure>
     ),
     code: ({ value }) => (
-      <m.pre
-        animate={{ opacity: 1, y: 0 }}
-        className="my-8 overflow-x-auto rounded-sm border border-subtle bg-secondary/10 p-4"
-        initial={{ opacity: 0, y: 10 }}
-        transition={{ duration: 0.4 }}
-      >
+      <pre className="my-8 overflow-x-auto rounded-sm border border-subtle bg-secondary/10 p-4">
         <code className="font-mono text-primary text-sm">{value.code}</code>
-      </m.pre>
+      </pre>
     ),
   },
   block: {
@@ -153,13 +138,8 @@ const components: PortableTextComponents = {
 };
 
 export default function BlogPost({ post }: { post: SanityPost }) {
-  const { ref: postRef } = useScrollAnimation({ threshold: 0.1 });
-
   return (
-    <section
-      className="min-h-screen bg-primary pt-40 pb-24 md:pt-48"
-      ref={postRef}
-    >
+    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
       <div className="mx-auto max-w-screen-md px-6">
         <Link
           className="inline-flex items-center gap-2 font-mono text-muted text-sm transition-colors hover:text-primary"
@@ -170,7 +150,6 @@ export default function BlogPost({ post }: { post: SanityPost }) {
         </Link>
         <div className="pt-12">
           <article>
-            {/* Header */}
             <div className="border-subtle border-b pb-8">
               <h1 className="pb-8 font-bold text-4xl text-primary leading-tight tracking-tighter md:text-6xl">
                 {post.title}
@@ -204,15 +183,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
             </div>
 
             {post.mainImage && (
-              <m.figure
-                animate={{ opacity: 1, scale: 1 }}
-                className="pt-16"
-                initial={{ opacity: 0, scale: 1.05 }}
-                transition={{
-                  duration: ANIMATION_DURATION_LONG,
-                  ease: ANIMATION_EASE_CUBIC,
-                }}
-              >
+              <figure className="pt-16">
                 <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
                   <Image
                     alt={post.mainImage.alt || post.title}
@@ -227,10 +198,9 @@ export default function BlogPost({ post }: { post: SanityPost }) {
                     width={1200}
                   />
                 </div>
-              </m.figure>
+              </figure>
             )}
 
-            {/* Content */}
             <div className="prose prose-lg max-w-none">
               <PortableText components={components} value={post.body} />
             </div>

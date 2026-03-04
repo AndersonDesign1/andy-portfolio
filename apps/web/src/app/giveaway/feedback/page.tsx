@@ -1,9 +1,8 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { m, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { type FormEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { submitGiveawayFeedback } from "@/app/actions/submit-giveaway-feedback";
@@ -39,9 +38,8 @@ const feedbackSchema = z.object({
 export default function GiveawayFeedbackPage() {
   const [isPending, startTransition] = useTransition();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
@@ -77,11 +75,7 @@ export default function GiveawayFeedbackPage() {
     return (
       <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
         <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
-          <m.div
-            animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center gap-6"
-            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
-          >
+          <div className="giveaway-feedback-success flex flex-col items-center justify-center gap-6">
             <div className="rounded-full bg-secondary/10 p-4">
               <span className="text-4xl">🎉</span>
             </div>
@@ -102,7 +96,7 @@ export default function GiveawayFeedbackPage() {
                 Return to Home
               </Link>
             </div>
-          </m.div>
+          </div>
         </div>
       </section>
     );
@@ -112,13 +106,7 @@ export default function GiveawayFeedbackPage() {
     <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
       <div className="mx-auto flex w-full max-w-screen-md flex-col gap-12 px-6 md:px-12">
         {/* Back Link */}
-        <m.div
-          animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-          initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-          transition={
-            prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }
-          }
-        >
+        <div className="giveaway-feedback-back-link">
           <Link
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
@@ -126,7 +114,7 @@ export default function GiveawayFeedbackPage() {
             <ArrowLeft className="size-4" />
             Back to Giveaway
           </Link>
-        </m.div>
+        </div>
 
         <div className="flex flex-col gap-4">
           <h1 className="font-bold text-4xl text-primary leading-tight md:text-5xl">

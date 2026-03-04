@@ -1,79 +1,32 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { m } from "motion/react";
 import Link from "next/link";
 import type React from "react";
-import {
-  ANIMATION_DURATION_MEDIUM,
-  ANIMATION_EASE_CUBIC,
-} from "@/lib/constants";
 
 const AboutPage: React.FC = () => (
   <div className="min-h-screen bg-primary pt-40 md:pt-48">
     {/* Back Navigation */}
     <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-      <m.div
-        animate={{ opacity: 1, x: 0 }}
-        initial={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.4 }}
-      >
+      <div>
         <Link
-          className="inline-flex items-center gap-2 text-secondary text-sm transition-colors duration-300 hover:text-primary"
+          className="inline-flex items-center gap-2 text-secondary text-sm transition-colors duration-200 ease-out hover:text-primary"
           href="/"
         >
           <ArrowLeft className="size-4" />
           Back to Home
         </Link>
-      </m.div>
+      </div>
     </div>
 
     {/* Hero Section */}
     <section className="pt-8 pb-20 md:pt-12 md:pb-32">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-        <m.div
-          animate="visible"
-          className="flex flex-col gap-12"
-          initial="hidden"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.1,
-              },
-            },
-          }}
-        >
-          <m.h1
-            className="font-bold text-6xl text-primary tracking-tighter md:text-8xl lg:text-9xl"
-            variants={{
-              hidden: { opacity: 0, y: 30 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: ANIMATION_DURATION_MEDIUM,
-                  ease: ANIMATION_EASE_CUBIC,
-                },
-              },
-            }}
-          >
+        <div className="flex flex-col gap-12">
+          <h1 className="font-bold text-6xl text-primary tracking-tighter md:text-8xl lg:text-9xl">
             About Me
-          </m.h1>
-          <m.p
-            className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl"
-            variants={{
-              hidden: { opacity: 0, y: 30 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: ANIMATION_DURATION_MEDIUM,
-                  ease: ANIMATION_EASE_CUBIC,
-                },
-              },
-            }}
-          >
+          </h1>
+          <p className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl">
             I&apos;m a passionate full-stack developer with expertise in SEO and
             infrastructure. My journey started after winning a scholarship to
             learn a tech skill for a year, choosing development because of a
@@ -89,8 +42,8 @@ const AboutPage: React.FC = () => (
             </a>
             , I create digital experiences that look beautiful and perform
             exceptionally well.
-          </m.p>
-        </m.div>
+          </p>
+        </div>
       </div>
     </section>
 

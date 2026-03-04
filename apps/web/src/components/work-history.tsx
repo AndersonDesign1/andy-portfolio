@@ -1,41 +1,36 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { m } from "motion/react";
-import { useMemo } from "react";
+import Link from "next/link";
 import educationData from "@/data/education.json" with { type: "json" };
 import workExperienceData from "@/data/work-experience.json" with {
   type: "json",
 };
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { formatDate } from "@/lib/utils";
 
 export default function WorkHistory() {
-  const { ref: workRef } = useScrollAnimation({ threshold: 0.1 });
   const workExperience = workExperienceData.workExperience;
   const education = educationData.education;
 
-  const filteredExperience = useMemo(() => {
-    return workExperience.filter((job) => {
-      const title = job.position.toLowerCase();
-      const company = job.company.toLowerCase();
-      return (
-        title.includes("full stack") ||
-        title.includes("developer") ||
-        title.includes("engineer") ||
-        title.includes("founding") ||
-        title.includes("backend") ||
-        title.includes("seo") ||
-        title.includes("instructor") ||
-        title.includes("teacher") ||
-        title.includes("mentor") ||
-        company.includes("training")
-      );
-    });
-  }, []);
+  const filteredExperience = workExperience.filter((job) => {
+    const title = job.position.toLowerCase();
+    const company = job.company.toLowerCase();
+    return (
+      title.includes("full stack") ||
+      title.includes("developer") ||
+      title.includes("engineer") ||
+      title.includes("founding") ||
+      title.includes("backend") ||
+      title.includes("seo") ||
+      title.includes("instructor") ||
+      title.includes("teacher") ||
+      title.includes("mentor") ||
+      company.includes("training")
+    );
+  });
 
   return (
-    <section className="bg-primary py-24 md:py-32" ref={workRef}>
+    <section className="bg-primary py-24 md:py-32">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
         <div className="grid grid-cols-1 gap-20 md:grid-cols-2 md:gap-32">
           {/* Experience Column */}
@@ -45,13 +40,7 @@ export default function WorkHistory() {
             </h2>
             <div className="flex flex-col gap-12 pt-12">
               {filteredExperience.map((job) => (
-                <m.div
-                  initial={{ opacity: 0, y: 10 }}
-                  key={job.id}
-                  transition={{ duration: 0.4 }}
-                  viewport={{ once: true }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                >
+                <div key={job.id}>
                   <div className="flex flex-col gap-1">
                     <h3 className="font-medium text-lg text-primary leading-tight">
                       {job.company}
@@ -64,21 +53,21 @@ export default function WorkHistory() {
                       {job.endDate ? formatDate(job.endDate) : "Present"}
                     </p>
                   </div>
-                </m.div>
+                </div>
               ))}
             </div>
 
             {/* Resume Button */}
             <div className="pt-12">
-              <a
-                className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
+              <Link
+                className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 ease-out hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
                 href="/Anderson Joseph Resume.pdf"
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 View Resume
-                <ArrowUpRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
-              </a>
+                <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
+              </Link>
             </div>
           </div>
 
@@ -89,13 +78,7 @@ export default function WorkHistory() {
             </h2>
             <div className="flex flex-col gap-12 pt-12">
               {education.map((edu) => (
-                <m.div
-                  initial={{ opacity: 0, y: 10 }}
-                  key={edu.id}
-                  transition={{ duration: 0.4 }}
-                  viewport={{ once: true }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                >
+                <div key={edu.id}>
                   <div className="flex flex-col gap-1">
                     <h3 className="font-medium text-lg text-primary leading-tight">
                       {edu.institution}
@@ -106,7 +89,7 @@ export default function WorkHistory() {
                       {edu.endDate ? formatDate(edu.endDate) : "Present"}
                     </p>
                   </div>
-                </m.div>
+                </div>
               ))}
             </div>
           </div>

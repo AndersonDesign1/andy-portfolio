@@ -1,8 +1,6 @@
 import { ImageResponse } from "next/og";
 import caseStudiesData from "../../../data/case-studies.json";
 
-export const runtime = "edge";
-
 export const size = {
   width: 1200,
   height: 630,
@@ -91,7 +89,10 @@ export default async function Image({ params }: { params: { slug: string } }) {
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          zIndex: 10,
         }}
       >
         <div
@@ -102,6 +103,14 @@ export default async function Image({ params }: { params: { slug: string } }) {
           }}
         >
           {subtitle}
+        </div>
+        <div
+          style={{
+            fontSize: 24,
+            color: "#737373",
+          }}
+        >
+          andersonjoseph.com
         </div>
       </div>
     </div>,

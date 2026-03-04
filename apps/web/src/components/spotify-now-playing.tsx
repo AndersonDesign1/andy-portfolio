@@ -11,10 +11,10 @@ import {
 } from "@/lib/constants";
 
 interface SpotifyTrack {
-  name: string;
-  artists: { name: string }[];
-  album: { images: { url: string }[]; name: string; release_date: string };
-  external_urls: { spotify: string };
+  name?: string;
+  artists?: { name?: string }[];
+  album?: { images?: { url?: string }[]; name?: string; release_date?: string };
+  external_urls?: { spotify?: string };
   isPlaying?: boolean;
 }
 
@@ -32,13 +32,22 @@ const PLACEHOLDER_IMAGE =
 
 // Helper to safely get album image URL
 function getAlbumImageUrl(
-  images: { url: string }[] | undefined,
+  images: { url?: string }[] | undefined,
   preferredIndex = 0
 ): string {
   if (!images || images.length === 0) {
     return PLACEHOLDER_IMAGE;
   }
   return images[preferredIndex]?.url || images[0]?.url || PLACEHOLDER_IMAGE;
+}
+
+function getArtistNames(artists: { name?: string }[] | undefined): string {
+  if (!artists || artists.length === 0) {
+    return "Unknown artist";
+  }
+
+  const names = artists.map((artist) => artist.name).filter(Boolean);
+  return names.length > 0 ? names.join(", ") : "Unknown artist";
 }
 
 // Music bars animation component
@@ -86,7 +95,11 @@ function SpotifySkeleton() {
 
 // Expanded card component
 function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
-  const albumImage = getAlbumImageUrl(track.album.images, 1);
+  const albumImage = getAlbumImageUrl(track.album?.images, 1);
+  const albumName = track.album?.name || "Unknown album";
+  const trackName = track.name || "Unknown track";
+  const artistNames = getArtistNames(track.artists);
+  const spotifyUrl = track.external_urls?.spotify || "#";
 
   return (
     <m.div
@@ -107,7 +120,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
               transition={{ duration: 0.3 }}
             >
               <Image
-                alt={track.album.name}
+                alt={albumName}
                 className={`size-16 rounded-sm object-cover ${track.isPlaying ? "" : "grayscale"}`}
                 height={64}
                 src={albumImage}
@@ -125,15 +138,13 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               initial={{ opacity: 0, y: 10 }}
-              key={track.name}
+              key={trackName}
               transition={{ duration: 0.2 }}
             >
               <h4 className="truncate font-semibold text-primary">
-                {track.name}
+                {trackName}
               </h4>
-              <p className="truncate text-secondary text-sm">
-                {track.artists.map((a) => a.name).join(", ")}
-              </p>
+              <p className="truncate text-secondary text-sm">{artistNames}</p>
             </m.div>
           </AnimatePresence>
         </div>
@@ -142,9 +153,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
       <div className="mb-6 flex flex-col gap-2 font-mono text-muted text-xs uppercase tracking-wider">
         <div className="flex justify-between">
           <span>Album</span>
-          <span className="max-w-[120px] truncate text-right">
-            {track.album.name}
-          </span>
+          <span className="max-w-[120px] truncate text-right">{albumName}</span>
         </div>
       </div>
 
@@ -153,11 +162,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
         className="h-auto w-full py-3 font-mono text-xs uppercase tracking-widest"
         variant="outline"
       >
-        <a
-          href={track.external_urls.spotify}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <a href={spotifyUrl} rel="noopener noreferrer" target="_blank">
           Open Spotify
         </a>
       </Button>
@@ -173,7 +178,8 @@ function SpotifyMiniPlayer({
   track: SpotifyTrack;
   onClick: () => void;
 }) {
-  const thumbnailImage = getAlbumImageUrl(track.album.images, 2);
+  const thumbnailImage = getAlbumImageUrl(track.album?.images, 2);
+  const trackName = track.name || "Unknown track";
 
   return (
     <button
@@ -185,7 +191,7 @@ function SpotifyMiniPlayer({
         className={`relative size-8 overflow-hidden rounded-full ${track.isPlaying ? "" : "grayscale"}`}
       >
         <Image
-          alt={track.name}
+          alt={trackName}
           className={`size-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
           height={32}
           src={thumbnailImage}
@@ -207,10 +213,10 @@ function SpotifyMiniPlayer({
             className="block max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent"
             exit={{ opacity: 0, y: -5 }}
             initial={{ opacity: 0, y: 5 }}
-            key={track.name}
+            key={trackName}
             transition={{ duration: 0.2 }}
           >
-            {track.name}
+            {trackName}
           </m.span>
         </AnimatePresence>
       </div>

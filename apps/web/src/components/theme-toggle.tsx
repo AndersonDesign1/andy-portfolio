@@ -4,7 +4,6 @@ import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,24 +12,15 @@ import {
 } from "@/components/ui/select";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return (
-      <Button
-        aria-label="Toggle theme"
-        className="size-8 rounded-full"
-        size="icon"
-        variant="ghost"
-      >
-        <div className="size-5" />
-      </Button>
-    );
+    return null;
   }
 
   return (

@@ -1,7 +1,6 @@
 "use client";
 
 import { Github, Linkedin } from "lucide-react";
-import { m } from "motion/react";
 import type React from "react";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -32,7 +31,7 @@ const socialLinks = [
     label: "LinkedIn",
   },
   {
-    href: "https://x.com/HeyItsAndersonJ",
+    href: "https://x.com/_Andersonjosh",
     icon: XIcon,
     label: "X",
   },
@@ -53,20 +52,16 @@ const Footer: React.FC = () => {
         {/* Social links - Right aligned on desktop */}
         <div className="order-1 flex justify-center gap-6 md:order-2">
           {socialLinks.map((link) => (
-            <m.a
+            <a
               aria-label={link.label}
-              className="text-muted transition-colors duration-200 hover:text-accent"
+              className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
               href={link.href}
               key={link.href}
               rel="noopener noreferrer"
               target="_blank"
-              whileHover={{
-                y: -3,
-                transition: { duration: 0.2 },
-              }}
             >
               <link.icon className="size-4" />
-            </m.a>
+            </a>
           ))}
         </div>
       </div>

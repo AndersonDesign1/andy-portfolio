@@ -1,8 +1,6 @@
 import { client } from "@andy-portfolio/sanity-config";
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export const size = {
   width: 1200,
   height: 630,
@@ -101,7 +99,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
         >
           Anderson Joseph
         </div>
-        <div style={{ fontSize: 24, color: "#525252" }}>●</div>
+        <div style={{ fontSize: 24, color: "#525252" }}>|</div>
         <div
           style={{
             fontSize: 32,

@@ -6,12 +6,12 @@ import WorkHistory from "@/components/work-history";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Hero />
       <ProjectsGrid />
       <WorkHistory />
       <SkillsSection />
       <CtaSection />
-    </main>
+    </>
   );
 }
