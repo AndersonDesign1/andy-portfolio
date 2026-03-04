@@ -16,8 +16,6 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-
 const socialLinks = [
   {
     icon: Github,
@@ -42,13 +40,8 @@ const socialLinks = [
 ];
 
 export default function Hero() {
-  const { ref: heroRef } = useScrollAnimation({ threshold: 0.2 });
-
   return (
-    <section
-      className="relative flex min-h-[70vh] items-end bg-primary pt-40 pb-20 md:pt-48 md:pb-32"
-      ref={heroRef}
-    >
+    <section className="relative flex min-h-[70vh] items-end bg-primary pt-40 pb-20 md:pt-48 md:pb-32">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="flex flex-col gap-8">
           {/* Status Badge */}
