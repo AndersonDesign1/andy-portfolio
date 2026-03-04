@@ -1,7 +1,6 @@
 "use client";
-import { m } from "motion/react";
+
 import Link from "next/link";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 interface Category {
   _id: string;
@@ -19,13 +18,8 @@ interface SanityPost {
 }
 
 export default function BlogList({ posts }: { posts: SanityPost[] }) {
-  const { ref: blogRef } = useScrollAnimation({ threshold: 0.1 });
-
   return (
-    <section
-      className="min-h-screen bg-primary py-24 pt-40 md:py-32 md:pt-48"
-      ref={blogRef}
-    >
+    <section className="min-h-screen bg-primary py-24 pt-40 md:py-32 md:pt-48">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
         <div className="mb-24 flex items-end justify-between border-subtle border-b pb-8">
           <div>
@@ -43,14 +37,10 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
         </div>
 
         <div className="flex flex-col">
-          {posts.map((post, i) => (
-            <m.div
+          {posts.map((post) => (
+            <div
               className="group border-subtle border-b last:border-none"
-              initial={{ opacity: 0, y: 20 }}
               key={post.slug.current}
-              transition={{ delay: i * 0.05 }}
-              viewport={{ once: true }}
-              whileInView={{ opacity: 1, y: 0 }}
             >
               <Link
                 className="flex flex-col gap-4 py-8 md:flex-row md:items-baseline md:gap-16 md:py-12"
@@ -61,7 +51,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                 </span>
 
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-2xl text-primary tracking-tight transition-opacity duration-200 group-hover:opacity-60 md:text-3xl">
+                  <h2 className="font-semibold text-2xl text-primary tracking-tight transition-opacity duration-200 ease-out group-hover:opacity-60 md:text-3xl">
                     {post.title}
                   </h2>
                   {post.excerpt && (
@@ -71,7 +61,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                   )}
                 </div>
               </Link>
-            </m.div>
+            </div>
           ))}
         </div>
       </div>
