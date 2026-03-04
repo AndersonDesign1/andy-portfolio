@@ -1,7 +1,6 @@
 "use client";
 
 import { Github, Linkedin, Mail } from "lucide-react";
-import { m } from "motion/react";
 
 // X (Twitter) logo as inline SVG since lucide doesn't include it
 const XIcon = ({ className }: { className?: string }) => (
@@ -18,10 +17,6 @@ const XIcon = ({ className }: { className?: string }) => (
 );
 
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import {
-  ANIMATION_DELAY_BASE,
-  ANIMATION_DELAY_INCREMENT,
-} from "@/lib/constants";
 
 const socialLinks = [
   {
@@ -58,7 +53,7 @@ export default function Hero() {
         <div className="flex flex-col gap-8">
           {/* Status Badge */}
           <a
-            className="flex items-center gap-2 self-start rounded-full border border-subtle bg-secondary/5 px-4 py-2 font-mono text-secondary text-xs uppercase tracking-widest backdrop-blur-sm transition-colors hover:border-primary hover:bg-secondary/10"
+            className="flex items-center gap-2 self-start rounded-full border border-subtle bg-secondary/5 px-4 py-2 font-mono text-secondary text-xs uppercase tracking-widest backdrop-blur-sm transition-colors duration-200 ease-out hover:border-primary hover:bg-secondary/10"
             href="https://welupdigital.com"
             rel="noopener noreferrer"
             target="_blank"
@@ -86,37 +81,20 @@ export default function Hero() {
             </p>
 
             {/* Social Links - Minimal Row */}
-            <m.div className="flex gap-6">
-              {socialLinks.map(({ icon: Icon, href, label }, index) => (
-                <m.a
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    transition: {
-                      delay:
-                        ANIMATION_DELAY_BASE +
-                        index * ANIMATION_DELAY_INCREMENT,
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 25,
-                    },
-                  }}
+            <div className="flex gap-6">
+              {socialLinks.map(({ icon: Icon, href, label }) => (
+                <a
                   aria-label={label}
-                  className="text-muted transition-colors duration-200 hover:text-accent"
+                  className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
                   href={href}
-                  initial={{ opacity: 0, scale: 0.95 }}
                   key={label}
                   rel="noopener noreferrer"
                   target="_blank"
-                  whileHover={{
-                    y: -3,
-                    transition: { delay: 0, duration: 0.2 },
-                  }}
                 >
                   <Icon className="size-6" />
-                </m.a>
+                </a>
               ))}
-            </m.div>
+            </div>
           </div>
         </div>
       </div>
