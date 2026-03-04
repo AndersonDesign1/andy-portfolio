@@ -9,8 +9,8 @@ import {
   SCROLL_EASING_EXPONENT,
 } from "@/lib/constants";
 
-const LENIS_IDLE_TIMEOUT_MS = 1200;
-const LENIS_FALLBACK_DELAY_MS = 300;
+const LENIS_IDLE_TIMEOUT_MS = 900;
+const LENIS_FALLBACK_DELAY_MS = 180;
 
 interface ScrollContextType {
   lenis: Lenis | null;
@@ -56,22 +56,49 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     const requestIdle = globalThis.requestIdleCallback;
     const cancelIdle = globalThis.cancelIdleCallback;
 
-    if (requestIdle && cancelIdle) {
-      const idleId = requestIdle(
-        () => {
-          setShouldEnableLenis(true);
-        },
-        { timeout: LENIS_IDLE_TIMEOUT_MS }
-      );
+    const enableLenis = () => {
+      setShouldEnableLenis(true);
+    };
 
-      return () => cancelIdle(idleId);
+    const interactionEvents: Array<keyof WindowEventMap> = [
+      "wheel",
+      "touchstart",
+      "pointerdown",
+      "keydown",
+    ];
+
+    for (const eventName of interactionEvents) {
+      window.addEventListener(eventName, enableLenis, {
+        once: true,
+        passive: eventName !== "keydown",
+      });
     }
 
-    const timeoutId = globalThis.setTimeout(() => {
-      setShouldEnableLenis(true);
-    }, LENIS_FALLBACK_DELAY_MS);
+    const timeoutId = globalThis.setTimeout(
+      enableLenis,
+      LENIS_FALLBACK_DELAY_MS
+    );
 
-    return () => globalThis.clearTimeout(timeoutId);
+    if (requestIdle && cancelIdle) {
+      const idleId = requestIdle(enableLenis, {
+        timeout: LENIS_IDLE_TIMEOUT_MS,
+      });
+
+      return () => {
+        cancelIdle(idleId);
+        globalThis.clearTimeout(timeoutId);
+        for (const eventName of interactionEvents) {
+          window.removeEventListener(eventName, enableLenis);
+        }
+      };
+    }
+
+    return () => {
+      globalThis.clearTimeout(timeoutId);
+      for (const eventName of interactionEvents) {
+        window.removeEventListener(eventName, enableLenis);
+      }
+    };
   }, [prefersReducedMotion]);
 
   useEffect(() => {

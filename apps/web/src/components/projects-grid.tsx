@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -31,7 +32,17 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
     "#";
 
   return (
-    <div className="relative border-subtle border-b last:border-none">
+    <motion.div
+      className="relative border-subtle border-b last:border-none"
+      initial={{ opacity: 0, y: 24 }}
+      transition={{
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
+        delay: index * 0.05,
+      }}
+      viewport={{ once: true, amount: 0.2 }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
       <Link
         className="group block w-full py-12 focus:outline-none md:py-16"
         href={primaryLink}
@@ -79,7 +90,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
           />
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }
 
