@@ -1,5 +1,5 @@
+import { domAnimation, LazyMotion } from "motion/react";
 import type { Metadata } from "next";
-
 import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -35,32 +35,34 @@ export default function RootLayout({
           enableSystem
           storageKey="andy-theme"
         >
-          <ScrollProvider>
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
-            <SpotifyLazy />
+          <LazyMotion features={domAnimation} strict>
+            <ScrollProvider>
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
+              <SpotifyLazy />
 
-            <Analytics />
-            <SpeedInsights />
+              <Analytics />
+              <SpeedInsights />
 
-            <DeferredGrainOverlay />
+              <DeferredGrainOverlay />
 
-            <Toaster
-              offset="80px"
-              position="top-right"
-              style={{ zIndex: 9998 }}
-              toastOptions={{
-                style: {
-                  background: "var(--muted)",
-                  color: "var(--foreground)",
-                  border: "1px solid var(--border)",
-                  boxShadow:
-                    "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
-                },
-              }}
-            />
-          </ScrollProvider>
+              <Toaster
+                offset="80px"
+                position="top-right"
+                style={{ zIndex: 9998 }}
+                toastOptions={{
+                  style: {
+                    background: "var(--muted)",
+                    color: "var(--foreground)",
+                    border: "1px solid var(--border)",
+                    boxShadow:
+                      "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
+                  },
+                }}
+              />
+            </ScrollProvider>
+          </LazyMotion>
         </ThemeProvider>
       </body>
     </html>
