@@ -147,8 +147,14 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
       startLenis,
       LENIS_FALLBACK_DELAY_MS
     );
-    const requestIdle = globalThis.requestIdleCallback;
-    const cancelIdle = globalThis.cancelIdleCallback;
+    const requestIdle =
+      "requestIdleCallback" in globalThis
+        ? globalThis.requestIdleCallback.bind(globalThis)
+        : null;
+    const cancelIdle =
+      "cancelIdleCallback" in globalThis
+        ? globalThis.cancelIdleCallback.bind(globalThis)
+        : null;
     let idleId: number | null = null;
 
     if (requestIdle && cancelIdle) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,7 +32,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
     "#";
 
   return (
-    <motion.div
+    <m.div
       className="relative border-subtle border-b last:border-none"
       initial={{ opacity: 0, y: 24 }}
       transition={{
@@ -90,7 +90,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
           />
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   );
 }
 

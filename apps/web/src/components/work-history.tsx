@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import educationData from "@/data/education.json" with { type: "json" };
 import workExperienceData from "@/data/work-experience.json" with {
   type: "json",
@@ -58,7 +59,7 @@ export default function WorkHistory() {
 
             {/* Resume Button */}
             <div className="pt-12">
-              <a
+              <Link
                 className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 ease-out hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
                 href="/Anderson Joseph Resume.pdf"
                 rel="noopener noreferrer"
@@ -66,7 +67,7 @@ export default function WorkHistory() {
               >
                 View Resume
                 <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
-              </a>
+              </Link>
             </div>
           </div>
 

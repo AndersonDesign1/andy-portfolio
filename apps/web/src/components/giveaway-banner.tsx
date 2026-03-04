@@ -16,6 +16,11 @@ interface TimeLeft {
   seconds: number;
 }
 
+interface GiveawayState {
+  status: "pending" | "active" | "ended";
+  timeLeft: TimeLeft | null;
+}
+
 function calculateTimeLeft(targetTime: number): TimeLeft | null {
   const now = Date.now();
   const difference = targetTime - now;
@@ -32,34 +37,39 @@ function calculateTimeLeft(targetTime: number): TimeLeft | null {
   };
 }
 
+function getGiveawayState(now = Date.now()): GiveawayState {
+  if (now < GIVEAWAY_START) {
+    return {
+      status: "pending",
+      timeLeft: calculateTimeLeft(GIVEAWAY_START),
+    };
+  }
+
+  if (now < GIVEAWAY_END) {
+    return {
+      status: "active",
+      timeLeft: calculateTimeLeft(GIVEAWAY_END),
+    };
+  }
+
+  return {
+    status: "ended",
+    timeLeft: null,
+  };
+}
+
 export function useGiveawayStatus() {
-  const [status, setStatus] = useState<"pending" | "active" | "ended">(
-    "pending"
-  );
-  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
+  const [state, setState] = useState<GiveawayState>(() => getGiveawayState());
 
   useEffect(() => {
-    function updateStatus() {
-      const now = Date.now();
-
-      if (now < GIVEAWAY_START) {
-        setStatus("pending");
-        setTimeLeft(calculateTimeLeft(GIVEAWAY_START));
-      } else if (now < GIVEAWAY_END) {
-        setStatus("active");
-        setTimeLeft(calculateTimeLeft(GIVEAWAY_END));
-      } else {
-        setStatus("ended");
-        setTimeLeft(null);
-      }
-    }
+    const updateStatus = () => setState(getGiveawayState());
 
     updateStatus();
     const interval = setInterval(updateStatus, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  return { status, timeLeft };
+  return state;
 }
 
 function TimeUnit({ value, label }: { value: number; label: string }) {
