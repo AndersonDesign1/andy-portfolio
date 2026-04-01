@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -164,7 +165,13 @@ export default function GiveawayBanner() {
             href="/giveaway"
           >
             {status === "pending" ? "Learn More" : "Enter Now"}
-            <ArrowRight className="inline size-4" />
+            <HugeiconsIcon
+              className="inline"
+              color="currentColor"
+              icon={ArrowRight01Icon}
+              size={16}
+              strokeWidth={1.5}
+            />
           </Link>
         </div>
       </div>

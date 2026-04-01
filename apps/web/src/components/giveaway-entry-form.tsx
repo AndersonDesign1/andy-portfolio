@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { m } from "motion/react";
 import Link from "next/link";
 import type React from "react";
@@ -368,7 +369,12 @@ export default function GiveawayEntryForm() {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
-            <ArrowLeft className="size-4" />
+            <HugeiconsIcon
+              color="currentColor"
+              icon={ArrowLeft01Icon}
+              size={16}
+              strokeWidth={1.5}
+            />
             Back to Giveaway
           </Link>
         </m.div>

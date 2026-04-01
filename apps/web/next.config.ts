@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["@hugeicons/react", "@hugeicons/core-free-icons"],
   },
   images: {
     formats: ["image/avif", "image/webp"],

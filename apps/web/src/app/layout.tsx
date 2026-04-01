@@ -4,7 +4,7 @@ import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import DeferredGrainOverlay from "@/components/deferred-grain-overlay";
+
 import ScrollProvider from "@/components/scroll-provider";
 import SpotifyLazy from "@/components/spotify-lazy";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -44,8 +44,6 @@ export default function RootLayout({
 
               <Analytics />
               <SpeedInsights />
-
-              <DeferredGrainOverlay />
 
               <Toaster
                 offset="80px"

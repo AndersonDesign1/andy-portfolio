@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  Tick01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
   Content as SelectContentPrimitive,
   Group as SelectGroupPrimitive,
   Icon as SelectIconPrimitive,
@@ -17,7 +23,6 @@ import {
   Value as SelectValuePrimitive,
   Viewport as SelectViewportPrimitive,
 } from "@radix-ui/react-select";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -42,7 +47,13 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectIconPrimitive asChild>
-      <ChevronDown className="size-4 opacity-50" />
+      <HugeiconsIcon
+        className="opacity-50"
+        color="currentColor"
+        icon={ArrowDown01Icon}
+        size={16}
+        strokeWidth={1.5}
+      />
     </SelectIconPrimitive>
   </SelectTriggerPrimitive>
 ));
@@ -60,7 +71,12 @@ const SelectScrollUpButton = React.forwardRef<
     ref={ref}
     {...props}
   >
-    <ChevronUp className="size-4" />
+    <HugeiconsIcon
+      color="currentColor"
+      icon={ArrowUp01Icon}
+      size={16}
+      strokeWidth={1.5}
+    />
   </SelectScrollUpButtonPrimitive>
 ));
 SelectScrollUpButton.displayName = SelectScrollUpButtonPrimitive.displayName;
@@ -77,7 +93,12 @@ const SelectScrollDownButton = React.forwardRef<
     ref={ref}
     {...props}
   >
-    <ChevronDown className="size-4" />
+    <HugeiconsIcon
+      color="currentColor"
+      icon={ArrowDown01Icon}
+      size={16}
+      strokeWidth={1.5}
+    />
   </SelectScrollDownButtonPrimitive>
 ));
 SelectScrollDownButton.displayName =
@@ -141,7 +162,12 @@ const SelectItem = React.forwardRef<
   >
     <span className="absolute right-2 flex size-3.5 items-center justify-center">
       <SelectItemIndicatorPrimitive>
-        <Check className="size-4" />
+        <HugeiconsIcon
+          color="currentColor"
+          icon={Tick01Icon}
+          size={16}
+          strokeWidth={1.5}
+        />
       </SelectItemIndicatorPrimitive>
     </span>
     <SelectItemTextPrimitive>{children}</SelectItemTextPrimitive>

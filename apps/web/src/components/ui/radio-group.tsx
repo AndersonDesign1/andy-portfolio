@@ -1,7 +1,8 @@
 "use client";
 
+import { RecordIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Indicator, Item, Root } from "@radix-ui/react-radio-group";
-import { Circle } from "lucide-react";
 // biome-ignore lint/performance/noNamespaceImport: shadcn component requires namespace import
 import * as React from "react";
 
@@ -29,7 +30,12 @@ const RadioGroupItem = React.forwardRef<
       {...props}
     >
       <Indicator className="flex items-center justify-center">
-        <Circle className="size-3.5 fill-primary" />
+        <HugeiconsIcon
+          className="fill-primary"
+          color="currentColor"
+          icon={RecordIcon}
+          size={14}
+        />
       </Indicator>
     </Item>
   );

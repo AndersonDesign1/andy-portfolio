@@ -1,6 +1,7 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { ArrowTurnBackwardIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,13 @@ export default function ErrorBoundary({
             onClick={() => reset()}
             variant="outline"
           >
-            <RotateCcw className="mr-2 size-4 transition-transform duration-300 group-hover:-rotate-45" />
+            <HugeiconsIcon
+              className="mr-2 transition-transform duration-300 group-hover:-rotate-45"
+              color="currentColor"
+              icon={ArrowTurnBackwardIcon}
+              size={16}
+              strokeWidth={1.5}
+            />
             Try again
           </Button>
 

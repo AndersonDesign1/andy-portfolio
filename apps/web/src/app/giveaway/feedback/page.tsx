@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { type FormEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -92,7 +93,12 @@ export default function GiveawayFeedbackPage() {
                 className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
                 href="/"
               >
-                <ArrowLeft className="size-4" />
+                <HugeiconsIcon
+                  color="currentColor"
+                  icon={ArrowLeft01Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                />
                 Return to Home
               </Link>
             </div>
@@ -111,7 +117,12 @@ export default function GiveawayFeedbackPage() {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
-            <ArrowLeft className="size-4" />
+            <HugeiconsIcon
+              color="currentColor"
+              icon={ArrowLeft01Icon}
+              size={16}
+              strokeWidth={1.5}
+            />
             Back to Giveaway
           </Link>
         </div>

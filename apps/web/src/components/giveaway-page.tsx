@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowRight, Check, ChevronDown } from "lucide-react";
+import {
+  ArrowDown01Icon,
+  ArrowRight01Icon,
+  Tick01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -69,10 +74,14 @@ function FAQItem({
         type="button"
       >
         <span className="font-medium text-lg text-primary">{question}</span>
-        <ChevronDown
-          className={`size-5 text-muted transition-transform duration-300 ${
+        <HugeiconsIcon
+          className={`text-muted transition-transform duration-300 ${
             isOpen ? "rotate-180" : ""
           }`}
+          color="currentColor"
+          icon={ArrowDown01Icon}
+          size={20}
+          strokeWidth={1.5}
         />
       </button>
       <div
@@ -90,7 +99,14 @@ function FAQItem({
                   className="text-primary transition-opacity hover:opacity-70"
                   href="/contact"
                 >
-                  Contact me <ArrowRight className="inline size-4" />
+                  Contact me{" "}
+                  <HugeiconsIcon
+                    className="inline"
+                    color="currentColor"
+                    icon={ArrowRight01Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                  />
                 </Link>
               </>
             )}
@@ -133,7 +149,13 @@ export default function GiveawayPage() {
                   <CountdownDisplay timeLeft={timeLeft} />
                   <p className="text-secondary text-sm md:text-base">
                     Read till the end to see how to enter{" "}
-                    <ArrowRight className="inline size-4" />
+                    <HugeiconsIcon
+                      className="inline"
+                      color="currentColor"
+                      icon={ArrowRight01Icon}
+                      size={16}
+                      strokeWidth={1.5}
+                    />
                   </p>
                 </div>
               </div>
@@ -182,7 +204,13 @@ export default function GiveawayPage() {
                     className="flex items-start gap-3 text-lg text-secondary"
                     key={item}
                   >
-                    <Check className="mt-1 size-4 text-primary" />
+                    <HugeiconsIcon
+                      className="mt-1 text-primary"
+                      color="currentColor"
+                      icon={Tick01Icon}
+                      size={16}
+                      strokeWidth={1.5}
+                    />
                     {item}
                   </li>
                 ))}
@@ -240,7 +268,13 @@ export default function GiveawayPage() {
               href="/giveaway/enter"
             >
               Enter Giveaway
-              <ArrowRight className="size-4 text-muted transition-colors duration-300 group-hover:text-primary" />
+              <HugeiconsIcon
+                className="text-muted transition-colors duration-300 group-hover:text-primary"
+                color="currentColor"
+                icon={ArrowRight01Icon}
+                size={16}
+                strokeWidth={1.5}
+              />
             </Link>
           </div>
         </div>

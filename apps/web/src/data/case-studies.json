@@ -6,7 +6,7 @@
         "title": "Founding Engineer & SEO Expert at Welup Digital",
         "client": "Welup Digital",
         "duration": "Ongoing",
-        "overview": "As the founding engineer and first developer hire, I co-developed the initial platform before leading the sole transition to a modern Next.js architecture. I managed everything from the scalable Sanity CMS implementation to technical SEO, while also mentoring the next generation of talent as an instructor at Welup Academy.",
+        "overview": "First developer hire. Co-built the original platform, then rewrote it all in Next.js when the business needed something faster and easier to update. Also set up the CMS, handled technical SEO, and taught web development at their academy.",
         "heroImage": "/welup-main.png",
         "technologies": [
           "Next.js",
@@ -22,14 +22,14 @@
         "liveUrl": "https://welupdigital.com"
       },
       "challenge": {
-        "problem": "Welup Digital’s original site was static HTML/CSS/JS, limiting SEO, scalability, and content management. The business needed a modern, dynamic platform to support growth, content, and client delivery, while also withstanding DDoS attacks.",
+        "problem": "The old site was built in pure JS. My endpoint kept getting DDoSed because of how I set it up back then. No CMS, terrible for SEO, and the CSS was a mess - so many classes that it slowed everything down as the site grew.",
         "constraints": [
-          "Legacy static site migration",
-          "Solo developer for rewrite and CMS",
-          "Zero downtime during migration",
-          "Security and DDoS resilience"
+          "Migrating from a legacy static site",
+          "Solo developer doing the rewrite and CMS",
+          "Had to keep the site running during the migration",
+          "Security was a real concern"
         ],
-        "context": "As Welup Digital grew, the need for a scalable, SEO-first, and content-driven platform became critical for both the agency and its clients.",
+        "context": "Welup was growing fast and needed a site that could handle more content, rank on Google, and actually survive a DDoS attack.",
         "metrics": [
           "Static site: no CMS, poor SEO",
           "Manual content updates",
@@ -39,25 +39,25 @@
       },
       "goals": {
         "primary": [
-          "Migrate to Next.js for performance and SEO",
-          "Build a CMS for blogs and landing pages",
-          "Ensure 99.9% uptime and DDoS protection",
-          "Deliver scalable solutions for clients"
+          "Rewrite in Next.js for better performance and SEO",
+          "Set up a CMS so non-devs could update content",
+          "Get proper hosting that doesn't go down",
+          "Build client sites faster"
         ],
         "stakeholder": [
-          "Seamless migration with no downtime",
-          "Easy content management for non-devs",
-          "Consistent, high-quality UX"
+          "Keep the site live during the switch",
+          "Something non-technical people could use",
+          "Keep it looking decent"
         ],
         "success": [
-          "Zero downtime during migration",
-          "CMS launched for blogs and landing pages",
-          "Top 5 SEO rankings for key terms",
-          "Multiple client sites delivered and optimized"
+          "No downtime during migration",
+          "CMS up and running",
+          "Started ranking on Google",
+          "Delivered multiple client sites"
         ]
       },
       "approach": {
-        "methodology": "Incremental migration and feature delivery, focusing on performance, SEO, and content flexibility.",
+        "methodology": "Did it piece by piece. Migrated one section at a time, kept SEO and performance in mind the whole way through.",
         "phases": [
           {
             "name": "Audit & Planning",
@@ -72,63 +72,62 @@
             "name": "Next.js Rewrite",
             "duration": "Ongoing",
             "activities": [
-              "Rebuilding site in Next.js",
-              "Integrating Tailwind CSS and TypeScript",
-              "Setting up Vercel for CI/CD"
+              "Rebuilt the site in Next.js",
+              "Added Tailwind CSS and TypeScript",
+              "Set up Vercel for deployments"
             ]
           },
           {
             "name": "CMS & Content",
             "duration": "Ongoing",
             "activities": [
-              "Implementing Sanity CMS",
-              "Developing blog and landing page system",
-              "Enabling non-dev content editing"
+              "Plugged in Sanity CMS",
+              "Built blog and landing page templates",
+              "Let non-devs edit content"
             ]
           },
           {
             "name": "Security & Uptime",
             "duration": "Ongoing",
             "activities": [
-              "Cloudflare DDoS protection",
-              "Monitoring and maintaining 99.9% uptime"
+              "Put Cloudflare in front",
+              "Kept the site up through attacks"
             ]
           },
           {
-            "name": "SEO & Academy Instruction",
+            "name": "SEO & Academy",
             "duration": "Ongoing",
             "activities": [
-              "Technical SEO optimization",
-              "Teaching web development and SEO at Welup Academy",
-              "Launching and optimizing client websites",
-              "Continuous performance and UX improvements"
+              "Fixed the technical SEO",
+              "Taught web dev and SEO at Welup Academy",
+              "Launched client sites"
             ]
           }
         ],
         "keyDecisions": [
           {
-            "decision": "Migrated to Next.js and server components",
-            "rationale": "Boosted performance, SEO, and maintainability"
+            "decision": "Moved to Next.js and server components",
+            "rationale": "Faster, better for SEO, easier to maintain"
           },
           {
-            "decision": "Built CMS with Sanity",
-            "rationale": "Enabled scalable, flexible content management"
+            "decision": "Went with Sanity for CMS",
+            "rationale": "Flexible content management without the headache"
           },
           {
-            "decision": "Adopted Cloudflare for security",
-            "rationale": "Mitigated DDoS attacks and ensured uptime"
+            "decision": "Put Cloudflare in front",
+            "rationale": "Stopped the DDoS attacks"
           }
         ],
         "research": [
-          "Benchmarked SEO and performance against top digital agencies",
-          "Analyzed user feedback for navigation and speed"
+          "Looked at what top agencies were doing",
+          "Listened to user feedback on speed and navigation"
         ],
-        "collaboration": "Joined as the first hire and founding engineer. Co-developed the initial version with another teammate before taking sole ownership of the Next.js rewrite and full technical stack.",
+        "collaboration": "First hire. Built the first version with someone else, then took over the rewrite and everything else tech.",
         "iterations": [
-          "Continuous SEO and performance tuning",
-          "Refining CMS and UX based on analytics and feedback"
+          "Kept tweaking SEO and performance",
+          "Improved the CMS based on what people actually used"
         ],
-        "userFeedback": "The founders and academy students praise the new platform for its speed, clarity, and robust SEO foundations."
+        "userFeedback": "The founders and academy students said the new site is faster and easier to use. SEO started actually working."
       },
       "results": {
         "beforeAfter": [
@@ -234,7 +233,7 @@
         "title": "SEO & Growth Specialist at PromptEarn",
         "client": "PromptEarn",
         "duration": "6 months",
-        "overview": "During my 6 months at PromptEarn, I led SEO and affiliate growth, achieving a 250% increase in organic traffic and top 5 keyword rankings through technical SEO, Core Web Vitals optimization, and affiliate network expansion.",
+        "overview": "Spent 6 months there doing SEO and affiliate growth. Got their organic traffic up 250% and hit top 5 rankings for key terms. Fixed the slow page speeds, expanded the affiliate network, and set up proper tracking.",
         "heroImage": "/promptearn-1.png",
         "technologies": [
           "Semrush",
@@ -247,13 +246,13 @@
         "liveUrl": "https://promptearn.com"
       },
       "challenge": {
-        "problem": "PromptEarn needed to boost organic traffic and affiliate-driven sales in a competitive market. The site suffered from slow load times, suboptimal SEO, and a stagnant affiliate network.",
+        "problem": "PromptEarn needed more traffic and affiliate sales. The site was slow, Google wasn't ranking it, and the affiliate program was stuck.",
         "constraints": [
-          "Aggressive 6-month timeline",
-          "Large legacy affiliate base",
-          "Need for measurable, rapid results"
+          "Only had 6 months",
+          "Big affiliate base that needed managing",
+          "Needed results they could actually measure"
         ],
-        "context": "Affiliate marketing and SEO are highly competitive in the Nigerian fintech space. PromptEarn aimed to outpace rivals by improving technical SEO and expanding its affiliate network.",
+        "context": "Affiliate marketing and SEO are brutal in the Nigerian fintech space. PromptEarn wanted to beat the competition by getting the technical stuff right and growing their affiliate network.",
         "metrics": [
           "Organic traffic: 10,000/month",
           "Affiliate partners: 40,000",
@@ -263,83 +262,83 @@
       },
       "goals": {
         "primary": [
-          "Increase organic traffic by 200%+",
-          "Expand affiliate network to 90,000+",
-          "Improve PageSpeed score by 30+ points",
-          "Achieve top 5 rankings for target keywords"
+          "Get organic traffic up 200%+",
+          "Grow affiliate network to 90,000+",
+          "Fix the PageSpeed score",
+          "Land top 5 spots for target keywords"
         ],
         "stakeholder": [
-          "Higher affiliate engagement",
-          "Improved user experience",
-          "Increased sales from organic and referral channels"
+          "More affiliate engagement",
+          "Better user experience",
+          "More sales from search and referrals"
         ],
         "success": [
-          "250% organic traffic growth",
-          "Affiliate network doubled",
-          "Bounce rate reduced by 50%",
-          "Top search visibility for core fintech terms"
+          "250% traffic growth",
+          "Doubled the affiliate network",
+          "Bounce rate cut in half",
+          "Showing up in search for core terms"
         ]
       },
       "approach": {
-        "methodology": "Agile, data-driven SEO and affiliate marketing with weekly sprints and continuous measurement.",
+        "methodology": "Worked in weekly sprints. Quick audits first, then tackled the bigger stuff. Measured everything along the way.",
         "phases": [
           {
             "name": "SEO Audit & Quick Wins",
             "duration": "2 weeks",
             "activities": [
               "Technical SEO audit",
-              "Core Web Vitals optimization",
-              "On-page SEO improvements"
+              "Fixed Core Web Vitals",
+              "On-page SEO fixes"
             ]
           },
           {
-            "name": "Affiliate Network Expansion",
+            "name": "Affiliate Growth",
             "duration": "4 weeks",
             "activities": [
-              "Targeted email campaigns",
-              "Affiliate onboarding improvements",
-              "Referral incentives"
+              "Email campaigns to affiliates",
+              "Fixed the signup flow",
+              "Added referral incentives"
             ]
           },
           {
-            "name": "Content & Link Building",
+            "name": "Content & Links",
             "duration": "6 weeks",
             "activities": [
               "Keyword research",
-              "Content optimization",
+              "Content updates",
               "Outreach for backlinks"
             ]
           },
           {
-            "name": "Performance & Reporting",
+            "name": "Reporting",
             "duration": "4 weeks",
             "activities": [
-              "Monitor rankings and traffic",
-              "A/B test landing pages",
-              "Monthly stakeholder reports"
+              "Tracked rankings and traffic",
+              "A/B tested landing pages",
+              "Monthly reports to stakeholders"
             ]
           }
         ],
         "keyDecisions": [
           {
-            "decision": "Prioritized Core Web Vitals",
-            "rationale": "Improved rankings and reduced bounce rate"
+            "decision": "Focused on Core Web Vitals first",
+            "rationale": "Made a real dent in bounce rate"
           },
           {
             "decision": "Automated affiliate onboarding",
-            "rationale": "Enabled rapid network growth"
+            "rationale": "Growth happened much faster after that"
           }
         ],
         "research": [
-          "Competitor analysis for top keywords",
-          "User feedback on site speed and navigation"
+          "Checked competitors for top keywords",
+          "Asked users about speed and navigation"
         ],
-        "collaboration": "Weekly syncs with marketing and dev teams, monthly reviews with stakeholders.",
+        "collaboration": "Weekly syncs with marketing and devs, monthly check-ins with the people paying the bills.",
         "iterations": [
-          "Refined landing pages based on bounce rate data",
-          "Streamlined affiliate sign-up flow"
+          "Landing pages got better as we watched bounce rate data",
+          "Made affiliate signup way easier"
         ],
-        "userFeedback": "Affiliate partners and users reported improved site speed and easier navigation."
+        "userFeedback": "Affiliates and users both said the site felt faster and was easier to figure out."
       },
       "results": {
         "beforeAfter": [

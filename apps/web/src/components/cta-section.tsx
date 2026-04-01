@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 
 export default function CtaSection() {
@@ -9,12 +10,12 @@ export default function CtaSection() {
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="flex flex-col gap-8 md:items-start">
           <h2 className="max-w-xl font-bold text-4xl text-primary leading-[1.1] tracking-tighter md:text-5xl lg:text-6xl">
-            Ready to create something extraordinary?
+            Got a project?
           </h2>
 
           <p className="max-w-md text-lg text-secondary leading-relaxed md:text-xl">
-            I&apos;m currently available for new projects and collaborations.
-            Let&apos;s build something that leaves a lasting impression.
+            I&apos;m currently available. Let&apos;s build something that
+            actually gets results.
           </p>
 
           <div className="pt-4">
@@ -23,7 +24,13 @@ export default function CtaSection() {
               href="/contact"
             >
               Get in Touch
-              <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
+              <HugeiconsIcon
+                className="text-muted transition-colors duration-200 ease-out group-hover:text-primary"
+                color="currentColor"
+                icon={ArrowUpRight01Icon}
+                size={16}
+                strokeWidth={1.5}
+              />
             </Link>
           </div>
         </div>

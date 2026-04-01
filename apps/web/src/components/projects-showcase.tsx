@@ -219,7 +219,7 @@ const ProjectsShowcase: React.FC = () => {
                       </span>
                     </div>
 
-                    <p className="line-clamp-2 text-base text-secondary leading-relaxed">
+                    <p className="line-clamp-3 text-base text-secondary leading-relaxed">
                       {project.description}
                     </p>
 

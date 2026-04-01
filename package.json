@@ -2,6 +2,7 @@
   "name": "andy-portfolio",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "turbo run dev",

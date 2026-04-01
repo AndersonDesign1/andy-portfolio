@@ -5,8 +5,7 @@ import { constructMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = constructMetadata({
   title: "Contact",
-  description:
-    "Let's build something great together. Reach out for project inquiries, collaborations, or just to connect.",
+  description: "Want to work together? Send me a message.",
 });
 
 export default function ContactPage() {

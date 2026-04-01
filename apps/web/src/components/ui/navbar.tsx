@@ -1,6 +1,7 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -116,7 +117,12 @@ export default function Navbar() {
               size="icon"
               variant="ghost"
             >
-              <Menu className="size-6" />
+              <HugeiconsIcon
+                color="currentColor"
+                icon={Menu01Icon}
+                size={24}
+                strokeWidth={1.5}
+              />
             </Button>
           </div>
         </div>
@@ -143,7 +149,12 @@ export default function Navbar() {
                 size="icon"
                 variant="ghost"
               >
-                <X className="size-6" />
+                <HugeiconsIcon
+                  color="currentColor"
+                  icon={Cancel01Icon}
+                  size={24}
+                  strokeWidth={1.5}
+                />
               </Button>
             </div>
 
