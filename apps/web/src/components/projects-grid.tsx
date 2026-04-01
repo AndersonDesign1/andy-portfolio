@@ -99,9 +99,9 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
   );
 }
 
-export default function ProjectsGrid() {
-  const featuredProjects = projectsDataJson.projects.filter((p) => p.featured);
+const featuredProjects = projectsDataJson.projects.filter((p) => p.featured);
 
+export default function ProjectsGrid() {
   return (
     <section className="bg-primary py-24 md:py-32">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
