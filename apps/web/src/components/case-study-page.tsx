@@ -326,7 +326,6 @@ function CaseStudyContent({
                   <Link
                     className="block h-full"
                     href={`/case-studies/${navigation.prev.slug}`}
-                    scroll={false}
                   >
                     <span className="block pb-4 font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
                       Previous Case Study
@@ -347,7 +346,6 @@ function CaseStudyContent({
                   <Link
                     className="block h-full"
                     href={`/case-studies/${navigation.next.slug}`}
-                    scroll={false}
                   >
                     <span className="block pb-4 font-mono text-muted text-xs uppercase tracking-widest transition-colors group-hover:text-primary">
                       Next Case Study

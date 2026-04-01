@@ -27,10 +27,10 @@ const AboutPage: React.FC = () => (
             About Me
           </h1>
           <p className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl">
-            I&apos;m a passionate full-stack developer with expertise in SEO and
+            I&apos;m a full-stack developer who cares about SEO and
             infrastructure. My journey started after winning a scholarship to
-            learn a tech skill for a year, choosing development because of a
-            childhood obsession with computers and how things work. Now, as the
+            learn a tech skill for a year, choosing development because
+            I&apos;ve always been curious about how computers work. Now, as the
             Founding Engineer at{" "}
             <a
               className="font-medium text-primary underline decoration-subtle underline-offset-4 transition-colors hover:decoration-primary"
@@ -40,8 +40,7 @@ const AboutPage: React.FC = () => (
             >
               Welup Digital
             </a>
-            , I create digital experiences that look beautiful and perform
-            exceptionally well.
+            , I build sites that look good and actually work well.
           </p>
         </div>
       </div>
@@ -61,13 +60,12 @@ const AboutPage: React.FC = () => (
                   Full-Stack Development
                 </h3>
                 <p className="text-base text-secondary leading-relaxed">
-                  I build scalable web applications for{" "}
-                  <span className="text-primary">millions of users</span>,
-                  writing clean, maintainable code and prioritizing performance
-                  and UX.
+                  I build web applications that handle real traffic. Clean code
+                  that&apos;s easy to maintain and doesn&apos;t fall over when
+                  things get busy.
                 </p>
                 <ul className="flex flex-col gap-2 font-mono text-muted text-sm">
-                  <li>— Built tens of web applications using modern stacks</li>
+                  <li>— Built applications for high-traffic sites</li>
                   <li>— Developed real-time analytics dashboards</li>
                   <li>— Created microservices to reduce server costs</li>
                   <li>— Implemented CI/CD pipelines</li>
@@ -75,19 +73,17 @@ const AboutPage: React.FC = () => (
               </div>
               <div className="flex flex-col gap-4">
                 <h3 className="font-medium text-primary text-xl">
-                  SEO Optimization Expert
+                  SEO Optimization
                 </h3>
                 <p className="text-base text-secondary leading-relaxed">
-                  I&apos;ve helped businesses increase their organic traffic by
-                  an average of <span className="text-primary">285%</span>. My
-                  approach combines technical SEO mastery with content strategy,
-                  focusing on sustainable, white-hat techniques.
+                  I&apos;ve helped businesses rank higher in Google. One client
+                  saw their traffic grow{" "}
+                  <span className="text-primary">285%</span> over 12 months
+                  using standard white-hat techniques.
                 </p>
                 <ul className="flex flex-col gap-2 font-mono text-muted text-sm">
                   <li>— Improved Core Web Vitals for 20+ websites</li>
-                  <li>
-                    — Increased organic traffic by 400% for an e-commerce client
-                  </li>
+                  <li>— Got an e-commerce client&apos;s traffic up 400%</li>
                   <li>— Built SEO automation tools to speed up audits</li>
                   <li>— Recovered 5+ websites from Google penalties</li>
                 </ul>
@@ -157,9 +153,8 @@ const AboutPage: React.FC = () => (
         </h2>
         <div className="grid grid-cols-1 gap-12 pt-12 md:grid-cols-2">
           <p className="font-medium text-2xl text-primary leading-tight md:text-3xl">
-            I believe in methodical, creative problem-solving and continuous
-            learning. My curiosity about &ldquo;how things work&rdquo; fuels my
-            obsession with building perfect solutions.
+            I like figuring out how things work and making them work better.
+            That curiosity keeps me learning and pushing for better solutions.
           </p>
           <div className="flex flex-col items-start justify-end gap-8 md:items-end">
             <Link
