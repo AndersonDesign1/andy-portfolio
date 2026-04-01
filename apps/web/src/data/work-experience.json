@@ -6,7 +6,7 @@
       "position": "Founding Engineer",
       "startDate": "2021-09-01",
       "endDate": null,
-      "description": "Implemented responsive design principles across all platforms and developed/optimized dynamic client websites using effective SEO strategies.",
+      "description": "First developer hire. Built client websites from scratch using HTML, CSS, JavaScript, React, and later Next.js. Made sure sites worked well on mobile phones and ranked on Google.",
       "technologies": [
         "HTML",
         "CSS",
@@ -26,7 +26,7 @@
       "position": "SEO Expert",
       "startDate": "2023-01-01",
       "endDate": null,
-      "description": "Developed and executed comprehensive SEO strategies to significantly boost website traffic, visibility, and user engagement.",
+      "description": "Handled SEO for the business and their clients. Did keyword research, fixed technical SEO issues, set up Google Analytics and Search Console, and tracked rankings with SEMrush.",
       "technologies": [
         "SEO (On-page, Off-page, Technical, Local SEO)",
         "Keyword Research",
@@ -42,7 +42,7 @@
       "position": "SEO & Growth Specialist",
       "startDate": "2024-05-01",
       "endDate": "2024-10-31",
-      "description": "Spearheaded a comprehensive marketing campaign using email, social media, and affiliate marketing strategies, and optimized website performance for SEO.",
+      "description": "Ran email marketing campaigns, managed social media presence, and grew the affiliate program. Also fixed site speed issues and handled on-page SEO.",
       "technologies": [
         "Email Marketing",
         "Social Media Marketing",
@@ -59,7 +59,7 @@
       "position": "Full-Stack Developer",
       "startDate": "2025-03-01",
       "endDate": "2025-08-31",
-      "description": "Built scalable web applications and contributed to the development of innovative digital solutions for clients.",
+      "description": "Built web applications and digital solutions for various clients using modern tools like Next.js, React, and Tailwind CSS.",
       "technologies": [
         "Next.js",
         "React",
@@ -75,7 +75,7 @@
       "position": "Full Stack Developer",
       "startDate": "2020-09-01",
       "endDate": null,
-      "description": "Successfully delivered multiple digital solutions including corporate websites, news portals, and e-commerce platforms for diverse clients across energy, finance, and recycling sectors.",
+      "description": "Built websites, news portals, and e-commerce stores for various clients. Worked across sectors including energy, finance, and recycling. Used tools like React, Node.js, WordPress, Laravel, and Next.js.",
       "technologies": [
         "React",
         "Node.js",

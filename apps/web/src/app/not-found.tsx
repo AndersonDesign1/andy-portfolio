@@ -1,4 +1,5 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -26,7 +27,13 @@ export default function NotFound() {
         <div className="z-10 mt-8 flex">
           <Button asChild className="group h-11 px-8" variant="outline">
             <Link href="/projects" prefetch>
-              <ArrowLeft className="mr-2 size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+              <HugeiconsIcon
+                className="mr-2 transition-transform duration-300 group-hover:-translate-x-1"
+                color="currentColor"
+                icon={ArrowLeft01Icon}
+                size={16}
+                strokeWidth={1.5}
+              />
               Explore my work
             </Link>
           </Button>

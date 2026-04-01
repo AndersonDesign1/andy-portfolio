@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import educationData from "@/data/education.json" with { type: "json" };
 import workExperienceData from "@/data/work-experience.json" with {
@@ -66,7 +67,13 @@ export default function WorkHistory() {
                 target="_blank"
               >
                 View Resume
-                <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
+                <HugeiconsIcon
+                  className="text-muted transition-colors duration-200 ease-out group-hover:text-primary"
+                  color="currentColor"
+                  icon={ArrowUpRight01Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                />
               </Link>
             </div>
           </div>

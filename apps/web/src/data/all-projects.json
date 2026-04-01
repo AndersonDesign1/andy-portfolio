@@ -2,9 +2,10 @@
   "projects": [
     {
       "id": "1",
+      "featured": true,
       "type": "case-study",
       "title": "Founding Engineer & SEO Expert at Welup Digital",
-      "description": "As the first developer hire and founding engineer, I co-developed the initial platform before leading the sole transition to a modern Next.js architecture. Optimized for peak SEO and performance, while also teaching at Welup Academy.",
+      "description": "First developer hire. Built the initial platform, then led the full Next.js rewrite. Set up Sanity CMS for content management, handled technical SEO, and taught web development at their academy. The rewrite brought traffic up 300% and made the site 50% faster.",
       "thumbnail": "/welup-main.png",
       "techStack": [
         "Next.js",
@@ -28,9 +29,10 @@
     },
     {
       "id": "2",
+      "featured": true,
       "type": "case-study",
       "title": "SEO & Growth Specialist at PromptEarn",
-      "description": "Drove a 250% boost in organic traffic for PromptEarn with advanced SEO, Core Web Vitals optimization, and affiliate growth—achieving top 5 keyword rankings and massive search engine dominance.",
+      "description": "6 months doing SEO and affiliate growth. Fixed Core Web Vitals (PageSpeed went from 45 to 80), grew the affiliate network from 40,000 to 93,000, and got Google traffic up 250%. Also reduced bounce rate by half.",
       "thumbnail": "/promptearn-1.png",
       "techStack": [
         "Ahrefs",
@@ -53,9 +55,10 @@
     },
     {
       "id": "zumera",
-      "type": "case-study",
+      "featured": true,
+      "type": "standard",
       "title": "Full-Stack Developer at Zumera",
-      "description": "Developed a high-performance investment platform using Next.js and Tailwind CSS. Implemented complex financial dashboards and interactive investment tracking features with Shadcn UI components.",
+      "description": "Built the investment landing page with Next.js and Tailwind CSS. Created a clean, conversion-focused design with clear call-to-actions and trust signals for potential investors.",
       "thumbnail": "/zumera-main.png",
       "techStack": [
         "Next.js",
@@ -70,15 +73,16 @@
       },
       "metrics": {
         "Performance": "Optimized for high-concurrency access",
-        "UI/UX": "Seamless investment tracking dashboards",
+        "UI/UX": "Clean landing page optimized for conversions",
         "Architecture": "Scalable Next.js & Tailwind CSS foundation"
       }
     },
     {
       "id": "3",
+      "featured": true,
       "type": "standard",
       "title": "Backend Engineer at Devan",
-      "description": "Engineered a high-performance urban-chic e-commerce platform with a robust Node.js backend and seamless Sanity CMS integration.",
+      "description": "Fashion e-commerce site built with Node.js and PostgreSQL. Created custom API endpoints, set up the database schema, and integrated Sanity CMS for product content. Also optimized database queries for better performance.",
       "thumbnail": "/Devan-main.png",
       "techStack": [
         "Node.js",
@@ -96,7 +100,7 @@
       "id": "4",
       "type": "standard",
       "title": "WordPress Developer at The Wealthy Post",
-      "description": "Technical SEO and performance architecture for a high-concurrency Nigerian news portal.",
+      "description": "UK personal finance blog run by a finance expert who moved from Nigeria to the UK. Set up WordPress, optimized for Google, and improved site speed from 15s to 3s. Traffic from Google doubled after the work.",
       "thumbnail": "/the-wealthy-post.webp",
       "techStack": [
         "WordPress",
@@ -116,7 +120,7 @@
       "id": "5",
       "type": "standard",
       "title": "Corporate Website for Dubiss Forex Academy",
-      "description": "Prestige-first digital platform for a forex academy, focused on intuitive educational discovery.",
+      "description": "Forex trading education platform with over 52,000 traders worldwide. Built the main site from scratch, set up Google Analytics, and added testimonials from students. Also set up the initial SEO foundation.",
       "thumbnail": "/dubiss.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -131,8 +135,8 @@
     {
       "id": "6",
       "type": "standard",
-      "title": "Corporate Website for Craigwal Petreshore",
-      "description": "Robust corporate showcase for an EPC engineering firm, emphasizing industrial clarity and service depth.",
+      "title": "Corporate Website for Craigwal Petroshore",
+      "description": "Nigerian oil and gas EPCIC company. Built their WordPress site with a custom theme. Added service pages, project showcases, and a contact form. Made it fully responsive for mobile.",
       "thumbnail": "/craigwal.webp",
       "techStack": ["WordPress", "Custom Theme", "SEO Optimization"],
       "links": {
@@ -148,7 +152,7 @@
       "id": "7",
       "type": "standard",
       "title": "Corporate Website for New Hampshire Capital",
-      "description": "Sophisticated gateway for asset management, communicating sector-wide impact in energy and infrastructure.",
+      "description": "Nigerian asset management firm focused on power, oil and gas, fintech, and real estate. Built the Next.js site with a clean design. Added newsletter signup and sectors overview.",
       "thumbnail": "/new-hampshire.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -164,7 +168,7 @@
       "id": "8",
       "type": "standard",
       "title": "Corporate Website for Urabus Renewable Energies",
-      "description": "Mission-critical platform for renewable energy, merging healthcare and sustainability advocacy.",
+      "description": "Solar and EV company offering flexible payment plans for businesses. Built their Next.js site highlighting solar solutions, EV tricycles, and payment options. Added a portfolio section and testimonials.",
       "thumbnail": "/urabus-energies.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -180,7 +184,7 @@
       "id": "9",
       "type": "standard",
       "title": "Corporate Website for Aristeia Properties",
-      "description": "Minimalist real estate portal for architectural vision, featuring an imagery-first investor interface.",
+      "description": "Nigerian real estate company specializing in land banking and estate development. Built the Next.js site with a visual-first approach. Added property listings, estate features, and a contact form.",
       "thumbnail": "/aristeia.webp",
       "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
       "links": {
@@ -196,7 +200,7 @@
       "id": "10",
       "type": "standard",
       "title": "Lead Developer at Kyrus Recycling",
-      "description": "Full-stack MVP for a recycling incentive app, engineered for scalability and real-time user rewards.",
+      "description": "Recycling incentive mobile app where people earn rewards for recycling. Built the full MVP in 3 months using React and Node.js. Led a small team and handled both frontend and backend development.",
       "thumbnail": "/trashpoint.webp",
       "techStack": [
         "React",

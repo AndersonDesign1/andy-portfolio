@@ -1,15 +1,17 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import projectsData from "@/data/projects.json" with { type: "json" };
+import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
 
 interface Project {
   id: string;
+  featured?: boolean;
   type: "case-study" | "standard";
   title: string;
   description: string;
@@ -65,8 +67,11 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
             <p className="hidden font-mono text-secondary text-sm tracking-tight md:block">
               {project.techStack.slice(0, 3).join(" / ")}
             </p>
-            <ArrowUpRight
-              className="size-6 shrink-0 text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent"
+            <HugeiconsIcon
+              className="shrink-0 text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent"
+              color="currentColor"
+              icon={ArrowUpRight01Icon}
+              size={24}
               strokeWidth={2}
             />
           </div>
@@ -95,6 +100,8 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 }
 
 export default function ProjectsGrid() {
+  const featuredProjects = projectsDataJson.projects.filter((p) => p.featured);
+
   return (
     <section className="bg-primary py-24 md:py-32">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
@@ -104,12 +111,12 @@ export default function ProjectsGrid() {
               Selected Works
             </h2>
             <span className="font-mono text-muted text-sm">
-              {projectsData.projects.length} Projects
+              {featuredProjects.length} Projects
             </span>
           </div>
 
           <div className="flex flex-col">
-            {projectsData.projects.map((project, index) => (
+            {featuredProjects.map((project, index) => (
               <ProjectRow
                 index={index}
                 key={project.id}
@@ -125,7 +132,13 @@ export default function ProjectsGrid() {
             <Button asChild className="group gap-2" variant="outline">
               <Link href="/projects">
                 View All Projects
-                <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
+                <HugeiconsIcon
+                  className="text-muted transition-colors duration-200 ease-out group-hover:text-primary"
+                  color="currentColor"
+                  icon={ArrowUpRight01Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                />
               </Link>
             </Button>
           </div>

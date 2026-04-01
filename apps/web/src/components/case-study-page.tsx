@@ -1,5 +1,11 @@
 "use client";
-import { ArrowLeft, ArrowRight, Globe, X } from "lucide-react";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  Cancel01Icon,
+  Globe02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,7 +47,12 @@ function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/projects"
           >
-            <ArrowLeft className="size-4" />
+            <HugeiconsIcon
+              color="currentColor"
+              icon={ArrowLeft01Icon}
+              size={16}
+              strokeWidth={1.5}
+            />
             Back to Projects
           </Link>
 
@@ -52,7 +63,12 @@ function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Globe className="size-4" />
+              <HugeiconsIcon
+                color="currentColor"
+                icon={Globe02Icon}
+                size={16}
+                strokeWidth={1.5}
+              />
               Live Site
             </Link>
           )}
@@ -257,7 +273,13 @@ function CaseStudyContent({
                       <span className="text-muted line-through decoration-subtle">
                         {metric.before}
                       </span>
-                      <ArrowRight className="inline size-4" />
+                      <HugeiconsIcon
+                        className="inline"
+                        color="currentColor"
+                        icon={ArrowRight01Icon}
+                        size={16}
+                        strokeWidth={1.5}
+                      />
                       <span>Result</span>
                     </div>
                   </div>
@@ -331,7 +353,13 @@ function CaseStudyContent({
                       Previous Case Study
                     </span>
                     <div className="flex items-center gap-4">
-                      <ArrowLeft className="size-5 text-secondary transition-transform duration-300 group-hover:-translate-x-2" />
+                      <HugeiconsIcon
+                        className="text-secondary transition-transform duration-300 group-hover:-translate-x-2"
+                        color="currentColor"
+                        icon={ArrowLeft01Icon}
+                        size={20}
+                        strokeWidth={1.5}
+                      />
                       <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
                         {navigation.prev.title}
                       </h3>
@@ -354,7 +382,13 @@ function CaseStudyContent({
                       <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70 md:text-3xl">
                         {navigation.next.title}
                       </h3>
-                      <ArrowRight className="size-5 text-secondary transition-transform duration-300 group-hover:translate-x-2" />
+                      <HugeiconsIcon
+                        className="text-secondary transition-transform duration-300 group-hover:translate-x-2"
+                        color="currentColor"
+                        icon={ArrowRight01Icon}
+                        size={20}
+                        strokeWidth={1.5}
+                      />
                     </div>
                   </Link>
                 ) : (
@@ -391,7 +425,12 @@ function CaseStudyLightbox({
             onClick={onClose}
             type="button"
           >
-            <X className="size-8" />
+            <HugeiconsIcon
+              color="currentColor"
+              icon={Cancel01Icon}
+              size={32}
+              strokeWidth={1.5}
+            />
             <span className="sr-only">Close</span>
           </button>
           <m.div

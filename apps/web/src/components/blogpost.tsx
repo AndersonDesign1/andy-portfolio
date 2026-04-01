@@ -1,8 +1,9 @@
 "use client";
 
 import { urlFor } from "@andy-portfolio/sanity-config";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -145,7 +146,12 @@ export default function BlogPost({ post }: { post: SanityPost }) {
           className="inline-flex items-center gap-2 font-mono text-muted text-sm transition-colors hover:text-primary"
           href="/blog"
         >
-          <ArrowLeft className="size-4" />
+          <HugeiconsIcon
+            color="currentColor"
+            icon={ArrowLeft01Icon}
+            size={16}
+            strokeWidth={1.5}
+          />
           Back to Writing
         </Link>
         <div className="pt-12">

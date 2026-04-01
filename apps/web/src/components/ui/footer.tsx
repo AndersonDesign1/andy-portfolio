@@ -1,11 +1,12 @@
 "use client";
 
-import { Github, Linkedin } from "lucide-react";
+import { GithubIcon, Linkedin02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type React from "react";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-// X (Twitter) logo as inline SVG since lucide doesn't include it
+// X (Twitter) logo as inline SVG since hugeicons doesn't include it
 const XIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
@@ -22,17 +23,18 @@ const XIcon = ({ className }: { className?: string }) => (
 const socialLinks = [
   {
     href: "https://github.com/AndersonDesign1",
-    icon: Github,
+    icon: GithubIcon,
     label: "GitHub",
   },
   {
     href: "https://www.linkedin.com/in/anderson-josh/",
-    icon: Linkedin,
+    icon: Linkedin02Icon,
     label: "LinkedIn",
   },
   {
     href: "https://x.com/_Andersonjosh",
-    icon: XIcon,
+    icon: null,
+    customIcon: XIcon,
     label: "X",
   },
 ];
@@ -60,7 +62,23 @@ const Footer: React.FC = () => {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <link.icon className="size-4" />
+              {(() => {
+                const CustomIcon = link.customIcon;
+                if (link.icon) {
+                  return (
+                    <HugeiconsIcon
+                      color="currentColor"
+                      icon={link.icon}
+                      size={16}
+                      strokeWidth={1.5}
+                    />
+                  );
+                }
+                if (CustomIcon) {
+                  return <CustomIcon className="size-4" />;
+                }
+                return null;
+              })()}
             </a>
           ))}
         </div>

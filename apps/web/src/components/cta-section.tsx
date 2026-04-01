@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 
 export default function CtaSection() {
@@ -23,7 +24,13 @@ export default function CtaSection() {
               href="/contact"
             >
               Get in Touch
-              <ArrowUpRight className="size-4 text-muted transition-colors duration-200 ease-out group-hover:text-primary" />
+              <HugeiconsIcon
+                className="text-muted transition-colors duration-200 ease-out group-hover:text-primary"
+                color="currentColor"
+                icon={ArrowUpRight01Icon}
+                size={16}
+                strokeWidth={1.5}
+              />
             </Link>
           </div>
         </div>

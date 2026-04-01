@@ -1,8 +1,13 @@
 "use client";
 
-import { Github, Linkedin, Mail } from "lucide-react";
+import {
+  GithubIcon,
+  Linkedin02Icon,
+  Mail01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
-// X (Twitter) logo as inline SVG since lucide doesn't include it
+// X (Twitter) logo as inline SVG since hugeicons doesn't include it
 const XIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
@@ -18,22 +23,23 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const socialLinks = [
   {
-    icon: Github,
+    icon: GithubIcon,
     href: "https://github.com/AndersonDesign1",
     label: "GitHub",
   },
   {
-    icon: XIcon,
+    icon: null,
+    customIcon: XIcon,
     href: "https://x.com/_Andersonjosh",
     label: "X (Twitter)",
   },
   {
-    icon: Linkedin,
+    icon: Linkedin02Icon,
     href: "https://linkedin.com/in/anderson-josh",
     label: "LinkedIn",
   },
   {
-    icon: Mail,
+    icon: Mail01Icon,
     href: "mailto:hello@andersonjoseph.com",
     label: "Email",
   },
@@ -44,19 +50,19 @@ export default function Hero() {
     <section className="relative flex min-h-[70vh] items-end bg-primary pt-40 pb-20 md:pt-48 md:pb-32">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="flex flex-col gap-8">
-          {/* Status Badge */}
+          {/* Role */}
           <a
-            className="flex items-center gap-2 self-start rounded-full border border-subtle bg-secondary/5 px-4 py-2 font-mono text-secondary text-xs uppercase tracking-widest backdrop-blur-sm transition-colors duration-200 ease-out hover:border-primary hover:bg-secondary/10"
+            className="flex items-center gap-2.5 self-start font-mono text-secondary text-xs uppercase tracking-widest transition-colors duration-200 ease-out hover:text-primary"
             href="https://welupdigital.com"
             rel="noopener noreferrer"
             target="_blank"
           >
-            <span className="relative flex size-2">
+            <span className="relative flex size-1.5">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
             </span>
             Founding Engineer at{" "}
-            <span className="font-bold text-primary">Welup Digital</span>
+            <span className="font-semibold">Welup Digital</span>
           </a>
 
           {/* Name - Extreme Scale */}
@@ -75,18 +81,35 @@ export default function Hero() {
 
             {/* Social Links - Minimal Row */}
             <div className="flex gap-6">
-              {socialLinks.map(({ icon: Icon, href, label }) => (
-                <a
-                  aria-label={label}
-                  className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
-                  href={href}
-                  key={label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <Icon className="size-6" />
-                </a>
-              ))}
+              {socialLinks.map(
+                ({ icon, customIcon: CustomIcon, href, label }) => (
+                  <a
+                    aria-label={label}
+                    className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
+                    href={href}
+                    key={label}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {(() => {
+                      if (icon) {
+                        return (
+                          <HugeiconsIcon
+                            color="currentColor"
+                            icon={icon}
+                            size={24}
+                            strokeWidth={1.5}
+                          />
+                        );
+                      }
+                      if (CustomIcon) {
+                        return <CustomIcon className="size-6" />;
+                      }
+                      return null;
+                    })()}
+                  </a>
+                )
+              )}
             </div>
           </div>
         </div>

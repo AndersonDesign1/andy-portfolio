@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import type React from "react";
 
@@ -13,7 +14,12 @@ const AboutPage: React.FC = () => (
           className="inline-flex items-center gap-2 text-secondary text-sm transition-colors duration-200 ease-out hover:text-primary"
           href="/"
         >
-          <ArrowLeft className="size-4" />
+          <HugeiconsIcon
+            color="currentColor"
+            icon={ArrowLeft01Icon}
+            size={16}
+            strokeWidth={1.5}
+          />
           Back to Home
         </Link>
       </div>
