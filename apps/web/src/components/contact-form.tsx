@@ -1,9 +1,12 @@
 "use client";
 
 import type React from "react";
-import { useRef, useState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { sendEmail } from "@/app/actions/send-email";
+import {
+  INITIAL_CONTACT_SUBMISSION_STATE,
+  sendEmail,
+} from "@/app/actions/send-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,8 +17,28 @@ const initialForm = { name: "", email: "", subject: "", message: "" };
 export default function ContactForm() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
-  const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
+  const [submissionState, formAction, isPending] = useActionState(
+    sendEmail,
+    INITIAL_CONTACT_SUBMISSION_STATE
+  );
+
+  useEffect(() => {
+    if (submissionState.status === "idle") {
+      return;
+    }
+
+    if (submissionState.success) {
+      toast.success(submissionState.message);
+      setErrors({});
+      setForm(initialForm);
+      formRef.current?.reset();
+    } else {
+      toast.error(
+        submissionState.message || "Failed to send message. Please try again."
+      );
+    }
+  }, [submissionState]);
 
   function validate() {
     const e: { [k: string]: string } = {};
@@ -45,29 +68,11 @@ export default function ContactForm() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (!validate()) {
+      e.preventDefault();
       toast.error("Please fix the errors in the form");
-      return;
     }
-    startTransition(async () => {
-      if (!formRef.current) {
-        toast.error("Form reference not available. Please try again.");
-        return;
-      }
-
-      const result = await sendEmail(new FormData(formRef.current));
-      if (result.success) {
-        toast.success(result.message);
-        setForm(initialForm);
-        formRef.current.reset();
-      } else {
-        toast.error(
-          result.message || "Failed to send message. Please try again."
-        );
-      }
-    });
   }
 
   return (
@@ -103,10 +108,26 @@ export default function ContactForm() {
 
           {/* Form */}
           <form
+            action={formAction}
             className="flex flex-col gap-8"
+            noValidate
             onSubmit={handleSubmit}
             ref={formRef}
           >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-auto -left-[9999px] size-px overflow-hidden opacity-0"
+            >
+              <label htmlFor="projectMilestone">Project milestone</label>
+              <input
+                autoComplete="off"
+                defaultValue=""
+                id="projectMilestone"
+                name="projectMilestone"
+                tabIndex={-1}
+                type="text"
+              />
+            </div>
             {[
               {
                 label: "Name",

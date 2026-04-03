@@ -1,4 +1,5 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -35,6 +36,8 @@ const nextConfig: NextConfig = {
 // Enable bundle analyzer when ANALYZE=true
 const analyzeEnabled = process.env.ANALYZE === "true";
 
-export default analyzeEnabled
+const configuredNextConfig = analyzeEnabled
   ? withBundleAnalyzer({ enabled: true })(nextConfig)
   : nextConfig;
+
+export default withBotId(configuredNextConfig);
