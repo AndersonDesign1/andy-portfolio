@@ -17,7 +17,6 @@ const initialForm = { name: "", email: "", subject: "", message: "" };
 export default function ContactForm() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
-  const [submittedAt, setSubmittedAt] = useState(() => Date.now());
   const formRef = useRef<HTMLFormElement>(null);
   const [submissionState, formAction, isPending] = useActionState(
     sendEmail,
@@ -39,8 +38,6 @@ export default function ContactForm() {
         submissionState.message || "Failed to send message. Please try again."
       );
     }
-
-    setSubmittedAt(Date.now());
   }, [submissionState]);
 
   function validate() {
@@ -117,17 +114,16 @@ export default function ContactForm() {
             onSubmit={handleSubmit}
             ref={formRef}
           >
-            <input name="submittedAt" type="hidden" value={submittedAt} />
             <div
               aria-hidden="true"
               className="pointer-events-none absolute top-auto -left-[9999px] size-px overflow-hidden opacity-0"
             >
-              <label htmlFor="website">Website</label>
+              <label htmlFor="projectMilestone">Project milestone</label>
               <input
                 autoComplete="off"
                 defaultValue=""
-                id="website"
-                name="website"
+                id="projectMilestone"
+                name="projectMilestone"
                 tabIndex={-1}
                 type="text"
               />

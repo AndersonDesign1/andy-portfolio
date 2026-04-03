@@ -8,12 +8,6 @@ import { env } from "@/lib/env";
 const resend = new Resend(env.RESEND_API_KEY);
 const BLOCKED_SUBMISSION_MESSAGE =
   "We couldn't send your message. Please try again later.";
-const MIN_SUBMISSION_AGE_MS = 3000;
-const WORD_REGEX = /[A-Za-z]+(?:['-][A-Za-z]+)*/g;
-const VOWEL_REGEX = /[aeiouy]/;
-const CONSONANT_CLUSTER_REGEX = /[bcdfghjklmnpqrstvwxyz]{5,}/;
-const WHITESPACE_REGEX = /\s/;
-const SENTENCE_PUNCTUATION_REGEX = /[.!?,]/;
 
 export interface ContactSubmissionState {
   success: boolean;
@@ -38,9 +32,8 @@ const contactSchema = z.object({
   message: z.string().min(1, "Message is required").max(5000),
 });
 
-const submissionMetadataSchema = z.object({
-  website: z.string().trim().max(0).default(""),
-  submittedAt: z.coerce.number().int().positive(),
+const honeypotSchema = z.object({
+  projectMilestone: z.string().trim().max(0).default(""),
 });
 
 function escapeHtml(text: string): string {
@@ -52,55 +45,6 @@ function escapeHtml(text: string): string {
     "'": "&#039;",
   };
   return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-function extractWords(text: string): string[] {
-  return text.match(WORD_REGEX) ?? [];
-}
-
-function isReadableWord(word: string): boolean {
-  const normalized = word.toLowerCase();
-
-  return (
-    normalized.length >= 2 &&
-    VOWEL_REGEX.test(normalized) &&
-    !CONSONANT_CLUSTER_REGEX.test(normalized)
-  );
-}
-
-function isSuspiciousSubmission({
-  name,
-  subject,
-  message,
-}: {
-  name: string;
-  subject?: string;
-  message: string;
-}): boolean {
-  const readableNameWords = extractWords(name).filter(isReadableWord);
-  const readableMessageWords = extractWords(message).filter(isReadableWord);
-  const trimmedSubject = subject?.trim() ?? "";
-  const trimmedMessage = message.trim();
-
-  if (readableNameWords.length === 0 || readableMessageWords.length === 0) {
-    return true;
-  }
-
-  if (
-    !WHITESPACE_REGEX.test(trimmedMessage) &&
-    trimmedMessage.length >= 14 &&
-    !SENTENCE_PUNCTUATION_REGEX.test(trimmedMessage)
-  ) {
-    return true;
-  }
-
-  return (
-    Boolean(trimmedSubject) &&
-    !WHITESPACE_REGEX.test(trimmedSubject) &&
-    trimmedSubject.length >= 10 &&
-    !WHITESPACE_REGEX.test(trimmedMessage) &&
-    trimmedMessage.length >= 10
-  );
 }
 
 export async function sendEmail(
@@ -121,22 +65,11 @@ export async function sendEmail(
     };
   }
 
-  const metadata = submissionMetadataSchema.safeParse({
-    website: formData.get("website") ?? "",
-    submittedAt: formData.get("submittedAt") ?? "",
+  const honeypot = honeypotSchema.safeParse({
+    projectMilestone: formData.get("projectMilestone") ?? "",
   });
 
-  if (!metadata.success) {
-    return {
-      success: false,
-      message: BLOCKED_SUBMISSION_MESSAGE,
-      status: "error",
-    };
-  }
-
-  const submissionAgeMs = Date.now() - metadata.data.submittedAt;
-
-  if (submissionAgeMs < MIN_SUBMISSION_AGE_MS) {
+  if (!honeypot.success) {
     return {
       success: false,
       message: BLOCKED_SUBMISSION_MESSAGE,
@@ -162,14 +95,6 @@ export async function sendEmail(
   }
 
   const { name, email, subject, message } = result.data;
-
-  if (isSuspiciousSubmission({ name, subject, message })) {
-    return {
-      success: false,
-      message: BLOCKED_SUBMISSION_MESSAGE,
-      status: "error",
-    };
-  }
 
   // Sanitize for HTML email template to prevent XSS
   const safeName = escapeHtml(name);
