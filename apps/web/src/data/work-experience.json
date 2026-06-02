@@ -1,6 +1,24 @@
 {
   "workExperience": [
     {
+      "id": "flik-developer",
+      "company": "Flik",
+      "position": "Full-Stack Developer",
+      "startDate": "2025-12-01",
+      "endDate": null,
+      "description": "Engineered a premium creator-commerce platform for digital products and services. Built custom storefronts, a structured builder, analytics dashboards, and authentication systems using Next.js and Convex.",
+      "technologies": [
+        "Next.js",
+        "Convex",
+        "Better Auth",
+        "Tailwind CSS",
+        "TypeScript",
+        "React",
+        "Framer Motion"
+      ],
+      "companyUrl": "https://flik.store"
+    },
+    {
       "id": "welup-digital-fullstack-developer",
       "company": "Welup Digital",
       "position": "Founding Engineer",
@@ -57,8 +75,8 @@
       "id": "zumera-developer",
       "company": "Zumera",
       "position": "Full-Stack Developer",
-      "startDate": "2025-03-01",
-      "endDate": "2025-08-31",
+      "startDate": "2025-08-01",
+      "endDate": "2026-04-30",
       "description": "Built web applications and digital solutions for various clients using modern tools like Next.js, React, and Tailwind CSS.",
       "technologies": [
         "Next.js",

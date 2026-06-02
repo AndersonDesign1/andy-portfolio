@@ -54,27 +54,28 @@
       }
     },
     {
-      "id": "zumera",
+      "id": "flik",
       "featured": true,
       "type": "standard",
-      "title": "Full-Stack Developer at Zumera",
-      "description": "Built the investment landing page with Next.js and Tailwind CSS. Created a clean, conversion-focused design with clear call-to-actions and trust signals for potential investors.",
-      "thumbnail": "/zumera-main.png",
+      "title": "Full-Stack Developer at Flik",
+      "description": "Built a premium creator-commerce platform for digital products and services. Developed conversion-focused storefronts, an analytics dashboard, structured builder components, and secure authentication flows.",
+      "thumbnail": "/flik-img.webp",
       "techStack": [
         "Next.js",
-        "TypeScript",
+        "React",
+        "Convex",
+        "Better Auth",
         "Tailwind CSS",
-        "Shadcn UI",
-        "Framer Motion",
-        "Lucide React"
+        "TypeScript",
+        "Framer Motion"
       ],
       "links": {
-        "live": "https://www.zumerainvestment.com/"
+        "live": "https://flik.store"
       },
       "metrics": {
-        "Performance": "Optimized for high-concurrency access",
-        "UI/UX": "Clean landing page optimized for conversions",
-        "Architecture": "Scalable Next.js & Tailwind CSS foundation"
+        "Performance": "Optimized multi-tenant routing and Convex queries",
+        "UI/UX": "Stripe-inspired, high-converting buyer and seller surfaces",
+        "Architecture": "Scalable monorepo foundation with clean database schemas"
       }
     },
     {
