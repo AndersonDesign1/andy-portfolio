@@ -63,7 +63,7 @@
         "react-dom": "19.2.6",
         "react-email": "^5.1.1",
         "react-hook-form": "^7.58.1",
-        "react-is": "19.2.4",
+        "react-is": "19.2.6",
         "resend": "^6.6.0",
         "shadcn-ui": "^0.9.4",
         "sonner": "^2.0.7",
@@ -2063,7 +2063,7 @@
 
     "react-i18next": ["react-i18next@15.6.1", "", { "dependencies": { "@babel/runtime": "^7.27.6", "html-parse-stringify": "^3.0.1" }, "peerDependencies": { "i18next": ">= 23.2.3", "react": ">= 16.8.0", "typescript": "^5" }, "optionalPeers": ["typescript"] }, "sha512-uGrzSsOUUe2sDBG/+FJq2J1MM+Y4368/QW8OLEKSFvnDflHBbZhSd1u3UkW0Z06rMhZmnB/AQrhCpYfE5/5XNg=="],
 
-    "react-is": ["react-is@19.2.4", "", {}, "sha512-W+EWGn2v0ApPKgKKCy/7s7WHXkboGcsrXE+2joLyVxkbyVQfO3MUEaUQDHoSmb8TFFrSKYa9mw64WZHNHSDzYA=="],
+    "react-is": ["react-is@19.2.6", "", {}, "sha512-XjBR15BhXuylgWGuslhDKqlSayuqvqBX91BP8pauG8kd1zY8kotkNWbXksTCNRarse4kuGbe2kIY05ARtwNIvw=="],
 
     "react-refractor": ["react-refractor@4.0.0", "", { "dependencies": { "refractor": "^5.0.0", "unist-util-filter": "^5.0.1", "unist-util-visit-parents": "^6.0.1" }, "peerDependencies": { "react": ">=18.0.0" } }, "sha512-2VMRH3HA/Nu+tMFzyQwdBK0my0BIZy1pkWHhjuSrplMyf8ZLx/Gw7tUXV0t2JbEsbSNHbEc9TbHhq3sUx2seVA=="],
 
