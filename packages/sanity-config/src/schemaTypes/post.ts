@@ -3,6 +3,7 @@ import type {
   ArrayField,
   CodeField,
   ImageField,
+  LanguageAlternative,
   SchemaField,
   SlugField,
 } from "../lib/types";
@@ -139,17 +140,47 @@ const postSchema: DocumentDefinition = {
           },
         } as ImageField,
         {
-          type: "code",
-          options: {
-            withFilename: true,
-            language: "javascript",
-            languageAlternatives: [
-              { title: "Javascript", value: "javascript" },
-              { title: "HTML", value: "html" },
-              { title: "CSS", value: "css" },
-              { title: "TypeScript", value: "typescript" },
-              { title: "Python", value: "python" },
-            ],
+          type: "object",
+          name: "code",
+          title: "Code",
+          fields: [
+            {
+              name: "language",
+              title: "Language",
+              type: "string",
+              initialValue: "javascript",
+              options: {
+                list: [
+                  { title: "Javascript", value: "javascript" },
+                  { title: "HTML", value: "html" },
+                  { title: "CSS", value: "css" },
+                  { title: "TypeScript", value: "typescript" },
+                  { title: "Python", value: "python" },
+                ] as LanguageAlternative[],
+              },
+            },
+            {
+              name: "code",
+              title: "Code",
+              type: "text",
+              rows: 10,
+              validation: (rule: Rule) => rule.required(),
+            },
+          ],
+          preview: {
+            select: { code: "code", language: "language" },
+            prepare({
+              code,
+              language,
+            }: {
+              code?: string;
+              language?: string;
+            }) {
+              return {
+                title: `Code${language ? ` (${language})` : ""}`,
+                subtitle: code?.slice(0, 50),
+              };
+            },
           },
         } as CodeField,
       ],

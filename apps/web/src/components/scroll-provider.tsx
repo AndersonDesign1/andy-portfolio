@@ -82,7 +82,7 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
       started = true;
 
       const lenisInstance = new Lenis({
-        duration: SCROLL_DURATION * 1.35,
+        duration: SCROLL_DURATION,
         easing: (t) =>
           Math.min(
             1,
@@ -91,22 +91,15 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         orientation: "vertical",
         gestureOrientation: "vertical",
         smoothWheel: true,
-        wheelMultiplier: 0.85,
+        wheelMultiplier: 1,
         touchMultiplier: 1.6,
         infinite: false,
       });
 
       syncLenis(lenisInstance);
 
-      let lastTime = 0;
-      const targetFps = 60;
-      const frameInterval = 1000 / targetFps;
-
       const raf = (time: number) => {
-        if (time - lastTime >= frameInterval) {
-          lenisRef.current?.raf(time);
-          lastTime = time;
-        }
+        lenisRef.current?.raf(time);
         rafIdRef.current = requestAnimationFrame(raf);
       };
 

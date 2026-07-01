@@ -53,15 +53,13 @@ export interface ImageField extends SchemaField {
 }
 
 /**
- * Type for code field
+ * Type for a plain-object code block (no CodeMirror dependency).
+ * Renders as a monospace textarea in Studio and a <pre><code> block on the site.
  */
 export interface CodeField extends SchemaField {
-  type: "code";
-  options: {
-    withFilename: boolean;
-    language: string;
-    languageAlternatives: LanguageAlternative[];
-  };
+  type: "object";
+  name: "code";
+  fields: SchemaField[];
 }
 
 /**

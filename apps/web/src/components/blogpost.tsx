@@ -189,7 +189,7 @@ export default function BlogPost({ post }: { post: SanityPost }) {
             </div>
 
             {post.mainImage && (
-              <figure className="pt-16">
+              <figure className="pt-16 pb-12 md:pb-16">
                 <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
                   <Image
                     alt={post.mainImage.alt || post.title}
@@ -204,6 +204,11 @@ export default function BlogPost({ post }: { post: SanityPost }) {
                     width={1200}
                   />
                 </div>
+                {post.mainImage.caption && (
+                  <figcaption className="pt-4 text-center font-mono text-muted text-sm">
+                    {post.mainImage.caption}
+                  </figcaption>
+                )}
               </figure>
             )}
 

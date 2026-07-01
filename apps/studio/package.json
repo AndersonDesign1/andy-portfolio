@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@andy-portfolio/sanity-config": "workspace:*",
-    "@sanity/code-input": "^7.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "sanity": "^5.31.1",
