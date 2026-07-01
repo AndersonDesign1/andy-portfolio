@@ -13,7 +13,7 @@ export function constructMetadata({
   icons?: string;
   noIndex?: boolean;
 } = {}): Metadata {
-  const baseUrl = "https://andersonjoseph.com";
+  const baseUrl = "https://www.andersonjoseph.com";
   const ogUrl = new URL(`${baseUrl}/api/og`);
   if (title) {
     ogUrl.searchParams.set("title", title);
@@ -48,7 +48,7 @@ export function constructMetadata({
     openGraph: {
       title,
       description,
-      url: "https://andersonjoseph.com",
+      url: "https://www.andersonjoseph.com",
       siteName: "Anderson Joseph",
       locale: "en_US",
       type: "website",
@@ -69,7 +69,7 @@ export function constructMetadata({
       creator: "@andersonjoseph",
     },
     icons,
-    metadataBase: new URL("https://andersonjoseph.com"),
+    metadataBase: new URL("https://www.andersonjoseph.com"),
     ...(noIndex && {
       robots: {
         index: false,
