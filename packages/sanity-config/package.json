@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@sanity/client": "^7.23.0",
-    "@sanity/image-url": "^2.0.2",
-    "@sanity/types": "^5.31.1",
-    "next-sanity": "^12.0.5",
-    "sanity": "^5.31.1"
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/types": "^6.3.0",
+    "next-sanity": "^13.1.1",
+    "sanity": "^6.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.19.3",

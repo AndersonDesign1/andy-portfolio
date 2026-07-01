@@ -12,7 +12,7 @@
     "@andy-portfolio/sanity-config": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "sanity": "^5.31.1",
+    "sanity": "^6.3.0",
     "styled-components": "^6.1.17"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPost from "@/components/blogpost";
 
-export const revalidate = 60;
+export const revalidate = 86_400;
 
 async function getPost(slug: string) {
   try {
@@ -28,7 +28,8 @@ async function getPost(slug: string) {
           description
         }
       }`,
-      { slug }
+      { slug },
+      { next: { tags: ["post"] } }
     );
   } catch (_error) {
     return null;

@@ -2,7 +2,7 @@ import { client } from "@andy-portfolio/sanity-config";
 import type { Metadata } from "next";
 import BlogList from "@/components/bloglist";
 
-export const revalidate = 60;
+export const revalidate = 86_400;
 
 import { constructMetadata } from "@/lib/metadata";
 
@@ -33,7 +33,9 @@ async function getPosts() {
           slug,
           description
         }
-      }`
+      }`,
+      {},
+      { next: { tags: ["post"] } }
     );
   } catch (_error) {
     return [];
