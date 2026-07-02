@@ -112,6 +112,12 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+    /* Paint the theme background on the root element itself (not just body).
+     * On very tall pages (e.g. blog posts) a theme toggle repaints top-down;
+     * if only body is painted, the transparent <html> exposes the browser's
+     * native color-scheme canvas for a frame, causing a flash of the opposite
+     * mode. Painting html swaps atomically with the theme class. */
+    background-color: var(--background);
   }
 
   body {
