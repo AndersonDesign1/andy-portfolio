@@ -24,6 +24,8 @@
 }
 
 :root {
+  color-scheme: light;
+
   --background: oklch(95.51% 0 0); /* #f0f0f0 */
   --foreground: oklch(20.46% 0 0); /* #171717 */
 
