@@ -24,76 +24,48 @@
 }
 
 :root {
-  --background: #f0f0f0;
-  --foreground: #171717;
+  --background: oklch(95.51% 0 0); /* #f0f0f0 */
+  --foreground: oklch(20.46% 0 0); /* #171717 */
 
-  --secondary: #e5e5e5;
-  --secondary-foreground: #404040;
+  --secondary: oklch(92.19% 0 0); /* #e5e5e5 */
+  --secondary-foreground: oklch(37.15% 0 0); /* #404040 */
 
-  --muted: #d4d4d4;
-  --muted-foreground: #595959; /* darkened from #737373 for WCAG AA contrast (4.6:1 on #f0f0f0) */
+  --muted: oklch(86.99% 0 0); /* #d4d4d4 */
+  --muted-foreground: oklch(
+    46.4% 0 0
+  ); /* darkened for WCAG AA contrast (4.6:1 on background) */
 
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.08);
+  --border: oklch(0% 0 0 / 8%);
+  --input: oklch(0% 0 0 / 8%);
 
-  --popover: #f0f0f0;
-  --popover-foreground: #171717;
+  --popover: oklch(95.51% 0 0); /* #f0f0f0 */
+  --popover-foreground: oklch(20.46% 0 0); /* #171717 */
 
-  --accent: #a3a3a3; /* Adjusted for softer hover */
-  --accent-muted: rgba(0, 0, 0, 0.05); /* Adjusted for softer hover */
+  --accent: oklch(71.55% 0 0); /* Adjusted for softer hover, #a3a3a3 */
+  --accent-muted: oklch(0% 0 0 / 5%); /* Adjusted for softer hover */
   --grain-opacity: 0.12;
 }
 
 .dark {
-  --background: #050505;
-  --foreground: #ededed;
+  --background: oklch(11.49% 0 0); /* #050505 */
+  --foreground: oklch(94.61% 0 0); /* #ededed */
   color-scheme: dark;
 
-  --secondary: #0a0a0a;
-  --secondary-foreground: #a3a3a3;
+  --secondary: oklch(14.48% 0 0); /* #0a0a0a */
+  --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
 
-  --muted: #171717;
-  --muted-foreground: #525252;
+  --muted: oklch(20.46% 0 0); /* #171717 */
+  --muted-foreground: oklch(43.86% 0 0); /* #525252 */
 
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.08);
+  --border: oklch(100% 0 0 / 8%);
+  --input: oklch(100% 0 0 / 8%);
 
-  --popover: #050505;
-  --popover-foreground: #ededed;
+  --popover: oklch(11.49% 0 0); /* #050505 */
+  --popover-foreground: oklch(94.61% 0 0); /* #ededed */
 
-  --accent: #737373; /* Adjusted for softer hover */
-  --accent-muted: rgba(255, 255, 255, 0.05); /* Adjusted for softer hover */
+  --accent: oklch(55.55% 0 0); /* Adjusted for softer hover, #737373 */
+  --accent-muted: oklch(100% 0 0 / 5%); /* Adjusted for softer hover */
   --grain-opacity: 0.07;
-}
-
-/*
- * Matches .dark for the brief window before next-themes' inline script adds
- * the class (system-theme users only). Without this, a dark-OS visitor sees
- * a flash of the light :root values on every hard navigation/reload.
- * :not(.light) keeps an explicit manual "light" choice from being overridden.
- */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --background: #050505;
-    --foreground: #ededed;
-    color-scheme: dark;
-
-    --secondary: #0a0a0a;
-    --secondary-foreground: #a3a3a3;
-
-    --muted: #171717;
-    --muted-foreground: #525252;
-
-    --border: rgba(255, 255, 255, 0.08);
-    --input: rgba(255, 255, 255, 0.08);
-
-    --popover: #050505;
-    --popover-foreground: #ededed;
-
-    --accent: #737373;
-    --accent-muted: rgba(255, 255, 255, 0.05);
-    --grain-opacity: 0.07;
-  }
 }
 
 @layer base {

@@ -1,5 +1,5 @@
 import { domAnimation, LazyMotion } from "motion/react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -17,6 +17,13 @@ import { inter } from "@/lib/fonts";
 import { constructMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = constructMetadata();
+
+// Tells the browser which schemes this page supports *before* our stylesheet
+// or next-themes' script run, so the native pre-paint canvas, scrollbars, and
+// form controls match the OS preference instead of defaulting to light.
+export const viewport: Viewport = {
+  colorScheme: "dark light",
+};
 
 interface RootLayoutProps {
   children: ReactNode;
