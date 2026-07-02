@@ -66,6 +66,36 @@
   --grain-opacity: 0.07;
 }
 
+/*
+ * Matches .dark for the brief window before next-themes' inline script adds
+ * the class (system-theme users only). Without this, a dark-OS visitor sees
+ * a flash of the light :root values on every hard navigation/reload.
+ * :not(.light) keeps an explicit manual "light" choice from being overridden.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #050505;
+    --foreground: #ededed;
+    color-scheme: dark;
+
+    --secondary: #0a0a0a;
+    --secondary-foreground: #a3a3a3;
+
+    --muted: #171717;
+    --muted-foreground: #525252;
+
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.08);
+
+    --popover: #050505;
+    --popover-foreground: #ededed;
+
+    --accent: #737373;
+    --accent-muted: rgba(255, 255, 255, 0.05);
+    --grain-opacity: 0.07;
+  }
+}
+
 @layer base {
   * {
     border-color: var(--border);
