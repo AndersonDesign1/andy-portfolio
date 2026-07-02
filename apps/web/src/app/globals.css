@@ -46,7 +46,18 @@
   --grain-opacity: 0.12;
 }
 
-.dark {
+/*
+ * Dark palette. Applied in two ways so first paint is always correct:
+ *   1. `.dark` — set explicitly by the theme script (manual choice or resolved
+ *      system preference).
+ *   2. `prefers-color-scheme: dark` on `:root:not(.light)` — resolves the
+ *      system case in pure CSS, before any JS runs, so system/dark-OS visitors
+ *      never see a light flash on reload. Scoped to `:not(.light)` so an
+ *      explicit Light choice (which adds `.light` before paint via the head
+ *      script) always overrides it and never flashes dark.
+ */
+.dark,
+:root.dark {
   --background: oklch(11.49% 0 0); /* #050505 */
   --foreground: oklch(94.61% 0 0); /* #ededed */
   color-scheme: dark;
@@ -66,6 +77,30 @@
   --accent: oklch(55.55% 0 0); /* Adjusted for softer hover, #737373 */
   --accent-muted: oklch(100% 0 0 / 5%); /* Adjusted for softer hover */
   --grain-opacity: 0.07;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: oklch(11.49% 0 0); /* #050505 */
+    --foreground: oklch(94.61% 0 0); /* #ededed */
+    color-scheme: dark;
+
+    --secondary: oklch(14.48% 0 0); /* #0a0a0a */
+    --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
+
+    --muted: oklch(20.46% 0 0); /* #171717 */
+    --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+
+    --border: oklch(100% 0 0 / 8%);
+    --input: oklch(100% 0 0 / 8%);
+
+    --popover: oklch(11.49% 0 0); /* #050505 */
+    --popover-foreground: oklch(94.61% 0 0); /* #ededed */
+
+    --accent: oklch(55.55% 0 0); /* Adjusted for softer hover, #737373 */
+    --accent-muted: oklch(100% 0 0 / 5%); /* Adjusted for softer hover */
+    --grain-opacity: 0.07;
+  }
 }
 
 @layer base {

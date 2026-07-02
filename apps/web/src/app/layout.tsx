@@ -34,6 +34,22 @@ export default function RootLayout({
 }: RootLayoutProps): ReactElement {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/*
+         * Blocking, pre-paint theme resolver. Runs in <head> before the body
+         * paints (unlike next-themes' body script, which can run after first
+         * paint on heavier pages and cause a light/dark flash). Sets the
+         * .light/.dark class from the stored choice or OS preference so the
+         * correct palette is present on the very first paint. Kept in sync
+         * with next-themes via the shared "andy-theme" storage key.
+         */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: required for a synchronous pre-paint theme script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("andy-theme");var d=t==="dark"||((!t||t==="system")&&window.matchMedia("(prefers-color-scheme: dark)").matches);var c=document.documentElement.classList;c.remove("light","dark");c.add(d?"dark":"light");}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
