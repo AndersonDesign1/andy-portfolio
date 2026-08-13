@@ -18,12 +18,12 @@ const CtaSection = () => (
 
         <div className="pt-4">
           <a
-            className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 inline-flex items-center gap-2 rounded-sm border px-8 py-4 text-base font-medium transition-[background-color,border-color,transform,backdrop-filter] duration-200 ease-[var(--ease-out)] hover:backdrop-blur-sm active:scale-[0.96] motion-reduce:active:scale-100"
+            className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 inline-flex items-center gap-2 rounded-sm border px-8 py-4 text-base font-medium transition-transform duration-200 ease-[var(--ease-out)] hover:backdrop-blur-sm active:scale-[0.96] motion-reduce:active:scale-100"
             href="/contact"
           >
             Get in Touch
             <HugeiconsIcon
-              className="text-muted group-hover:text-primary transition-colors duration-200 ease-out"
+              className="text-muted group-hover:text-primary"
               color="currentColor"
               icon={ArrowUpRight01Icon}
               size={16}

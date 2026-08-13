@@ -6,12 +6,55 @@ import {
   Globe02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AnimatePresence, m } from "motion/react";
-import { useState } from "react";
+import { m } from "motion/react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import MotionRoot from "@/components/motion-root";
 import { ANIMATION_EASE_CUBIC } from "@/lib/constants";
 import type { CaseStudy, CaseStudyNavigation } from "@/types/case-study";
+
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+const trapDialogFocus = (
+  event: KeyboardEvent,
+  dialogElement: HTMLDialogElement
+) => {
+  if (event.key !== "Tab") {
+    return;
+  }
+
+  const focusableElements = [
+    ...dialogElement.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ];
+  const [firstFocusableElement] = focusableElements;
+  const lastFocusableElement = focusableElements.at(-1);
+
+  if (!firstFocusableElement || !lastFocusableElement) {
+    event.preventDefault();
+    dialogElement.focus();
+    return;
+  }
+
+  const focusIsInsideDialog = dialogElement.contains(document.activeElement);
+
+  if (!focusIsInsideDialog) {
+    event.preventDefault();
+    (event.shiftKey ? lastFocusableElement : firstFocusableElement).focus();
+    return;
+  }
+
+  if (event.shiftKey && document.activeElement === firstFocusableElement) {
+    event.preventDefault();
+    lastFocusableElement.focus();
+  } else if (
+    !event.shiftKey &&
+    document.activeElement === lastFocusableElement
+  ) {
+    event.preventDefault();
+    firstFocusableElement.focus();
+  }
+};
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -83,24 +126,24 @@ const CaseStudyHeader = ({ caseStudy }: { caseStudy: CaseStudy }) => (
       >
         <m.div className="flex flex-col gap-8 md:gap-12" variants={fadeInUp}>
           <div className="border-subtle grid grid-cols-1 border-y md:grid-cols-4">
-            <div className="border-subtle border-b py-4 md:border-r md:border-b-0 md:py-6">
-              <span className="text-muted mb-2 block font-mono text-xs tracking-widest uppercase">
+            <div className="border-subtle flex flex-col gap-2 border-b py-4 md:border-r md:border-b-0 md:py-6">
+              <span className="text-muted block font-mono text-xs tracking-widest uppercase">
                 Client
               </span>
               <span className="text-secondary text-sm md:text-base">
                 {caseStudy.hero.client}
               </span>
             </div>
-            <div className="border-subtle border-b py-4 md:border-r md:border-b-0 md:py-6 md:pl-8">
-              <span className="text-muted mb-2 block font-mono text-xs tracking-widest uppercase">
+            <div className="border-subtle flex flex-col gap-2 border-b py-4 md:border-r md:border-b-0 md:py-6 md:pl-8">
+              <span className="text-muted block font-mono text-xs tracking-widest uppercase">
                 Duration
               </span>
               <span className="text-secondary text-sm md:text-base">
                 {caseStudy.hero.duration}
               </span>
             </div>
-            <div className="py-4 md:col-span-2 md:py-6 md:pl-8">
-              <span className="text-muted mb-2 block font-mono text-xs tracking-widest uppercase">
+            <div className="flex flex-col gap-2 py-4 md:col-span-2 md:py-6 md:pl-8">
+              <span className="text-muted block font-mono text-xs tracking-widest uppercase">
                 Tech
               </span>
               <div className="text-secondary flex flex-wrap gap-x-4 text-sm md:text-base">
@@ -115,7 +158,7 @@ const CaseStudyHeader = ({ caseStudy }: { caseStudy: CaseStudy }) => (
             {caseStudy.hero.title}
           </h1>
 
-          <p className="text-secondary ml-auto max-w-2xl text-xl leading-relaxed font-light md:text-2xl">
+          <p className="text-secondary max-w-2xl self-end text-xl leading-relaxed font-light md:text-2xl">
             {caseStudy.hero.overview}
           </p>
         </m.div>
@@ -144,7 +187,7 @@ const CaseStudyContent = ({
 }: {
   caseStudy: CaseStudy;
   navigation?: CaseStudyNavigation;
-  onSelectImage: (src: string) => void;
+  onSelectImage: (src: string, trigger: HTMLButtonElement) => void;
 }) => (
   <>
     <section className="border-subtle border-t">
@@ -181,7 +224,7 @@ const CaseStudyContent = ({
                   <h4 className="text-muted pb-4 font-mono text-sm uppercase">
                     Goals
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="flex flex-col gap-2">
                     {caseStudy.goals.primary.map((goal) => (
                       <li
                         className="border-subtle text-secondary border-l py-1 pl-4 text-sm"
@@ -215,7 +258,7 @@ const CaseStudyContent = ({
             <div className="flex flex-col gap-0">
               {caseStudy.approach.phases.map((phase, index) => (
                 <div
-                  className="group border-subtle hover:bg-secondary/5 border-t py-8 transition-colors first:border-t-0"
+                  className="group border-subtle hover:bg-secondary/5 border-t py-8 first:border-t-0"
                   key={phase.name}
                 >
                   <div className="flex flex-col gap-4">
@@ -281,7 +324,7 @@ const CaseStudyContent = ({
             </div>
 
             {caseStudy.results.metrics.length > 0 && (
-              <div className="border-subtle grid grid-cols-2 gap-8 border-t pt-12 pt-20">
+              <div className="border-subtle grid grid-cols-2 gap-8 border-t pt-20">
                 {caseStudy.results.metrics.map((metric) => (
                   <p
                     className="border-primary text-primary border-l-2 py-2 pl-6 text-lg font-light"
@@ -306,8 +349,10 @@ const CaseStudyContent = ({
           {caseStudy.gallery.images.map((image, index) => (
             <div className="group flex flex-col gap-4" key={image.src}>
               <button
-                className="border-subtle bg-secondary/5 relative aspect-video w-full cursor-zoom-in overflow-hidden border"
-                onClick={() => onSelectImage(image.src)}
+                className="border-subtle bg-secondary/5 focus-visible:ring-foreground focus-visible:ring-offset-background relative aspect-video w-full cursor-zoom-in touch-manipulation overflow-hidden border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                onClick={(event) =>
+                  onSelectImage(image.src, event.currentTarget)
+                }
                 type="button"
               >
                 <img
@@ -335,13 +380,13 @@ const CaseStudyContent = ({
       <section className="border-subtle border-t">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
           <div className="grid grid-cols-2">
-            <div className="group border-subtle hover:bg-secondary/5 border-r py-12 pr-6 transition-colors md:py-24">
+            <div className="group border-subtle hover:bg-secondary/5 border-r py-12 pr-6 md:py-24">
               {navigation.prev ? (
                 <a
                   className="block h-full"
                   href={`/case-studies/${navigation.prev.slug}`}
                 >
-                  <span className="text-muted group-hover:text-primary block pb-4 font-mono text-xs tracking-widest uppercase transition-colors">
+                  <span className="text-muted group-hover:text-primary block pb-4 font-mono text-xs tracking-widest uppercase">
                     Previous Case Study
                   </span>
                   <div className="flex items-center gap-4">
@@ -358,16 +403,18 @@ const CaseStudyContent = ({
                   </div>
                 </a>
               ) : (
-                <div className="opacity-0 select-none">Placeholder</div>
+                <div aria-hidden="true" className="opacity-0 select-none">
+                  Placeholder
+                </div>
               )}
             </div>
-            <div className="group border-subtle hover:bg-secondary/5 py-12 pl-6 text-right transition-colors md:py-24 md:pl-12">
+            <div className="group border-subtle hover:bg-secondary/5 py-12 pl-6 text-right md:py-24 md:pl-12">
               {navigation.next ? (
                 <a
                   className="block h-full"
                   href={`/case-studies/${navigation.next.slug}`}
                 >
-                  <span className="text-muted group-hover:text-primary block pb-4 font-mono text-xs tracking-widest uppercase transition-colors">
+                  <span className="text-muted group-hover:text-primary block pb-4 font-mono text-xs tracking-widest uppercase">
                     Next Case Study
                   </span>
                   <div className="flex items-center justify-end gap-4">
@@ -384,7 +431,9 @@ const CaseStudyContent = ({
                   </div>
                 </a>
               ) : (
-                <div className="opacity-0 select-none">Placeholder</div>
+                <div aria-hidden="true" className="opacity-0 select-none">
+                  Placeholder
+                </div>
               )}
             </div>
           </div>
@@ -400,47 +449,98 @@ const CaseStudyLightbox = ({
 }: {
   selectedImage: string | null;
   onClose: () => void;
-}) => (
-  <AnimatePresence>
-    {selectedImage && (
-      <m.div
-        animate={{ opacity: 1 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-        exit={{ opacity: 0 }}
-        initial={{ opacity: 0 }}
+}) => {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeLightbox = useEffectEvent(onClose);
+
+  useEffect(() => {
+    if (!selectedImage) {
+      return;
+    }
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const dialogElement = dialogRef.current;
+    const siblingInertStates = dialogElement?.parentElement
+      ? [...dialogElement.parentElement.children]
+          .filter(
+            (element): element is HTMLElement =>
+              element instanceof HTMLElement && element !== dialogElement
+          )
+          .map((element) => [element, element.inert] as const)
+      : [];
+
+    document.body.style.overflow = "hidden";
+    for (const [element] of siblingInertStates) {
+      element.inert = true;
+    }
+    closeButtonRef.current?.focus();
+    const handleDocumentKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeLightbox();
+        return;
+      }
+      if (dialogElement) {
+        trapDialogFocus(event, dialogElement);
+      }
+    };
+    document.addEventListener("keydown", handleDocumentKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+      for (const [element, wasInert] of siblingInertStates) {
+        element.inert = wasInert;
+      }
+    };
+  }, [selectedImage]);
+
+  return selectedImage ? (
+    <dialog
+      aria-label="Enlarged gallery image"
+      aria-modal="true"
+      className="fixed inset-0 z-[100] flex size-full max-h-none max-w-none items-center justify-center border-0 bg-black/90 p-4 backdrop-blur-sm"
+      open
+      ref={dialogRef}
+      tabIndex={-1}
+    >
+      <button
+        aria-label="Close image preview"
+        className="absolute inset-0 cursor-default border-0 bg-transparent p-0"
         onClick={onClose}
+        tabIndex={-1}
+        type="button"
+      />
+      <button
+        aria-label="Close image preview"
+        className="absolute top-4 right-4 z-20 flex size-11 touch-manipulation items-center justify-center text-white/70 hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none"
+        onClick={onClose}
+        ref={closeButtonRef}
+        type="button"
       >
-        <button
-          className="absolute top-4 right-4 p-2 text-white/70 transition-colors hover:text-white"
-          onClick={onClose}
-          type="button"
-        >
-          <HugeiconsIcon
-            color="currentColor"
-            icon={Cancel01Icon}
-            size={32}
-            strokeWidth={1.5}
-          />
-          <span className="sr-only">Close</span>
-        </button>
-        <m.div
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
-          exit={{ opacity: 0, scale: 0.9 }}
-          initial={{ opacity: 0, scale: 0.9 }}
-          onClick={(event) => event.stopPropagation()}
-          transition={{ duration: 0.5, type: "spring" }}
-        >
-          <img
-            alt="Enlarged gallery view"
-            className="object-contain"
-            src={selectedImage}
-          />
-        </m.div>
+        <HugeiconsIcon
+          color="currentColor"
+          icon={Cancel01Icon}
+          size={32}
+          strokeWidth={1.5}
+        />
+      </button>
+      <m.div
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative z-10 aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
+        initial={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.5, type: "spring" }}
+      >
+        <img
+          alt="Enlarged gallery view"
+          className="object-contain"
+          src={selectedImage}
+        />
       </m.div>
-    )}
-  </AnimatePresence>
-);
+    </dialog>
+  ) : null;
+};
 
 const CaseStudyPage = ({
   caseStudy,
@@ -450,6 +550,16 @@ const CaseStudyPage = ({
   navigation?: CaseStudyNavigation;
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const galleryTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleSelectImage = (src: string, trigger: HTMLButtonElement) => {
+    galleryTriggerRef.current = trigger;
+    setSelectedImage(src);
+  };
+  const handleCloseLightbox = () => {
+    setSelectedImage(null);
+    requestAnimationFrame(() => galleryTriggerRef.current?.focus());
+  };
 
   return (
     <MotionRoot>
@@ -458,10 +568,10 @@ const CaseStudyPage = ({
         <CaseStudyContent
           caseStudy={caseStudy}
           navigation={navigation}
-          onSelectImage={setSelectedImage}
+          onSelectImage={handleSelectImage}
         />
         <CaseStudyLightbox
-          onClose={() => setSelectedImage(null)}
+          onClose={handleCloseLightbox}
           selectedImage={selectedImage}
         />
       </div>

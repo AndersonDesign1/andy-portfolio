@@ -37,37 +37,37 @@ const linkMarkSchema = z.object({ href: z.string() });
 const components: PortableTextComponents = {
   block: {
     blockquote: ({ children }) => (
-      <blockquote className="border-primary text-primary my-8 border-l-2 pl-6 text-xl italic">
+      <blockquote className="border-primary text-primary border-l-2 py-2 pl-6 text-xl italic">
         {children}
       </blockquote>
     ),
     h1: ({ children }) => (
-      <h1 className="text-primary mt-12 mb-6 text-3xl font-bold tracking-tight md:text-4xl">
+      <h1 className="text-primary pt-6 text-3xl font-bold tracking-tight md:text-4xl">
         {children}
       </h1>
     ),
     h2: ({ children }) => (
-      <h2 className="text-primary mt-12 mb-6 text-2xl font-bold tracking-tight md:text-3xl">
+      <h2 className="text-primary pt-6 text-2xl font-bold tracking-tight md:text-3xl">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-primary mt-8 mb-4 text-xl font-bold tracking-tight md:text-2xl">
+      <h3 className="text-primary pt-2 text-xl font-bold tracking-tight md:text-2xl">
         {children}
       </h3>
     ),
     normal: ({ children }) => (
-      <p className="text-secondary mb-6 text-lg leading-relaxed">{children}</p>
+      <p className="text-secondary text-lg leading-relaxed">{children}</p>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="text-secondary mb-6 flex list-outside list-disc flex-col gap-2 pl-4 text-lg">
+      <ul className="text-secondary flex list-outside list-disc flex-col gap-2 pl-4 text-lg">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="text-secondary mb-6 flex list-outside list-decimal flex-col gap-2 pl-4 text-lg">
+      <ol className="text-secondary flex list-outside list-decimal flex-col gap-2 pl-4 text-lg">
         {children}
       </ol>
     ),
@@ -112,12 +112,12 @@ const components: PortableTextComponents = {
   },
   types: {
     code: ({ value }) => (
-      <pre className="border-subtle bg-secondary/10 my-8 overflow-x-auto rounded-sm border p-4">
+      <pre className="border-subtle bg-secondary/10 overflow-x-auto rounded-sm border p-4">
         <code className="text-primary font-mono text-sm">{value.code}</code>
       </pre>
     ),
     image: ({ value }) => (
-      <figure className="my-12 md:my-16">
+      <figure className="flex flex-col gap-4 py-6 md:py-10">
         <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
           <img
             alt={value.alt || "Blog post image"}
@@ -129,7 +129,7 @@ const components: PortableTextComponents = {
           />
         </div>
         {value.caption && (
-          <figcaption className="text-muted pt-4 text-center font-mono text-sm">
+          <figcaption className="text-muted text-center font-mono text-sm">
             {value.caption}
           </figcaption>
         )}
@@ -209,7 +209,7 @@ const BlogPost = ({ post }: { post: SanityPost }) => (
             </figure>
           )}
 
-          <div className="prose prose-lg max-w-none">
+          <div className="flex max-w-none flex-col gap-6">
             <PortableText components={components} value={post.body} />
           </div>
         </article>

@@ -62,15 +62,15 @@ const MusicBars = ({
 }) => {
   const bgColor = variant === "light" ? "bg-white" : "bg-foreground";
   return (
-    <div className="flex h-3 items-end gap-0.5">
+    <div aria-hidden="true" className="flex h-3 items-end gap-0.5">
       <div
-        className={`spotify-music-bar w-0.5 ${bgColor} ${isPlaying ? "h-full animate-[music-bar_0.5s_ease-in-out_infinite]" : "h-1/3"}`}
+        className={`spotify-music-bar w-0.5 motion-reduce:animate-none ${bgColor} ${isPlaying ? "h-full animate-[music-bar_0.5s_ease-in-out_infinite]" : "h-1/3"}`}
       />
       <div
-        className={`spotify-music-bar w-0.5 ${bgColor} ${isPlaying ? "h-1/2 animate-[music-bar_0.75s_ease-in-out_infinite] delay-75" : "h-2/3"}`}
+        className={`spotify-music-bar w-0.5 motion-reduce:animate-none ${bgColor} ${isPlaying ? "h-1/2 animate-[music-bar_0.75s_ease-in-out_infinite] delay-75" : "h-2/3"}`}
       />
       <div
-        className={`spotify-music-bar w-0.5 ${bgColor} ${isPlaying ? "h-3/4 animate-[music-bar_0.6s_ease-in-out_infinite] delay-150" : "h-1/2"}`}
+        className={`spotify-music-bar w-0.5 motion-reduce:animate-none ${bgColor} ${isPlaying ? "h-3/4 animate-[music-bar_0.6s_ease-in-out_infinite] delay-150" : "h-1/2"}`}
       />
     </div>
   );
@@ -80,7 +80,7 @@ const SpotifySkeleton = () => (
   <div className="fixed right-6 bottom-6 z-50">
     <button
       aria-label="Loading Spotify player"
-      className="group border-subtle bg-background/95 flex animate-pulse items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px]"
+      className="group border-subtle bg-background/95 flex animate-pulse items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] motion-reduce:animate-none"
       disabled
       type="button"
     >
@@ -126,7 +126,7 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
   return (
     <m.div
       animate={{ opacity: 1, transform: "translateY(0) scale(1)" }}
-      className="border-subtle bg-primary absolute right-0 bottom-full mb-4 w-72 rounded-sm border p-6 shadow-2xl"
+      className="border-subtle bg-primary absolute right-0 bottom-[calc(100%+1rem)] flex w-72 flex-col gap-4 rounded-sm border p-6 shadow-2xl"
       exit={{
         opacity: 0,
         transform: "translateY(10px) scale(0.95)",
@@ -135,7 +135,7 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
       initial={{ opacity: 0, transform: "translateY(10px) scale(0.95)" }}
       transition={{ duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
     >
-      <div className="mb-4 flex gap-4">
+      <div className="flex gap-4">
         <div className="relative">
           <AnimatePresence initial={false} mode="wait">
             <m.div
@@ -176,7 +176,7 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
         </div>
       </div>
 
-      <div className="text-muted mb-6 flex flex-col gap-2 font-mono text-xs tracking-wider uppercase">
+      <div className="text-muted flex flex-col gap-2 font-mono text-xs tracking-wider uppercase">
         <div className="flex justify-between">
           <span>Album</span>
           <span className="max-w-[120px] truncate text-right">{albumName}</span>
@@ -208,7 +208,7 @@ const SpotifyMiniPlayer = ({
 
   return (
     <button
-      className="group border-subtle bg-background/95 hover:border-primary flex items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] transition-[border-color,transform] duration-200 ease-[var(--ease-out)] focus:ring-0 focus:outline-none active:scale-[0.96] motion-reduce:active:scale-100"
+      className="group border-subtle bg-background/95 hover:border-primary focus-visible:ring-foreground focus-visible:ring-offset-background flex touch-manipulation items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] transition-transform duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.96] motion-reduce:active:scale-100"
       onClick={onClick}
       type="button"
     >
@@ -217,7 +217,7 @@ const SpotifyMiniPlayer = ({
       >
         <AlbumArt
           alt={trackName}
-          className={`spotify-album-art size-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10 ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
+          className={`spotify-album-art size-full object-cover outline outline-1 -outline-offset-1 outline-black/10 motion-reduce:animate-none dark:outline-white/10 ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
           size={32}
           src={thumbnailImage}
         />
@@ -234,7 +234,7 @@ const SpotifyMiniPlayer = ({
         <AnimatePresence initial={false} mode="wait">
           <m.span
             animate={{ opacity: 1, y: 0 }}
-            className="text-primary group-hover:text-accent block max-w-[140px] truncate text-xs leading-tight font-medium transition-colors"
+            className="text-primary group-hover:text-accent block max-w-[140px] truncate text-xs leading-tight font-medium"
             exit={{ opacity: 0, y: -5 }}
             initial={{ opacity: 0, y: 5 }}
             key={trackName}
@@ -252,20 +252,20 @@ const SpotifyNowPlaying = () => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { data: track, error } = useSWR<SpotifyTrack | null>(
-    "/api/spotify/now-playing",
-    fetcher,
-    {
-      dedupingInterval: 2000,
-      refreshInterval: (latestData) =>
-        latestData?.isPlaying
-          ? SPOTIFY_POLLING_INTERVAL_PLAYING
-          : SPOTIFY_POLLING_INTERVAL_PAUSED,
-      refreshWhenHidden: false,
-      revalidateOnFocus: true,
-      suspense: false,
-    }
-  );
+  const {
+    data: track,
+    error,
+    isLoading,
+  } = useSWR<SpotifyTrack | null>("/api/spotify/now-playing", fetcher, {
+    dedupingInterval: 2000,
+    refreshInterval: (latestData) =>
+      latestData?.isPlaying
+        ? SPOTIFY_POLLING_INTERVAL_PLAYING
+        : SPOTIFY_POLLING_INTERVAL_PAUSED,
+    refreshWhenHidden: false,
+    revalidateOnFocus: true,
+    suspense: false,
+  });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -281,12 +281,12 @@ const SpotifyNowPlaying = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (!(track || error)) {
+  if (isLoading && track === undefined) {
     return <SpotifySkeleton />;
   }
 
-  // Idle payload with no track metadata (e.g. `{ isPlaying: false }`) — hide widget.
-  if (!track?.name) {
+  // Failed requests and idle payloads without track metadata should not render.
+  if (error || !track?.name) {
     return null;
   }
 

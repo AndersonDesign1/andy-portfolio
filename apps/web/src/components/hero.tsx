@@ -50,7 +50,7 @@ const Hero = () => (
       <div className="flex flex-col gap-8">
         {/* Role */}
         <a
-          className="text-secondary hover:text-primary flex items-center gap-2.5 self-start font-mono text-xs tracking-widest uppercase transition-colors duration-200 ease-out"
+          className="text-secondary hover:text-primary flex items-center gap-2.5 self-start font-mono text-xs tracking-widest uppercase"
           href="https://welupdigital.com"
           rel="noopener noreferrer"
           target="_blank"
@@ -83,7 +83,7 @@ const Hero = () => (
               ({ icon, customIcon: CustomIcon, href, label }) => (
                 <a
                   aria-label={label}
-                  className="text-muted hover:text-accent transition-[color,transform] duration-200 ease-out hover:-translate-y-[3px] motion-reduce:hover:translate-y-0"
+                  className="text-muted hover:text-accent transition-transform duration-200 ease-out hover:-translate-y-[3px] motion-reduce:hover:translate-y-0"
                   href={href}
                   key={label}
                   rel="noopener noreferrer"

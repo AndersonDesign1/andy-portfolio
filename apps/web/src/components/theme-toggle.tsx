@@ -29,14 +29,14 @@ export const ThemeToggle = () => {
 
   if (!mounted) {
     // Invisible skeleton prevents layout shift.
-    return <div className="size-8" />;
+    return <div className="size-11" />;
   }
 
   return (
     <Select onValueChange={setTheme} value={theme || "system"}>
       <SelectTrigger
         aria-label="Select theme"
-        className="text-muted hover:text-primary size-8 rounded-full border-none bg-transparent p-0 shadow-none ring-offset-0 transition-colors focus:ring-0 focus:ring-offset-0 [&>span]:hidden"
+        className="text-muted hover:text-primary focus-visible:ring-foreground focus-visible:ring-offset-background size-11 touch-manipulation rounded-full border-none bg-transparent p-0 shadow-none ring-offset-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none [&>span]:hidden"
         suppressHydrationWarning
       >
         {theme === "light" && (

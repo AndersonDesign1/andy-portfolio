@@ -65,7 +65,7 @@ const meta = buildPageMeta({ description, title });
     </a>
     <BotIdInit client:load />
     <AppShell client:load>
-      <div id="content" transition:animate="fade">
+      <div id="content" tabindex="-1" transition:animate="fade">
         <slot />
       </div>
     </AppShell>

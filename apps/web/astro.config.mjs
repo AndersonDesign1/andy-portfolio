@@ -8,14 +8,6 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   adapter: vercel(),
   image: {
-    domains: [
-      "cdn.sanity.io",
-      "mosaic.scdn.co",
-      "i.scdn.co",
-      "image-cdn-ak.spotifycdn.com",
-      "image-cdn-fa.spotifycdn.com",
-      "wrapped-images.spotifycdn.com",
-    ],
     remotePatterns: [
       { hostname: "cdn.sanity.io", protocol: "https" },
       { hostname: "mosaic.scdn.co", protocol: "https" },

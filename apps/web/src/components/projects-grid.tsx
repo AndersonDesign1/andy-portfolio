@@ -63,7 +63,7 @@ const ProjectRow = ({
             <span className="text-muted font-mono text-sm">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <h3 className="text-primary group-hover:text-accent text-3xl font-semibold tracking-tight transition-colors duration-200 ease-out md:text-5xl">
+            <h3 className="text-primary group-hover:text-accent text-3xl font-semibold tracking-tight md:text-5xl">
               {project.title}
             </h3>
           </div>
@@ -137,7 +137,7 @@ const ProjectsGrid = () => (
               <a href="/projects">
                 View All Projects
                 <HugeiconsIcon
-                  className="text-muted group-hover:text-primary transition-colors duration-200 ease-out"
+                  className="text-muted group-hover:text-primary"
                   color="currentColor"
                   icon={ArrowUpRight01Icon}
                   size={16}

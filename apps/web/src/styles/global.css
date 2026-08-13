@@ -360,39 +360,14 @@
   }
 }
 
-@keyframes spotify-spin-reduced {
-  from {
-    transform: rotate(-6deg);
-  }
-  to {
-    transform: rotate(6deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate-in.slide-in-from-bottom-4 {
     animation-name: fadeIn;
   }
 
-  .spotify-music-bar {
-    animation-duration: 1.5s !important;
-  }
-
+  .spotify-music-bar,
   .spotify-album-art {
-    animation-name: spotify-spin-reduced !important;
-    animation-duration: 8s !important;
-    animation-timing-function: ease-in-out !important;
-    animation-direction: alternate !important;
-  }
-
-  @keyframes music-bar {
-    0%,
-    100% {
-      height: 45%;
-    }
-    50% {
-      height: 60%;
-    }
+    animation: none !important;
   }
 }
 

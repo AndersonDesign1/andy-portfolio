@@ -93,7 +93,7 @@ const ContactForm = () => {
                   Email
                 </span>
                 <a
-                  className="text-primary hover:text-accent text-xl transition-colors"
+                  className="text-primary hover:text-accent text-xl"
                   href="mailto:contact@andersonjoseph.com"
                 >
                   contact@andersonjoseph.com
@@ -168,7 +168,7 @@ const ContactForm = () => {
                   value={field.value}
                 />
                 {field.error && (
-                  <p className="mt-1 font-mono text-xs text-red-500">
+                  <p className="font-mono text-xs text-red-500">
                     {field.error}
                   </p>
                 )}
@@ -194,7 +194,7 @@ const ContactForm = () => {
                 value={form.message}
               />
               {errors.message && (
-                <p className="mt-1 font-mono text-xs text-red-500">
+                <p className="font-mono text-xs text-red-500">
                   {errors.message}
                 </p>
               )}
@@ -202,7 +202,7 @@ const ContactForm = () => {
 
             <div className="pt-8">
               <Button
-                className="border-subtle text-primary hover:border-primary hover:bg-secondary/50 w-full border bg-transparent px-8 py-6 transition-[background-color,border-color,transform,backdrop-filter] duration-150 ease-[var(--ease-out)] hover:backdrop-blur-sm md:w-auto"
+                className="border-subtle text-primary hover:border-primary hover:bg-secondary/50 w-full border bg-transparent px-8 py-6 transition-transform duration-150 ease-[var(--ease-out)] hover:backdrop-blur-sm md:w-auto"
                 disabled={isPending}
                 type="submit"
               >

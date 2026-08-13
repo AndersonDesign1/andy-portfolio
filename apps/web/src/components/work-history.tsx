@@ -59,14 +59,14 @@ const WorkHistory = () => {
             {/* Resume Button */}
             <div className="pt-12">
               <a
-                className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 inline-flex items-center gap-2 rounded-sm border px-6 py-3 text-sm font-medium transition-[background-color,border-color,transform,backdrop-filter] duration-200 ease-[var(--ease-out)] hover:backdrop-blur-sm active:scale-[0.96] motion-reduce:active:scale-100"
+                className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 inline-flex items-center gap-2 rounded-sm border px-6 py-3 text-sm font-medium transition-transform duration-200 ease-[var(--ease-out)] hover:backdrop-blur-sm active:scale-[0.96] motion-reduce:active:scale-100"
                 href="/Anderson Joseph Resume.pdf"
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 View Resume
                 <HugeiconsIcon
-                  className="text-muted group-hover:text-primary transition-colors duration-200 ease-out"
+                  className="text-muted group-hover:text-primary"
                   color="currentColor"
                   icon={ArrowUpRight01Icon}
                   size={16}

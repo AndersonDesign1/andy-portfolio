@@ -54,7 +54,7 @@ const Footer: React.FC = () => (
         {socialLinks.map((link) => (
           <a
             aria-label={link.label}
-            className="text-muted hover:text-accent transition-[color,transform] duration-200 ease-out hover:-translate-y-[3px] motion-reduce:hover:translate-y-0"
+            className="text-muted hover:text-accent focus-visible:ring-foreground focus-visible:ring-offset-background flex size-11 touch-manipulation items-center justify-center rounded-sm transition-transform duration-200 ease-out hover:-translate-y-[3px] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:hover:translate-y-0 md:size-6"
             href={link.href}
             key={link.href}
             rel="noopener noreferrer"
