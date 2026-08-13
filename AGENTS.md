@@ -31,6 +31,7 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 
 - Ultracite **7.10.3** + Biome; overrides live in `apps/web/biome.jsonc` (Astro/React presets).
 - Contact uses Astro Actions (`src/actions/index.ts` → `sendEmail`). Same-origin CSRF applies; curl must send a matching `Origin`.
+- Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
 - Env: prefer `PUBLIC_SANITY_*` / `SANITY_*`; `NEXT_PUBLIC_*` still accepted for compatibility. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.
 - Spotify/email Zod validation: `apps/web/src/lib/env.ts` (reads `import.meta.env` and `process.env`).
 - Revalidate stub: `/api/revalidate-tag` — requires `SANITY_REVALIDATE_SECRET` in app env. On Vercel cutover, point the Sanity webhook at the **Astro** deployment URL + shared secret or blog stays stale until rebuild.
