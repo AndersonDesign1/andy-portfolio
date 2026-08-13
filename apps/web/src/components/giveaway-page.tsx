@@ -7,6 +7,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
+
 import {
   CountdownDisplay,
   useGiveawayStatus,
@@ -52,7 +53,7 @@ const faqs = [
   },
 ];
 
-function FAQItem({
+const FAQItem = ({
   question,
   answer,
   hasContactLink,
@@ -64,82 +65,80 @@ function FAQItem({
   hasContactLink?: boolean;
   isOpen: boolean;
   onClick: () => void;
-}) {
-  return (
-    <div className="border-subtle border-b">
-      <button
-        className="flex w-full items-center justify-between py-6 text-left"
-        onClick={onClick}
-        type="button"
-      >
-        <span className="font-medium text-lg text-primary">{question}</span>
-        <HugeiconsIcon
-          className={`text-muted transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          color="currentColor"
-          icon={ArrowDown01Icon}
-          size={20}
-          strokeWidth={1.5}
-        />
-      </button>
-      <div
-        className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+}) => (
+  <div className="border-subtle border-b">
+    <button
+      className="flex w-full items-center justify-between py-6 text-left"
+      onClick={onClick}
+      type="button"
+    >
+      <span className="text-primary text-lg font-medium">{question}</span>
+      <HugeiconsIcon
+        className={`text-muted transition-transform duration-300 ${
+          isOpen ? "rotate-180" : ""
         }`}
-      >
-        <div className="overflow-hidden">
-          <p className="pb-6 text-secondary leading-relaxed">
-            {answer}
-            {hasContactLink && (
-              <>
-                {" "}
-                <a
-                  className="text-primary transition-opacity hover:opacity-70"
-                  href="/contact"
-                >
-                  Contact me{" "}
-                  <HugeiconsIcon
-                    className="inline"
-                    color="currentColor"
-                    icon={ArrowRight01Icon}
-                    size={16}
-                    strokeWidth={1.5}
-                  />
-                </a>
-              </>
-            )}
-          </p>
-        </div>
+        color="currentColor"
+        icon={ArrowDown01Icon}
+        size={20}
+        strokeWidth={1.5}
+      />
+    </button>
+    <div
+      className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
+        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+      }`}
+    >
+      <div className="overflow-hidden">
+        <p className="text-secondary pb-6 leading-relaxed">
+          {answer}
+          {hasContactLink && (
+            <>
+              {" "}
+              <a
+                className="text-primary transition-opacity hover:opacity-70"
+                href="/contact"
+              >
+                Contact me{" "}
+                <HugeiconsIcon
+                  className="inline"
+                  color="currentColor"
+                  icon={ArrowRight01Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                />
+              </a>
+            </>
+          )}
+        </p>
       </div>
     </div>
-  );
-}
+  </div>
+);
 
-export default function GiveawayPage() {
+const GiveawayPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { status, timeLeft } = useGiveawayStatus();
 
   return (
-    <div className="min-h-screen bg-primary pt-48 md:pt-64">
+    <div className="bg-primary min-h-screen pt-48 md:pt-64">
       {/* Hero Section */}
       <section className="py-20 md:py-32">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
           <div className="flex flex-col gap-8">
-            <h1 className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl">
+            <h1 className="text-primary text-6xl leading-[0.9] font-bold tracking-tighter md:text-8xl lg:text-9xl">
               New Year,
               <br />
               Free Websites.
             </h1>
-            <p className="max-w-2xl text-secondary text-xl leading-relaxed md:text-2xl">
-              Celebrating 2026 by giving back. I'm building free websites for a
-              few lucky winners — no catch, just good vibes.
+            <p className="text-secondary max-w-2xl text-xl leading-relaxed md:text-2xl">
+              Celebrating 2026 by giving back. I&apos;m building free websites
+              for a few lucky winners — no catch, just good vibes.
             </p>
 
             {/* Countdown */}
             {timeLeft && (
               <div className="pt-12">
-                <p className="pb-4 font-mono text-muted text-sm uppercase tracking-widest">
+                <p className="text-muted pb-4 font-mono text-sm tracking-widest uppercase">
                   {status === "pending"
                     ? "Giveaway starts in"
                     : "Time remaining"}
@@ -168,27 +167,27 @@ export default function GiveawayPage() {
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
             <div className="flex flex-col gap-6">
-              <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+              <h2 className="border-subtle text-secondary border-b pb-4 font-mono text-sm tracking-widest uppercase">
                 Why I&apos;m Doing This
               </h2>
-              <p className="text-lg text-secondary leading-relaxed">
+              <p className="text-secondary text-lg leading-relaxed">
                 2025 was a year of growth. I rebuilt my portfolio, worked with
                 amazing clients, and received incredible feedback on my work.
               </p>
-              <p className="text-lg text-secondary leading-relaxed">
+              <p className="text-secondary text-lg leading-relaxed">
                 This giveaway is my way of saying{" "}
                 <span className="text-primary">thank you</span> — and helping
                 others kickstart their online presence without worrying about
                 the cost.
               </p>
-              <p className="text-lg text-secondary leading-relaxed">
+              <p className="text-secondary text-lg leading-relaxed">
                 Whether you&apos;re starting a blog, showcasing your portfolio,
                 or launching a business — I want to help you get online.
               </p>
             </div>
 
             <div className="flex flex-col gap-8">
-              <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+              <h2 className="border-subtle text-secondary border-b pb-4 font-mono text-sm tracking-widest uppercase">
                 What You Get
               </h2>
               <ul className="flex flex-col gap-4">
@@ -200,11 +199,11 @@ export default function GiveawayPage() {
                   "1 month of post-launch support",
                 ].map((item) => (
                   <li
-                    className="flex items-start gap-3 text-lg text-secondary"
+                    className="text-secondary flex items-start gap-3 text-lg"
                     key={item}
                   >
                     <HugeiconsIcon
-                      className="mt-1 text-primary"
+                      className="text-primary mt-1"
                       color="currentColor"
                       icon={Tick01Icon}
                       size={16}
@@ -216,7 +215,7 @@ export default function GiveawayPage() {
               </ul>
 
               <div className="flex flex-col gap-4">
-                <h3 className="font-medium text-primary">How It Works</h3>
+                <h3 className="text-primary font-medium">How It Works</h3>
                 <p className="text-secondary leading-relaxed">
                   Enter the giveaway by filling out the form. If you&apos;re
                   selected as a winner, I&apos;ll reach out and guide you
@@ -231,7 +230,7 @@ export default function GiveawayPage() {
       {/* FAQ Section */}
       <section className="py-20">
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-          <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+          <h2 className="border-subtle text-secondary border-b pb-4 font-mono text-sm tracking-widest uppercase">
             Frequently Asked Questions
           </h2>
           <div className="max-w-3xl pt-12">
@@ -254,21 +253,21 @@ export default function GiveawayPage() {
         <div className="mx-auto max-w-screen-xl px-6 md:px-12">
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-4">
-              <h2 className="font-bold text-4xl text-primary tracking-tighter md:text-5xl">
+              <h2 className="text-primary text-4xl font-bold tracking-tighter md:text-5xl">
                 Ready to enter?
               </h2>
-              <p className="max-w-md text-lg text-secondary">
+              <p className="text-secondary max-w-md text-lg">
                 Fill out the form and you&apos;re in. Hurry — only one week
                 left!
               </p>
             </div>
             <a
-              className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-8 py-4 font-medium text-base text-primary transition-opacity duration-300 hover:opacity-70"
+              className="group border-subtle text-primary inline-flex items-center gap-2 rounded-sm border px-8 py-4 text-base font-medium transition-opacity duration-300 hover:opacity-70"
               href="/giveaway/enter"
             >
               Enter Giveaway
               <HugeiconsIcon
-                className="text-muted transition-colors duration-300 group-hover:text-primary"
+                className="text-muted group-hover:text-primary transition-colors duration-300"
                 color="currentColor"
                 icon={ArrowRight01Icon}
                 size={16}
@@ -280,4 +279,6 @@ export default function GiveawayPage() {
       </section>
     </div>
   );
-}
+};
+
+export default GiveawayPage;

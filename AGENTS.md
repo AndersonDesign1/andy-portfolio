@@ -29,7 +29,8 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 
 ### Astro app notes (`apps/web`)
 
-- Ultracite **7.10.3** + Biome; overrides live in `apps/web/biome.jsonc` (Astro/React presets).
+- Ultracite **7.10.3** + **Oxlint** / **Oxfmt** (`apps/web/oxlint.config.ts`, `oxfmt.config.ts`) with `ultracite/oxlint/{core,astro,react}` plus `oxlint-plugin-react-doctor`. Lint/fix: `bun run --filter=@andy-portfolio/web lint` / `lint:fix` (aliases for `ultracite check` / `fix`). Next archive still uses Biome.
+- Oxlint TS configs need **Node ^20.19 or ≥22.18** on `PATH` (loading `oxlint.config.ts` / `oxfmt.config.ts`). If `node -v` is older (e.g. VM default 22.14), use nvm Node 22.23+ first: `export PATH="$(dirname "$(nvm which 22)"):$PATH"`.
 - Contact uses Astro Actions (`src/actions/index.ts` → `sendEmail`). Same-origin CSRF applies; curl must send a matching `Origin`.
 - Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
 - Env: prefer `PUBLIC_SANITY_*` / `SANITY_*`; `NEXT_PUBLIC_*` still accepted for compatibility. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.
@@ -51,7 +52,7 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 - Resend from this Cloud Agent network may be Cloudflare-blocked (HTTP 1010); validate contact email from a Vercel preview if local submit fails.
 - Spotify idle `{isPlaying:false}` is valid.
 - Astro React islands are separate trees: any island using Motion `m.*` must wrap with `MotionRoot` (`apps/web/src/components/motion-root.tsx`). AppShell already provides LazyMotion for navbar/Spotify.
-- After file edits, `.cursor/hooks.json` `afterFileEdit` runs `bun x ultracite fix`. Commit autofixes or CI lint fails.
+- After file edits in `apps/web`, `.cursor/hooks.json` `afterFileEdit` runs `bun run fix` (`ultracite fix`). Commit autofixes or CI lint fails.
 
 ### Vercel cutover checklist
 

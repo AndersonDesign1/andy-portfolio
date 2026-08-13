@@ -48,38 +48,38 @@ const skillsData: SkillCategory[] = [
   },
 ];
 
-export default function SkillsSection() {
-  return (
-    <section className="bg-primary py-24 md:py-32">
-      <div className="mx-auto max-w-screen-lg px-6 md:px-12">
-        <div className="flex items-end justify-between border-subtle border-b pb-8">
-          <h2 className="font-mono text-secondary text-sm uppercase tracking-widest">
-            Expertise
-          </h2>
-        </div>
+const SkillsSection = () => (
+  <section className="bg-primary py-24 md:py-32">
+    <div className="mx-auto max-w-screen-lg px-6 md:px-12">
+      <div className="border-subtle flex items-end justify-between border-b pb-8">
+        <h2 className="text-secondary font-mono text-sm tracking-widest uppercase">
+          Expertise
+        </h2>
+      </div>
 
-        <div className="pt-20">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-y-24">
-            {skillsData.map((category) => (
-              <div className="group" key={category.title}>
-                <h3 className="pb-6 font-medium text-primary text-xl">
-                  {category.title}
-                </h3>
-                <ul className="flex flex-col gap-3">
-                  {category.skills.map((skill) => (
-                    <li
-                      className="text-base text-secondary transition-colors duration-200 ease-out hover:text-primary"
-                      key={skill}
-                    >
-                      {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+      <div className="pt-20">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-y-24">
+          {skillsData.map((category) => (
+            <div className="group" key={category.title}>
+              <h3 className="text-primary pb-6 text-xl font-medium">
+                {category.title}
+              </h3>
+              <ul className="flex flex-col gap-3">
+                {category.skills.map((skill) => (
+                  <li
+                    className="text-secondary hover:text-primary text-base transition-colors duration-200 ease-out"
+                    key={skill}
+                  >
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
-    </section>
-  );
-}
+    </div>
+  </section>
+);
+
+export default SkillsSection;

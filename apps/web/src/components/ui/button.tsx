@@ -1,11 +1,12 @@
 import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-none font-medium text-sm ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center rounded-none text-sm font-medium whitespace-nowrap transition-all duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
   {
     defaultVariants: {
       size: "default",
@@ -24,7 +25,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-secondary/50 hover:text-accent",
         link: "text-primary underline-offset-4 hover:underline",
         outline:
-          "border border-subtle bg-transparent text-primary hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-lg",
+          "border-subtle text-primary hover:border-primary hover:bg-secondary/50 border bg-transparent hover:backdrop-blur-lg",
         secondary: "bg-secondary text-primary hover:bg-secondary/80",
       },
     },
@@ -36,25 +37,20 @@ type ButtonProps = React.ComponentProps<"button"> &
     asChild?: boolean;
   };
 
-function Button({
+const Button = ({
   className,
   variant,
   size,
   asChild = false,
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   const classes = cn(buttonVariants({ className, size, variant }));
 
   if (asChild) {
-    return (
-      <Slot
-        className={classes}
-        {...(props as React.ComponentProps<typeof Slot>)}
-      />
-    );
+    return <Slot className={classes} {...props} />;
   }
 
   return <button className={classes} type="button" {...props} />;
-}
+};
 
 export { Button };

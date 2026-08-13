@@ -1,12 +1,12 @@
-export const prerender = false;
-
 import type { APIRoute } from "astro";
+
 import { getServerEnv } from "@/lib/env";
 
-const HTTP_STATUS_NO_CONTENT = 204;
-const HTTP_STATUS_BAD_REQUEST = 400;
+export const prerender = false;
 
-async function getAccessToken() {
+const HTTP_STATUS_NO_CONTENT = 204;
+
+const getAccessToken = async (): Promise<string> => {
   const env = getServerEnv();
   const basic = Buffer.from(
     `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
@@ -23,39 +23,38 @@ async function getAccessToken() {
     },
     method: "POST",
   });
-  return response.json();
-}
+  if (!response.ok) {
+    throw new Error(`Spotify token request failed with ${response.status}`);
+  }
+  const data = await response.json();
+  return data.access_token;
+};
 
 export const GET: APIRoute = async () => {
-  const { access_token } = await getAccessToken();
+  const accessToken = await getAccessToken();
 
   let res = await fetch(
     "https://api.spotify.com/v1/me/player/currently-playing",
     {
-      headers: { Authorization: `Bearer ${access_token}` },
+      headers: { Authorization: `Bearer ${accessToken}` },
     }
   );
 
-  if (
-    res.status === HTTP_STATUS_NO_CONTENT ||
-    res.status > HTTP_STATUS_BAD_REQUEST
-  ) {
+  if (res.status === HTTP_STATUS_NO_CONTENT || !res.ok) {
     res = await fetch(
       "https://api.spotify.com/v1/me/player/recently-played?limit=1",
       {
-        headers: { Authorization: `Bearer ${access_token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
+    if (!res.ok) {
+      throw new Error(`Spotify history request failed with ${res.status}`);
+    }
     const data = await res.json();
     const track = data.items?.[0]?.track;
-    return new Response(JSON.stringify({ isPlaying: false, ...track }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return Response.json({ isPlaying: false, ...track });
   }
 
   const data = await res.json();
-  return new Response(
-    JSON.stringify({ isPlaying: data.is_playing, ...data.item }),
-    { headers: { "Content-Type": "application/json" } }
-  );
+  return Response.json({ isPlaying: data.is_playing, ...data.item });
 };

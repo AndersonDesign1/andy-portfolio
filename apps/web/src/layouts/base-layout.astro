@@ -37,15 +37,17 @@ const meta = buildPageMeta({ description, title });
     <script is:inline>
       (() => {
         try {
-          var t = localStorage.getItem("andy-theme");
-          var d =
+          const t = localStorage.getItem("andy-theme");
+          const d =
             t === "dark" ||
             ((!t || t === "system") &&
               window.matchMedia("(prefers-color-scheme: dark)").matches);
-          var c = document.documentElement.classList;
+          const c = document.documentElement.classList;
           c.remove("light", "dark");
           c.add(d ? "dark" : "light");
-        } catch {}
+        } catch {
+          // Theme initialization must not block first paint.
+        }
       })();
     </script>
   </head>

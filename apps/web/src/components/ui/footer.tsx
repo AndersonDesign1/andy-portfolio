@@ -11,7 +11,6 @@ const XIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
     fill="currentColor"
-    role="img"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -39,52 +38,50 @@ const socialLinks = [
   },
 ];
 
-const Footer: React.FC = () => {
-  return (
-    <footer className="relative border-subtle border-t bg-primary py-12 md:py-24">
-      <div className="mx-auto flex max-w-screen-lg flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
-        {/* Copyright - Left aligned on desktop */}
-        <p
-          className="order-2 font-mono text-muted text-sm tracking-tight md:order-1"
-          suppressHydrationWarning
-        >
-          © {CURRENT_YEAR} Anderson Joseph
-        </p>
+const Footer: React.FC = () => (
+  <footer className="border-subtle bg-primary relative border-t py-12 md:py-24">
+    <div className="mx-auto flex max-w-screen-lg flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
+      {/* Copyright - Left aligned on desktop */}
+      <p
+        className="text-muted order-2 font-mono text-sm tracking-tight md:order-1"
+        suppressHydrationWarning
+      >
+        © {CURRENT_YEAR} Anderson Joseph
+      </p>
 
-        {/* Social links - Right aligned on desktop */}
-        <div className="order-1 flex justify-center gap-6 md:order-2">
-          {socialLinks.map((link) => (
-            <a
-              aria-label={link.label}
-              className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
-              href={link.href}
-              key={link.href}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {(() => {
-                const CustomIcon = link.customIcon;
-                if (link.icon) {
-                  return (
-                    <HugeiconsIcon
-                      color="currentColor"
-                      icon={link.icon}
-                      size={16}
-                      strokeWidth={1.5}
-                    />
-                  );
-                }
-                if (CustomIcon) {
-                  return <CustomIcon className="size-4" />;
-                }
-                return null;
-              })()}
-            </a>
-          ))}
-        </div>
+      {/* Social links - Right aligned on desktop */}
+      <div className="order-1 flex justify-center gap-6 md:order-2">
+        {socialLinks.map((link) => (
+          <a
+            aria-label={link.label}
+            className="text-muted hover:text-accent transition-all duration-200 ease-out hover:-translate-y-[3px]"
+            href={link.href}
+            key={link.href}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {(() => {
+              const CustomIcon = link.customIcon;
+              if (link.icon) {
+                return (
+                  <HugeiconsIcon
+                    color="currentColor"
+                    icon={link.icon}
+                    size={16}
+                    strokeWidth={1.5}
+                  />
+                );
+              }
+              if (CustomIcon) {
+                return <CustomIcon className="size-4" />;
+              }
+              return null;
+            })()}
+          </a>
+        ))}
       </div>
-    </footer>
-  );
-};
+    </div>
+  </footer>
+);
 
 export default Footer;

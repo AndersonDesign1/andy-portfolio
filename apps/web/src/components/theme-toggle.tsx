@@ -16,7 +16,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -28,14 +28,15 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="size-8" />; // Invisible skeleton prevents layout shift
+    // Invisible skeleton prevents layout shift.
+    return <div className="size-8" />;
   }
 
   return (
     <Select onValueChange={setTheme} value={theme || "system"}>
       <SelectTrigger
         aria-label="Select theme"
-        className="size-8 rounded-full border-none bg-transparent p-0 text-muted shadow-none ring-offset-0 transition-colors hover:text-primary focus:ring-0 focus:ring-offset-0 [&>span]:hidden"
+        className="text-muted hover:text-primary size-8 rounded-full border-none bg-transparent p-0 shadow-none ring-offset-0 transition-colors focus:ring-0 focus:ring-offset-0 [&>span]:hidden"
         suppressHydrationWarning
       >
         {theme === "light" && (
@@ -100,4 +101,4 @@ export function ThemeToggle() {
       </SelectContent>
     </Select>
   );
-}
+};

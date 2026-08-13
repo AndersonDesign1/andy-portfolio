@@ -10,6 +10,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+
 import {
   SCROLL_DURATION,
   SCROLL_EASING_CONSTANT,
@@ -18,6 +19,12 @@ import {
 
 const LENIS_IDLE_TIMEOUT_MS = 900;
 const LENIS_FALLBACK_DELAY_MS = 180;
+const LENIS_START_EVENTS: (keyof WindowEventMap)[] = [
+  "wheel",
+  "touchstart",
+  "pointerdown",
+  "keydown",
+];
 
 interface ScrollContextType {
   lenis: Lenis | null;
@@ -33,21 +40,43 @@ interface ScrollProviderProps {
   children: React.ReactNode;
 }
 
-function subscribeReducedMotion(onStoreChange: () => void) {
+const subscribeReducedMotion = (onStoreChange: () => void) => {
   const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   mediaQuery.addEventListener("change", onStoreChange);
   return () => mediaQuery.removeEventListener("change", onStoreChange);
-}
+};
 
-function getReducedMotionSnapshot() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
+const getReducedMotionSnapshot = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function getReducedMotionServerSnapshot() {
-  return false;
-}
+const getReducedMotionServerSnapshot = () => false;
 
-export default function ScrollProvider({ children }: ScrollProviderProps) {
+const createScrollContextValue = (
+  lenis: Lenis | null,
+  prefersReducedMotion: boolean
+): ScrollContextType => ({ lenis, prefersReducedMotion });
+
+const subscribeLenisStart = (
+  startLenis: () => void,
+  handleVisibilityChange: () => void
+) => {
+  for (const eventName of LENIS_START_EVENTS) {
+    window.addEventListener(eventName, startLenis, {
+      once: true,
+      passive: eventName !== "keydown",
+    });
+  }
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  return () => {
+    for (const eventName of LENIS_START_EVENTS) {
+      window.removeEventListener(eventName, startLenis);
+    }
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+  };
+};
+
+const ScrollProvider = ({ children }: ScrollProviderProps) => {
   const lenisRef = useRef<Lenis | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const [lenis, setLenis] = useState<Lenis | null>(null);
@@ -59,9 +88,18 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
   );
 
   useEffect(() => {
-    let removeVisibilityListener: (() => void) | null = null;
-    let cleanupEnableTriggers: (() => void) | null = null;
     let started = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let idleId: number | null = null;
+    let removeStartListeners: (() => void) | null = null;
+    const requestIdle =
+      "requestIdleCallback" in globalThis
+        ? globalThis.requestIdleCallback.bind(globalThis)
+        : null;
+    const cancelIdle =
+      "cancelIdleCallback" in globalThis
+        ? globalThis.cancelIdleCallback.bind(globalThis)
+        : null;
 
     const syncLenis = (nextLenis: Lenis | null) => {
       lenisRef.current = nextLenis;
@@ -73,6 +111,11 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     const destroyLenis = () => {
       lenisRef.current?.destroy();
       syncLenis(null);
+    };
+
+    const raf = (time: number) => {
+      lenisRef.current?.raf(time);
+      rafIdRef.current = requestAnimationFrame(raf);
     };
 
     const startLenis = () => {
@@ -97,34 +140,18 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
       });
 
       syncLenis(lenisInstance);
-
-      const raf = (time: number) => {
-        lenisRef.current?.raf(time);
-        rafIdRef.current = requestAnimationFrame(raf);
-      };
-
       rafIdRef.current = requestAnimationFrame(raf);
+    };
 
-      const handleVisibilityChange = () => {
-        if (document.hidden) {
-          if (rafIdRef.current) {
-            cancelAnimationFrame(rafIdRef.current);
-            rafIdRef.current = null;
-          }
-        } else if (!rafIdRef.current) {
-          rafIdRef.current = requestAnimationFrame(raf);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
         }
-      };
-
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-      removeVisibilityListener = () => {
-        document.removeEventListener(
-          "visibilitychange",
-          handleVisibilityChange
-        );
-      };
-
-      cleanupEnableTriggers?.();
+      } else if (started && !rafIdRef.current) {
+        rafIdRef.current = requestAnimationFrame(raf);
+      }
     };
 
     if (prefersReducedMotion) {
@@ -133,73 +160,43 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
         rafIdRef.current = null;
       }
       destroyLenis();
-      return;
+    } else {
+      timeoutId = globalThis.setTimeout(startLenis, LENIS_FALLBACK_DELAY_MS);
+      if (requestIdle && cancelIdle) {
+        idleId = requestIdle(startLenis, { timeout: LENIS_IDLE_TIMEOUT_MS });
+      }
+      removeStartListeners = subscribeLenisStart(
+        startLenis,
+        handleVisibilityChange
+      );
     }
 
-    const interactionEvents: Array<keyof WindowEventMap> = [
-      "wheel",
-      "touchstart",
-      "pointerdown",
-      "keydown",
-    ];
-
-    const timeoutId = globalThis.setTimeout(
-      startLenis,
-      LENIS_FALLBACK_DELAY_MS
-    );
-    const requestIdle =
-      "requestIdleCallback" in globalThis
-        ? globalThis.requestIdleCallback.bind(globalThis)
-        : null;
-    const cancelIdle =
-      "cancelIdleCallback" in globalThis
-        ? globalThis.cancelIdleCallback.bind(globalThis)
-        : null;
-    let idleId: number | null = null;
-
-    if (requestIdle && cancelIdle) {
-      idleId = requestIdle(startLenis, { timeout: LENIS_IDLE_TIMEOUT_MS });
-    }
-
-    for (const eventName of interactionEvents) {
-      window.addEventListener(eventName, startLenis, {
-        once: true,
-        passive: eventName !== "keydown",
-      });
-    }
-
-    cleanupEnableTriggers = () => {
-      globalThis.clearTimeout(timeoutId);
+    return () => {
+      if (timeoutId !== null) {
+        globalThis.clearTimeout(timeoutId);
+      }
       if (idleId !== null && cancelIdle) {
         cancelIdle(idleId);
       }
-      for (const eventName of interactionEvents) {
-        window.removeEventListener(eventName, startLenis);
-      }
-    };
-
-    return () => {
-      cleanupEnableTriggers?.();
-
+      removeStartListeners?.();
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
-
-      if (removeVisibilityListener) {
-        removeVisibilityListener();
-      }
-
       destroyLenis();
     };
   }, [prefersReducedMotion]);
 
+  const contextValue = createScrollContextValue(lenis, prefersReducedMotion);
+
   return (
-    <ScrollContext.Provider value={{ lenis, prefersReducedMotion }}>
+    <ScrollContext.Provider value={contextValue}>
       {children}
     </ScrollContext.Provider>
   );
-}
+};
+
+export default ScrollProvider;
 
 export const useLenis = () => {
   const context = useContext(ScrollContext);

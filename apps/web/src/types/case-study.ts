@@ -1,15 +1,15 @@
 export interface CaseStudy {
   approach: {
     methodology: string;
-    phases: Array<{
+    phases: {
       name: string;
       duration: string;
       activities: string[];
-    }>;
-    keyDecisions: Array<{
+    }[];
+    keyDecisions: {
       decision: string;
       rationale: string;
-    }>;
+    }[];
     research: string[];
     wireframes?: string[];
     collaboration: string;
@@ -23,11 +23,11 @@ export interface CaseStudy {
     metrics: string[];
   };
   gallery: {
-    images: Array<{
+    images: {
       src: string;
       alt: string;
       title: string;
-    }>;
+    }[];
   };
   goals: {
     primary: string[];
@@ -45,18 +45,18 @@ export interface CaseStudy {
   };
   id: string;
   results: {
-    beforeAfter: Array<{
+    beforeAfter: {
       metric: string;
       before: string;
       after: string;
       improvement: string;
-    }>;
+    }[];
     metrics: string[];
-    testimonials?: Array<{
+    testimonials?: {
       name: string;
       role: string;
       quote: string;
-    }>;
+    }[];
     deliverables: string[];
     achievements: string[];
   };

@@ -1,29 +1,28 @@
 ---
 import CaseStudyPage from "../../components/case-study-page.tsx";
 import caseStudiesDataJson from "../../data/case-studies.json";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { CaseStudiesData } from "../../types/case-study";
+import BaseLayout from "../../layouts/base-layout.astro";
+import type { CaseStudiesData, CaseStudy } from "../../types/case-study";
 
 export const prerender = true;
 
-export function getStaticPaths() {
-  const data = caseStudiesDataJson as CaseStudiesData;
-  return Object.keys(data.caseStudies).map((entrySlug) => ({
+const caseStudiesData: CaseStudiesData = caseStudiesDataJson;
+
+export const getStaticPaths = () =>
+  Object.entries(caseStudiesDataJson.caseStudies).map(([entrySlug, caseStudy]) => ({
     params: { slug: entrySlug },
-    props: { caseStudy: data.caseStudies[entrySlug] },
+    props: { caseStudy },
   }));
+
+interface Props {
+  caseStudy: CaseStudy;
 }
 
-const caseStudiesData = caseStudiesDataJson as CaseStudiesData;
+const { caseStudy: cs } = Astro.props;
 const { slug } = Astro.params;
-const cs = Astro.props.caseStudy ?? caseStudiesData.caseStudies[slug!];
-
-if (!cs) {
-  return Astro.redirect("/404");
-}
 
 const slugs = Object.keys(caseStudiesData.caseStudies);
-const currentIndex = slugs.indexOf(slug!);
+const currentIndex = slugs.indexOf(slug ?? "");
 const prevSlug = currentIndex > 0 ? slugs[currentIndex - 1] : undefined;
 const nextSlug =
   currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : undefined;
