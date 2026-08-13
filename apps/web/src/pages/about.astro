@@ -1,0 +1,11 @@
+---
+import AboutPage from "../components/about-page.tsx";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  description="About Anderson Joseph — full stack developer and SEO expert."
+  title="About"
+>
+  <AboutPage client:visible />
+</BaseLayout>

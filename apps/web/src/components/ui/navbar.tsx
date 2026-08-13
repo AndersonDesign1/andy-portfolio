@@ -3,13 +3,17 @@
 import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, m } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { debounce } from "@/lib/utils";
+
+function usePathname() {
+  if (typeof window === "undefined") {
+    return "";
+  }
+  return window.location.pathname;
+}
 
 const menuItems = [
   { label: "Home", link: "/" },
@@ -57,24 +61,22 @@ export default function Navbar() {
       >
         <div className="mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
           {/* Logo */}
-          <Link className="shrink-0" href="/" prefetch>
-            <Image
+          <a className="shrink-0" href="/">
+            <img
               alt="Logo"
               className="object-contain dark:hidden"
               height={40}
-              priority
               src="/logo-black.png"
               width={90}
             />
-            <Image
+            <img
               alt="Logo"
               className="hidden object-contain dark:block"
               height={40}
-              priority
               src="/logo-white.png"
               width={90}
             />
-          </Link>
+          </a>
 
           {/* Desktop Menu */}
           <div className="hidden items-center gap-8 md:flex">
@@ -83,7 +85,7 @@ export default function Navbar() {
                 const isActive = pathname === link;
                 return (
                   <li key={label}>
-                    <Link
+                    <a
                       aria-current={isActive ? "page" : undefined}
                       className={`font-medium text-sm transition-colors duration-200 ${
                         isActive
@@ -91,10 +93,9 @@ export default function Navbar() {
                           : "text-muted hover:text-accent"
                       }`}
                       href={link}
-                      prefetch
                     >
                       {label}
-                    </Link>
+                    </a>
                   </li>
                 );
               })}
@@ -169,7 +170,7 @@ export default function Navbar() {
                     key={label}
                     transition={{ delay: index * 0.05, duration: 0.2 }}
                   >
-                    <Link
+                    <a
                       aria-current={isActive ? "page" : undefined}
                       className={`font-medium text-2xl transition-colors duration-200 ${
                         isActive
@@ -178,10 +179,9 @@ export default function Navbar() {
                       }`}
                       href={link}
                       onClick={() => setIsOpen(false)}
-                      prefetch
                     >
                       {label}
-                    </Link>
+                    </a>
                   </m.div>
                 );
               })}

@@ -1,0 +1,35 @@
+---
+import { client } from "@andy-portfolio/sanity-config";
+import BlogList from "../../components/bloglist.tsx";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export const prerender = true;
+
+async function getPosts() {
+  try {
+    return await client.fetch(
+      `*[_type == "post"] | order(publishedAt desc){
+        _id,
+        title,
+        slug,
+        excerpt,
+        _createdAt,
+        publishedAt,
+        mainImage{ asset->, alt, caption },
+        categories[]->{ _id, title, slug, description }
+      }`
+    );
+  } catch {
+    return [];
+  }
+}
+
+const posts = await getPosts();
+---
+
+<BaseLayout
+  description="Thoughts on web development, SEO strategies, and lessons learned from building digital products."
+  title="Blog"
+>
+  <BlogList posts={posts} client:visible />
+</BaseLayout>

@@ -2,7 +2,6 @@
 
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 import educationData from "@/data/education.json" with { type: "json" };
 import workExperienceData from "@/data/work-experience.json" with {
   type: "json",
@@ -60,7 +59,7 @@ export default function WorkHistory() {
 
             {/* Resume Button */}
             <div className="pt-12">
-              <Link
+              <a
                 className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 ease-out hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
                 href="/Anderson Joseph Resume.pdf"
                 rel="noopener noreferrer"
@@ -74,7 +73,7 @@ export default function WorkHistory() {
                   size={16}
                   strokeWidth={1.5}
                 />
-              </Link>
+              </a>
             </div>
           </div>
 

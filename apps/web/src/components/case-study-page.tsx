@@ -7,9 +7,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, m } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
+import MotionRoot from "@/components/motion-root";
 import { ANIMATION_EASE_CUBIC } from "@/lib/constants";
 import type { CaseStudy, CaseStudyNavigation } from "@/types/case-study";
 
@@ -17,11 +16,11 @@ const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
-    y: 0,
     transition: {
       duration: 0.4,
       ease: ANIMATION_EASE_CUBIC,
     },
+    y: 0,
   },
 };
 
@@ -29,7 +28,7 @@ const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+    transition: { delayChildren: 0.1, staggerChildren: 0.05 },
   },
 };
 
@@ -43,7 +42,7 @@ function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
         >
-          <Link
+          <a
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/projects"
           >
@@ -54,10 +53,10 @@ function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
               strokeWidth={1.5}
             />
             Back to Projects
-          </Link>
+          </a>
 
           {caseStudy.hero.liveUrl && (
-            <Link
+            <a
               className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
               href={caseStudy.hero.liveUrl}
               rel="noopener noreferrer"
@@ -70,7 +69,7 @@ function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
                 strokeWidth={1.5}
               />
               Live Site
-            </Link>
+            </a>
           )}
         </m.div>
       </div>
@@ -127,12 +126,9 @@ function CaseStudyHeader({ caseStudy }: { caseStudy: CaseStudy }) {
             initial={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: ANIMATION_EASE_CUBIC }}
           >
-            <Image
+            <img
               alt={caseStudy.hero.title}
               className="object-contain"
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
               src={caseStudy.hero.heroImage}
             />
           </m.div>
@@ -316,12 +312,10 @@ function CaseStudyContent({
                   onClick={() => onSelectImage(image.src)}
                   type="button"
                 >
-                  <Image
+                  <img
                     alt={image.alt || `Project image ${index + 1}`}
                     className="object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-                    fill
                     loading="lazy"
-                    sizes="(max-width: 1200px) 100vw, 1200px"
                     src={image.src}
                   />
                 </button>
@@ -345,7 +339,7 @@ function CaseStudyContent({
             <div className="grid grid-cols-2">
               <div className="group border-subtle border-r py-12 pr-6 transition-colors hover:bg-secondary/5 md:py-24">
                 {navigation.prev ? (
-                  <Link
+                  <a
                     className="block h-full"
                     href={`/case-studies/${navigation.prev.slug}`}
                   >
@@ -364,14 +358,14 @@ function CaseStudyContent({
                         {navigation.prev.title}
                       </h3>
                     </div>
-                  </Link>
+                  </a>
                 ) : (
                   <div className="select-none opacity-0">Placeholder</div>
                 )}
               </div>
               <div className="group border-subtle py-12 pl-6 text-right transition-colors hover:bg-secondary/5 md:py-24 md:pl-12">
                 {navigation.next ? (
-                  <Link
+                  <a
                     className="block h-full"
                     href={`/case-studies/${navigation.next.slug}`}
                   >
@@ -390,7 +384,7 @@ function CaseStudyContent({
                         strokeWidth={1.5}
                       />
                     </div>
-                  </Link>
+                  </a>
                 ) : (
                   <div className="select-none opacity-0">Placeholder</div>
                 )}
@@ -434,19 +428,16 @@ function CaseStudyLightbox({
             <span className="sr-only">Close</span>
           </button>
           <m.div
-            animate={{ scale: 1, opacity: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
             className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
-            exit={{ scale: 0.9, opacity: 0 }}
-            initial={{ scale: 0.9, opacity: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             onClick={(event) => event.stopPropagation()}
-            transition={{ type: "spring", duration: 0.5 }}
+            transition={{ duration: 0.5, type: "spring" }}
           >
-            <Image
+            <img
               alt="Enlarged gallery view"
               className="object-contain"
-              fill
-              priority
-              sizes="100vw"
               src={selectedImage}
             />
           </m.div>
@@ -466,17 +457,19 @@ export default function CaseStudyPage({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-primary pt-40 md:pt-48">
-      <CaseStudyHeader caseStudy={caseStudy} />
-      <CaseStudyContent
-        caseStudy={caseStudy}
-        navigation={navigation}
-        onSelectImage={setSelectedImage}
-      />
-      <CaseStudyLightbox
-        onClose={() => setSelectedImage(null)}
-        selectedImage={selectedImage}
-      />
-    </div>
+    <MotionRoot>
+      <div className="min-h-screen bg-primary pt-40 md:pt-48">
+        <CaseStudyHeader caseStudy={caseStudy} />
+        <CaseStudyContent
+          caseStudy={caseStudy}
+          navigation={navigation}
+          onSelectImage={setSelectedImage}
+        />
+        <CaseStudyLightbox
+          onClose={() => setSelectedImage(null)}
+          selectedImage={selectedImage}
+        />
+      </div>
+    </MotionRoot>
   );
 }

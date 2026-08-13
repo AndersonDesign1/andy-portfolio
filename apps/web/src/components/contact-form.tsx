@@ -1,44 +1,21 @@
 "use client";
 
+import { actions } from "astro:actions";
 import type React from "react";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
-import {
-  INITIAL_CONTACT_SUBMISSION_STATE,
-  sendEmail,
-} from "@/app/actions/send-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { EMAIL_REGEX } from "@/lib/constants";
 
-const initialForm = { name: "", email: "", subject: "", message: "" };
+const initialForm = { email: "", message: "", name: "", subject: "" };
 
 export default function ContactForm() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
   const formRef = useRef<HTMLFormElement>(null);
-  const [submissionState, formAction, isPending] = useActionState(
-    sendEmail,
-    INITIAL_CONTACT_SUBMISSION_STATE
-  );
-
-  useEffect(() => {
-    if (submissionState.status === "idle") {
-      return;
-    }
-
-    if (submissionState.success) {
-      toast.success(submissionState.message);
-      setErrors({});
-      setForm(initialForm);
-      formRef.current?.reset();
-    } else {
-      toast.error(
-        submissionState.message || "Failed to send message. Please try again."
-      );
-    }
-  }, [submissionState]);
+  const [isPending, startTransition] = useTransition();
 
   function validate() {
     const e: { [k: string]: string } = {};
@@ -68,18 +45,31 @@ export default function ContactForm() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (!validate()) {
-      e.preventDefault();
       toast.error("Please fix the errors in the form");
+      return;
     }
+
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => {
+      const result = await actions.sendEmail(formData);
+      if (result.error) {
+        toast.error(result.error.message || "Failed to send message.");
+        return;
+      }
+      toast.success(result.data?.message || "Message sent!");
+      setErrors({});
+      setForm(initialForm);
+      formRef.current?.reset();
+    });
   }
 
   return (
     <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
-          {/* Header */}
           <div>
             <h1 className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl">
               Let&apos;s
@@ -91,25 +81,23 @@ export default function ContactForm() {
                 Have a project in mind or want to collaborate? I&apos;m
                 currently open to new opportunities.
               </p>
-
               <div className="flex flex-col gap-4">
                 <span className="font-mono text-muted text-sm uppercase tracking-widest">
                   Email
                 </span>
                 <a
                   className="text-primary text-xl transition-colors hover:text-accent"
-                  href="mailto:hello@andersonjoseph.com"
+                  href="mailto:contact@andersonjoseph.com"
                 >
-                  hello@andersonjoseph.com
+                  contact@andersonjoseph.com
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Form */}
           <form
-            action={formAction}
-            className="flex flex-col gap-8"
+            className="relative flex flex-col gap-8"
+            method="POST"
             noValidate
             onSubmit={handleSubmit}
             ref={formRef}
@@ -130,28 +118,28 @@ export default function ContactForm() {
             </div>
             {[
               {
+                error: errors.name,
                 label: "Name",
                 name: "name",
+                placeholder: "John Doe…",
                 type: "text",
                 value: form.name,
-                error: errors.name,
-                placeholder: "John Doe",
               },
               {
+                error: errors.email,
                 label: "Email",
                 name: "email",
+                placeholder: "john@example.com…",
                 type: "email",
                 value: form.email,
-                error: errors.email,
-                placeholder: "john@example.com",
               },
               {
+                error: undefined,
                 label: "Subject",
                 name: "subject",
+                placeholder: "Project Inquiry…",
                 type: "text",
                 value: form.subject,
-                error: undefined,
-                placeholder: "Project Inquiry",
               },
             ].map((field) => (
               <div className="flex flex-col gap-2" key={field.name}>

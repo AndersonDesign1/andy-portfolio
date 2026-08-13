@@ -1,20 +1,18 @@
 "use client";
 
-import Link from "next/link";
-
 interface Category {
   _id: string;
-  title: string;
-  slug: { current: string };
   description?: string;
+  slug: { current: string };
+  title: string;
 }
 interface SanityPost {
-  title: string;
-  slug: { current: string };
-  excerpt?: string;
   _createdAt: string;
-  publishedAt?: string;
   categories?: (Category | null)[];
+  excerpt?: string;
+  publishedAt?: string;
+  slug: { current: string };
+  title: string;
 }
 
 export default function BlogList({ posts }: { posts: SanityPost[] }) {
@@ -42,7 +40,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
               className="group border-subtle border-b last:border-none"
               key={post.slug.current}
             >
-              <Link
+              <a
                 className="flex flex-col gap-4 py-8 md:flex-row md:items-baseline md:gap-16 md:py-12"
                 href={`/blog/${post.slug.current}`}
               >
@@ -60,7 +58,7 @@ export default function BlogList({ posts }: { posts: SanityPost[] }) {
                     </p>
                   )}
                 </div>
-              </Link>
+              </a>
             </div>
           ))}
         </div>

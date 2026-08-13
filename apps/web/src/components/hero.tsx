@@ -23,24 +23,24 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const socialLinks = [
   {
-    icon: GithubIcon,
     href: "https://github.com/AndersonDesign1",
+    icon: GithubIcon,
     label: "GitHub",
   },
   {
-    icon: null,
     customIcon: XIcon,
     href: "https://x.com/_Andersonjosh",
+    icon: null,
     label: "X (Twitter)",
   },
   {
-    icon: Linkedin02Icon,
     href: "https://linkedin.com/in/anderson-josh",
+    icon: Linkedin02Icon,
     label: "LinkedIn",
   },
   {
+    href: "mailto:contact@andersonjoseph.com",
     icon: Mail01Icon,
-    href: "mailto:hello@andersonjoseph.com",
     label: "Email",
   },
 ];

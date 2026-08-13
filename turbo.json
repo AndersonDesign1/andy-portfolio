@@ -24,6 +24,9 @@
     "lint:fix": {
       "dependsOn": ["^lint:fix"]
     },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
     "deploy": {
       "dependsOn": ["build"],
       "cache": false

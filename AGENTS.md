@@ -2,29 +2,61 @@
 
 ## Cursor Cloud specific instructions
 
-This is a Bun + Turbo monorepo (`andy-portfolio`) with two runnable apps and one shared package:
+Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 
-- `apps/web` — Next.js 16 (App Router, Turbopack) portfolio + blog. Dev on `http://localhost:3000`.
-- `apps/studio` — Sanity Studio CMS. Dev on `http://localhost:3333`.
-- `packages/sanity-config` — shared Sanity schemas/client (no build/lint/test scripts).
+| App | Path | Dev port | Role |
+| --- | --- | --- | --- |
+| Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` |
+| Web (archive) | `apps/web-next` | `3001` | Next.js 16.3 reference — keep buildable; do not treat as primary |
+| Studio | `apps/studio` | `3333` | Sanity CMS (binds `localhost` / IPv6; use `http://localhost:3333`, not `127.0.0.1`) |
+| Shared | `packages/sanity-config` | — | Framework-agnostic Sanity schemas/client |
 
 ### Package manager
 
-The package manager is Bun (pinned to `bun@1.1.38` in root `package.json`). It is installed on the VM and symlinked to `/usr/local/bin/bun`, so it is on `PATH` in non-interactive shells. Dependencies are refreshed automatically by the startup update script (`bun install`).
+Bun pinned to `bun@1.3.14` in root `package.json` (Cloud Agent / CI / Vercel should match). Startup update script runs `bun install`. Keep the text `bun.lock` in sync — Bun 1.3+ uses `bun.lock` (not `bun.lockb`); a stale/hand-patched lockfile breaks `--frozen-lockfile` and Vercel installs.
 
-### Common commands (see root `package.json` / `turbo.json`)
+### Common commands
 
-- Run everything in dev: `bun dev` (turbo runs `next dev` + `sanity dev` together).
-- Lint: `bun lint` (only `apps/web` has a lint task; runs `biome check .`).
-- Format: `bun format`.
-- There is no automated test suite in this repo (no `test` scripts).
+See root `package.json` / `turbo.json`: `bun dev`, `bun lint`, `bun format` / `ultracite fix`. No automated test suite.
 
-### Non-obvious caveats
+App-scoped:
 
-- `bun run build` currently fails at the TypeScript type-check step in `apps/web/src/components/ui/button.tsx` (a pre-existing radix `Slot` vs button-props type mismatch). This is a source/type issue, not an environment problem, and does not affect `bun dev` — the dev server compiles and serves pages normally. The `apps/studio` build succeeds.
-- Env is read from `.env.local` at the repo root **and** copied to `apps/web/.env.local` and `apps/studio/.env.local` (Next.js and Sanity load from their app dirs). Those files are gitignored. Cloud Agent secrets are injected into the process environment; write them into those `.env.local` files and restart `bun dev` after secrets change. Restart is required — Next/Sanity do not reliably pick up new env files on an already-running `bun dev`.
-- `apps/web/src/lib/env.ts` validates `SPOTIFY_*` and `RESEND_API_KEY` with Zod and throws at import time if they are missing. Those vars are only imported by the Spotify/email routes and server actions, so missing values only break those specific routes — not the whole site.
-- Homepage, projects, and work-history content come from static JSON in `apps/web/src/data`. Blog posts come from Sanity; `/blog` is wrapped in try/catch and falls back to an empty list if Sanity is unreachable.
-- `SANITY_STUDIO_PROJECT_ID` must be the same 8-character Sanity project id as `NEXT_PUBLIC_SANITY_PROJECT_ID`. If they differ, Studio gets `404` from the Sanity API. Point Studio at the web project id. Studio still requires a Sanity login in the browser to edit content.
-- Resend API calls from this Cloud Agent network may be blocked by Cloudflare (HTTP 1010) even with a valid `re_…` key. That is egress filtering, not necessarily a bad key. Spotify `/api/spotify/now-playing` authenticates successfully; `{"isPlaying":false}` with no track is a valid idle player response.
-- After editing files, a `.cursor/hooks.json` `afterFileEdit` hook runs `bun x ultracite fix` (Biome auto-format). CI (`.github/workflows/lint.yml`) fails if `bun run fix`/`bun run lint:fix` in `apps/web` produce uncommitted changes, so keep the web app formatted.
+- Astro: `bun run --filter=@andy-portfolio/web dev|build|lint|typecheck`
+- Next archive: `bun run --filter=@andy-portfolio/web-next dev|build|lint` (port **3001**)
+- Studio: `bun run --filter=@andy-portfolio/studio dev`
+
+Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web typecheck` (or `cd apps/web && bun run typecheck`). Non-interactive; do not run bare `astro check` prompts that try to install deps.
+
+### Astro app notes (`apps/web`)
+
+- Ultracite **7.10.3** + Biome; overrides live in `apps/web/biome.jsonc` (Astro/React presets).
+- Contact uses Astro Actions (`src/actions/index.ts` → `sendEmail`). Same-origin CSRF applies; curl must send a matching `Origin`.
+- Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
+- Env: prefer `PUBLIC_SANITY_*` / `SANITY_*`; `NEXT_PUBLIC_*` still accepted for compatibility. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.
+- Spotify/email Zod validation: `apps/web/src/lib/env.ts` (reads `import.meta.env` and `process.env`).
+- Revalidate stub: `/api/revalidate-tag` — requires `SANITY_REVALIDATE_SECRET` in app env. On Vercel cutover, point the Sanity webhook at the **Astro** deployment URL + shared secret or blog stays stale until rebuild.
+- OG image route is `src/pages/api/og.ts` (`.tsx` endpoints are not registered by Astro — use `createElement` / `.ts`).
+- Giveaway routes are **ended** stubs (parity with archived Next behavior).
+- Metrics: [`docs/perf-next-vs-astro.md`](docs/perf-next-vs-astro.md).
+
+### Next archive notes (`apps/web-next`)
+
+- Next **16.3.0** with `cacheComponents: true` and `partialPrefetching: true`.
+- Blog: `"use cache"` + `cacheLife('days')` + `cacheTag('post')`; `revalidateTag(tag, 'max')` on the revalidate route.
+- Baseline: [`docs/perf-next-baseline.txt`](docs/perf-next-baseline.txt).
+
+### Env / egress gotchas
+
+- `SANITY_STUDIO_PROJECT_ID` must match the web Sanity project id. Studio requires login to edit.
+- Resend from this Cloud Agent network may be Cloudflare-blocked (HTTP 1010); validate contact email from a Vercel preview if local submit fails.
+- Spotify idle `{isPlaying:false}` is valid.
+- Astro React islands are separate trees: any island using Motion `m.*` must wrap with `MotionRoot` (`apps/web/src/components/motion-root.tsx`). AppShell already provides LazyMotion for navbar/Spotify.
+- After file edits, `.cursor/hooks.json` `afterFileEdit` runs `bun x ultracite fix`. Commit autofixes or CI lint fails.
+
+### Vercel cutover checklist
+
+1. Set the Vercel project **Root Directory** to `apps/web` (Astro). Framework should be **Astro** (`apps/web/vercel.json` sets `"framework": "astro"` — overrides a leftover Next.js preset).
+2. Node: app `engines.node` is `22.x` (avoid open `>=22` ranges that jump to 24.x on Vercel).
+3. Install uses repo-root `bun install --frozen-lockfile` via `apps/web/vercel.json`.
+4. Update Sanity webhook → Astro `/api/revalidate-tag` (or rebuild-on-publish).
+5. Confirm env vars on the Astro project (`PUBLIC_SANITY_*`, `RESEND_*`, `SPOTIFY_*`, BotID/Vercel analytics as needed).

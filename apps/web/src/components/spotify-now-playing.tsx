@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
@@ -11,11 +10,11 @@ import {
 } from "@/lib/constants";
 
 interface SpotifyTrack {
-  name?: string;
-  artists?: { name?: string }[];
   album?: { images?: { url?: string }[]; name?: string; release_date?: string };
+  artists?: { name?: string }[];
   external_urls?: { spotify?: string };
   isPlaying?: boolean;
+  name?: string;
 }
 
 const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
@@ -28,7 +27,7 @@ const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
 
 // Placeholder image when no album art is available
 const PLACEHOLDER_IMAGE =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect fill='%23333' width='64' height='64'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect='%23333' width='64' height='64'/%3E%3C/svg%3E";
 
 // Helper to safely get album image URL
 function getAlbumImageUrl(
@@ -103,10 +102,10 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
 
   return (
     <m.div
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       className="absolute right-0 bottom-full mb-4 w-72 rounded-sm border border-subtle bg-primary p-6 shadow-2xl"
-      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
     >
       <div className="mb-4 flex gap-4">
         <div className="relative">
@@ -119,7 +118,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
               key={albumImage}
               transition={{ duration: 0.3 }}
             >
-              <Image
+              <img
                 alt={albumName}
                 className={`size-16 rounded-sm object-cover ${track.isPlaying ? "" : "grayscale"}`}
                 height={64}
@@ -190,7 +189,7 @@ function SpotifyMiniPlayer({
       <div
         className={`relative size-8 overflow-hidden rounded-full ${track.isPlaying ? "" : "grayscale"}`}
       >
-        <Image
+        <img
           alt={trackName}
           className={`size-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
           height={32}
@@ -232,13 +231,13 @@ export default function SpotifyNowPlaying() {
     "/api/spotify/now-playing",
     fetcher,
     {
+      dedupingInterval: 2000,
       refreshInterval: (latestData) =>
         latestData?.isPlaying
           ? SPOTIFY_POLLING_INTERVAL_PLAYING
           : SPOTIFY_POLLING_INTERVAL_PAUSED,
       refreshWhenHidden: false,
       revalidateOnFocus: true,
-      dedupingInterval: 2000,
       suspense: false,
     }
   );

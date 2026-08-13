@@ -1,25 +1,4 @@
 export interface CaseStudy {
-  id: string;
-  hero: {
-    title: string;
-    client: string;
-    duration: string;
-    overview: string;
-    heroImage: string;
-    technologies: string[];
-    liveUrl?: string;
-  };
-  challenge: {
-    problem: string;
-    constraints: string[];
-    context: string;
-    metrics: string[];
-  };
-  goals: {
-    primary: string[];
-    stakeholder: string[];
-    success: string[];
-  };
   approach: {
     methodology: string;
     phases: Array<{
@@ -37,6 +16,34 @@ export interface CaseStudy {
     iterations: string[];
     userFeedback: string;
   };
+  challenge: {
+    problem: string;
+    constraints: string[];
+    context: string;
+    metrics: string[];
+  };
+  gallery: {
+    images: Array<{
+      src: string;
+      alt: string;
+      title: string;
+    }>;
+  };
+  goals: {
+    primary: string[];
+    stakeholder: string[];
+    success: string[];
+  };
+  hero: {
+    title: string;
+    client: string;
+    duration: string;
+    overview: string;
+    heroImage: string;
+    technologies: string[];
+    liveUrl?: string;
+  };
+  id: string;
   results: {
     beforeAfter: Array<{
       metric: string;
@@ -53,21 +60,14 @@ export interface CaseStudy {
     deliverables: string[];
     achievements: string[];
   };
-  gallery: {
-    images: Array<{
-      src: string;
-      alt: string;
-      title: string;
-    }>;
-  };
 }
 
 export interface CaseStudyNavigation {
-  prev?: {
+  next?: {
     slug: string;
     title: string;
   };
-  next?: {
+  prev?: {
     slug: string;
     title: string;
   };

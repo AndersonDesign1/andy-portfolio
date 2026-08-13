@@ -1,13 +1,12 @@
 "use client";
 
 interface SkillCategory {
-  title: string;
   skills: string[];
+  title: string;
 }
 
 const skillsData: SkillCategory[] = [
   {
-    title: "Development",
     skills: [
       "HTML5",
       "CSS3",
@@ -19,13 +18,13 @@ const skillsData: SkillCategory[] = [
       "Astro",
       "Tailwind CSS",
     ],
+    title: "Development",
   },
   {
-    title: "Backend & Database",
     skills: ["PostgreSQL", "MongoDB", "MySQL", "Prisma", "REST API", "GraphQL"],
+    title: "Backend & Database",
   },
   {
-    title: "Tools & DevOps",
     skills: [
       "Git",
       "Docker",
@@ -35,9 +34,9 @@ const skillsData: SkillCategory[] = [
       "Postman",
       "Figma",
     ],
+    title: "Tools & DevOps",
   },
   {
-    title: "SEO & Performance",
     skills: [
       "Technical SEO",
       "Google Analytics",
@@ -45,6 +44,7 @@ const skillsData: SkillCategory[] = [
       "Core Web Vitals",
       "Ahrefs",
     ],
+    title: "SEO & Performance",
   },
 ];
 

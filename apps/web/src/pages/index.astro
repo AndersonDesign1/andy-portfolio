@@ -1,0 +1,16 @@
+---
+import CtaSection from "../components/cta-section.tsx";
+import Hero from "../components/hero.tsx";
+import ProjectsGrid from "../components/projects-grid.tsx";
+import SkillsSection from "../components/skills-section.tsx";
+import WorkHistory from "../components/work-history.tsx";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+  <Hero client:visible />
+  <ProjectsGrid client:visible />
+  <WorkHistory client:visible />
+  <SkillsSection client:visible />
+  <CtaSection client:visible />
+</BaseLayout>

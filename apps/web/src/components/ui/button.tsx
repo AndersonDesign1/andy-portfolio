@@ -1,53 +1,60 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import React from "react";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-none font-medium text-sm ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
+    defaultVariants: {
+      size: "default",
+      variant: "default",
+    },
     variants: {
+      size: {
+        default: "h-11 px-6 py-3",
+        icon: "size-10",
+        lg: "h-12 px-8 text-base",
+        sm: "h-9 px-4",
+      },
       variant: {
         default: "bg-[var(--text-primary)] text-[var(--bg)] hover:opacity-90",
         destructive: "bg-red-500 text-white hover:bg-red-500/90",
+        ghost: "hover:bg-secondary/50 hover:text-accent",
+        link: "text-primary underline-offset-4 hover:underline",
         outline:
           "border border-subtle bg-transparent text-primary hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-lg",
         secondary: "bg-secondary text-primary hover:bg-secondary/80",
-        ghost: "hover:bg-secondary/50 hover:text-accent",
-        link: "text-primary underline-offset-4 hover:underline",
       },
-      size: {
-        default: "h-11 px-6 py-3",
-        sm: "h-9 px-4",
-        lg: "h-12 px-8 text-base",
-        icon: "size-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
     },
   }
 );
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
   };
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: ButtonProps) {
+  const classes = cn(buttonVariants({ className, size, variant }));
+
+  if (asChild) {
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
+      <Slot
+        className={classes}
+        {...(props as React.ComponentProps<typeof Slot>)}
       />
     );
   }
-);
-Button.displayName = "Button";
+
+  return <button className={classes} type="button" {...props} />;
+}
 
 export { Button };

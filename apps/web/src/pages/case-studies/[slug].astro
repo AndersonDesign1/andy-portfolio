@@ -1,0 +1,52 @@
+---
+import CaseStudyPage from "../../components/case-study-page.tsx";
+import caseStudiesDataJson from "../../data/case-studies.json";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { CaseStudiesData } from "../../types/case-study";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  const data = caseStudiesDataJson as CaseStudiesData;
+  return Object.keys(data.caseStudies).map((entrySlug) => ({
+    params: { slug: entrySlug },
+    props: { caseStudy: data.caseStudies[entrySlug] },
+  }));
+}
+
+const caseStudiesData = caseStudiesDataJson as CaseStudiesData;
+const { slug } = Astro.params;
+const cs = Astro.props.caseStudy ?? caseStudiesData.caseStudies[slug!];
+
+if (!cs) {
+  return Astro.redirect("/404");
+}
+
+const slugs = Object.keys(caseStudiesData.caseStudies);
+const currentIndex = slugs.indexOf(slug!);
+const prevSlug = currentIndex > 0 ? slugs[currentIndex - 1] : undefined;
+const nextSlug =
+  currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : undefined;
+
+const navigation = {
+  next: nextSlug
+    ? {
+        slug: nextSlug,
+        title: caseStudiesData.caseStudies[nextSlug].hero.title,
+      }
+    : undefined,
+  prev: prevSlug
+    ? {
+        slug: prevSlug,
+        title: caseStudiesData.caseStudies[prevSlug].hero.title,
+      }
+    : undefined,
+};
+---
+
+<BaseLayout
+  description={cs.hero.overview || "Anderson Joseph Case Study"}
+  title={`${cs.hero.title} - Case Study`}
+>
+  <CaseStudyPage caseStudy={cs} navigation={navigation} client:visible />
+</BaseLayout>

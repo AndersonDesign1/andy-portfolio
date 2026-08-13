@@ -1,0 +1,223 @@
+{
+  "projects": [
+    {
+      "id": "1",
+      "featured": true,
+      "type": "case-study",
+      "title": "Founding Engineer & SEO Expert at Welup Digital",
+      "description": "First developer hire. Built the initial platform, then led the full Next.js rewrite. Set up Sanity CMS for content management, handled technical SEO, and taught web development at their academy. The rewrite brought traffic up 300% and made the site 50% faster.",
+      "thumbnail": "/welup-main.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "PostgreSQL",
+        "Redis",
+        "SEO Analytics Tools",
+        "Content Management Systems"
+      ],
+      "links": {
+        "live": "https://welupdigital.com",
+        "caseStudy": "/case-studies/welup-digital"
+      },
+      "metrics": {
+        "Website Traffic": "+300% increase after relaunch",
+        "User Engagement": "+40% improvement in session duration",
+        "Site Speed": "50% faster load times",
+        "Impact": "Successfully mentored students at Welup Academy"
+      }
+    },
+    {
+      "id": "2",
+      "featured": true,
+      "type": "case-study",
+      "title": "SEO & Growth Specialist at PromptEarn",
+      "description": "6 months doing SEO and affiliate growth. Fixed Core Web Vitals (PageSpeed went from 45 to 80), grew the affiliate network from 40,000 to 93,000, and got Google traffic up 250%. Also reduced bounce rate by half.",
+      "thumbnail": "/promptearn-1.png",
+      "techStack": [
+        "Ahrefs",
+        "Google Search Console",
+        "Google Analytics",
+        "Screaming Frog",
+        "PageSpeed Insights",
+        "Mailchimp"
+      ],
+      "links": {
+        "live": "https://promptearn.com/",
+        "caseStudy": "/case-studies/prompt-earn"
+      },
+      "metrics": {
+        "Organic Traffic": "250% increase in 6 months",
+        "PageSpeed": "+35 points improvement",
+        "Bounce Rate": "50% reduction",
+        "Keyword Ranking": "Top 5 for key terms"
+      }
+    },
+    {
+      "id": "flik",
+      "featured": true,
+      "type": "standard",
+      "title": "Full-Stack Developer at Flik",
+      "description": "Built a premium creator-commerce platform for digital products and services. Developed conversion-focused storefronts, an analytics dashboard, structured builder components, and secure authentication flows.",
+      "thumbnail": "/flik-img.webp",
+      "techStack": [
+        "Next.js",
+        "React",
+        "Convex",
+        "Better Auth",
+        "Tailwind CSS",
+        "TypeScript",
+        "Framer Motion"
+      ],
+      "links": {
+        "live": "https://flik.store"
+      },
+      "metrics": {
+        "Performance": "Optimized multi-tenant routing and Convex queries",
+        "UI/UX": "Stripe-inspired, high-converting buyer and seller surfaces",
+        "Architecture": "Scalable monorepo foundation with clean database schemas"
+      }
+    },
+    {
+      "id": "3",
+      "featured": true,
+      "type": "standard",
+      "title": "Backend Engineer at Devan",
+      "description": "Fashion e-commerce site built with Node.js and PostgreSQL. Created custom API endpoints, set up the database schema, and integrated Sanity CMS for product content. Also optimized database queries for better performance.",
+      "thumbnail": "/Devan-main.png",
+      "techStack": [
+        "Node.js",
+        "PostgreSQL",
+        "Tanstack Query",
+        "Sanity CMS",
+        "Next.js",
+        "Tailwind CSS"
+      ],
+      "links": {
+        "live": "https://www.thebranddevan.com/"
+      }
+    },
+    {
+      "id": "4",
+      "type": "standard",
+      "title": "WordPress Developer at The Wealthy Post",
+      "description": "UK personal finance blog run by a finance expert who moved from Nigeria to the UK. Set up WordPress, optimized for Google, and improved site speed from 15s to 3s. Traffic from Google doubled after the work.",
+      "thumbnail": "/the-wealthy-post.webp",
+      "techStack": [
+        "WordPress",
+        "Yoast SEO",
+        "Google Analytics",
+        "PageSpeed Insights"
+      ],
+      "links": {
+        "live": "https://thewealthypost.com/"
+      },
+      "metrics": {
+        "Organic Traffic": "200% increase post-launch",
+        "Load Time": "Reduced from 15s to 3s"
+      }
+    },
+    {
+      "id": "5",
+      "type": "standard",
+      "title": "Corporate Website for Dubiss Forex Academy",
+      "description": "Forex trading education platform with over 52,000 traders worldwide. Built the main site from scratch, set up Google Analytics, and added testimonials from students. Also set up the initial SEO foundation.",
+      "thumbnail": "/dubiss.webp",
+      "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
+      "links": {
+        "live": "https://dubissfa.com/"
+      },
+      "metrics": {
+        "Session Duration": "40% increase",
+        "Bounce Rate": "30% reduction",
+        "Trust Signals": "Added testimonials and global stats"
+      }
+    },
+    {
+      "id": "6",
+      "type": "standard",
+      "title": "Corporate Website for Craigwal Petroshore",
+      "description": "Nigerian oil and gas EPCIC company. Built their WordPress site with a custom theme. Added service pages, project showcases, and a contact form. Made it fully responsive for mobile.",
+      "thumbnail": "/craigwal.webp",
+      "techStack": ["WordPress", "Custom Theme", "SEO Optimization"],
+      "links": {
+        "live": "https://www.craigwalpetroshore.com/"
+      },
+      "metrics": {
+        "Profile Downloads": "Company profile download enabled",
+        "Navigation": "Improved service discovery",
+        "Mobile UX": "Fully responsive redesign"
+      }
+    },
+    {
+      "id": "7",
+      "type": "standard",
+      "title": "Corporate Website for New Hampshire Capital",
+      "description": "Nigerian asset management firm focused on power, oil and gas, fintech, and real estate. Built the Next.js site with a clean design. Added newsletter signup and sectors overview.",
+      "thumbnail": "/new-hampshire.webp",
+      "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
+      "links": {
+        "live": "https://www.newhampshire.ng/"
+      },
+      "metrics": {
+        "User Engagement": "Increased time on site",
+        "Clarity": "Streamlined sector navigation",
+        "Newsletter": "Newsletter signup integrated"
+      }
+    },
+    {
+      "id": "8",
+      "type": "standard",
+      "title": "Corporate Website for Urabus Renewable Energies",
+      "description": "Solar and EV company offering flexible payment plans for businesses. Built their Next.js site highlighting solar solutions, EV tricycles, and payment options. Added a portfolio section and testimonials.",
+      "thumbnail": "/urabus-energies.webp",
+      "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
+      "links": {
+        "live": "https://www.urabusenergies.com/"
+      },
+      "metrics": {
+        "Project Showcases": "Portfolio section added",
+        "Testimonials": "Video and text testimonials integrated",
+        "Mobile UX": "Optimized for all devices"
+      }
+    },
+    {
+      "id": "9",
+      "type": "standard",
+      "title": "Corporate Website for Aristeia Properties",
+      "description": "Nigerian real estate company specializing in land banking and estate development. Built the Next.js site with a visual-first approach. Added property listings, estate features, and a contact form.",
+      "thumbnail": "/aristeia.webp",
+      "techStack": ["HTML", "CSS", "JavaScript", "UI/UX Design"],
+      "links": {
+        "live": "https://www.aristeiaproperties.com/"
+      },
+      "metrics": {
+        "Investor Inquiries": "Contact form conversions up",
+        "Core Values": "Clear value proposition sections",
+        "Performance": "Fast load times"
+      }
+    },
+    {
+      "id": "10",
+      "type": "standard",
+      "title": "Lead Developer at Kyrus Recycling",
+      "description": "Recycling incentive mobile app where people earn rewards for recycling. Built the full MVP in 3 months using React and Node.js. Led a small team and handled both frontend and backend development.",
+      "thumbnail": "/trashpoint.webp",
+      "techStack": [
+        "React",
+        "Node.js",
+        "MongoDB",
+        "Express.js",
+        "Team Leadership"
+      ],
+      "links": {
+        "live": "https://trashpoint.africa/"
+      },
+      "metrics": {
+        "User Sign-ups": "500+ in first month",
+        "Delivery": "MVP in 3 months",
+        "Mobile UX": "Fully responsive app"
+      }
+    }
+  ]
+}

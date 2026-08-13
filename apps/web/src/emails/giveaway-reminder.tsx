@@ -77,5 +77,3 @@ export const GiveawayReminder = ({ name = "there" }: GiveawayReminderProps) => {
     </Html>
   );
 };
-
-export default GiveawayReminder;

@@ -1,12 +1,15 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { lazy, Suspense } from "react";
 
-const SpotifyNowPlaying = dynamic(
-  () => import("@/components/spotify-now-playing"),
-  { ssr: false }
+const SpotifyNowPlaying = lazy(
+  () => import("@/components/spotify-now-playing")
 );
 
 export default function SpotifyLazy() {
-  return <SpotifyNowPlaying />;
+  return (
+    <Suspense fallback={null}>
+      <SpotifyNowPlaying />
+    </Suspense>
+  );
 }

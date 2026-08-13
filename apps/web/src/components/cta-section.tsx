@@ -2,7 +2,6 @@
 
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 
 export default function CtaSection() {
   return (
@@ -19,7 +18,7 @@ export default function CtaSection() {
           </p>
 
           <div className="pt-4">
-            <Link
+            <a
               className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-8 py-4 font-medium text-base text-primary transition-all duration-300 ease-out hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
               href="/contact"
             >
@@ -31,7 +30,7 @@ export default function CtaSection() {
                 size={16}
                 strokeWidth={1.5}
               />
-            </Link>
+            </a>
           </div>
         </div>
       </div>

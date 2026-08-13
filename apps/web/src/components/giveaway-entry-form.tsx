@@ -1,14 +1,20 @@
 "use client";
 
+async function submitGiveawayEntry(_formData: FormData) {
+  return {
+    message: "Giveaway has ended.",
+    status: "error" as const,
+    success: false,
+  };
+}
+
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { m } from "motion/react";
-import Link from "next/link";
 import type React from "react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { submitGiveawayEntry } from "@/app/actions/submit-giveaway-entry";
 import {
   CountdownDisplay,
   useGiveawayStatus,
@@ -25,27 +31,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 const websiteTypes = [
-  { value: "portfolio", label: "Portfolio" },
-  { value: "blog", label: "Personal Blog" },
-  { value: "business", label: "Business Website" },
-  { value: "landing", label: "Landing Page" },
-  { value: "other", label: "Other" },
+  { label: "Portfolio", value: "portfolio" },
+  { label: "Personal Blog", value: "blog" },
+  { label: "Business Website", value: "business" },
+  { label: "Landing Page", value: "landing" },
+  { label: "Other", value: "other" },
 ];
 
 const WORD_COUNT_REGEX = /\s+/;
 
 // Zod schema for form validation
 const entrySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .min(2, "Name must be at least 2 characters"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  websiteType: z.string().min(1, "Please select a website type"),
-  projectName: z.string().optional(),
   description: z
     .string()
     .min(1, "Please tell me about your project")
@@ -53,17 +49,24 @@ const entrySchema = z.object({
       const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
       return wordCount >= 30;
     }, "Please provide at least 30 words about your project"),
+  email: z.email("Please enter a valid email address"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters"),
+  projectName: z.string().optional(),
+  websiteType: z.string().min(1, "Please select a website type"),
 });
 
 type EntryFormData = z.infer<typeof entrySchema>;
 type EntryFormErrors = Partial<Record<keyof EntryFormData, string>>;
 
 const initialForm: EntryFormData = {
-  name: "",
-  email: "",
-  websiteType: "",
-  projectName: "",
   description: "",
+  email: "",
+  name: "",
+  projectName: "",
+  websiteType: "",
 };
 
 function GiveawayEntrySidebar({
@@ -83,12 +86,12 @@ function GiveawayEntrySidebar({
       <div className="flex flex-col gap-8 pt-8">
         <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
           Fill out the form below to enter. Don&apos;t forget to read the{" "}
-          <Link
+          <a
             className="text-primary transition-opacity hover:opacity-70"
             href="/giveaway"
           >
             instructions
-          </Link>{" "}
+          </a>{" "}
           if you haven&apos;t already!
         </p>
 
@@ -111,9 +114,9 @@ function GiveawayEntrySidebar({
           </span>
           <a
             className="text-lg text-primary transition-opacity hover:opacity-70"
-            href="mailto:hello@andersonjoseph.com"
+            href="mailto:contact@andersonjoseph.com"
           >
-            hello@andersonjoseph.com
+            contact@andersonjoseph.com
           </a>
         </div>
       </div>
@@ -331,7 +334,7 @@ export default function GiveawayEntryForm() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!validate()) {
       toast.error("Please fix the errors in the form");
@@ -344,15 +347,9 @@ export default function GiveawayEntryForm() {
       }
 
       const result = await submitGiveawayEntry(new FormData(formRef.current));
-      if (result.success) {
-        toast.success(result.message);
-        setForm(initialForm);
-        formRef.current.reset();
-      } else {
-        toast.error(
-          result.message || "Failed to submit entry. Please try again."
-        );
-      }
+      toast.error(
+        result.message || "Failed to submit entry. Please try again."
+      );
     });
   }
 
@@ -365,7 +362,7 @@ export default function GiveawayEntryForm() {
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.4 }}
         >
-          <Link
+          <a
             className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
@@ -376,7 +373,7 @@ export default function GiveawayEntryForm() {
               strokeWidth={1.5}
             />
             Back to Giveaway
-          </Link>
+          </a>
         </m.div>
 
         <div className="grid grid-cols-1 gap-16 pt-12 md:grid-cols-2 md:gap-32">
