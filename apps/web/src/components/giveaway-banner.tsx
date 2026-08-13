@@ -2,9 +2,14 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+
+function usePathname() {
+  if (typeof window === "undefined") {
+    return "";
+  }
+  return window.location.pathname;
+}
 
 // Giveaway: Jan 2, 2026 12:00 PM Nigeria Time (WAT = UTC+1) to Jan 9, 2026 12:00 PM
 const GIVEAWAY_START = new Date("2026-01-02T12:00:00+01:00").getTime();
@@ -160,7 +165,7 @@ export default function GiveawayBanner() {
             </div>
           )}
 
-          <Link
+          <a
             className="inline-flex items-center gap-1 rounded-sm border border-subtle px-3 py-1.5 font-medium text-primary text-xs transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
@@ -172,7 +177,7 @@ export default function GiveawayBanner() {
               size={16}
               strokeWidth={1.5}
             />
-          </Link>
+          </a>
         </div>
       </div>
     </div>

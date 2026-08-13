@@ -1,0 +1,44 @@
+---
+import { client } from "@andy-portfolio/sanity-config";
+import BlogPost from "../../components/blogpost.tsx";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  try {
+    const posts = await client.fetch<{ slug: { current: string } }[]>(
+      `*[_type == "post" && defined(slug.current)]{ slug }`
+    );
+    return posts.map((post) => ({
+      params: { slug: post.slug.current },
+    }));
+  } catch {
+    return [];
+  }
+}
+
+const { slug } = Astro.params;
+
+const post = await client
+  .fetch(
+    `*[_type == "post" && slug.current == $slug][0]{
+      _id, title, slug, excerpt, body, _createdAt, publishedAt,
+      mainImage{ asset->, alt, caption },
+      categories[]->{ _id, title, slug, description }
+    }`,
+    { slug }
+  )
+  .catch(() => null);
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+---
+
+<BaseLayout
+  description={post.excerpt || "Read this blog post"}
+  title={post.title}
+>
+  <BlogPost post={post} client:visible />
+</BaseLayout>

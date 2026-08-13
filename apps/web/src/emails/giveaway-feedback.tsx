@@ -73,5 +73,3 @@ export const GiveawayFeedback = ({ name = "there" }: GiveawayFeedbackProps) => {
     </Html>
   );
 };
-
-export default GiveawayFeedback;

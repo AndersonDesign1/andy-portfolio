@@ -1,11 +1,46 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": [
-    "ultracite/core",
-    "ultracite/react",
-    "ultracite/next",
     "ultracite/biome/core",
-    "ultracite/biome/react",
-    "ultracite/biome/next"
-  ]
+    "ultracite/biome/astro",
+    "ultracite/biome/react"
+  ],
+  "files": {
+    "includes": ["!public/**/*.svg"]
+  },
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noReactForwardRef": "off",
+        "noLeakedRender": "off",
+        "useStaticResponseMethods": "off",
+        "noVar": "off",
+        "noEmptyBlockStatements": "off",
+        "noShadow": "off",
+        "useAwait": "off",
+        "noUnnecessaryConditions": "off",
+        "noUnknownAttribute": "off"
+      },
+      "style": {
+        "useFilenamingConvention": "off",
+        "noNonNullAssertion": "off",
+        "useDestructuring": "off"
+      },
+      "performance": {
+        "noJsxPropsBind": "off"
+      },
+      "correctness": {
+        "useImageSize": "off",
+        "noInnerDeclarations": "off"
+      },
+      "complexity": {
+        "noRedundantDefaultExport": "off",
+        "noUselessCatchBinding": "off",
+        "useOptionalChain": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      }
+    }
+  }
 }

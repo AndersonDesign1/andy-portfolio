@@ -1,0 +1,107 @@
+"use client";
+
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
+import educationData from "@/data/education.json" with { type: "json" };
+import workExperienceData from "@/data/work-experience.json" with {
+  type: "json",
+};
+import { formatDate } from "@/lib/utils";
+
+export default function WorkHistory() {
+  const workExperience = workExperienceData.workExperience;
+  const education = educationData.education;
+
+  const filteredExperience = workExperience.filter((job) => {
+    const title = job.position.toLowerCase();
+    const company = job.company.toLowerCase();
+    return (
+      title.includes("full stack") ||
+      title.includes("developer") ||
+      title.includes("engineer") ||
+      title.includes("founding") ||
+      title.includes("backend") ||
+      title.includes("seo") ||
+      title.includes("instructor") ||
+      title.includes("teacher") ||
+      title.includes("mentor") ||
+      company.includes("training")
+    );
+  });
+
+  return (
+    <section className="bg-primary py-24 md:py-32">
+      <div className="mx-auto max-w-screen-lg px-6 md:px-12">
+        <div className="grid grid-cols-1 gap-20 md:grid-cols-2 md:gap-32">
+          {/* Experience Column */}
+          <div>
+            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+              Experience
+            </h2>
+            <div className="flex flex-col gap-12 pt-12">
+              {filteredExperience.map((job) => (
+                <div key={job.id}>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-medium text-lg text-primary leading-tight">
+                      {job.company}
+                    </h3>
+                    <p className="pb-2 text-secondary text-sm">
+                      {job.position}
+                    </p>
+                    <p className="pb-4 font-mono text-muted text-xs">
+                      {formatDate(job.startDate)} —{" "}
+                      {job.endDate ? formatDate(job.endDate) : "Present"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Resume Button */}
+            <div className="pt-12">
+              <Link
+                className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 ease-out hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
+                href="/Anderson Joseph Resume.pdf"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                View Resume
+                <HugeiconsIcon
+                  className="text-muted transition-colors duration-200 ease-out group-hover:text-primary"
+                  color="currentColor"
+                  icon={ArrowUpRight01Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                />
+              </Link>
+            </div>
+          </div>
+
+          {/* Education Column */}
+          <div>
+            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+              Education
+            </h2>
+            <div className="flex flex-col gap-12 pt-12">
+              {education.map((edu) => (
+                <div key={edu.id}>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-medium text-lg text-primary leading-tight">
+                      {edu.institution}
+                    </h3>
+                    <p className="pb-2 text-secondary text-sm">{edu.degree}</p>
+                    <p className="font-mono text-muted text-xs">
+                      {formatDate(edu.startDate)} —{" "}
+                      {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

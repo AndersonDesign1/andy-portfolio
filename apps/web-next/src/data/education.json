@@ -1,0 +1,74 @@
+{
+  "education": [
+    {
+      "id": "mckinsey-forward-program",
+      "institution": "McKinsey & Company",
+      "degree": "Program Completion",
+      "field": "Leadership Development",
+      "location": "Online",
+      "startDate": "2024-07-01",
+      "endDate": "2024-07-31",
+      "institutionUrl": "https://www.credly.com/badges/f53b20bf-4c27-4bea-978d-14eb62fae194/public_url"
+    },
+    {
+      "id": "meta-frontend-engineer",
+      "institution": "Meta (via Coursera)",
+      "degree": "Professional Certificate",
+      "field": "Meta Front-End Engineer",
+      "location": "Online",
+      "startDate": "2023-06-01",
+      "endDate": "2024-02-28",
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/XTVZTQ6UX54K"
+    },
+    {
+      "id": "uc-davis-seo-specialization",
+      "institution": "UC Davis (via Coursera)",
+      "degree": "Professional Certificate",
+      "field": "Search Engine Optimization (SEO) Specialization",
+      "location": "Online",
+      "startDate": "2023-01-01",
+      "endDate": "2024-01-31",
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/3H7ZVVUWS6Q6"
+    },
+    {
+      "id": "google-project-management",
+      "institution": "Google (via Coursera)",
+      "degree": "Professional Certificate",
+      "field": "Project Management",
+      "location": "Online",
+      "startDate": "2023-02-01",
+      "endDate": "2023-05-31",
+      "institutionUrl": "https://www.coursera.org/account/accomplishments/verify/UFLKEBTWKXAS"
+    },
+    {
+      "id": "freecodecamp-js-algorithms",
+      "institution": "freeCodeCamp",
+      "degree": "Certification",
+      "field": "JavaScript Algorithms and Data Structures",
+      "location": "Online",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31",
+      "institutionUrl": "https://freecodecamp.org/certification/fccb3aeb8e2-e79c-4716-a0eb-ab81a2aeccc1/javascript-algorithms-and-data-structures"
+    },
+    {
+      "id": "nabteb-computer-science",
+      "institution": "NABTEB",
+      "degree": "Diploma",
+      "field": "Computer Science",
+      "location": "Benin City, Edo state",
+      "startDate": "2021-04-01",
+      "endDate": "2022-04-30",
+      "institutionUrl": "https://nabteb.gov.ng"
+    },
+    {
+      "id": "edobits-ict-academy",
+      "institution": "Edobits ICT Academy",
+      "degree": "Diploma",
+      "field": "Web Development",
+      "location": "Benin City, Edo state",
+      "startDate": "2020-09-01",
+      "endDate": "2021-09-30",
+      "institutionUrl": "https://edobits.com"
+    }
+  ]
+}

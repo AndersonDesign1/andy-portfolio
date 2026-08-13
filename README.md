@@ -43,7 +43,7 @@ cp .env.example .env.local # Fill in your keys
 bun dev
 ```
 
-Visit `http://localhost:3000` (Web) and `http://localhost:3333` (Studio).
+Visit `http://localhost:3000` (Astro web), `http://localhost:3001` (Next archive), and `http://localhost:3333` (Studio).
 
 ---
 

@@ -2,7 +2,6 @@
 
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 import type React from "react";
 
 const AboutPage: React.FC = () => (
@@ -10,7 +9,7 @@ const AboutPage: React.FC = () => (
     {/* Back Navigation */}
     <div className="mx-auto max-w-screen-xl px-6 md:px-12">
       <div>
-        <Link
+        <a
           className="inline-flex items-center gap-2 text-secondary text-sm transition-colors duration-200 ease-out hover:text-primary"
           href="/"
         >
@@ -21,7 +20,7 @@ const AboutPage: React.FC = () => (
             strokeWidth={1.5}
           />
           Back to Home
-        </Link>
+        </a>
       </div>
     </div>
 
@@ -163,18 +162,18 @@ const AboutPage: React.FC = () => (
             That curiosity keeps me learning and pushing for better solutions.
           </p>
           <div className="flex flex-col items-start justify-end gap-8 md:items-end">
-            <Link
+            <a
               className="border-primary border-b pb-1 text-lg text-primary transition-colors hover:border-muted hover:text-muted"
               href="/projects"
             >
               View My Work
-            </Link>
-            <Link
+            </a>
+            <a
               className="border-primary border-b pb-1 text-lg text-primary transition-colors hover:border-muted hover:text-muted"
               href="/contact"
             >
               Get In Touch
-            </Link>
+            </a>
           </div>
         </div>
       </div>

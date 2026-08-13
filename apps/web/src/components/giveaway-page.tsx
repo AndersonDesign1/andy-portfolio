@@ -6,7 +6,6 @@ import {
   Tick01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 import { useState } from "react";
 import {
   CountdownDisplay,
@@ -15,41 +14,41 @@ import {
 
 const faqs = [
   {
-    question: "Can I build a full SaaS under this free plan?",
     answer:
       "Not under the free giveaway, but I'd love to help! Reach out to me on my contact page and I'll offer you a discounted rate for your SaaS project.",
     hasContactLink: true,
+    question: "Can I build a full SaaS under this free plan?",
   },
   {
-    question: "What kind of websites qualify?",
     answer:
       "Both personal and business websites are welcome! Whether it's a portfolio, blog, landing page, or a website for your business — you're eligible to enter. However, your project must be legitimate. No scams, shady schemes, or anything unethical will qualify.",
+    question: "What kind of websites qualify?",
   },
   {
-    question: "How do I enter the giveaway?",
     answer:
       "Simple! Just fill out the entry form with your details. Once you're selected as a winner, I'll guide you through getting your domain set up.",
+    question: "How do I enter the giveaway?",
   },
   {
-    question: "When does the giveaway end?",
     answer:
       "The giveaway ends on January 9th, 2026 at 12:00 PM (Nigeria time). That's just one week — so hurry up and enter!",
+    question: "When does the giveaway end?",
   },
   {
-    question: "What's included in the free website?",
     answer:
       "Everything! Design, development, hosting, and basic SEO optimization. Winners will be guided through purchasing their domain, then I handle the rest.",
+    question: "What's included in the free website?",
   },
   {
-    question: "Does my business or project need to be legit?",
     answer:
       "Absolutely. I'm only building websites for legitimate projects. Scams, fraudulent businesses, or anything that could harm others will not qualify. This is about helping real people and real businesses get online.",
+    question: "Does my business or project need to be legit?",
   },
   {
-    question: "I have more questions. How can I reach you?",
     answer:
       "Feel free to reach out through my contact page or connect with me on any of my social media links in the footer. I'm happy to answer any questions!",
     hasContactLink: true,
+    question: "I have more questions. How can I reach you?",
   },
 ];
 
@@ -95,7 +94,7 @@ function FAQItem({
             {hasContactLink && (
               <>
                 {" "}
-                <Link
+                <a
                   className="text-primary transition-opacity hover:opacity-70"
                   href="/contact"
                 >
@@ -107,7 +106,7 @@ function FAQItem({
                     size={16}
                     strokeWidth={1.5}
                   />
-                </Link>
+                </a>
               </>
             )}
           </p>
@@ -263,7 +262,7 @@ export default function GiveawayPage() {
                 left!
               </p>
             </div>
-            <Link
+            <a
               className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-8 py-4 font-medium text-base text-primary transition-opacity duration-300 hover:opacity-70"
               href="/giveaway/enter"
             >
@@ -275,7 +274,7 @@ export default function GiveawayPage() {
                 size={16}
                 strokeWidth={1.5}
               />
-            </Link>
+            </a>
           </div>
         </div>
       </section>

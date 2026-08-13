@@ -1,0 +1,354 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
+}
+
+:root {
+  --background: oklch(95.51% 0 0); /* #f0f0f0 */
+  --foreground: oklch(20.46% 0 0); /* #171717 */
+
+  --secondary: oklch(92.19% 0 0); /* #e5e5e5 */
+  --secondary-foreground: oklch(37.15% 0 0); /* #404040 */
+
+  --muted: oklch(86.99% 0 0); /* #d4d4d4 */
+  --muted-foreground: oklch(
+    46.4% 0 0
+  ); /* darkened for WCAG AA contrast (4.6:1 on background) */
+
+  --border: oklch(0% 0 0 / 8%);
+  --input: oklch(0% 0 0 / 8%);
+
+  --popover: oklch(95.51% 0 0); /* #f0f0f0 */
+  --popover-foreground: oklch(20.46% 0 0); /* #171717 */
+
+  --accent: oklch(71.55% 0 0); /* Adjusted for softer hover, #a3a3a3 */
+  --accent-muted: oklch(0% 0 0 / 5%); /* Adjusted for softer hover */
+  --grain-opacity: 0.12;
+  color-scheme: light;
+}
+
+/*
+ * Dark palette. Applied in two ways so first paint is always correct:
+ *   1. `.dark` — set explicitly by the theme script (manual choice or resolved
+ *      system preference).
+ *   2. `prefers-color-scheme: dark` on `:root:not(.light)` — resolves the
+ *      system case in pure CSS, before any JS runs, so system/dark-OS visitors
+ *      never see a light flash on reload. Scoped to `:not(.light)` so an
+ *      explicit Light choice (which adds `.light` before paint via the head
+ *      script) always overrides it and never flashes dark.
+ */
+.dark,
+:root.dark {
+  --background: oklch(11.49% 0 0); /* #050505 */
+  --foreground: oklch(94.61% 0 0); /* #ededed */
+
+  --secondary: oklch(14.48% 0 0); /* #0a0a0a */
+  --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
+
+  --muted: oklch(20.46% 0 0); /* #171717 */
+  --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+
+  --border: oklch(100% 0 0 / 8%);
+  --input: oklch(100% 0 0 / 8%);
+
+  --popover: oklch(11.49% 0 0); /* #050505 */
+  --popover-foreground: oklch(94.61% 0 0); /* #ededed */
+
+  --accent: oklch(55.55% 0 0); /* Adjusted for softer hover, #737373 */
+  --accent-muted: oklch(100% 0 0 / 5%); /* Adjusted for softer hover */
+  --grain-opacity: 0.07;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: oklch(11.49% 0 0); /* #050505 */
+    --foreground: oklch(94.61% 0 0); /* #ededed */
+
+    --secondary: oklch(14.48% 0 0); /* #0a0a0a */
+    --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
+
+    --muted: oklch(20.46% 0 0); /* #171717 */
+    --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+
+    --border: oklch(100% 0 0 / 8%);
+    --input: oklch(100% 0 0 / 8%);
+
+    --popover: oklch(11.49% 0 0); /* #050505 */
+    --popover-foreground: oklch(94.61% 0 0); /* #ededed */
+
+    --accent: oklch(55.55% 0 0); /* Adjusted for softer hover, #737373 */
+    --accent-muted: oklch(100% 0 0 / 5%); /* Adjusted for softer hover */
+    --grain-opacity: 0.07;
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Paint the theme background on the root element itself (not just body).
+     * On very tall pages (e.g. blog posts) a theme toggle repaints top-down;
+     * if only body is painted, the transparent <html> exposes the browser's
+     * native color-scheme canvas for a frame, causing a flash of the opposite
+     * mode. Painting html swaps atomically with the theme class. */
+    background-color: var(--background);
+  }
+
+  body {
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--foreground);
+    background-color: var(--background);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    color: var(--background);
+    background-color: var(--foreground);
+  }
+
+  ::-moz-selection {
+    color: var(--background);
+    background-color: var(--foreground);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    color: var(--foreground);
+    letter-spacing: -0.03em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  [data-tabular] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-title {
+    animation: hero-title-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-subtitle {
+    animation: hero-subtitle-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title,
+  .hero-subtitle {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .giveaway-feedback-success {
+    animation: giveaway-feedback-success-enter 360ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .giveaway-feedback-back-link {
+    animation: giveaway-feedback-back-link-enter 320ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .giveaway-feedback-success,
+  .giveaway-feedback-back-link {
+    animation: none;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    @apply bg-background;
+  }
+
+  .text-primary {
+    @apply text-foreground;
+  }
+
+  .text-secondary {
+    @apply text-secondary-foreground;
+  }
+
+  .bg-tertiary {
+    @apply bg-muted;
+  }
+
+  .text-muted {
+    @apply text-muted-foreground;
+  }
+
+  .border-subtle {
+    @apply border-border;
+  }
+
+  .border-strong {
+    border-color: var(--border);
+  }
+
+  .text-accent {
+    @apply text-accent;
+  }
+
+  .bg-accent-muted {
+    @apply bg-accent-muted;
+  }
+
+  .select-none-children * {
+    user-select: none;
+  }
+
+  .animate-in {
+    animation-fill-mode: both;
+  }
+
+  .fade-in {
+    animation-name: fadeIn;
+  }
+
+  .slide-in-from-bottom-4 {
+    animation-name: slideInFromBottom4;
+  }
+
+  .duration-300 {
+    animation-duration: 300ms;
+  }
+  .duration-250 {
+    animation-duration: 250ms;
+  }
+  .duration-200 {
+    animation-duration: 200ms;
+  }
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+}
+
+@keyframes hero-title-enter {
+  from {
+    opacity: 0.68;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-subtitle-enter {
+  from {
+    opacity: 0.6;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes giveaway-feedback-success-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes giveaway-feedback-back-link-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom4 {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes music-bar {
+  0%,
+  100% {
+    height: 30%;
+  }
+  50% {
+    height: 100%;
+  }
+}
+
+@theme {
+  --font-mono: JetBrains Mono, Fira Code, monospace;
+  --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+}

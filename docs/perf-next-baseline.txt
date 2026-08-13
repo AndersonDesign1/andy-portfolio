@@ -1,0 +1,48 @@
+# Next baseline (apps/web @ 16.3 + Cache Components)
+
+captured_at: 2026-08-13T10:58:05Z
+
+## Install / disk
+
+| Metric | Value |
+| --- | --- |
+| `node_modules` total | 1.3G |
+| `apps/web/node_modules` | 101M |
+| `apps/studio/node_modules` | 45M |
+| Build output `.next` | 182M |
+
+## Compile / check times (median protocol: single timed run here)
+
+| Metric | Value |
+| --- | --- |
+| Typecheck (`tsc --noEmit`) | 2.975s |
+| Lint (`biome check`) | 0.155s |
+| Prod build (`next build`) | 13.980s |
+
+## Dev server
+
+| Metric | Value |
+| --- | --- |
+| Ready line | Ready in 243ms |
+| Cold start wall (tmux → first Ready) | 4.793s |
+| `next-server` RSS | ~1001 MB (1025128 KB) |
+
+## TTFB median (dev, 3 curls after warm)
+
+| Route | TTFB |
+| --- | --- |
+| `/` | 0.041s |
+| `/blog` | 0.036s |
+| `/blog/i-built-smol` | 0.084s |
+| `/projects` | 0.040s |
+| `/contact` | 0.033s |
+
+## HTML response size (dev)
+
+| Route | Bytes |
+| --- | --- |
+| `/` | 82,317 |
+| `/blog` | 56,486 |
+| `/blog/i-built-smol` | 84,779 |
+
+Notes: Measured on Cloud Agent VM with Bun 1.1.38 after Next 16.3 + Cache Components. Studio remains in the monorepo install. Lighthouse deferred to post-Astro comparison on local preview.

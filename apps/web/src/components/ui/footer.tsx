@@ -32,9 +32,9 @@ const socialLinks = [
     label: "LinkedIn",
   },
   {
+    customIcon: XIcon,
     href: "https://x.com/_Andersonjosh",
     icon: null,
-    customIcon: XIcon,
     label: "X",
   },
 ];

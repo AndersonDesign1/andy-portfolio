@@ -3,7 +3,7 @@
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { m, useReducedMotion } from "motion/react";
-import Link from "next/link";
+import MotionRoot from "@/components/motion-root";
 import {
   ANIMATION_DURATION_MEDIUM,
   ANIMATION_EASE_CUBIC,
@@ -13,48 +13,50 @@ export default function GiveawayEnded() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
-      <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
-        <m.div
-          animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center gap-6"
-          initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
-          transition={
-            prefersReducedMotion
-              ? { duration: 0 }
-              : {
-                  duration: ANIMATION_DURATION_MEDIUM,
-                  ease: ANIMATION_EASE_CUBIC,
-                }
-          }
-        >
-          <div className="rounded-full bg-secondary/10 p-4">
-            <span className="text-4xl">⏳</span>
-          </div>
-          <h1 className="font-bold text-4xl text-primary md:text-5xl">
-            Giveaway Concluded
-          </h1>
-          <p className="mx-auto max-w-lg text-lg text-secondary leading-relaxed">
-            The New Year Giveaway has officially ended. Thank you to everyone
-            who participated! Stay tuned — something else might be coming in
-            later on…
-          </p>
-          <div className="pt-8">
-            <Link
-              className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
-              href="/"
-            >
-              <HugeiconsIcon
-                color="currentColor"
-                icon={ArrowLeft01Icon}
-                size={16}
-                strokeWidth={1.5}
-              />
-              Return to Home
-            </Link>
-          </div>
-        </m.div>
-      </div>
-    </section>
+    <MotionRoot>
+      <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
+        <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
+          <m.div
+            animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+            className="flex flex-col items-center justify-center gap-6"
+            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : {
+                    duration: ANIMATION_DURATION_MEDIUM,
+                    ease: ANIMATION_EASE_CUBIC,
+                  }
+            }
+          >
+            <div className="rounded-full bg-secondary/10 p-4">
+              <span className="text-4xl">⏳</span>
+            </div>
+            <h1 className="font-bold text-4xl text-primary md:text-5xl">
+              Giveaway Concluded
+            </h1>
+            <p className="mx-auto max-w-lg text-lg text-secondary leading-relaxed">
+              The New Year Giveaway has officially ended. Thank you to everyone
+              who participated! Stay tuned — something else might be coming in
+              later on…
+            </p>
+            <div className="pt-8">
+              <a
+                className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
+                href="/"
+              >
+                <HugeiconsIcon
+                  color="currentColor"
+                  icon={ArrowLeft01Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                />
+                Return to Home
+              </a>
+            </div>
+          </m.div>
+        </div>
+      </section>
+    </MotionRoot>
   );
 }

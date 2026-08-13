@@ -1,0 +1,110 @@
+{
+  "workExperience": [
+    {
+      "id": "flik-developer",
+      "company": "Flik",
+      "position": "Full-Stack Developer",
+      "startDate": "2025-12-01",
+      "endDate": null,
+      "description": "Engineered a premium creator-commerce platform for digital products and services. Built custom storefronts, a structured builder, analytics dashboards, and authentication systems using Next.js and Convex.",
+      "technologies": [
+        "Next.js",
+        "Convex",
+        "Better Auth",
+        "Tailwind CSS",
+        "TypeScript",
+        "React",
+        "Framer Motion"
+      ],
+      "companyUrl": "https://flik.store"
+    },
+    {
+      "id": "welup-digital-fullstack-developer",
+      "company": "Welup Digital",
+      "position": "Founding Engineer",
+      "startDate": "2021-09-01",
+      "endDate": null,
+      "description": "First developer hire. Built client websites from scratch using HTML, CSS, JavaScript, React, and later Next.js. Made sure sites worked well on mobile phones and ranked on Google.",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "React",
+        "Tailwind CSS",
+        "Bootstrap",
+        "WordPress",
+        "Next.js",
+        "Framer Motion"
+      ],
+      "companyUrl": "https://welupdigital.com"
+    },
+    {
+      "id": "welup-digital-seo-specialist",
+      "company": "Welup Digital",
+      "position": "SEO Expert",
+      "startDate": "2023-01-01",
+      "endDate": null,
+      "description": "Handled SEO for the business and their clients. Did keyword research, fixed technical SEO issues, set up Google Analytics and Search Console, and tracked rankings with SEMrush.",
+      "technologies": [
+        "SEO (On-page, Off-page, Technical, Local SEO)",
+        "Keyword Research",
+        "Google Analytics",
+        "SEMrush",
+        "Search Console"
+      ],
+      "companyUrl": "https://welupdigital.com"
+    },
+    {
+      "id": "promptearn-seo-specialist",
+      "company": "PromptEarn",
+      "position": "SEO & Growth Specialist",
+      "startDate": "2024-05-01",
+      "endDate": "2024-10-31",
+      "description": "Ran email marketing campaigns, managed social media presence, and grew the affiliate program. Also fixed site speed issues and handled on-page SEO.",
+      "technologies": [
+        "Email Marketing",
+        "Social Media Marketing",
+        "Affiliate Marketing",
+        "SEO (On-page, Technical)",
+        "Google Core Web Vitals",
+        "PageSpeed"
+      ],
+      "companyUrl": "https://promptearn.com"
+    },
+    {
+      "id": "zumera-developer",
+      "company": "Zumera",
+      "position": "Full-Stack Developer",
+      "startDate": "2025-08-01",
+      "endDate": "2026-04-30",
+      "description": "Built web applications and digital solutions for various clients using modern tools like Next.js, React, and Tailwind CSS.",
+      "technologies": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Firebase",
+        "TypeScript"
+      ],
+      "companyUrl": "https://zumera.com"
+    },
+    {
+      "id": "freelance-fullstack-developer",
+      "company": "Freelance",
+      "position": "Full Stack Developer",
+      "startDate": "2020-09-01",
+      "endDate": null,
+      "description": "Built websites, news portals, and e-commerce stores for various clients. Worked across sectors including energy, finance, and recycling. Used tools like React, Node.js, WordPress, Laravel, and Next.js.",
+      "technologies": [
+        "React",
+        "Node.js",
+        "WordPress",
+        "Laravel",
+        "Next.js",
+        "Express.js",
+        "SEO",
+        "UI/UX Design"
+      ],
+      "companyUrl": "#"
+    }
+  ]
+}

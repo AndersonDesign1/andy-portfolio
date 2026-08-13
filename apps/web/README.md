@@ -1,37 +1,43 @@
-# @andy-portfolio/web
+# Astro Starter Kit: Minimal
 
-Next.js 16 frontend for the portfolio.
+```sh
+bun create astro@latest -- --template minimal
+```
 
-## ✨ Features
-- **Dynamic OG**: Branded social images generated via `/api/og`.
-- **Smooth Interaction**: Motion + Lenis for fluid UX.
-- **Sanity Integrated**: Content managed through the studio.
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-## � Structure
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
 
 ```text
+/
+├── public/
 ├── src/
-│   ├── app/          # Next.js App Router (pages & APIs)
-│   ├── components/   # React components (shadcn/ui)
-│   ├── data/         # Static JSON data
-│   ├── lib/          # Utilities & Metadata
-│   └── types/        # TypeScript definitions
-└── public/           # Static assets
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
 
-## �🚀 Development
-```bash
-bun dev
-```
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-### Env Variables
-Required in root `.env.local`:
-- `NEXT_PUBLIC_SANITY_PROJECT_ID`
-- `NEXT_PUBLIC_SANITY_DATASET`
-- `SPOTIFY_CLIENT_ID`
-- `SPOTIFY_CLIENT_SECRET`
-- `SPOTIFY_REFRESH_TOKEN`
-- `RESEND_API_KEY`
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-## 📦 Stack
-- Next.js 16, Tailwind 4, shadcn/ui, Zod.
+Any static assets, like images, can be placed in the `public/` directory.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `bun install`             | Installs dependencies                            |
+| `bun dev`             | Starts local dev server at `localhost:4321`      |
+| `bun build`           | Build your deployed site to `./dist/`          |
+| `bun preview`         | Preview your build locally, before deploying     |
+| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `bun astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
