@@ -3,13 +3,10 @@
 import { urlFor } from "@andy-portfolio/sanity-config";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { PortableText, type PortableTextComponents } from "@portabletext/react";
-
-interface PortableTextBlock {
-  _key: string;
-  _type: string;
-  [key: string]: unknown;
-}
+import { PortableText } from "@portabletext/react";
+import type { PortableTextComponents } from "@portabletext/react";
+import type { ComponentProps } from "react";
+import { z } from "zod";
 
 interface SanityImage {
   alt?: string;
@@ -24,69 +21,75 @@ interface Category {
   title: string;
 }
 
-interface SanityPost {
+export interface SanityPost {
   _createdAt: string;
-  body: PortableTextBlock[];
+  body: ComponentProps<typeof PortableText>["value"];
   categories?: (Category | null)[];
+  excerpt?: string;
   mainImage?: SanityImage;
   publishedAt?: string;
+  slug: { current: string };
   title: string;
 }
+
+const linkMarkSchema = z.object({ href: z.string() });
 
 const components: PortableTextComponents = {
   block: {
     blockquote: ({ children }) => (
-      <blockquote className="my-8 border-primary border-l-2 pl-6 text-primary text-xl italic">
+      <blockquote className="border-primary text-primary border-l-2 py-2 pl-6 text-xl italic">
         {children}
       </blockquote>
     ),
     h1: ({ children }) => (
-      <h1 className="mt-12 mb-6 font-bold text-3xl text-primary tracking-tight md:text-4xl">
+      <h1 className="text-primary pt-6 text-3xl font-bold tracking-tight md:text-4xl">
         {children}
       </h1>
     ),
     h2: ({ children }) => (
-      <h2 className="mt-12 mb-6 font-bold text-2xl text-primary tracking-tight md:text-3xl">
+      <h2 className="text-primary pt-6 text-2xl font-bold tracking-tight md:text-3xl">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-8 mb-4 font-bold text-primary text-xl tracking-tight md:text-2xl">
+      <h3 className="text-primary pt-2 text-xl font-bold tracking-tight md:text-2xl">
         {children}
       </h3>
     ),
     normal: ({ children }) => (
-      <p className="mb-6 text-lg text-secondary leading-relaxed">{children}</p>
+      <p className="text-secondary text-lg leading-relaxed">{children}</p>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="mb-6 flex list-outside list-disc flex-col gap-2 pl-4 text-lg text-secondary">
+      <ul className="text-secondary flex list-outside list-disc flex-col gap-2 pl-4 text-lg">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="mb-6 flex list-outside list-decimal flex-col gap-2 pl-4 text-lg text-secondary">
+      <ol className="text-secondary flex list-outside list-decimal flex-col gap-2 pl-4 text-lg">
         {children}
       </ol>
     ),
   },
   marks: {
     code: ({ children }) => (
-      <code className="rounded bg-secondary/10 px-1.5 py-0.5 font-mono text-primary text-sm">
+      <code className="bg-secondary/10 text-primary rounded px-1.5 py-0.5 font-mono text-sm">
         {children}
       </code>
     ),
     link: ({ children, value }) => {
-      if (!value?.href || typeof value.href !== "string") {
+      const linkMark = linkMarkSchema.safeParse(value);
+      if (!linkMark.success) {
         return <span>{children}</span>;
       }
-      const isInternal = value.href.startsWith("/");
+      const { href } = linkMark.data;
+      const isInternal = href.startsWith("/");
       if (isInternal) {
         return (
           <a
-            className="text-primary underline decoration-subtle underline-offset-4 transition-all hover:decoration-primary"
-            href={value.href}
+            className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"
+            href={href}
           >
             {children}
           </a>
@@ -94,8 +97,8 @@ const components: PortableTextComponents = {
       }
       return (
         <a
-          className="text-primary underline decoration-subtle underline-offset-4 transition-all hover:decoration-primary"
-          href={value.href}
+          className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"
+          href={href}
           rel="noreferrer noopener"
           target="_blank"
         >
@@ -104,18 +107,18 @@ const components: PortableTextComponents = {
       );
     },
     strong: ({ children }) => (
-      <strong className="font-semibold text-primary">{children}</strong>
+      <strong className="text-primary font-semibold">{children}</strong>
     ),
   },
   types: {
     code: ({ value }) => (
-      <pre className="my-8 overflow-x-auto rounded-sm border border-subtle bg-secondary/10 p-4">
-        <code className="font-mono text-primary text-sm">{value.code}</code>
+      <pre className="border-subtle bg-secondary/10 overflow-x-auto rounded-sm border p-4">
+        <code className="text-primary font-mono text-sm">{value.code}</code>
       </pre>
     ),
     image: ({ value }) => (
-      <figure className="my-12 md:my-16">
-        <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
+      <figure className="flex flex-col gap-4 py-6 md:py-10">
+        <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
           <img
             alt={value.alt || "Blog post image"}
             className="h-auto w-full object-contain"
@@ -126,7 +129,7 @@ const components: PortableTextComponents = {
           />
         </div>
         {value.caption && (
-          <figcaption className="pt-4 text-center font-mono text-muted text-sm">
+          <figcaption className="text-muted text-center font-mono text-sm">
             {value.caption}
           </figcaption>
         )}
@@ -135,84 +138,84 @@ const components: PortableTextComponents = {
   },
 };
 
-export default function BlogPost({ post }: { post: SanityPost }) {
-  return (
-    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
-      <div className="mx-auto max-w-screen-md px-6">
-        <a
-          className="inline-flex items-center gap-2 font-mono text-muted text-sm transition-colors hover:text-primary"
-          href="/blog"
-        >
-          <HugeiconsIcon
-            color="currentColor"
-            icon={ArrowLeft01Icon}
-            size={16}
-            strokeWidth={1.5}
-          />
-          Back to Writing
-        </a>
-        <div className="pt-12">
-          <article>
-            <div className="border-subtle border-b pb-8">
-              <h1 className="pb-8 font-bold text-4xl text-primary leading-tight tracking-tighter md:text-6xl">
-                {post.title}
-              </h1>
+const BlogPost = ({ post }: { post: SanityPost }) => (
+  <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
+    <div className="mx-auto max-w-screen-md px-6">
+      <a
+        className="text-muted hover:text-primary inline-flex items-center gap-2 font-mono text-sm transition-colors"
+        href="/blog"
+      >
+        <HugeiconsIcon
+          color="currentColor"
+          icon={ArrowLeft01Icon}
+          size={16}
+          strokeWidth={1.5}
+        />
+        Back to Writing
+      </a>
+      <div className="pt-12">
+        <article>
+          <div className="border-subtle border-b pb-8">
+            <h1 className="text-primary pb-8 text-4xl leading-tight font-bold tracking-tighter md:text-6xl">
+              {post.title}
+            </h1>
 
-              <div className="flex flex-wrap items-center gap-6 font-mono text-muted text-sm">
-                <span>
-                  {new Date(
-                    post.publishedAt || post._createdAt
-                  ).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </span>
+            <div className="text-muted flex flex-wrap items-center gap-6 font-mono text-sm">
+              <span>
+                {new Date(
+                  post.publishedAt || post._createdAt
+                ).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
 
-                {post.categories && post.categories.length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <span>/</span>
-                    {post.categories
-                      .filter((cat): cat is Category => !!cat)
-                      .map((cat, i) => (
-                        <span key={cat._id}>
-                          {cat.title}
-                          {i < (post.categories?.length || 0) - 1 && ", "}
-                        </span>
-                      ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {post.mainImage && (
-              <figure className="pt-16 pb-12 md:pb-16">
-                <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
-                  <img
-                    alt={post.mainImage.alt || post.title}
-                    className="h-auto w-full object-cover"
-                    height={600}
-                    src={
-                      urlFor(post.mainImage).url() ||
-                      "/placeholder.svg?height=600&width=1200"
-                    }
-                    width={1200}
-                  />
+              {post.categories && post.categories.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span>/</span>
+                  {post.categories
+                    .filter((cat): cat is Category => !!cat)
+                    .map((cat, i) => (
+                      <span key={cat._id}>
+                        {cat.title}
+                        {i < (post.categories?.length || 0) - 1 && ", "}
+                      </span>
+                    ))}
                 </div>
-                {post.mainImage.caption && (
-                  <figcaption className="pt-4 text-center font-mono text-muted text-sm">
-                    {post.mainImage.caption}
-                  </figcaption>
-                )}
-              </figure>
-            )}
-
-            <div className="prose prose-lg max-w-none">
-              <PortableText components={components} value={post.body} />
+              )}
             </div>
-          </article>
-        </div>
+          </div>
+
+          {post.mainImage && (
+            <figure className="pt-16 pb-12 md:pb-16">
+              <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
+                <img
+                  alt={post.mainImage.alt || post.title}
+                  className="h-auto w-full object-cover"
+                  height={600}
+                  src={
+                    urlFor(post.mainImage).url() ||
+                    "/placeholder.svg?height=600&width=1200"
+                  }
+                  width={1200}
+                />
+              </div>
+              {post.mainImage.caption && (
+                <figcaption className="text-muted pt-4 text-center font-mono text-sm">
+                  {post.mainImage.caption}
+                </figcaption>
+              )}
+            </figure>
+          )}
+
+          <div className="flex max-w-none flex-col gap-6">
+            <PortableText components={components} value={post.body} />
+          </div>
+        </article>
       </div>
-    </section>
-  );
-}
+    </div>
+  </section>
+);
+
+export default BlogPost;

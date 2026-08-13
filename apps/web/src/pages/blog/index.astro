@@ -1,11 +1,11 @@
 ---
 import { client } from "@andy-portfolio/sanity-config";
 import BlogList from "../../components/bloglist.tsx";
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import BaseLayout from "../../layouts/base-layout.astro";
 
 export const prerender = true;
 
-async function getPosts() {
+const getPosts = async () => {
   try {
     return await client.fetch(
       `*[_type == "post"] | order(publishedAt desc){
@@ -22,7 +22,7 @@ async function getPosts() {
   } catch {
     return [];
   }
-}
+};
 
 const posts = await getPosts();
 ---

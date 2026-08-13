@@ -1,16 +1,15 @@
-export const prerender = false;
-
 import { ImageResponse } from "@vercel/og";
 import type { APIRoute } from "astro";
-import { createElement, type ReactNode } from "react";
+import { createElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-function el(
+export const prerender = false;
+
+const el = (
   type: string,
   style: Record<string, string | number>,
   children?: ReactNode
-) {
-  return createElement(type, { style }, children);
-}
+): ReactElement => createElement(type, { style }, children);
 
 export const GET: APIRoute = ({ url }) => {
   const title = url.searchParams.get("title") || "Anderson Joseph";

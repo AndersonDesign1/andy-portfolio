@@ -1,23 +1,33 @@
-import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro/zod";
+import { ActionError, defineAction } from "astro:actions";
 import { checkBotId } from "botid/server";
 import { Resend } from "resend";
 
 const BLOCKED = "We couldn't send your message. Please try again later.";
 
-function escapeHtml(text: string): string {
-  return text.replace(
-    /[&<>"']/g,
-    (m) =>
-      ({
-        "'": "&#039;",
-        '"': "&quot;",
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-      })[m]!
-  );
-}
+const escapeHtml = (text: string): string =>
+  text.replaceAll(/[&<>"']/gu, (character) => {
+    switch (character) {
+      case '"': {
+        return "&quot;";
+      }
+      case "&": {
+        return "&amp;";
+      }
+      case "'": {
+        return "&#039;";
+      }
+      case "<": {
+        return "&lt;";
+      }
+      case ">": {
+        return "&gt;";
+      }
+      default: {
+        return character;
+      }
+    }
+  });
 
 export const server = {
   sendEmail: defineAction({
@@ -60,7 +70,7 @@ export const server = {
           <p><b>Name:</b> ${escapeHtml(input.name)}</p>
           <p><b>Email:</b> ${escapeHtml(input.email)}</p>
           <p><b>Subject:</b> ${escapeHtml(subject)}</p>
-          <p><b>Message:</b><br/>${escapeHtml(input.message).replace(/\n/g, "<br/>")}</p>
+          <p><b>Message:</b><br/>${escapeHtml(input.message).replaceAll("\n", "<br/>")}</p>
         `,
         replyTo: input.email,
         subject: escapeHtml(subject),

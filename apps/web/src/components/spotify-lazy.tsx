@@ -6,10 +6,10 @@ const SpotifyNowPlaying = lazy(
   () => import("@/components/spotify-now-playing")
 );
 
-export default function SpotifyLazy() {
-  return (
-    <Suspense fallback={null}>
-      <SpotifyNowPlaying />
-    </Suspense>
-  );
-}
+const SpotifyLazy = () => (
+  <Suspense fallback={null}>
+    <SpotifyNowPlaying />
+  </Suspense>
+);
+
+export default SpotifyLazy;

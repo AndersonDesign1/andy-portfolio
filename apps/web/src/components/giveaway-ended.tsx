@@ -3,18 +3,19 @@
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { m, useReducedMotion } from "motion/react";
+
 import MotionRoot from "@/components/motion-root";
 import {
   ANIMATION_DURATION_MEDIUM,
   ANIMATION_EASE_CUBIC,
 } from "@/lib/constants";
 
-export default function GiveawayEnded() {
+const GiveawayEnded = () => {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <MotionRoot>
-      <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
+      <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
         <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
           <m.div
             animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
@@ -29,20 +30,20 @@ export default function GiveawayEnded() {
                   }
             }
           >
-            <div className="rounded-full bg-secondary/10 p-4">
+            <div className="bg-secondary/10 rounded-full p-4">
               <span className="text-4xl">⏳</span>
             </div>
-            <h1 className="font-bold text-4xl text-primary md:text-5xl">
+            <h1 className="text-primary text-4xl font-bold md:text-5xl">
               Giveaway Concluded
             </h1>
-            <p className="mx-auto max-w-lg text-lg text-secondary leading-relaxed">
+            <p className="text-secondary mx-auto max-w-lg text-lg leading-relaxed">
               The New Year Giveaway has officially ended. Thank you to everyone
               who participated! Stay tuned — something else might be coming in
               later on…
             </p>
             <div className="pt-8">
               <a
-                className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
+                className="border-primary text-primary inline-flex items-center gap-2 border-b pb-1 transition-opacity hover:opacity-70"
                 href="/"
               >
                 <HugeiconsIcon
@@ -59,4 +60,6 @@ export default function GiveawayEnded() {
       </section>
     </MotionRoot>
   );
-}
+};
+
+export default GiveawayEnded;

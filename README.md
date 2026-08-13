@@ -1,59 +1,66 @@
 # Andy Portfolio
 
-My personal portfolio and blog. A high-performance monorepo built with Bun, Turbo, and Next.js.
+Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primary site, Sanity CMS, and a Next.js archive kept for reference.
 
-## ⚡ Tech Stack
+## Tech stack
 
-- **Monorepo**: [Turbo](https://turbo.build/) + [Bun](https://bun.sh/)
-- **Frontend**: [Next.js 16](https://nextjs.org/) (App Router)
-- **CMS**: [Sanity](https://www.sanity.io/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.dev/)
-- **Interactions**: [Motion](https://motion.dev/) + [Lenis](https://github.com/darkroomengineering/lenis)
+- **Monorepo**: [Turbo](https://turbo.build/) + [Bun](https://bun.sh/) `1.3.14`
+- **Web (primary)**: [Astro 7](https://astro.build/) + React islands + `@astrojs/vercel`
+- **Web (archive)**: [Next.js 16.3](https://nextjs.org/) in `apps/web-next` (port 3001)
+- **CMS**: [Sanity](https://www.sanity.io/) Studio (`apps/studio`, port 3333)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + shadcn-style primitives
+- **Motion**: [Motion](https://motion.dev/) + [Lenis](https://github.com/darkroomengineering/lenis)
+- **Lint (Astro)**: [Ultracite](https://www.ultracite.ai/) **7.10.3** → **Oxlint** + **Oxfmt**, with Astro/React presets, `oxlint-plugin-react-doctor`, and vendored [anti-slop](https://github.com/dmmulroy/anti-slop) at `tools/oxlint/anti-slop`
+- **Lint (Next archive / root format)**: Biome
 
----
-
-## 🏗️ Structure
+## Structure
 
 ```text
 ├── apps/
-│   ├── web/          # Next.js frontend
-│   └── studio/       # Sanity CMS
+│   ├── web/           # Astro 7 primary site (port 3000)
+│   ├── web-next/      # Next.js 16.3 archive (port 3001)
+│   └── studio/        # Sanity CMS (port 3333)
 ├── packages/
-│   └── sanity-config/# Shared Sanity logic & schemas
-├── turbo.json        # Build orchestration
-└── biome.jsonc       # Lint/Format config
+│   └── sanity-config/ # Shared Sanity schemas & client
+├── tools/
+│   └── oxlint/anti-slop/  # Vendored Oxlint anti-slop plugin
+├── turbo.json
+└── AGENTS.md          # Cloud Agent / contributor caveats
 ```
 
-- [**apps/web**](./apps/web): Next.js frontend with dynamic OG images and Sanity integration.
-- [**apps/studio**](./apps/studio): Sanity Studio for content management.
-- [**packages/sanity-config**](./packages/sanity-config): Shared schemas and configuration.
-
----
-
-## 🚀 Quick Start
+## Quick start
 
 ```bash
-# Install dependencies
 bun install
-
-# Setup environment
-cp .env.example .env.local # Fill in your keys
-
-# Run development mode
+cp .env.example .env.local   # fill Sanity, Spotify, Resend, etc.
 bun dev
 ```
 
-Visit `http://localhost:3000` (Astro web), `http://localhost:3001` (Next archive), and `http://localhost:3333` (Studio).
+- Astro: http://localhost:3000  
+- Next archive: http://localhost:3001  
+- Studio: http://localhost:3333 (use `localhost`, not `127.0.0.1`)
 
----
+Oxlint TypeScript configs need **Node ≥22.18** on `PATH` (CI installs Node 22).
 
-## 🛠️ Main Commands
+## Commands
 
-- `bun dev` - Start dev servers
-- `bun build` - Production build
-- `bun lint` - Lint all projects
-- `bun format` - Format codebase
+| Command | Action |
+| --- | --- |
+| `bun dev` | Turbo dev (all apps) |
+| `bun build` | Release builds |
+| `bun lint` | Lint workspaces (`apps/web` → `ultracite check`) |
+| `bun run --filter=@andy-portfolio/web lint:fix` | Autofix Astro lint/format |
+| `bun run --filter=@andy-portfolio/web typecheck` | `astro check` |
+| `bunx react-doctor@latest -y --verbose --no-score` | Advisory React Doctor scan (from `apps/web`) |
 
-## 📄 License
+## Astro app highlights (`apps/web`)
+
+- **Prefetch**: `prefetchAll` + `viewport` strategy in `astro.config.mjs`
+- **View transitions**: `<ClientRouter />` in `src/layouts/base-layout.astro`
+- **Spotify widget**: `/api/spotify/now-playing` returns normalized `albumArtUrl`; UI hides when idle with no track
+- **Contact**: Astro Actions (`src/actions`); webhook at `/api/webhook/email` requires Svix verification
+- Quality docs for agents: [`AGENTS.md`](./AGENTS.md)
+
+## License
 
 MIT © [Anderson Joseph](https://andersonjoseph.com)

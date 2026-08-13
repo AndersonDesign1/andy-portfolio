@@ -1,17 +1,23 @@
-export const prerender = false;
-
 import type { APIRoute } from "astro";
 import { Resend } from "resend";
+import { z } from "zod";
 
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    headers: { "Content-Type": "application/json" },
-    status,
-  });
-}
+export const prerender = false;
 
-export const GET: APIRoute = async () =>
-  json({ status: "Email webhook active" });
+const emailEventSchema = z.object({
+  data: z
+    .object({
+      email_id: z.string().optional(),
+      from: z.string().optional(),
+      subject: z.string().optional(),
+      to: z.array(z.string()).optional(),
+    })
+    .optional(),
+  type: z.string().optional(),
+});
+
+export const GET: APIRoute = () =>
+  Response.json({ status: "Email webhook active" });
 
 export const POST: APIRoute = async ({ request }) => {
   const apiKey = process.env.RESEND_API_KEY;
@@ -19,14 +25,14 @@ export const POST: APIRoute = async ({ request }) => {
   const contactEmail = process.env.CONTACT_EMAIL;
 
   if (!(apiKey && webhookSecret)) {
-    return json(
+    return Response.json(
       { error: "Missing RESEND_API_KEY or RESEND_WEBHOOK_SECRET" },
-      500
+      { status: 500 }
     );
   }
 
   if (!contactEmail) {
-    return json({ error: "Missing CONTACT_EMAIL" }, 500);
+    return Response.json({ error: "Missing CONTACT_EMAIL" }, { status: 500 });
   }
 
   const payload = await request.text();
@@ -35,7 +41,10 @@ export const POST: APIRoute = async ({ request }) => {
   const svixSignature = request.headers.get("svix-signature");
 
   if (!(svixId && svixTimestamp && svixSignature)) {
-    return json({ error: "Missing signature headers" }, 401);
+    return Response.json(
+      { error: "Missing signature headers" },
+      { status: 401 }
+    );
   }
 
   const resend = new Resend(apiKey);
@@ -51,32 +60,23 @@ export const POST: APIRoute = async ({ request }) => {
       webhookSecret,
     });
   } catch {
-    return json({ error: "Invalid signature" }, 401);
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  let event: {
-    data?: {
-      email_id?: string;
-      from?: string;
-      to?: string[];
-      subject?: string;
-    };
-    type?: string;
-  };
-
+  let payloadData: z.infer<typeof emailEventSchema>;
   try {
-    event = JSON.parse(payload) as typeof event;
+    payloadData = emailEventSchema.parse(JSON.parse(payload));
   } catch {
-    return json({ error: "Invalid JSON payload" }, 400);
+    return Response.json({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
-  if (event.type !== "email.received") {
-    return json({ ignored: true });
+  if (payloadData.type !== "email.received") {
+    return Response.json({ ignored: true });
   }
 
-  const { from, to, subject, email_id } = event.data ?? {};
+  const { from, to, subject, email_id } = payloadData.data ?? {};
   if (!email_id) {
-    return json({ error: "Missing email_id" }, 400);
+    return Response.json({ error: "Missing email_id" }, { status: 400 });
   }
 
   try {
@@ -88,11 +88,11 @@ export const POST: APIRoute = async ({ request }) => {
       to: [contactEmail],
     });
   } catch (error) {
-    return json(
+    return Response.json(
       { error: error instanceof Error ? error.message : "fail" },
-      500
+      { status: 500 }
     );
   }
 
-  return json({ ok: true });
+  return Response.json({ ok: true });
 };
