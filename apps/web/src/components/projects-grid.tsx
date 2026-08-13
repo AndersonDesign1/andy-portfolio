@@ -59,7 +59,7 @@ const ProjectRow = ({
       >
         <div className="flex items-center justify-between gap-8">
           {/* Left: Index & Title */}
-          <div className="flex items-baseline gap-8 transition-transform duration-300 ease-out group-hover:translate-x-4 md:gap-16">
+          <div className="flex items-baseline gap-8 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-4 motion-reduce:transform-none md:gap-16">
             <span className="text-muted font-mono text-sm">
               {String(index + 1).padStart(2, "0")}
             </span>
@@ -74,7 +74,7 @@ const ProjectRow = ({
               {project.techStack.slice(0, 3).join(" / ")}
             </p>
             <HugeiconsIcon
-              className="text-muted group-hover:text-accent shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
+              className="text-muted group-hover:text-accent shrink-0 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1 group-hover:-translate-y-1 motion-reduce:transform-none"
               color="currentColor"
               icon={ArrowUpRight01Icon}
               size={24}
@@ -84,7 +84,7 @@ const ProjectRow = ({
         </div>
 
         <div
-          className={`pointer-events-none absolute top-1/2 right-10 z-20 h-[200px] w-[300px] -translate-y-1/2 overflow-hidden rounded-lg opacity-0 transition-all duration-300 ease-out md:h-[300px] md:w-[450px] ${
+          className={`pointer-events-none absolute top-1/2 right-10 z-20 h-[200px] w-[300px] -translate-y-1/2 overflow-hidden rounded-lg opacity-0 transition-opacity duration-200 ease-out md:h-[300px] md:w-[450px] ${
             isHovered ? "opacity-100" : "opacity-0"
           }`}
           style={{ transformOrigin: "center center" }}

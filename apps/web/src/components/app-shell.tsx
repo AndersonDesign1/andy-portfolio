@@ -2,7 +2,7 @@
 
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { domAnimation, LazyMotion } from "motion/react";
+import { domAnimation, LazyMotion, MotionConfig } from "motion/react";
 import type { ReactNode } from "react";
 
 import ScrollProvider from "@/components/scroll-provider";
@@ -21,28 +21,30 @@ const AppShell = ({ children }: { children: ReactNode }) => (
     storageKey="andy-theme"
   >
     <LazyMotion features={domAnimation} strict>
-      <ScrollProvider>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <SpotifyLazy />
-        <Analytics />
-        <SpeedInsights />
-        <Toaster
-          offset="80px"
-          position="top-right"
-          style={{ zIndex: 9998 }}
-          toastOptions={{
-            style: {
-              background: "var(--muted)",
-              border: "1px solid var(--border)",
-              boxShadow:
-                "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
-              color: "var(--foreground)",
-            },
-          }}
-        />
-      </ScrollProvider>
+      <MotionConfig reducedMotion="user">
+        <ScrollProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <SpotifyLazy />
+          <Analytics />
+          <SpeedInsights />
+          <Toaster
+            offset="80px"
+            position="top-right"
+            style={{ zIndex: 9998 }}
+            toastOptions={{
+              style: {
+                background: "var(--muted)",
+                border: "1px solid var(--border)",
+                boxShadow:
+                  "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
+                color: "var(--foreground)",
+              },
+            }}
+          />
+        </ScrollProvider>
+      </MotionConfig>
     </LazyMotion>
   </ThemeProvider>
 );

@@ -1,43 +1,36 @@
-# Astro Starter Kit: Minimal
+# `@andy-portfolio/web`
 
-```sh
-bun create astro@latest -- --template minimal
-```
+Astro 7 primary portfolio site (React islands, Tailwind 4, Sanity, Vercel adapter).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Stack
 
-## 🚀 Project Structure
+- **Astro 7** + `@astrojs/react` / `@astrojs/vercel` / `@astrojs/sitemap`
+- **Lint / format**: Ultracite 7.10.3 → Oxlint + Oxfmt (`oxlint.config.ts`, `oxfmt.config.ts`)
+  - Presets: `ultracite/oxlint/{core,astro,react}`
+  - Plugins: `oxlint-plugin-react-doctor`, vendored anti-slop (`../../tools/oxlint/anti-slop`)
+- **Motion**: Motion + Lenis; Spotify now-playing island
+- **Navigation**: Astro `prefetch` (`prefetchAll` + `viewport`) and `<ClientRouter />` view transitions
 
-Inside of your Astro project, you'll see the following folders and files:
+## Commands
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+| Command | Action |
+| --- | --- |
+| `bun run dev` | Dev server on **http://localhost:3000** |
+| `bun run build` | Vercel output build |
+| `bun run preview` | Preview the built site |
+| `bun run lint` / `check` | `ultracite check` |
+| `bun run lint:fix` / `fix` | `ultracite fix` |
+| `bun run typecheck` | `astro check` |
+| `bunx react-doctor@latest -y --verbose --no-score` | Advisory React Doctor CLI |
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Requires **Bun 1.3.x** and **Node ≥22.18** for TypeScript Oxlint/Oxfmt configs.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Env
 
-Any static assets, like images, can be placed in the `public/` directory.
+Copy secrets into `apps/web/.env` / `.env.local` (and root `.env.local`). See root [`AGENTS.md`](../../AGENTS.md) for Sanity / Spotify / Resend notes.
 
-## 🧞 Commands
+## Layout / routing notes
 
-All commands are run from the root of the project, from a terminal:
-
-| Command               | Action                                           |
-| :-------------------- | :----------------------------------------------- |
-| `bun install`         | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your deployed site to `./dist/`            |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Layout: `src/layouts/base-layout.astro` (`ClientRouter`, theme boot script)
+- Do not `transition:persist` `AppShell` while it wraps the page `<slot />` (stale children)
+- Navbar listens for `astro:page-load` so active links stay correct under soft navigations

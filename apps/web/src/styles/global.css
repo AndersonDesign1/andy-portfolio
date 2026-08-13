@@ -24,6 +24,7 @@
 }
 
 :root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --background: oklch(95.51% 0 0); /* #f0f0f0 */
   --foreground: oklch(20.46% 0 0); /* #171717 */
 
@@ -111,6 +112,8 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     /* Paint the theme background on the root element itself (not just body).
      * On very tall pages (e.g. blog posts) a theme toggle repaints top-down;
      * if only body is painted, the transparent <html> exposes the browser's
@@ -149,6 +152,15 @@
     font-weight: 600;
     color: var(--foreground);
     letter-spacing: -0.03em;
+  }
+
+  h1,
+  h2 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   a {
@@ -345,6 +357,42 @@
   }
   50% {
     height: 100%;
+  }
+}
+
+@keyframes spotify-spin-reduced {
+  from {
+    transform: rotate(-6deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in.slide-in-from-bottom-4 {
+    animation-name: fadeIn;
+  }
+
+  .spotify-music-bar {
+    animation-duration: 1.5s !important;
+  }
+
+  .spotify-album-art {
+    animation-name: spotify-spin-reduced !important;
+    animation-duration: 8s !important;
+    animation-timing-function: ease-in-out !important;
+    animation-direction: alternate !important;
+  }
+
+  @keyframes music-bar {
+    0%,
+    100% {
+      height: 45%;
+    }
+    50% {
+      height: 60%;
+    }
   }
 }
 

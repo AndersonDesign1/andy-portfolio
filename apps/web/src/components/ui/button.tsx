@@ -6,7 +6,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center rounded-none text-sm font-medium whitespace-nowrap transition-all duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+  "ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center rounded-none text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,opacity,transform,box-shadow,backdrop-filter] duration-150 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50 motion-reduce:active:scale-100",
   {
     defaultVariants: {
       size: "default",

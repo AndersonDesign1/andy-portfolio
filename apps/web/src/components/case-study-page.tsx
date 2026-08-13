@@ -312,7 +312,7 @@ const CaseStudyContent = ({
               >
                 <img
                   alt={image.alt || `Project image ${index + 1}`}
-                  className="object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                  className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-[1.02] motion-reduce:transform-none"
                   loading="lazy"
                   src={image.src}
                 />
@@ -346,7 +346,7 @@ const CaseStudyContent = ({
                   </span>
                   <div className="flex items-center gap-4">
                     <HugeiconsIcon
-                      className="text-secondary transition-transform duration-300 group-hover:-translate-x-2"
+                      className="text-secondary transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-x-2 motion-reduce:transform-none"
                       color="currentColor"
                       icon={ArrowLeft01Icon}
                       size={20}
@@ -375,7 +375,7 @@ const CaseStudyContent = ({
                       {navigation.next.title}
                     </h3>
                     <HugeiconsIcon
-                      className="text-secondary transition-transform duration-300 group-hover:translate-x-2"
+                      className="text-secondary transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-2 motion-reduce:transform-none"
                       color="currentColor"
                       icon={ArrowRight01Icon}
                       size={20}

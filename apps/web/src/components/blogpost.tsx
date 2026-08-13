@@ -88,7 +88,7 @@ const components: PortableTextComponents = {
       if (isInternal) {
         return (
           <a
-            className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-all"
+            className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"
             href={href}
           >
             {children}
@@ -97,7 +97,7 @@ const components: PortableTextComponents = {
       }
       return (
         <a
-          className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-all"
+          className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"
           href={href}
           rel="noreferrer noopener"
           target="_blank"

@@ -4,7 +4,6 @@ import Lenis from "lenis";
 import type React from "react";
 import {
   createContext,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -197,11 +196,3 @@ const ScrollProvider = ({ children }: ScrollProviderProps) => {
 };
 
 export default ScrollProvider;
-
-export const useLenis = () => {
-  const context = useContext(ScrollContext);
-  if (!context) {
-    throw new Error("useLenis must be used within a ScrollProvider");
-  }
-  return context.lenis;
-};

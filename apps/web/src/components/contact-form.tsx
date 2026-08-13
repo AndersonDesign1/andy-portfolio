@@ -202,7 +202,7 @@ const ContactForm = () => {
 
             <div className="pt-8">
               <Button
-                className="border-subtle text-primary hover:border-primary hover:bg-secondary/50 w-full border bg-transparent px-8 py-6 transition-all duration-300 hover:backdrop-blur-sm md:w-auto"
+                className="border-subtle text-primary hover:border-primary hover:bg-secondary/50 w-full border bg-transparent px-8 py-6 transition-[background-color,border-color,transform,backdrop-filter] duration-150 ease-[var(--ease-out)] hover:backdrop-blur-sm md:w-auto"
                 disabled={isPending}
                 type="submit"
               >

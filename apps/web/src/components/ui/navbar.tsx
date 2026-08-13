@@ -67,7 +67,7 @@ const Navbar = () => {
     <>
       {/* Navbar */}
       <nav
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ease-[var(--ease-out)] ${
           scrolled
             ? "border-subtle bg-primary/95 border-b py-6 backdrop-blur-sm"
             : "py-6"

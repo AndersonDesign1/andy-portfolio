@@ -48,11 +48,20 @@ const projects: Project[] = projectsDataJson.projects.map((project) => ({
 }));
 
 const categories = ["All", "Full Stack", "SEO", "Web Design"];
+const UI_EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
 const gridVariants: Variants = {
-  animate: { opacity: 1, transition: { duration: 0.4, ease: "easeOut" }, y: 0 },
-  exit: { opacity: 0, transition: { duration: 0.3, ease: "easeIn" }, y: -30 },
-  initial: { opacity: 0, y: 30 },
+  animate: {
+    opacity: 1,
+    transition: { duration: 0.24, ease: UI_EASE_OUT },
+    y: 0,
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.15, ease: UI_EASE_OUT },
+    y: -12,
+  },
+  initial: { opacity: 0, y: 12 },
 };
 
 const ProjectsShowcase: React.FC = () => {
@@ -162,14 +171,14 @@ const ProjectsShowcase: React.FC = () => {
                         >
                           <img
                             alt={project.title}
-                            className="object-contain transition-transform duration-700 group-hover:scale-105"
+                            className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transform-none"
                             src={project.thumbnail}
                           />
                         </a>
                       ) : (
                         <img
                           alt={project.title}
-                          className="object-contain transition-transform duration-700 group-hover:scale-105"
+                          className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transform-none"
                           src={project.thumbnail}
                         />
                       )}
@@ -250,8 +259,12 @@ const ProjectsShowcase: React.FC = () => {
               <m.div
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col gap-8 pt-32"
-                initial={{ opacity: 0, y: 30 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                initial={{ opacity: 0, y: 12 }}
+                transition={{
+                  delay: 0.2,
+                  duration: 0.28,
+                  ease: UI_EASE_OUT,
+                }}
               >
                 <h2 className="text-muted pb-12 font-mono text-xs tracking-widest uppercase">
                   Freelance & Individual Projects

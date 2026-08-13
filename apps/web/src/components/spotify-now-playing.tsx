@@ -64,13 +64,13 @@ const MusicBars = ({
   return (
     <div className="flex h-3 items-end gap-0.5">
       <div
-        className={`w-0.5 ${bgColor} ${isPlaying ? "h-full animate-[music-bar_0.5s_ease-in-out_infinite]" : "h-1/3"}`}
+        className={`spotify-music-bar w-0.5 ${bgColor} ${isPlaying ? "h-full animate-[music-bar_0.5s_ease-in-out_infinite]" : "h-1/3"}`}
       />
       <div
-        className={`w-0.5 ${bgColor} ${isPlaying ? "h-1/2 animate-[music-bar_0.75s_ease-in-out_infinite] delay-75" : "h-2/3"}`}
+        className={`spotify-music-bar w-0.5 ${bgColor} ${isPlaying ? "h-1/2 animate-[music-bar_0.75s_ease-in-out_infinite] delay-75" : "h-2/3"}`}
       />
       <div
-        className={`w-0.5 ${bgColor} ${isPlaying ? "h-3/4 animate-[music-bar_0.6s_ease-in-out_infinite] delay-150" : "h-1/2"}`}
+        className={`spotify-music-bar w-0.5 ${bgColor} ${isPlaying ? "h-3/4 animate-[music-bar_0.6s_ease-in-out_infinite] delay-150" : "h-1/2"}`}
       />
     </div>
   );
@@ -125,25 +125,30 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
 
   return (
     <m.div
-      animate={{ opacity: 1, scale: 1, y: 0 }}
+      animate={{ opacity: 1, transform: "translateY(0) scale(1)" }}
       className="border-subtle bg-primary absolute right-0 bottom-full mb-4 w-72 rounded-sm border p-6 shadow-2xl"
-      exit={{ opacity: 0, scale: 0.95, y: 10 }}
-      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      exit={{
+        opacity: 0,
+        transform: "translateY(10px) scale(0.95)",
+        transition: { duration: 0.15, ease: [0.23, 1, 0.32, 1] },
+      }}
+      initial={{ opacity: 0, transform: "translateY(10px) scale(0.95)" }}
+      transition={{ duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
     >
       <div className="mb-4 flex gap-4">
         <div className="relative">
-          <AnimatePresence mode="wait">
+          <AnimatePresence initial={false} mode="wait">
             <m.div
-              animate={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 1, transform: "scale(1)" }}
               className="relative"
-              exit={{ opacity: 0, scale: 0.8 }}
-              initial={{ opacity: 0, scale: 0.8 }}
+              exit={{ opacity: 0, transform: "scale(0.95)" }}
+              initial={{ opacity: 0, transform: "scale(0.95)" }}
               key={albumImage}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
             >
               <AlbumArt
                 alt={albumName}
-                className={`size-16 rounded-sm object-cover ${track.isPlaying ? "" : "grayscale"}`}
+                className={`size-16 rounded-sm object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10 ${track.isPlaying ? "" : "grayscale"}`}
                 size={64}
                 src={albumImage}
               />
@@ -154,7 +159,7 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
           </div>
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-center overflow-hidden">
-          <AnimatePresence mode="wait">
+          <AnimatePresence initial={false} mode="wait">
             <m.div
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -203,7 +208,7 @@ const SpotifyMiniPlayer = ({
 
   return (
     <button
-      className="group border-subtle bg-background/95 hover:border-primary flex items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] transition-all duration-300 focus:ring-0 focus:outline-none"
+      className="group border-subtle bg-background/95 hover:border-primary flex items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] transition-[border-color,transform] duration-200 ease-[var(--ease-out)] focus:ring-0 focus:outline-none active:scale-[0.96] motion-reduce:active:scale-100"
       onClick={onClick}
       type="button"
     >
@@ -212,7 +217,7 @@ const SpotifyMiniPlayer = ({
       >
         <AlbumArt
           alt={trackName}
-          className={`size-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
+          className={`spotify-album-art size-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10 ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
           size={32}
           src={thumbnailImage}
         />
@@ -226,7 +231,7 @@ const SpotifyMiniPlayer = ({
           </span>
           <MusicBars isPlaying={track.isPlaying ?? false} variant="dark" />
         </div>
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           <m.span
             animate={{ opacity: 1, y: 0 }}
             className="text-primary group-hover:text-accent block max-w-[140px] truncate text-xs leading-tight font-medium transition-colors"
@@ -287,7 +292,7 @@ const SpotifyNowPlaying = () => {
 
   return (
     <div className="fixed right-6 bottom-6 z-50" ref={wrapperRef}>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && <SpotifyExpandedCard track={track} />}
       </AnimatePresence>
       <SpotifyMiniPlayer onClick={() => setIsOpen(!isOpen)} track={track} />

@@ -83,7 +83,7 @@ const Hero = () => (
               ({ icon, customIcon: CustomIcon, href, label }) => (
                 <a
                   aria-label={label}
-                  className="text-muted hover:text-accent transition-all duration-200 ease-out hover:-translate-y-[3px]"
+                  className="text-muted hover:text-accent transition-[color,transform] duration-200 ease-out hover:-translate-y-[3px] motion-reduce:hover:translate-y-0"
                   href={href}
                   key={label}
                   rel="noopener noreferrer"
