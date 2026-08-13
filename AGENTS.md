@@ -31,6 +31,7 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 
 - Ultracite **7.10.3** + **Oxlint** / **Oxfmt** (`apps/web/oxlint.config.ts`, `oxfmt.config.ts`) with `ultracite/oxlint/{core,astro,react}` plus `oxlint-plugin-react-doctor`. Lint/fix: `bun run --filter=@andy-portfolio/web lint` / `lint:fix` (aliases for `ultracite check` / `fix`). Next archive still uses Biome.
 - Oxlint TS configs need **Node ^20.19 or ≥22.18** on `PATH` (loading `oxlint.config.ts` / `oxfmt.config.ts`). If `node -v` is older (e.g. VM default 22.14), use nvm Node 22.23+ first: `export PATH="$(dirname "$(nvm which 22)"):$PATH"`.
+- Prefetch is on (`prefetch.prefetchAll` + `defaultStrategy: "viewport"` in `apps/web/astro.config.mjs`). View transitions use `<ClientRouter />` in `base-layout.astro`. Do **not** `transition:persist` the `AppShell` that wraps the page `<slot />` — persisted islands keep stale children across navigations. Navbar listens for `astro:page-load` to keep the active link correct.
 - Contact uses Astro Actions (`src/actions/index.ts` → `sendEmail`). Same-origin CSRF applies; curl must send a matching `Origin`.
 - Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
 - Env: prefer `PUBLIC_SANITY_*` / `SANITY_*`; `NEXT_PUBLIC_*` still accepted for compatibility. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.

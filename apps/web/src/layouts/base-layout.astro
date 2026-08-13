@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "@fontsource-variable/inter/wght.css";
 import AppShell from "../components/app-shell.tsx";
 import BotIdInit from "../components/botid-init.tsx";
@@ -15,7 +16,7 @@ const meta = buildPageMeta({ description, title });
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:name="root" transition:animate="fade">
   <head>
     <meta charset="UTF-8">
     <meta
@@ -34,6 +35,7 @@ const meta = buildPageMeta({ description, title });
     <meta content={meta.title} name="twitter:title">
     <meta content={meta.description} name="twitter:description">
     <meta content={meta.ogImage} name="twitter:image">
+    <ClientRouter />
     <script is:inline>
       (() => {
         try {
@@ -63,7 +65,7 @@ const meta = buildPageMeta({ description, title });
     </a>
     <BotIdInit client:load />
     <AppShell client:load>
-      <div id="content">
+      <div id="content" transition:animate="fade">
         <slot />
       </div>
     </AppShell>

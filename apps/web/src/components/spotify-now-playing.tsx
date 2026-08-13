@@ -12,6 +12,7 @@ import {
 
 interface SpotifyTrack {
   album?: { images?: { url?: string }[]; name?: string; release_date?: string };
+  albumArtUrl?: string | null;
   artists?: { name?: string }[];
   external_urls?: { spotify?: string };
   isPlaying?: boolean;
@@ -26,18 +27,20 @@ const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
   return res.json();
 };
 
-// Placeholder image when no album art is available
+// Placeholder when Spotify returns no album art (valid SVG fill)
 const PLACEHOLDER_IMAGE =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect='%23333' width='64' height='64'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect fill='%23333333' width='64' height='64'/%3E%3C/svg%3E";
 
-// Helper to safely get album image URL
-const getAlbumImageUrl = (
-  images: { url?: string }[] | undefined,
-  preferredIndex = 0
-): string => {
+const getAlbumImageUrl = (track: SpotifyTrack, preferredIndex = 0): string => {
+  if (track.albumArtUrl) {
+    return track.albumArtUrl;
+  }
+
+  const images = track.album?.images;
   if (!images || images.length === 0) {
     return PLACEHOLDER_IMAGE;
   }
+
   return images[preferredIndex]?.url || images[0]?.url || PLACEHOLDER_IMAGE;
 };
 
@@ -50,7 +53,6 @@ const getArtistNames = (artists: { name?: string }[] | undefined): string => {
   return names.length > 0 ? names.join(", ") : "Unknown artist";
 };
 
-// Music bars animation component
 const MusicBars = ({
   isPlaying,
   variant = "light",
@@ -74,7 +76,6 @@ const MusicBars = ({
   );
 };
 
-// Skeleton component for loading state
 const SpotifySkeleton = () => (
   <div className="fixed right-6 bottom-6 z-50">
     <button
@@ -92,9 +93,31 @@ const SpotifySkeleton = () => (
   </div>
 );
 
-// Expanded card component
+const AlbumArt = ({
+  alt,
+  className,
+  src,
+  size,
+}: {
+  alt: string;
+  className?: string;
+  size: number;
+  src: string;
+}) => (
+  <img
+    alt={alt}
+    className={className}
+    decoding="async"
+    height={size}
+    // Spotify CDNs are more reliable without a document referrer.
+    referrerPolicy="no-referrer"
+    src={src}
+    width={size}
+  />
+);
+
 const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
-  const albumImage = getAlbumImageUrl(track.album?.images, 1);
+  const albumImage = getAlbumImageUrl(track, 1);
   const albumName = track.album?.name || "Unknown album";
   const trackName = track.name || "Unknown track";
   const artistNames = getArtistNames(track.artists);
@@ -118,12 +141,11 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
               key={albumImage}
               transition={{ duration: 0.3 }}
             >
-              <img
+              <AlbumArt
                 alt={albumName}
                 className={`size-16 rounded-sm object-cover ${track.isPlaying ? "" : "grayscale"}`}
-                height={64}
+                size={64}
                 src={albumImage}
-                width={64}
               />
             </m.div>
           </AnimatePresence>
@@ -169,7 +191,6 @@ const SpotifyExpandedCard = ({ track }: { track: SpotifyTrack }) => {
   );
 };
 
-// Mini player button component
 const SpotifyMiniPlayer = ({
   track,
   onClick,
@@ -177,7 +198,7 @@ const SpotifyMiniPlayer = ({
   track: SpotifyTrack;
   onClick: () => void;
 }) => {
-  const thumbnailImage = getAlbumImageUrl(track.album?.images, 2);
+  const thumbnailImage = getAlbumImageUrl(track, 2);
   const trackName = track.name || "Unknown track";
 
   return (
@@ -189,12 +210,11 @@ const SpotifyMiniPlayer = ({
       <div
         className={`relative size-8 overflow-hidden rounded-full ${track.isPlaying ? "" : "grayscale"}`}
       >
-        <img
+        <AlbumArt
           alt={trackName}
           className={`size-full object-cover ${track.isPlaying ? "animate-[spin_4s_linear_infinite]" : ""}`}
-          height={32}
+          size={32}
           src={thumbnailImage}
-          width={32}
         />
         <div className="border-subtle bg-primary absolute inset-0 z-10 m-auto size-2 rounded-full border" />
       </div>
@@ -260,7 +280,8 @@ const SpotifyNowPlaying = () => {
     return <SpotifySkeleton />;
   }
 
-  if (!track) {
+  // Idle payload with no track metadata (e.g. `{ isPlaying: false }`) — hide widget.
+  if (!track?.name) {
     return null;
   }
 

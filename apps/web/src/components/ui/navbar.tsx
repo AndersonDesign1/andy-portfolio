@@ -9,7 +9,29 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { debounce } from "@/lib/utils";
 
-const usePathname = () => globalThis.window?.location.pathname ?? "";
+const usePathname = () => {
+  const [pathname, setPathname] = useState(
+    () => globalThis.window?.location.pathname ?? ""
+  );
+
+  useEffect(() => {
+    const syncPathname = () => {
+      setPathname(window.location.pathname);
+    };
+
+    syncPathname();
+    // Astro ClientRouter navigations don't remount every listener target;
+    // keep the active nav link in sync after soft route changes.
+    document.addEventListener("astro:page-load", syncPathname);
+    window.addEventListener("popstate", syncPathname);
+    return () => {
+      document.removeEventListener("astro:page-load", syncPathname);
+      window.removeEventListener("popstate", syncPathname);
+    };
+  }, []);
+
+  return pathname;
+};
 
 const menuItems = [
   { label: "Home", link: "/" },
