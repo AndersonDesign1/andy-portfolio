@@ -6,10 +6,15 @@ import { getServerEnv } from "@/lib/env";
 export const prerender = false;
 
 const HTTP_STATUS_NO_CONTENT = 204;
+const IDLE_PAYLOAD = { isPlaying: false } as const;
+
+const httpsUrlSchema = z.url().refine((value) => value.startsWith("https://"), {
+  message: "Expected an https URL",
+});
 
 const spotifyImageSchema = z.object({
   height: z.number().optional(),
-  url: z.url(),
+  url: httpsUrlSchema,
   width: z.number().optional(),
 });
 
@@ -30,14 +35,28 @@ const spotifyTrackSchema = z.object({
     .optional(),
   external_urls: z
     .object({
-      spotify: z.url().optional(),
+      spotify: httpsUrlSchema.optional(),
     })
     .optional(),
   name: z.string().min(1),
 });
 
-type SpotifyTrack = z.infer<typeof spotifyTrackSchema>;
-type SpotifyImage = z.infer<typeof spotifyImageSchema>;
+interface SpotifyTrack {
+  album?: {
+    images?: { height?: number; url: string; width?: number }[];
+    name?: string;
+    release_date?: string;
+  };
+  artists?: { name?: string }[];
+  external_urls?: { spotify?: string };
+  name: string;
+}
+
+interface SpotifyImage {
+  height?: number;
+  url: string;
+  width?: number;
+}
 
 const tokenResponseSchema = z.object({
   access_token: z.string().min(1),
@@ -45,41 +64,46 @@ const tokenResponseSchema = z.object({
 
 const currentlyPlayingSchema = z.object({
   is_playing: z.boolean().optional(),
-  item: spotifyTrackSchema.nullable().optional(),
+  item: z.unknown().optional(),
 });
 
 const recentlyPlayedSchema = z.object({
   items: z
     .array(
       z.object({
-        track: spotifyTrackSchema.nullable().optional(),
+        track: z.unknown().optional(),
       })
     )
     .optional(),
 });
 
-const getAccessToken = async (): Promise<string> => {
-  const env = getServerEnv();
-  const basic = Buffer.from(
-    `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
-  ).toString("base64");
+const getAccessToken = async (): Promise<string | null> => {
+  try {
+    const env = getServerEnv();
+    const basic = Buffer.from(
+      `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
+    ).toString("base64");
 
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    body: new URLSearchParams({
-      grant_type: "refresh_token",
-      refresh_token: env.SPOTIFY_REFRESH_TOKEN,
-    }),
-    headers: {
-      Authorization: `Basic ${basic}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    method: "POST",
-  });
-  if (!response.ok) {
-    throw new Error(`Spotify token request failed with ${response.status}`);
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: env.SPOTIFY_REFRESH_TOKEN,
+      }),
+      headers: {
+        Authorization: `Basic ${basic}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      method: "POST",
+    });
+    if (!response.ok) {
+      return null;
+    }
+
+    const parsed = tokenResponseSchema.safeParse(await response.json());
+    return parsed.success ? parsed.data.access_token : null;
+  } catch {
+    return null;
   }
-  const data = tokenResponseSchema.parse(await response.json());
-  return data.access_token;
 };
 
 const pickAlbumArtUrl = (images: SpotifyImage[] | undefined): string | null => {
@@ -98,7 +122,7 @@ const toNowPlayingPayload = (
   isPlaying: boolean
 ) => {
   if (!track) {
-    return { isPlaying: false };
+    return IDLE_PAYLOAD;
   }
 
   return {
@@ -112,39 +136,67 @@ const toNowPlayingPayload = (
 };
 
 const fetchRecentlyPlayed = async (accessToken: string) => {
-  const res = await fetch(
-    "https://api.spotify.com/v1/me/player/recently-played?limit=1",
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
+  try {
+    const res = await fetch(
+      "https://api.spotify.com/v1/me/player/recently-played?limit=1",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    if (!res.ok) {
+      return IDLE_PAYLOAD;
     }
-  );
-  if (!res.ok) {
-    throw new Error(`Spotify history request failed with ${res.status}`);
+
+    const parsed = recentlyPlayedSchema.safeParse(await res.json());
+    if (!parsed.success) {
+      return IDLE_PAYLOAD;
+    }
+
+    const trackParsed = spotifyTrackSchema.safeParse(
+      parsed.data.items?.[0]?.track
+    );
+    return toNowPlayingPayload(
+      trackParsed.success ? trackParsed.data : null,
+      false
+    );
+  } catch {
+    return IDLE_PAYLOAD;
   }
-  const data = recentlyPlayedSchema.parse(await res.json());
-  const track = data.items?.[0]?.track ?? null;
-  return toNowPlayingPayload(track, false);
 };
 
 export const GET: APIRoute = async () => {
-  const accessToken = await getAccessToken();
-
-  const currentRes = await fetch(
-    "https://api.spotify.com/v1/me/player/currently-playing",
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
+  try {
+    const accessToken = await getAccessToken();
+    if (!accessToken) {
+      return Response.json(IDLE_PAYLOAD);
     }
-  );
 
-  if (currentRes.status === HTTP_STATUS_NO_CONTENT || !currentRes.ok) {
-    return Response.json(await fetchRecentlyPlayed(accessToken));
+    const currentRes = await fetch(
+      "https://api.spotify.com/v1/me/player/currently-playing",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    if (currentRes.status === HTTP_STATUS_NO_CONTENT || !currentRes.ok) {
+      return Response.json(await fetchRecentlyPlayed(accessToken));
+    }
+
+    const parsed = currentlyPlayingSchema.safeParse(await currentRes.json());
+    if (!parsed.success) {
+      return Response.json(await fetchRecentlyPlayed(accessToken));
+    }
+
+    const itemParsed = spotifyTrackSchema.safeParse(parsed.data.item);
+    if (!itemParsed.success) {
+      return Response.json(await fetchRecentlyPlayed(accessToken));
+    }
+
+    return Response.json(
+      toNowPlayingPayload(itemParsed.data, Boolean(parsed.data.is_playing))
+    );
+  } catch {
+    // Never 500 the widget — idle payload hides cleanly on the client.
+    return Response.json(IDLE_PAYLOAD);
   }
-
-  const data = currentlyPlayingSchema.parse(await currentRes.json());
-  const item = data.item ?? null;
-  if (!item) {
-    return Response.json(await fetchRecentlyPlayed(accessToken));
-  }
-
-  return Response.json(toNowPlayingPayload(item, Boolean(data.is_playing)));
 };

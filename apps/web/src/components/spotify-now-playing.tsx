@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import useSWR from "swr";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,22 +11,59 @@ import {
   SPOTIFY_POLLING_INTERVAL_PLAYING,
 } from "@/lib/constants";
 
-interface SpotifyTrack {
-  album?: { images?: { url?: string }[]; name?: string; release_date?: string };
-  albumArtUrl?: string | null;
-  artists?: { name?: string }[];
-  external_urls?: { spotify?: string };
-  isPlaying?: boolean;
-  name?: string;
-}
+const spotifyTrackSchema = z.object({
+  album: z
+    .object({
+      images: z
+        .array(
+          z.object({
+            url: z.string().optional(),
+          })
+        )
+        .optional(),
+      name: z.string().optional(),
+      release_date: z.string().optional(),
+    })
+    .optional(),
+  albumArtUrl: z.string().nullable().optional(),
+  artists: z
+    .array(
+      z.object({
+        name: z.string().optional(),
+      })
+    )
+    .optional(),
+  external_urls: z
+    .object({
+      spotify: z.string().optional(),
+    })
+    .optional(),
+  isPlaying: z.boolean().optional(),
+  name: z.string().min(1),
+});
+
+type SpotifyTrack = z.infer<typeof spotifyTrackSchema>;
 
 const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
-    return null;
+    throw new Error(`Spotify request failed (${res.status})`);
   }
-  return res.json();
+
+  const parsed = spotifyTrackSchema.safeParse(await res.json());
+  return parsed.success ? parsed.data : null;
 };
+
+const emptySubscribe = () => () => {
+  // Client-only mount gate for SWR; no external store updates.
+};
+
+const useHasMounted = () =>
+  useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
 // Placeholder when Spotify returns no album art (valid SVG fill)
 const PLACEHOLDER_IMAGE =
@@ -249,6 +287,7 @@ const SpotifyMiniPlayer = ({
 };
 
 const SpotifyNowPlaying = () => {
+  const hasMounted = useHasMounted();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -256,16 +295,26 @@ const SpotifyNowPlaying = () => {
     data: track,
     error,
     isLoading,
-  } = useSWR<SpotifyTrack | null>("/api/spotify/now-playing", fetcher, {
-    dedupingInterval: 2000,
-    refreshInterval: (latestData) =>
-      latestData?.isPlaying
-        ? SPOTIFY_POLLING_INTERVAL_PLAYING
-        : SPOTIFY_POLLING_INTERVAL_PAUSED,
-    refreshWhenHidden: false,
-    revalidateOnFocus: true,
-    suspense: false,
-  });
+  } = useSWR<SpotifyTrack | null>(
+    hasMounted ? "/api/spotify/now-playing" : null,
+    fetcher,
+    {
+      dedupingInterval: 2000,
+      // Idle/error payloads should not hammer the endpoint.
+      refreshInterval: (latestData) => {
+        if (!latestData?.name) {
+          return 0;
+        }
+        return latestData.isPlaying
+          ? SPOTIFY_POLLING_INTERVAL_PLAYING
+          : SPOTIFY_POLLING_INTERVAL_PAUSED;
+      },
+      refreshWhenHidden: false,
+      revalidateOnFocus: true,
+      shouldRetryOnError: false,
+      suspense: false,
+    }
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -281,7 +330,12 @@ const SpotifyNowPlaying = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (isLoading && track === undefined) {
+  // Avoid SSR'ing the skeleton into HTML (looks "stuck" when the API is idle/down).
+  if (!hasMounted) {
+    return null;
+  }
+
+  if (isLoading && track === undefined && !error) {
     return <SpotifySkeleton />;
   }
 
