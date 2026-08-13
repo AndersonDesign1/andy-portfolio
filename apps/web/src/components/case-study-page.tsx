@@ -24,9 +24,10 @@ const trapDialogFocus = (
     return;
   }
 
+  // `button` matches even with tabIndex={-1} (backdrop); keep only tabbable nodes.
   const focusableElements = [
     ...dialogElement.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-  ];
+  ].filter((element) => element.tabIndex >= 0);
   const [firstFocusableElement] = focusableElements;
   const lastFocusableElement = focusableElements.at(-1);
 

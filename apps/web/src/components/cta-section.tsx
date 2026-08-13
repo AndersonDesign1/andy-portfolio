@@ -18,7 +18,7 @@ const CtaSection = () => (
 
         <div className="pt-4">
           <a
-            className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 inline-flex items-center gap-2 rounded-sm border px-8 py-4 text-base font-medium transition-transform duration-200 ease-[var(--ease-out)] hover:backdrop-blur-sm active:scale-[0.96] motion-reduce:active:scale-100"
+            className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 focus-visible:ring-foreground focus-visible:ring-offset-background inline-flex touch-manipulation items-center gap-2 rounded-sm border px-8 py-4 text-base font-medium transition-transform duration-200 ease-[var(--ease-out)] hover:backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.96] motion-reduce:active:scale-100"
             href="/contact"
           >
             Get in Touch
