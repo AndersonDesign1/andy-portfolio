@@ -26,7 +26,8 @@ const meta = buildPageMeta({ description, title });
     <meta content={Astro.generator} name="generator">
     <title>{meta.title}</title>
     <meta content={meta.description} name="description">
-    <link href="/favicon.ico" rel="icon">
+    <link href="/favicon.ico" rel="icon" sizes="any" type="image/x-icon">
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <meta content={meta.title} property="og:title">
     <meta content={meta.description} property="og:description">
     <meta content={meta.ogImage} property="og:image">
