@@ -1,3 +1,15 @@
+/**
+ * Inbound Resend webhook: forwards received mail to CONTACT_EMAIL.
+ *
+ * WARNING — do NOT set CONTACT_EMAIL to the Resend inbound address
+ * (contact@andersonjoseph.com). This handler forwards to CONTACT_EMAIL; if that
+ * address is the same inbox Resend receives on, each forward triggers another
+ * email.received event and burns through daily send/receive limits in a loop.
+ * Use an external inbox instead (e.g. a personal Gmail address).
+ *
+ * WARNING — do NOT smoke-test sendEmail or this webhook on the live site;
+ * use local dev only. A single misconfigured forward can exhaust the free tier.
+ */
 import type { APIRoute } from "astro";
 import { Resend } from "resend";
 import { z } from "zod";
