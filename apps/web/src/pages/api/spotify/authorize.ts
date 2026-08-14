@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-import { getServerEnv } from "@/lib/env";
+import { getSpotifyEnv } from "@/lib/env";
 import { buildOAuthStateCookie, createOAuthState } from "@/lib/spotify-oauth";
 
 export const prerender = false;
@@ -17,7 +17,7 @@ const SPOTIFY_SCOPES = [
  * Prefer the www origin used by this site (https://www.andersonjoseph.com).
  */
 export const GET: APIRoute = ({ url }) => {
-  const env = getServerEnv();
+  const env = getSpotifyEnv();
   const secure = url.protocol === "https:";
   const state = createOAuthState();
   const redirectUri = new URL("/api/spotify/callback", url.origin).toString();

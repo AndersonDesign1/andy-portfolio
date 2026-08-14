@@ -3,6 +3,8 @@ import { ActionError, defineAction } from "astro:actions";
 import { checkBotId } from "botid/server";
 import { Resend } from "resend";
 
+import { getResendEnv } from "@/lib/env";
+
 const BLOCKED = "We couldn't send your message. Please try again later.";
 
 const escapeHtml = (text: string): string =>
@@ -32,35 +34,32 @@ const escapeHtml = (text: string): string =>
 export const server = {
   sendEmail: defineAction({
     accept: "form",
-    handler: async (input) => {
+    handler: async (input, context) => {
       if (input.projectMilestone) {
         throw new ActionError({ code: "BAD_REQUEST", message: BLOCKED });
       }
 
-      try {
-        const verification = await checkBotId({
-          advancedOptions: { checkLevel: "basic" },
-        });
-        if (verification.isBot) {
-          throw new ActionError({ code: "FORBIDDEN", message: BLOCKED });
+      const hasBotIdHeader = Boolean(context.request.headers.get("x-is-human"));
+
+      if (hasBotIdHeader) {
+        try {
+          const verification = await checkBotId({
+            advancedOptions: { checkLevel: "basic" },
+          });
+          if (verification.isBot) {
+            throw new ActionError({ code: "FORBIDDEN", message: BLOCKED });
+          }
+        } catch (error) {
+          if (error instanceof ActionError) {
+            throw error;
+          }
+          // BotID unavailable — continue with honeypot only.
         }
-      } catch (error) {
-        if (error instanceof ActionError) {
-          throw error;
-        }
-        // BotID may be unavailable locally — continue with honeypot only
       }
 
-      const apiKey = process.env.RESEND_API_KEY;
-      if (!apiKey) {
-        throw new ActionError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: BLOCKED,
-        });
-      }
-
-      const resend = new Resend(apiKey);
-      const to = process.env.CONTACT_EMAIL ?? "josanderson25@gmail.com";
+      const { CONTACT_EMAIL, RESEND_API_KEY } = getResendEnv();
+      const resend = new Resend(RESEND_API_KEY);
+      const to = CONTACT_EMAIL ?? "josanderson25@gmail.com";
       const subject = input.subject || "New Contact Form Submission";
 
       await resend.emails.send({

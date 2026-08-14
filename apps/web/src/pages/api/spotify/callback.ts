@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 
-import { getServerEnv } from "@/lib/env";
+import { getSpotifyEnv } from "@/lib/env";
 import {
   clearOAuthStateCookie,
   escapeHtml,
@@ -66,7 +66,7 @@ export const GET: APIRoute = async ({ request, url }) => {
   }
 
   try {
-    const env = getServerEnv();
+    const env = getSpotifyEnv();
     const redirectUri = new URL("/api/spotify/callback", url.origin).toString();
     const basic = Buffer.from(
       `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`

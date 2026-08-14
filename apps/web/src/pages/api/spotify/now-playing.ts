@@ -1,20 +1,16 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 
-import { getServerEnv } from "@/lib/env";
+import { getSpotifyEnv } from "@/lib/env";
 
 export const prerender = false;
 
 const HTTP_STATUS_NO_CONTENT = 204;
 const IDLE_PAYLOAD = { isPlaying: false } as const;
 
-const httpsUrlSchema = z.url().refine((value) => value.startsWith("https://"), {
-  message: "Expected an https URL",
-});
-
 const spotifyImageSchema = z.object({
   height: z.number().optional(),
-  url: httpsUrlSchema,
+  url: z.string().min(1),
   width: z.number().optional(),
 });
 
@@ -35,7 +31,7 @@ const spotifyTrackSchema = z.object({
     .optional(),
   external_urls: z
     .object({
-      spotify: httpsUrlSchema.optional(),
+      spotify: z.string().optional(),
     })
     .optional(),
   name: z.string().min(1),
@@ -79,7 +75,7 @@ const recentlyPlayedSchema = z.object({
 
 const getAccessToken = async (): Promise<string | null> => {
   try {
-    const env = getServerEnv();
+    const env = getSpotifyEnv();
     const basic = Buffer.from(
       `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
     ).toString("base64");
@@ -168,7 +164,9 @@ export const GET: APIRoute = async () => {
   try {
     const accessToken = await getAccessToken();
     if (!accessToken) {
-      return Response.json(IDLE_PAYLOAD);
+      return Response.json(IDLE_PAYLOAD, {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
     const currentRes = await fetch(
@@ -179,24 +177,33 @@ export const GET: APIRoute = async () => {
     );
 
     if (currentRes.status === HTTP_STATUS_NO_CONTENT || !currentRes.ok) {
-      return Response.json(await fetchRecentlyPlayed(accessToken));
+      return Response.json(await fetchRecentlyPlayed(accessToken), {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
     const parsed = currentlyPlayingSchema.safeParse(await currentRes.json());
     if (!parsed.success) {
-      return Response.json(await fetchRecentlyPlayed(accessToken));
+      return Response.json(await fetchRecentlyPlayed(accessToken), {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
     const itemParsed = spotifyTrackSchema.safeParse(parsed.data.item);
     if (!itemParsed.success) {
-      return Response.json(await fetchRecentlyPlayed(accessToken));
+      return Response.json(await fetchRecentlyPlayed(accessToken), {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
     return Response.json(
-      toNowPlayingPayload(itemParsed.data, Boolean(parsed.data.is_playing))
+      toNowPlayingPayload(itemParsed.data, Boolean(parsed.data.is_playing)),
+      { headers: { "Cache-Control": "no-store" } }
     );
   } catch {
     // Never 500 the widget — idle payload hides cleanly on the client.
-    return Response.json(IDLE_PAYLOAD);
+    return Response.json(IDLE_PAYLOAD, {
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 };
