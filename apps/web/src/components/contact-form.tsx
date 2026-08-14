@@ -61,15 +61,24 @@ const ContactForm = () => {
 
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
-      const result = await actions.sendEmail(formData);
-      if (result.error) {
-        toast.error(result.error.message || "Failed to send message.");
-        return;
+      try {
+        const result = await actions.sendEmail(formData);
+
+        if (result.error) {
+          toast.error(result.error.message || "Failed to send message.");
+          return;
+        }
+        toast.success(result.data?.message || "Message sent!");
+        setErrors({});
+        setForm(initialForm);
+        formRef.current?.reset();
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to send message. Please try again."
+        );
       }
-      toast.success(result.data?.message || "Message sent!");
-      setErrors({});
-      setForm(initialForm);
-      formRef.current?.reset();
     });
   };
 
