@@ -120,7 +120,7 @@ const components: PortableTextComponents = {
       <figure className="flex flex-col gap-4 py-6 md:py-10">
         <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
           <img
-            alt={value.alt || "Blog post image"}
+            alt={value.alt || value.caption || ""}
             className="h-auto w-full object-contain"
             height={500}
             loading="lazy"

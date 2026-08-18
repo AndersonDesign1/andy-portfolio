@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Toaster } from "@/components/ui/sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { EMAIL_REGEX } from "@/lib/constants";
 
@@ -84,6 +85,22 @@ const ContactForm = () => {
 
   return (
     <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
+      {/* Mounted here rather than in AppShell: this is the only view that
+          raises toasts, so other routes skip Sonner's runtime entirely. */}
+      <Toaster
+        offset="80px"
+        position="top-right"
+        style={{ zIndex: 9998 }}
+        toastOptions={{
+          style: {
+            background: "var(--muted)",
+            border: "1px solid var(--border)",
+            boxShadow:
+              "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
+            color: "var(--foreground)",
+          },
+        }}
+      />
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
           <div>

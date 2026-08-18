@@ -27,7 +27,28 @@ import React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Select = SelectRoot;
+/**
+ * Radix only wires `aria-controls` onto the trigger while the listbox is open,
+ * but the `combobox` role requires it at all times. Sharing one id between the
+ * trigger and the content satisfies the role contract in both states.
+ */
+const SelectContentIdContext = React.createContext<string | undefined>(
+  undefined
+);
+
+const Select = ({
+  children,
+  ...props
+}: React.ComponentProps<typeof SelectRoot>) => {
+  const contentId = React.useId();
+
+  return (
+    <SelectContentIdContext.Provider value={contentId}>
+      <SelectRoot {...props}>{children}</SelectRoot>
+    </SelectContentIdContext.Provider>
+  );
+};
+Select.displayName = SelectRoot.displayName;
 
 const SelectGroup = SelectGroupPrimitive;
 
@@ -38,27 +59,32 @@ const SelectTrigger = ({
   children,
   ref,
   ...props
-}: React.ComponentPropsWithRef<typeof SelectTriggerPrimitive>) => (
-  <SelectTriggerPrimitive
-    className={cn(
-      "border-input ring-offset-background focus:ring-ring data-[placeholder]:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-sm focus:ring-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-      className
-    )}
-    ref={ref}
-    {...props}
-  >
-    {children}
-    <SelectIconPrimitive asChild>
-      <HugeiconsIcon
-        className="opacity-50"
-        color="currentColor"
-        icon={ArrowDown01Icon}
-        size={16}
-        strokeWidth={1.5}
-      />
-    </SelectIconPrimitive>
-  </SelectTriggerPrimitive>
-);
+}: React.ComponentPropsWithRef<typeof SelectTriggerPrimitive>) => {
+  const contentId = React.useContext(SelectContentIdContext);
+
+  return (
+    <SelectTriggerPrimitive
+      aria-controls={contentId}
+      className={cn(
+        "border-input ring-offset-background focus:ring-ring data-[placeholder]:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-sm focus:ring-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+        className
+      )}
+      ref={ref}
+      {...props}
+    >
+      {children}
+      <SelectIconPrimitive asChild>
+        <HugeiconsIcon
+          className="opacity-50"
+          color="currentColor"
+          icon={ArrowDown01Icon}
+          size={16}
+          strokeWidth={1.5}
+        />
+      </SelectIconPrimitive>
+    </SelectTriggerPrimitive>
+  );
+};
 SelectTrigger.displayName = SelectTriggerPrimitive.displayName;
 
 const SelectScrollUpButton = ({
@@ -114,33 +140,38 @@ const SelectContent = ({
   position = "popper",
   ref,
   ...props
-}: React.ComponentPropsWithRef<typeof SelectContentPrimitive>) => (
-  <SelectPortalPrimitive>
-    <SelectContentPrimitive
-      className={cn(
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] origin-[--radix-select-content-transform-origin] overflow-x-hidden overflow-y-auto rounded-md border shadow-md",
-        position === "popper" &&
-          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-        className
-      )}
-      position={position}
-      ref={ref}
-      {...props}
-    >
-      <SelectScrollUpButton />
-      <SelectViewportPrimitive
+}: React.ComponentPropsWithRef<typeof SelectContentPrimitive>) => {
+  const contentId = React.useContext(SelectContentIdContext);
+
+  return (
+    <SelectPortalPrimitive>
+      <SelectContentPrimitive
         className={cn(
-          "p-1",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] origin-[--radix-select-content-transform-origin] overflow-x-hidden overflow-y-auto rounded-md border shadow-md",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+            "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+          className
         )}
+        id={contentId}
+        position={position}
+        ref={ref}
+        {...props}
       >
-        {children}
-      </SelectViewportPrimitive>
-      <SelectScrollDownButton />
-    </SelectContentPrimitive>
-  </SelectPortalPrimitive>
-);
+        <SelectScrollUpButton />
+        <SelectViewportPrimitive
+          className={cn(
+            "p-1",
+            position === "popper" &&
+              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+          )}
+        >
+          {children}
+        </SelectViewportPrimitive>
+        <SelectScrollDownButton />
+      </SelectContentPrimitive>
+    </SelectPortalPrimitive>
+  );
+};
 SelectContent.displayName = SelectContentPrimitive.displayName;
 
 const SelectLabel = ({
