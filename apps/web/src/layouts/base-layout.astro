@@ -65,7 +65,7 @@ const meta = buildPageMeta({ description, title });
       Skip to content
     </a>
     <BotIdInit client:load />
-    <AppShell client:load>
+    <AppShell client:load pathname={Astro.url.pathname}>
       <div id="content" tabindex="-1" transition:animate="fade">
         <slot />
       </div>

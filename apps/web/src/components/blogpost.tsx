@@ -34,7 +34,11 @@ export interface SanityPost {
 
 const linkMarkSchema = z.object({ href: z.string() });
 
-const components: PortableTextComponents = {
+/**
+ * Built per post so body figures can fall back to the post title for their
+ * accessible name, matching how the hero image is handled below.
+ */
+const createComponents = (postTitle: string): PortableTextComponents => ({
   block: {
     blockquote: ({ children }) => (
       <blockquote className="border-primary text-primary border-l-2 py-2 pl-6 text-xl italic">
@@ -120,7 +124,7 @@ const components: PortableTextComponents = {
       <figure className="flex flex-col gap-4 py-6 md:py-10">
         <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
           <img
-            alt={value.alt || "Blog post image"}
+            alt={value.alt || value.caption || `Figure from ${postTitle}`}
             className="h-auto w-full object-contain"
             height={500}
             loading="lazy"
@@ -136,7 +140,7 @@ const components: PortableTextComponents = {
       </figure>
     ),
   },
-};
+});
 
 const BlogPost = ({ post }: { post: SanityPost }) => (
   <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
@@ -210,7 +214,10 @@ const BlogPost = ({ post }: { post: SanityPost }) => (
           )}
 
           <div className="flex max-w-none flex-col gap-6">
-            <PortableText components={components} value={post.body} />
+            <PortableText
+              components={createComponents(post.title)}
+              value={post.body}
+            />
           </div>
         </article>
       </div>

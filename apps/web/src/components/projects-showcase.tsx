@@ -48,6 +48,10 @@ const projects: Project[] = projectsDataJson.projects.map((project) => ({
 }));
 
 const categories = ["All", "Full Stack", "SEO", "Web Design"];
+
+// The featured grid is two columns from `md` up, so only the first row is
+// reliably above the fold and worth loading eagerly.
+const FEATURED_ABOVE_FOLD = 2;
 const UI_EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
 const gridVariants: Variants = {
@@ -172,6 +176,10 @@ const ProjectsShowcase: React.FC = () => {
                           <img
                             alt={project.title}
                             className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transform-none"
+                            decoding="async"
+                            loading={
+                              index < FEATURED_ABOVE_FOLD ? "eager" : "lazy"
+                            }
                             src={project.thumbnail}
                           />
                         </a>
@@ -179,6 +187,10 @@ const ProjectsShowcase: React.FC = () => {
                         <img
                           alt={project.title}
                           className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transform-none"
+                          decoding="async"
+                          loading={
+                            index < FEATURED_ABOVE_FOLD ? "eager" : "lazy"
+                          }
                           src={project.thumbnail}
                         />
                       )}

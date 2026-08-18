@@ -357,7 +357,7 @@ const CaseStudyContent = ({
                 type="button"
               >
                 <img
-                  alt={image.alt || `Project image ${index + 1}`}
+                  alt={image.alt || image.title}
                   className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-[1.02] motion-reduce:transform-none"
                   loading="lazy"
                   src={image.src}

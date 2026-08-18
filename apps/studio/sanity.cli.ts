@@ -10,6 +10,6 @@ export default defineCliConfig({
   },
   studioHost: "anderson-sanity-studio",
   deployment: {
-    appId: 's9i5d5yl6ivwrst0eno9eb0c',
+    appId: "s9i5d5yl6ivwrst0eno9eb0c",
   },
 });

@@ -9,10 +9,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { debounce } from "@/lib/utils";
 
-const usePathname = () => {
-  const [pathname, setPathname] = useState(
-    () => globalThis.window?.location.pathname ?? ""
-  );
+/**
+ * Seeded from `Astro.url.pathname` so the server and the first client render
+ * agree — reading `window.location` in the initializer rendered a different
+ * active link on the client and tripped React's hydration check.
+ */
+const usePathname = (initialPathname: string) => {
+  const [pathname, setPathname] = useState(initialPathname);
 
   useEffect(() => {
     const syncPathname = () => {
@@ -41,10 +44,10 @@ const menuItems = [
   { label: "Contact", link: "/contact" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ pathname: initialPathname }: { pathname: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname(initialPathname);
 
   useEffect(() => {
     const onScroll = debounce(() => {

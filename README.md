@@ -6,7 +6,7 @@ Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primar
 
 - **Monorepo**: [Turbo](https://turbo.build/) + [Bun](https://bun.sh/) `1.3.14`
 - **Web (primary)**: [Astro 7](https://astro.build/) + React islands + `@astrojs/vercel`
-- **Web (archive)**: [Next.js 16.3](https://nextjs.org/) in `apps/web-next` (port 3001)
+- **Web (archive)**: [Next.js 16.3](https://nextjs.org/) in `apps/web-next` — source kept, **excluded from workspaces** ([restore](#restoring-the-next-archive))
 - **CMS**: [Sanity](https://www.sanity.io/) Studio (`apps/studio`, port 3333)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + shadcn-style primitives
 - **Motion**: [Motion](https://motion.dev/) + [Lenis](https://github.com/darkroomengineering/lenis)
@@ -18,7 +18,7 @@ Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primar
 ```text
 ├── apps/
 │   ├── web/           # Astro 7 primary site (port 3000)
-│   ├── web-next/      # Next.js 16.3 archive (port 3001)
+│   ├── web-next/      # Next.js 16.3 archive — source only, not a workspace
 │   └── studio/        # Sanity CMS (port 3333)
 ├── packages/
 │   └── sanity-config/ # Shared Sanity schemas & client
@@ -37,10 +37,34 @@ bun dev
 ```
 
 - Astro: http://localhost:3000  
-- Next archive: http://localhost:3001  
 - Studio: http://localhost:3333 (use `localhost`, not `127.0.0.1`)
 
 Oxlint TypeScript configs need **Node ≥22.18** on `PATH` (CI installs Node 22).
+
+## Restoring the Next archive
+
+`apps/web-next` holds the pre-Astro Next.js 16.3 site. Its **source is fully committed**, but it is deliberately **not installed or built**:
+
+- It is excluded from the root `workspaces` array (which lists `apps/studio` and `apps/web` explicitly instead of globbing `apps/*`), so `bun install` skips its ~1k dependencies and Turbo does not discover its tasks.
+- Its build output was deleted locally. Build artifacts (`.next/`, `node_modules/`) are gitignored and were never committed, so nothing was lost from history.
+
+Nothing else references it — `apps/web` loads the anti-slop Oxlint plugin by relative path, not as a workspace dependency.
+
+To bring it back:
+
+```bash
+# 1. Re-add it to the root package.json workspaces array:
+#      "workspaces": ["apps/*", "packages/*"]
+#    (or add "apps/web-next" alongside the existing entries)
+
+# 2. Install its dependencies and relink @andy-portfolio/sanity-config
+bun install
+
+# 3. Run it (port 3001)
+bun run --filter=@andy-portfolio/web-next dev
+```
+
+`bun install` will rewrite `bun.lock` when the workspace set changes — commit that alongside the `package.json` edit, or Vercel's `--frozen-lockfile` install will fail.
 
 ## Commands
 

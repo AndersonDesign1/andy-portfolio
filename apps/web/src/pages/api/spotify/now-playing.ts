@@ -58,6 +58,11 @@ const tokenResponseSchema = z.object({
   access_token: z.string().min(1),
 });
 
+const tokenErrorSchema = z.object({
+  error: z.string(),
+  error_description: z.string().optional(),
+});
+
 const currentlyPlayingSchema = z.object({
   is_playing: z.boolean().optional(),
   item: z.unknown().optional(),
@@ -72,6 +77,15 @@ const recentlyPlayedSchema = z.object({
     )
     .optional(),
 });
+
+/**
+ * The widget hides itself on any failure, which makes a dead refresh token
+ * indistinguishable from "nothing is playing". Log the real reason server-side
+ * so the difference is visible in `bun dev` / Vercel logs. Never logs secrets.
+ */
+const logSpotifyFailure = (stage: string, detail: string) => {
+  console.error(`[spotify] ${stage}: ${detail}`);
+};
 
 const getAccessToken = async (): Promise<string | null> => {
   try {
@@ -92,12 +106,29 @@ const getAccessToken = async (): Promise<string | null> => {
       method: "POST",
     });
     if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      const reason = tokenErrorSchema.safeParse(body);
+      const description = reason.success
+        ? `${reason.data.error}${reason.data.error_description ? ` — ${reason.data.error_description}` : ""}`
+        : "unparseable error body";
+      logSpotifyFailure(
+        "token refresh failed",
+        `${response.status} ${description}. Re-authorize at /api/spotify/authorize and update SPOTIFY_REFRESH_TOKEN.`
+      );
       return null;
     }
 
     const parsed = tokenResponseSchema.safeParse(await response.json());
-    return parsed.success ? parsed.data.access_token : null;
-  } catch {
+    if (!parsed.success) {
+      logSpotifyFailure("token refresh", "response missing access_token");
+      return null;
+    }
+    return parsed.data.access_token;
+  } catch (error) {
+    logSpotifyFailure(
+      "token refresh threw",
+      error instanceof Error ? error.message : String(error)
+    );
     return null;
   }
 };
@@ -140,11 +171,13 @@ const fetchRecentlyPlayed = async (accessToken: string) => {
       }
     );
     if (!res.ok) {
+      logSpotifyFailure("recently-played failed", `HTTP ${res.status}`);
       return IDLE_PAYLOAD;
     }
 
     const parsed = recentlyPlayedSchema.safeParse(await res.json());
     if (!parsed.success) {
+      logSpotifyFailure("recently-played", "unexpected response shape");
       return IDLE_PAYLOAD;
     }
 
@@ -177,6 +210,12 @@ export const GET: APIRoute = async () => {
     );
 
     if (currentRes.status === HTTP_STATUS_NO_CONTENT || !currentRes.ok) {
+      if (currentRes.status !== HTTP_STATUS_NO_CONTENT) {
+        logSpotifyFailure(
+          "currently-playing failed",
+          `HTTP ${currentRes.status}, falling back to recently-played`
+        );
+      }
       return Response.json(await fetchRecentlyPlayed(accessToken), {
         headers: { "Cache-Control": "no-store" },
       });

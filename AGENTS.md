@@ -7,7 +7,7 @@ Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 | App | Path | Dev port | Role |
 | --- | --- | --- | --- |
 | Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` |
-| Web (archive) | `apps/web-next` | `3001` | Next.js 16.3 reference — keep buildable; do not treat as primary |
+| Web (archive) | `apps/web-next` | `3001` | Next.js 16.3 reference — **not a workspace**, not installed. See [Next archive notes](#next-archive-notes-appsweb-next) |
 | Studio | `apps/studio` | `3333` | Sanity CMS (binds `localhost` / IPv6; use `http://localhost:3333`, not `127.0.0.1`) |
 | Shared | `packages/sanity-config` | — | Framework-agnostic Sanity schemas/client |
 
@@ -22,8 +22,8 @@ See root `package.json` / `turbo.json`: `bun dev`, `bun lint`, `bun format` / `u
 App-scoped:
 
 - Astro: `bun run --filter=@andy-portfolio/web dev|build|lint|typecheck`
-- Next archive: `bun run --filter=@andy-portfolio/web-next dev|build|lint` (port **3001**)
 - Studio: `bun run --filter=@andy-portfolio/studio dev`
+- Next archive: **unavailable** until restored — it is not in `workspaces`, so `--filter=@andy-portfolio/web-next` resolves to nothing
 
 Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web typecheck` (or `cd apps/web && bun run typecheck`). Non-interactive; do not run bare `astro check` prompts that try to install deps.
 
@@ -41,13 +41,19 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 - Revalidate stub: `/api/revalidate-tag` — requires `SANITY_REVALIDATE_SECRET` in app env. On Vercel cutover, point the Sanity webhook at the **Astro** deployment URL + shared secret or blog stays stale until rebuild.
 - OG image route is `src/pages/api/og.ts` (`.tsx` endpoints are not registered by Astro — use `createElement` / `.ts`).
 - Giveaway routes are **ended** stubs (parity with archived Next behavior).
-- Metrics: [`docs/perf-next-vs-astro.md`](docs/perf-next-vs-astro.md).
 
 ### Next archive notes (`apps/web-next`)
 
+**Status: source-only archive. Deliberately excluded — do not "fix" this by re-adding it unasked.**
+
+- Root `workspaces` lists `apps/studio` and `apps/web` explicitly (no `apps/*` glob) so `bun install` skips web-next's dependency tree and Turbo does not discover its tasks. `bun dev` / `bun build` / `bun lint` therefore cover **web + studio only**.
+- The stale root-level `.next/` directory (a leftover from the pre-monorepo layout) was deleted. Build output and `node_modules` are gitignored and were never committed — **no source or history was lost**; every `apps/web-next` file is still tracked.
+- Nothing depends on it. `apps/web` loads the anti-slop Oxlint plugin via the relative path `../../tools/oxlint/anti-slop/index.ts`, not as a workspace dependency.
+
+**To restore it:** add `apps/web-next` back to the root `workspaces` array (or revert to the `apps/*` glob), run `bun install` to install its deps and relink `@andy-portfolio/sanity-config`, then `bun run --filter=@andy-portfolio/web-next dev` (port **3001**). Changing the workspace set rewrites `bun.lock` — commit it with the `package.json` change or `--frozen-lockfile` installs (CI, Vercel) will fail.
+
 - Next **16.3.0** with `cacheComponents: true` and `partialPrefetching: true`.
 - Blog: `"use cache"` + `cacheLife('days')` + `cacheTag('post')`; `revalidateTag(tag, 'max')` on the revalidate route.
-- Baseline: [`docs/perf-next-baseline.txt`](docs/perf-next-baseline.txt).
 
 ### Env / egress gotchas
 
@@ -55,7 +61,54 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 - Resend from this Cloud Agent network may be Cloudflare-blocked (HTTP 1010); validate contact email from a Vercel preview if local submit fails.
 - Spotify idle `{isPlaying:false}` is valid.
 - Astro React islands are separate trees: any island using Motion `m.*` must wrap with `MotionRoot` (`apps/web/src/components/motion-root.tsx`). AppShell already provides LazyMotion for navbar/Spotify.
-- After file edits in `apps/web`, `.cursor/hooks.json` `afterFileEdit` runs `bun run fix` (`ultracite fix`). Commit autofixes or CI lint fails.
+- After file edits in `apps/web`, `apps/web/.cursor/hooks.json` `afterFileEdit` runs `bun run fix` (`ultracite fix`). Commit autofixes or CI lint fails. **This is the only hooks file in the repo** — the root and `apps/web-next` ones ran `bun x ultracite fix`, which failed on every edit ("Could not resolve ultracite": ultracite is a dependency of `apps/web`, not the root, and neither location has `oxfmt.config.ts` / `oxlint.config.ts`). They were removed rather than repointed, because the root formatter is Biome and running it over `apps/web` would fight oxfmt.
+- `apps/web/CLAUDE.md` is a **symlink** to `AGENTS.md` (git mode 120000). Windows checkouts without `core.symlinks` materialize it as a text file containing the literal string `AGENTS.md`; formatting it appends a newline and rewrites the symlink target to `AGENTS.md\n`, breaking it on macOS/Linux/CI. It is listed in `ignorePatterns` in `apps/web/oxfmt.config.ts` — do not remove that entry. Before the entry existed, the format phase failed, and because `ultracite check` aborts before linting, **oxlint and all anti-slop rules were silently skipped** by `bun run lint`.
+- Line endings are pinned to LF by the root `.gitattributes` (`* text=auto eol=lf`). Oxfmt treats CRLF as a format error, so a Windows checkout with `core.autocrlf=true` fails lint on every file. Set `git config core.autocrlf false` locally.
+
+### Anti-slop coverage
+
+Anti-slop runs in **three** workspaces, all wired into `bun run lint` (turbo):
+
+| Workspace | Config | Rules |
+| --- | --- | --- |
+| `apps/web` | `oxlint.config.ts` | Full Ultracite Oxlint stack + anti-slop |
+| `packages/sanity-config` | `oxlint.config.mts` | **anti-slop only** |
+| `apps/studio` | `oxlint.config.mts` | **anti-slop only** |
+
+The latter two share `tools/oxlint/anti-slop.shared.mts` and enable **only** the 15 anti-slop rules — deliberately not Ultracite's `core` preset, whose stylistic rules (`sort-keys`, `arrow-body-style`) would fight Biome, which owns formatting there.
+
+`.mts` is load-bearing: as `.ts` these configs emit `MODULE_TYPELESS_PACKAGE_JSON` on every lint run, and the alternative (`"type": "module"` in `packages/sanity-config/package.json`) would change module semantics for a package consumed by Sanity Studio and Astro. Do not rename them back.
+
+`tools/oxlint/anti-slop/` itself stays unlinted and unformatted — it is vendored from upstream.
+
+**The 17 pre-existing violations are fixed.** 16 were in `packages/sanity-config` (studio was already clean):
+
+- `src/schemaTypes/post.ts` + `category.ts` had 15 `as SchemaField` / `as SlugField` / … casts on object literals, tripping `require-safety-comment-for-type-assertion`. Rewritten with Sanity's `defineType` / `defineField` / `defineArrayMember`, which infer per-`type` and need no casts. These helpers are identity functions at runtime — verified by diffing the serialized schema shape before and after: **identical**.
+- `src/lib/types.ts` held the hand-rolled types those casts existed for, including `options?: Record<string, unknown>` (`no-unsafe-dictionary-type`). With the casts gone it had zero consumers, so the file, its `export *` in `src/index.ts`, and the stale `./types` entry in `package.json` `exports` were removed.
+
+### Biome (root / studio / packages / tools)
+
+Root Biome had never run — `bun run format` always died on a config error. Three faults, now fixed:
+
+1. Root `biome.jsonc` extended `ultracite`, `ultracite/core`, `ultracite/react`, `ultracite/next`. Ultracite 7 has **no bare `.` export and no `/core`** — those are *oxlint* preset names. Biome presets live under **`ultracite/biome/*`** only.
+2. Those presets need **Biome >= 2.5** (`useSortedEnumMembers`, `noDuplicateClasses` are rejected by 2.3.x). Root is now on **2.5.9**; do not downgrade below 2.5.
+3. Biome 2.x **discovers nested configs**, so `apps/web-next/biome.jsonc` was loaded from the root run and failed on the same bad specifiers. It now sets `"root": false` and uses `ultracite/biome/*`.
+
+`ultracite` is a **root devDependency** solely so these `extends` resolve — it is not otherwise used at the root.
+
+Scope: root `biome.jsonc` restricts `files.includes` to everything except three trees, each with a **`!!` force-ignore**:
+
+```jsonc
+"includes": ["**", "!!apps/web/**", "!!apps/web-next/**", "!!tools/oxlint/anti-slop/**"]
+```
+
+- `apps/web` — Oxfmt/Oxlint territory; two formatters on the same files rewrite each other.
+- `apps/web-next` — frozen archive with its own nested `biome.jsonc`.
+- `tools/oxlint/anti-slop` — **vendored** from `github.com/dmmulroy/anti-slop`; reformatting makes every upstream sync conflict.
+
+**A single `!` is not sufficient for `apps/web-next`.** A nested `biome.jsonc` governs its own directory regardless of the root config's exclusions, so with a plain `!` the root `bun run format` still reformatted `apps/web-next/public/IOM-logo.svg`. `!!` force-ignore stops the scanner descending at all. Verified: the scan drops from 104 files to 20, with 0 hits in all three trees.
+
+`bun run format` is clean as of the formatting pass that normalized `.vscode/settings.json`, `apps/studio/sanity.cli.ts`, `packages/sanity-config/src/schemaTypes/post.ts`, and the root `package.json` / `biome.jsonc` (trailing newline, quote style, one collapsed type annotation — no semantic changes).
 
 ### Vercel cutover checklist
 
