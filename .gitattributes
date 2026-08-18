@@ -1,0 +1,18 @@
+# Normalize all text files to LF in the repo and in the working tree.
+#
+# Oxfmt/Oxlint (apps/web) and Biome treat CRLF as a formatting error, so a
+# Windows checkout with core.autocrlf=true made `bun lint` fail on every file
+# regardless of what had been edited. Pinning eol=lf keeps Windows, macOS,
+# Linux and CI checkouts byte-identical.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
