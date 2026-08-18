@@ -6,7 +6,9 @@
     "dev": "sanity dev",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "start": "sanity start"
+    "start": "sanity start",
+    "lint": "oxlint --config oxlint.config.mts .",
+    "lint:fix": "oxlint --config oxlint.config.mts --fix ."
   },
   "dependencies": {
     "@andy-portfolio/sanity-config": "workspace:*",
@@ -19,6 +21,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.3",
+    "oxlint": "1.78.0",
     "typescript": "^5.8.2"
   }
 }

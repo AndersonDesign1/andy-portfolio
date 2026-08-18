@@ -9,9 +9,12 @@
     "./schemas": "./src/schemaTypes/index.ts",
     "./client": "./src/lib/client.ts",
     "./image": "./src/lib/image.ts",
-    "./types": "./src/lib/types.ts",
     "./env": "./src/env.ts",
     "./structure": "./src/structure.ts"
+  },
+  "scripts": {
+    "lint": "oxlint --config oxlint.config.mts .",
+    "lint:fix": "oxlint --config oxlint.config.mts --fix ."
   },
   "dependencies": {
     "@sanity/client": "^7.23.0",
@@ -23,6 +26,7 @@
   "devDependencies": {
     "@types/node": "^22.19.3",
     "@types/react": "19.2.18",
+    "oxlint": "1.78.0",
     "typescript": "^5.9.3"
   }
 }
