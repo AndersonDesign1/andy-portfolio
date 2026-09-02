@@ -2,7 +2,6 @@
 
 import { AnimatePresence, m } from "motion/react";
 import type { Variants } from "motion/react";
-import type React from "react";
 import { useState } from "react";
 
 import MotionRoot from "@/components/motion-root";
@@ -13,39 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
 import {
   ANIMATION_DELAY_PROJECT,
   ANIMATION_DURATION_PROJECT,
   ANIMATION_EASE_CUBIC,
 } from "@/lib/constants";
-
-interface Project {
-  description: string;
-  id: string;
-  links: {
-    live?: string;
-    github?: string;
-    caseStudy?: string;
-  };
-  metrics?: Record<string, string>;
-  techStack: string[];
-  thumbnail: string;
-  title: string;
-  type: "case-study" | "standard";
-}
-
-const projects: Project[] = projectsDataJson.projects.map((project) => ({
-  ...project,
-  metrics: project.metrics
-    ? Object.fromEntries(
-        Object.entries(project.metrics).flatMap(([key, value]) =>
-          value ? [[key, value]] : []
-        )
-      )
-    : undefined,
-  type: project.type === "case-study" ? "case-study" : "standard",
-}));
+import type { Project } from "@/types/project";
 
 const categories = ["All", "Full Stack", "SEO", "Web Design"];
 
@@ -68,7 +40,7 @@ const gridVariants: Variants = {
   initial: { opacity: 0, y: 12 },
 };
 
-const ProjectsShowcase: React.FC = () => {
+const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
   const filteredProjects = (() => {
@@ -157,7 +129,7 @@ const ProjectsShowcase: React.FC = () => {
                   <m.div
                     className="group"
                     initial={{ opacity: 0, y: 24 }}
-                    key={project.id}
+                    key={project.slug}
                     transition={{
                       delay: index * ANIMATION_DELAY_PROJECT,
                       duration: ANIMATION_DURATION_PROJECT,
@@ -177,10 +149,12 @@ const ProjectsShowcase: React.FC = () => {
                             alt={project.title}
                             className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transform-none"
                             decoding="async"
+                            height={1000}
                             loading={
                               index < FEATURED_ABOVE_FOLD ? "eager" : "lazy"
                             }
                             src={project.thumbnail}
+                            width={1600}
                           />
                         </a>
                       ) : (
@@ -188,10 +162,12 @@ const ProjectsShowcase: React.FC = () => {
                           alt={project.title}
                           className="object-contain transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transform-none"
                           decoding="async"
+                          height={1000}
                           loading={
                             index < FEATURED_ABOVE_FOLD ? "eager" : "lazy"
                           }
                           src={project.thumbnail}
+                          width={1600}
                         />
                       )}
                     </div>
@@ -286,7 +262,7 @@ const ProjectsShowcase: React.FC = () => {
                     <m.div
                       className="group border-subtle hover:bg-secondary/5 grid grid-cols-1 items-start gap-4 border-t py-6 transition-colors md:grid-cols-12 md:items-center"
                       initial={{ opacity: 0, y: 10 }}
-                      key={project.id}
+                      key={project.slug}
                       transition={{ delay: index * 0.05 }}
                       whileInView={{ opacity: 1, y: 0 }}
                     >

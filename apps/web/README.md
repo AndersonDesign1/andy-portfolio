@@ -1,11 +1,11 @@
 # `@andy-portfolio/web`
 
-Astro 7 primary portfolio site (React islands, Tailwind 4, Graft blog CMS, Vercel adapter).
+Astro 7 primary portfolio site (React islands, Tailwind 4, Graft CMS, Vercel adapter).
 
 ## Stack
 
 - **Astro 7** + `@astrojs/react` / `@astrojs/mdx` / `@astrojs/vercel` / `@astrojs/sitemap`
-- **Blog CMS**: [Graft](https://graft.page) static SQLite index (`graft.config.ts`, `content/posts/`)
+- **CMS**: [Graft](https://graft.page) static SQLite index (`graft.config.ts`, `content/{posts,projects,case-studies}/`)
 - **Lint / format**: Ultracite 7.10.3 → Oxlint + Oxfmt (`oxlint.config.ts`, `oxfmt.config.ts`)
   - Presets: `ultracite/oxlint/{core,astro,react}`
   - Plugins: `oxlint-plugin-react-doctor`, vendored anti-slop (`../../tools/oxlint/anti-slop`)

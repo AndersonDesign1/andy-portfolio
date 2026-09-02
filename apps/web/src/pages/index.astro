@@ -5,11 +5,26 @@ import ProjectsGrid from "../components/projects-grid.tsx";
 import SkillsSection from "../components/skills-section.tsx";
 import WorkHistory from "../components/work-history.tsx";
 import BaseLayout from "../layouts/base-layout.astro";
+import { getGraft } from "../lib/graft";
+import { compareOrder, toProject } from "../lib/portfolio";
+import type { Project } from "../types/project";
+
+export const prerender = true;
+
+const documents = await getGraft().listContent("projects");
+const featured: Project[] = [];
+for (const document of documents) {
+  const project = toProject(document);
+  if (project.featured) {
+    featured.push(project);
+  }
+}
+const featuredProjects = featured.toSorted(compareOrder);
 ---
 
 <BaseLayout>
   <Hero client:visible />
-  <ProjectsGrid client:visible />
+  <ProjectsGrid client:visible projects={featuredProjects} />
   <WorkHistory client:visible />
   <SkillsSection client:visible />
   <CtaSection client:visible />

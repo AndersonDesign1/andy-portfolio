@@ -1,5 +1,5 @@
 /**
- * Graft handle for the Astro blog — reads the compiled static SQLite index.
+ * Graft handle for the Astro site — reads the compiled static SQLite index.
  * Server-only: import from .astro frontmatter and endpoints, never islands.
  */
 import { existsSync } from "node:fs";
@@ -13,15 +13,15 @@ import { collections } from "../../graft.config";
 
 const INDEX_PATH = path.resolve(process.cwd(), ".graft/index.db");
 
-type BlogGraft = Graft<typeof collections>;
-type BlogGraftReads = Pick<
-  BlogGraft,
+type SiteGraft = Graft<typeof collections>;
+type SiteGraftReads = Pick<
+  SiteGraft,
   "getContent" | "listContent" | "searchContent"
 >;
 
-let cached: BlogGraft | null = null;
+let cached: SiteGraft | null = null;
 
-const openGraft = async (): Promise<BlogGraft> => {
+const openGraft = async (): Promise<SiteGraft> => {
   if (cached) {
     return cached;
   }
@@ -36,9 +36,10 @@ const openGraft = async (): Promise<BlogGraft> => {
 };
 
 /**
- * Typed reads over `posts`. Methods are async; the SQLite artifact opens once.
+ * Typed reads over `posts`, `projects`, and `case-studies`.
+ * Methods are async; the SQLite artifact opens once.
  */
-export const getGraft = (): BlogGraftReads => ({
+export const getGraft = (): SiteGraftReads => ({
   getContent: async (collection, slug, options) => {
     const graft = await openGraft();
     return graft.getContent(collection, slug, options);

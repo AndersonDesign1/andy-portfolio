@@ -1,11 +1,17 @@
-# Graft project — agent guide (Astro blog)
+# Graft project — agent guide (Astro site)
 
 Everything is code. Content lives in MDX files; git is authoritative; the
 content index is derived. If they disagree, git wins — recompile.
 
-- Schema: graft.config.ts (`posts` collection). The single source of truth.
-- Documents: content/posts/<slug>.mdx — frontmatter must satisfy the collection schema.
-- Images: site-root paths under public/blog/<slug>/ (not Sanity CDN, not S3).
+- Schema: graft.config.ts (`posts`, `projects`, `case-studies`). The single
+  source of truth.
+- Documents:
+  - content/posts/<slug>.mdx — blog bodies render through Astro MDX
+  - content/projects/<slug>.mdx — frontmatter only; listed on / and /projects
+  - content/case-studies/<slug>.mdx — frontmatter only; rendered at
+    /case-studies/<slug>
+- Images: blog assets under public/blog/<slug>/; project and case-study images
+  are existing public-root paths (e.g. /welup-main.png).
 - Slugs are kebab-case; a frontmatter `slug:` overrides the filename.
 - Project into the index: `graft compile` (one-shot) or `graft dev` (watch mode).
 - This project uses the **static index** (`index = "static"` in graft.config):
@@ -13,8 +19,9 @@ content index is derived. If they disagree, git wins — recompile.
 - The artifact is derived, so it is git-ignored. Dev and Vercel build run
   `graft compile && astro build` (see package.json).
 - Read it from the app with `getGraft()` in src/lib/graft.ts.
-- Bodies render through Astro content collections + `@astrojs/mdx` (no MdxBody).
-- One-time Sanity export: `bun run export:sanity` (needs PUBLIC_SANITY_* env).
+- Blog bodies render through Astro content collections + `@astrojs/mdx`
+  (no MdxBody). Projects and case studies are structured frontmatter only.
+- One-time Sanity blog export: `bun run export:sanity` (needs PUBLIC_SANITY_* env).
 - Branches here are just **git branches**: each checkout compiles its own artifact.
 - Studio, operational data, typed functions, and database branching need the
   Postgres tier. Adding one fails with NEEDS_DATABASE.
