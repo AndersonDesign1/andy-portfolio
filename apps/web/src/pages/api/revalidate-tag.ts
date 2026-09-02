@@ -18,7 +18,8 @@ export const POST: APIRoute = ({ request }) => {
     );
   }
 
-  // Astro static hosting: webhook acknowledges; deploy hooks / ISR should be
-  // configured in Vercel to rebuild when Sanity content changes.
+  // Live Astro blog content is MDX in git (Graft). Freshness is git push →
+  // Vercel rebuild, not this webhook. Kept so an existing Sanity webhook
+  // still authenticates until it is disconnected.
   return Response.json({ mode: "rebuild-hook", revalidated: true });
 };

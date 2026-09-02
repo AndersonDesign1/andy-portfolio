@@ -1,21 +1,13 @@
 "use client";
 
-interface Category {
-  _id: string;
-  description?: string;
-  slug: { current: string };
-  title: string;
-}
-interface SanityPost {
-  _createdAt: string;
-  categories?: (Category | null)[];
-  excerpt?: string;
-  publishedAt?: string;
-  slug: { current: string };
+export interface BlogListPost {
+  excerpt: string;
+  publishedAt: string;
+  slug: string;
   title: string;
 }
 
-const BlogList = ({ posts }: { posts: SanityPost[] }) => (
+const BlogList = ({ posts }: { posts: BlogListPost[] }) => (
   <section className="bg-primary min-h-screen py-24 pt-40 md:py-32 md:pt-48">
     <div className="mx-auto max-w-screen-lg px-6 md:px-12">
       <div className="border-subtle mb-24 flex items-end justify-between border-b pb-8">
@@ -37,14 +29,14 @@ const BlogList = ({ posts }: { posts: SanityPost[] }) => (
         {posts.map((post) => (
           <div
             className="group border-subtle border-b last:border-none"
-            key={post.slug.current}
+            key={post.slug}
           >
             <a
               className="flex flex-col gap-4 py-8 md:flex-row md:items-baseline md:gap-16 md:py-12"
-              href={`/blog/${post.slug.current}`}
+              href={`/blog/${post.slug}`}
             >
               <span className="text-muted w-24 shrink-0 font-mono text-sm">
-                {new Date(post.publishedAt || post._createdAt).getFullYear()}
+                {new Date(post.publishedAt).getFullYear()}
               </span>
 
               <div className="flex flex-col gap-2">

@@ -1,0 +1,22 @@
+# Graft project — agent guide (Astro blog)
+
+Everything is code. Content lives in MDX files; git is authoritative; the
+content index is derived. If they disagree, git wins — recompile.
+
+- Schema: graft.config.ts (`posts` collection). The single source of truth.
+- Documents: content/posts/<slug>.mdx — frontmatter must satisfy the collection schema.
+- Images: site-root paths under public/blog/<slug>/ (not Sanity CDN, not S3).
+- Slugs are kebab-case; a frontmatter `slug:` overrides the filename.
+- Project into the index: `graft compile` (one-shot) or `graft dev` (watch mode).
+- This project uses the **static index** (`index = "static"` in graft.config):
+  compile writes .graft/index.db — a SQLite artifact. No database, no env vars.
+- The artifact is derived, so it is git-ignored. Dev and Vercel build run
+  `graft compile && astro build` (see package.json).
+- Read it from the app with `getGraft()` in src/lib/graft.ts.
+- Bodies render through Astro content collections + `@astrojs/mdx` (no MdxBody).
+- One-time Sanity export: `bun run export:sanity` (needs PUBLIC_SANITY_* env).
+- Branches here are just **git branches**: each checkout compiles its own artifact.
+- Studio, operational data, typed functions, and database branching need the
+  Postgres tier. Adding one fails with NEEDS_DATABASE.
+- Primitives: `graft add <item>` lands under graft/. Run `graft add` to list.
+- Every Graft error carries a `fix` — do what it says, then retry.

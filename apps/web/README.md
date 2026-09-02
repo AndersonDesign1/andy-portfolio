@@ -1,10 +1,11 @@
 # `@andy-portfolio/web`
 
-Astro 7 primary portfolio site (React islands, Tailwind 4, Sanity, Vercel adapter).
+Astro 7 primary portfolio site (React islands, Tailwind 4, Graft blog CMS, Vercel adapter).
 
 ## Stack
 
-- **Astro 7** + `@astrojs/react` / `@astrojs/vercel` / `@astrojs/sitemap`
+- **Astro 7** + `@astrojs/react` / `@astrojs/mdx` / `@astrojs/vercel` / `@astrojs/sitemap`
+- **Blog CMS**: [Graft](https://graft.page) static SQLite index (`graft.config.ts`, `content/posts/`)
 - **Lint / format**: Ultracite 7.10.3 → Oxlint + Oxfmt (`oxlint.config.ts`, `oxfmt.config.ts`)
   - Presets: `ultracite/oxlint/{core,astro,react}`
   - Plugins: `oxlint-plugin-react-doctor`, vendored anti-slop (`../../tools/oxlint/anti-slop`)
@@ -15,19 +16,21 @@ Astro 7 primary portfolio site (React islands, Tailwind 4, Sanity, Vercel adapte
 
 | Command | Action |
 | --- | --- |
-| `bun run dev` | Dev server on **http://localhost:3000** |
-| `bun run build` | Vercel output build |
+| `bun run dev` | `graft compile` then dev server on **http://localhost:3000** |
+| `bun run build` | `graft compile` then Vercel output build |
+| `bun run graft:compile` / `graft:dev` | One-shot compile / watch the content tree |
+| `bun run export:sanity` | One-time Sanity → MDX export (needs Sanity project env) |
 | `bun run preview` | Preview the built site |
 | `bun run lint` / `check` | `ultracite check` |
 | `bun run lint:fix` / `fix` | `ultracite fix` |
 | `bun run typecheck` | `astro check` |
 | `bunx react-doctor@latest -y --verbose --no-score` | Advisory React Doctor CLI |
 
-Requires **Bun 1.3.x** and **Node ≥22.18** for TypeScript Oxlint/Oxfmt configs.
+Requires **Bun 1.3.x**, **Node ≥22.16** (Graft `node:sqlite`), and **Node ≥22.18** for TypeScript Oxlint/Oxfmt configs.
 
 ## Env
 
-Copy secrets into `apps/web/.env` / `.env.local` (and root `.env.local`). See root [`AGENTS.md`](../../AGENTS.md) for Sanity / Spotify / Resend notes.
+Copy secrets into `apps/web/.env` / `.env.local` (and root `.env.local`). See root [`AGENTS.md`](../../AGENTS.md) for Spotify / Resend notes. The live blog does not need Sanity env; `export:sanity` does.
 
 ## Layout / routing notes
 

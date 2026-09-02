@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+
+# Graft compiled content index (rebuild with `graft compile`)
+.graft/

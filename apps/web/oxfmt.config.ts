@@ -8,5 +8,12 @@ export default defineConfig({
   // target path, which oxfmt then "fixes" by appending a newline — rewriting the
   // symlink target to `AGENTS.md\n` and breaking it on macOS/Linux/CI.
   // Formatting a link is meaningless anyway: the real file is AGENTS.md.
-  ignorePatterns: [...(ultracite.ignorePatterns ?? []), "CLAUDE.md"],
+  ignorePatterns: [
+    ...(ultracite.ignorePatterns ?? []),
+    "CLAUDE.md",
+    // Authored MDX — formatter must not rewrite blog prose or frontmatter.
+    "content/**",
+    "llms.txt",
+    "scripts/**",
+  ],
 });

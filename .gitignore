@@ -46,3 +46,6 @@ next-env.d.ts
 
 # sanity
 .sanity
+
+# Graft compiled content index (rebuild with `graft compile`)
+.graft/
