@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-const headingClass = "text-primary font-bold tracking-tight";
+const headingClass = "text-primary scroll-mt-28 font-bold tracking-tight";
 
 export const blogMdxComponents = {
   a: ({
@@ -44,14 +44,20 @@ export const blogMdxComponents = {
       {children}
     </code>
   ),
-  h1: ({ children }: JSX.IntrinsicElements["h1"]): JSX.Element => (
-    <h1 className={`${headingClass} pt-6 text-3xl md:text-4xl`}>{children}</h1>
+  h1: ({ children, ...props }: JSX.IntrinsicElements["h1"]): JSX.Element => (
+    <h2 className={`${headingClass} pt-6 text-2xl md:text-3xl`} {...props}>
+      {children}
+    </h2>
   ),
-  h2: ({ children }: JSX.IntrinsicElements["h2"]): JSX.Element => (
-    <h2 className={`${headingClass} pt-6 text-2xl md:text-3xl`}>{children}</h2>
+  h2: ({ children, ...props }: JSX.IntrinsicElements["h2"]): JSX.Element => (
+    <h2 className={`${headingClass} pt-6 text-2xl md:text-3xl`} {...props}>
+      {children}
+    </h2>
   ),
-  h3: ({ children }: JSX.IntrinsicElements["h3"]): JSX.Element => (
-    <h3 className={`${headingClass} pt-2 text-xl md:text-2xl`}>{children}</h3>
+  h3: ({ children, ...props }: JSX.IntrinsicElements["h3"]): JSX.Element => (
+    <h3 className={`${headingClass} pt-2 text-xl md:text-2xl`} {...props}>
+      {children}
+    </h3>
   ),
   img: ({ alt, src }: JSX.IntrinsicElements["img"]): JSX.Element => (
     <figure className="flex flex-col gap-4 py-6 md:py-10">

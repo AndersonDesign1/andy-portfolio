@@ -19,6 +19,38 @@ const PROJECT_ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CONTENT_DIR = path.join(PROJECT_ROOT, "content", "posts");
 const PUBLIC_DIR = path.join(PROJECT_ROOT, "public", "blog");
 const API_VERSION = "2024-01-01";
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
+
+const isInside = (root: string, candidate: string): boolean => {
+  const resolvedRoot = path.resolve(root);
+  const resolved = path.resolve(candidate);
+  return resolved === resolvedRoot || resolved.startsWith(`${resolvedRoot}${path.sep}`);
+};
+
+const assertInside = (root: string, candidate: string): string => {
+  const resolved = path.resolve(candidate);
+  if (!isInside(root, resolved)) {
+    throw new Error(`Refusing to write outside ${path.resolve(root)}: ${resolved}`);
+  }
+  return resolved;
+};
+
+const assertSafeSlug = (slug: string): string => {
+  if (!SLUG_PATTERN.test(slug)) {
+    throw new Error(
+      `Unsafe slug "${slug}". Expected a single path segment of letters, numbers, and hyphens.`
+    );
+  }
+  return slug;
+};
+
+const assertSafeFilename = (filename: string): string => {
+  const base = path.basename(filename);
+  if (!base || base === "." || base === "..") {
+    throw new Error(`Unsafe filename "${filename}".`);
+  }
+  return base;
+};
 
 const GROQ = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
   title,
@@ -140,9 +172,11 @@ const downloadAsset = async (
     throw new Error(`Failed to download ${url}: HTTP ${response.status}`);
   }
   const bytes = new Uint8Array(await response.arrayBuffer());
-  await mkdir(destDir, { recursive: true });
-  await writeFile(path.join(destDir, filename), bytes);
-  return filename;
+  const containedDir = assertInside(PUBLIC_DIR, destDir);
+  const destPath = assertInside(containedDir, path.join(containedDir, assertSafeFilename(filename)));
+  await mkdir(containedDir, { recursive: true });
+  await writeFile(destPath, bytes);
+  return path.basename(destPath);
 };
 
 const escapeMarkdown = (text: string): string =>
@@ -155,7 +189,7 @@ const renderSpans = (children: SanitySpan[] | undefined, markDefs: SanityMarkDef
   const defs = new Map((markDefs ?? []).map((def) => [def._key ?? "", def]));
   return children
     .map((span) => {
-      let text = escapeMarkdown(span.text ?? "");
+      let text = escapeMarkdown((span.text ?? "").replaceAll("...", "…"));
       const marks = span.marks ?? [];
       for (const mark of marks) {
         if (mark === "strong") {
@@ -181,7 +215,9 @@ const renderSpans = (children: SanitySpan[] | undefined, markDefs: SanityMarkDef
 };
 
 const headingPrefix = (style: string | undefined): string | null => {
-  if (style === "h1") return "# ";
+  // Article routes already render the post title as h1, so Sanity h1 blocks
+  // become markdown h2 to keep a single top-level heading.
+  if (style === "h1") return "## ";
   if (style === "h2") return "## ";
   if (style === "h3") return "### ";
   if (style === "h4") return "#### ";
@@ -334,8 +370,9 @@ const exportPosts = async (): Promise<void> => {
     if (!slug) {
       continue;
     }
+    assertSafeSlug(slug);
 
-    const assetDir = path.join(PUBLIC_DIR, slug);
+    const assetDir = assertInside(PUBLIC_DIR, path.join(PUBLIC_DIR, slug));
     let mainImage: { alt: string; caption?: string; src: string } | undefined;
     if (post.mainImage?.asset?.url) {
       const filename = `hero${extensionFromAsset(post.mainImage.asset, ".jpg")}`;
@@ -357,7 +394,8 @@ const exportPosts = async (): Promise<void> => {
     });
 
     const mdx = `${toFrontmatter(post, mainImage)}\n${markdown}`;
-    await writeFile(path.join(CONTENT_DIR, `${slug}.mdx`), mdx, "utf8");
+    const mdxPath = assertInside(CONTENT_DIR, path.join(CONTENT_DIR, `${slug}.mdx`));
+    await writeFile(mdxPath, mdx, "utf8");
     console.log(`Wrote content/posts/${slug}.mdx`);
   }
 
