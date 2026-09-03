@@ -11,11 +11,11 @@ import {
 } from "@/lib/constants";
 
 interface SpotifyTrack {
-  name?: string;
-  artists?: { name?: string }[];
   album?: { images?: { url?: string }[]; name?: string; release_date?: string };
+  artists?: { name?: string }[];
   external_urls?: { spotify?: string };
   isPlaying?: boolean;
+  name?: string;
 }
 
 const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
@@ -103,10 +103,10 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
 
   return (
     <m.div
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       className="absolute right-0 bottom-full mb-4 w-72 rounded-sm border border-subtle bg-primary p-6 shadow-2xl"
-      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
     >
       <div className="mb-4 flex gap-4">
         <div className="relative">
@@ -232,13 +232,13 @@ export default function SpotifyNowPlaying() {
     "/api/spotify/now-playing",
     fetcher,
     {
+      dedupingInterval: 2000,
       refreshInterval: (latestData) =>
         latestData?.isPlaying
           ? SPOTIFY_POLLING_INTERVAL_PLAYING
           : SPOTIFY_POLLING_INTERVAL_PAUSED,
       refreshWhenHidden: false,
       revalidateOnFocus: true,
-      dedupingInterval: 2000,
       suspense: false,
     }
   );

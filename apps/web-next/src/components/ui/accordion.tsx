@@ -22,11 +22,11 @@ const useAccordion = () => {
 
 interface AccordionProps {
   children: React.ReactNode;
-  type?: "single" | "multiple";
-  collapsible?: boolean;
-  value?: string;
-  onValueChange?: (value: string) => void;
   className?: string;
+  collapsible?: boolean;
+  onValueChange?: (value: string) => void;
+  type?: "single" | "multiple";
+  value?: string;
 }
 
 const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
@@ -95,10 +95,10 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
 Accordion.displayName = "Accordion";
 
 interface AccordionItemProps {
-  children: React.ReactNode;
-  value: string;
-  className?: string;
   asChild?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  value: string;
 }
 
 const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
@@ -106,7 +106,7 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
     const Comp = asChild ? React.Fragment : "div";
     const itemProps = asChild
       ? {}
-      : { ref, className: cn("border-b", className), ...props };
+      : { className: cn("border-b", className), ref, ...props };
 
     return (
       <Comp {...itemProps}>
@@ -125,10 +125,10 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
 AccordionItem.displayName = "AccordionItem";
 
 interface AccordionTriggerProps {
-  children: React.ReactNode;
-  value: string;
-  className?: string;
   asChild?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  value: string;
 }
 
 const AccordionTrigger = React.forwardRef<
@@ -142,14 +142,14 @@ const AccordionTrigger = React.forwardRef<
   const triggerProps = asChild
     ? {}
     : {
-        ref,
-        type: "button",
         className: cn(
           "flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
           className
         ),
-        onClick: () => toggleItem(value),
         "data-state": isOpen ? "open" : "closed",
+        onClick: () => toggleItem(value),
+        ref,
+        type: "button",
         ...props,
       };
 
@@ -158,10 +158,10 @@ const AccordionTrigger = React.forwardRef<
 AccordionTrigger.displayName = "AccordionTrigger";
 
 interface AccordionContentProps {
-  children: React.ReactNode;
-  value: string;
-  className?: string;
   asChild?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  value: string;
 }
 
 const AccordionContent = React.forwardRef<
@@ -175,13 +175,13 @@ const AccordionContent = React.forwardRef<
   const contentProps = asChild
     ? {}
     : {
-        ref,
         className: cn(
           "overflow-hidden text-sm transition-all",
           isOpen ? "animate-accordion-down" : "animate-accordion-up",
           className
         ),
         "data-state": isOpen ? "open" : "closed",
+        ref,
         ...props,
       };
 
@@ -193,4 +193,4 @@ const AccordionContent = React.forwardRef<
 });
 AccordionContent.displayName = "AccordionContent";
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger };

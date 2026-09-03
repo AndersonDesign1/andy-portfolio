@@ -8,11 +8,11 @@ const resend = new Resend(env.RESEND_API_KEY);
 
 function escapeHtml(text: string): string {
   const map: Record<string, string> = {
+    "'": "&#039;",
+    '"': "&quot;",
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
   };
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
@@ -20,22 +20,6 @@ function escapeHtml(text: string): string {
 const WORD_COUNT_REGEX = /\s+/;
 
 const feedbackSchema = z.object({
-  name: z.string().optional(),
-  email: z.email("Invalid email address"),
-  brandDescription: z
-    .string()
-    .min(10, "Please provide a bit more detail (at least 10 characters)")
-    .refine((val) => {
-      const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
-      return wordCount >= 80;
-    }, "Please provide at least 80 words about your brand/project so I can understand it fully."),
-  features: z.string().min(5, "Please list at least one feature"),
-  domainStatus: z
-    .enum(["yes", "no", "need_help"])
-    .optional()
-    .refine((val) => !!val, {
-      message: "Please select an option",
-    }),
   benefits: z
     .string()
     .min(5, "Please tell me how this helps you")
@@ -43,24 +27,40 @@ const feedbackSchema = z.object({
       const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
       return wordCount >= 30;
     }, "Please provide at least 30 words about the benefits."),
+  brandDescription: z
+    .string()
+    .min(10, "Please provide a bit more detail (at least 10 characters)")
+    .refine((val) => {
+      const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
+      return wordCount >= 80;
+    }, "Please provide at least 80 words about your brand/project so I can understand it fully."),
+  domainStatus: z
+    .enum(["yes", "no", "need_help"])
+    .optional()
+    .refine((val) => !!val, {
+      message: "Please select an option",
+    }),
+  email: z.email("Invalid email address"),
+  features: z.string().min(5, "Please list at least one feature"),
+  name: z.string().optional(),
 });
 
 export async function submitGiveawayFeedback(formData: FormData) {
   const rawData = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    brandDescription: formData.get("brandDescription"),
-    features: formData.get("features"),
-    domainStatus: formData.get("domainStatus"),
     benefits: formData.get("benefits"),
+    brandDescription: formData.get("brandDescription"),
+    domainStatus: formData.get("domainStatus"),
+    email: formData.get("email"),
+    features: formData.get("features"),
+    name: formData.get("name"),
   };
 
   const result = feedbackSchema.safeParse(rawData);
 
   if (!result.success) {
     return {
-      success: false,
       message: result.error.issues[0]?.message || "Invalid input",
+      success: false,
     };
   }
 
@@ -81,9 +81,6 @@ export async function submitGiveawayFeedback(formData: FormData) {
   try {
     await resend.emails.send({
       from: "Giveaway Feedback <giveaway@andersonjoseph.com>",
-      to: ["josanderson25@gmail.com"],
-      subject: `📝 New Giveaway Feedback from ${safeName === "N/A" ? safeEmail : safeName}`,
-      replyTo: email,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>📝 New Feedback Received</h2>
@@ -103,16 +100,19 @@ export async function submitGiveawayFeedback(formData: FormData) {
           </div>
         </div>
       `,
+      replyTo: email,
+      subject: `📝 New Giveaway Feedback from ${safeName === "N/A" ? safeEmail : safeName}`,
+      to: ["josanderson25@gmail.com"],
     });
 
     return {
-      success: true,
       message: "Feedback sent successfully! Thank you.",
+      success: true,
     };
   } catch (_error) {
     return {
-      success: false,
       message: "Something went wrong. Please try again.",
+      success: false,
     };
   }
 }

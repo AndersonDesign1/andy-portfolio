@@ -3,19 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
-    "build": "next build",
-    "start": "next start",
+    "build": "bun run --filter=@andy-portfolio/content compile && next build",
+    "check": "biome check .",
+    "dev": "bun run --filter=@andy-portfolio/content compile && next dev -p 3001",
+    "fix": "biome check --write .",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "check": "ultracite check",
-    "fix": "ultracite fix"
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  },
+  "overrides": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.3"
   },
   "dependencies": {
-    "@andy-portfolio/sanity-config": "workspace:*",
+    "@andy-portfolio/content": "workspace:*",
     "@hugeicons/core-free-icons": "^4.2.2",
     "@hugeicons/react": "^1.1.9",
-    "@portabletext/react": "^3.2.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-radio-group": "^1.3.8",
@@ -24,9 +33,9 @@
     "@radix-ui/react-tabs": "^1.1.2",
     "@react-email/components": "^1.0.12",
     "@react-email/tailwind": "^2.0.3",
-    "@sanity/client": "^7.23.0",
-    "@sanity/image-url": "^2.1.1",
-    "@sanity/types": "^6.3.0",
+    "@usegraft/core": "^1.0.0-beta.0",
+    "@usegraft/db": "^1.0.0-beta.0",
+    "@usegraft/sdk-next": "^1.0.0-beta.0",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
     "botid": "^1.5.11",
@@ -35,7 +44,6 @@
     "lenis": "^1.3.25",
     "motion": "^12.42.2",
     "next": "16.3.0",
-    "next-sanity": "^13.1.1",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.4.3",
     "react": "19.2.7",
@@ -53,7 +61,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
+    "@biomejs/biome": "2.5.9",
     "@next/bundle-analyzer": "16.3.0",
     "@tailwindcss/postcss": "^4.3.2",
     "@types/node": "22.10.2",
@@ -63,15 +71,9 @@
     "postcss": "^8",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.8.2",
-    "ultracite": "7.1.5"
+    "ultracite": "7.10.3"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
-      "bun x ultracite fix"
-    ]
-  },
-  "overrides": {
-    "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.3"
+  "engines": {
+    "node": "22.x"
   }
 }

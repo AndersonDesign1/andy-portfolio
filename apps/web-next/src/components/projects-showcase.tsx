@@ -3,7 +3,6 @@
 import { AnimatePresence, m, type Variants } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import type React from "react";
 import { useMemo, useState } from "react";
 import {
   Select,
@@ -12,64 +11,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
 import {
   ANIMATION_DELAY_PROJECT,
   ANIMATION_DURATION_PROJECT,
   ANIMATION_EASE_CUBIC,
 } from "@/lib/constants";
-
-interface Project {
-  id: string;
-  type: "case-study" | "standard";
-  title: string;
-  description: string;
-  thumbnail: string;
-  techStack: string[];
-  links: {
-    live?: string;
-    github?: string;
-    caseStudy?: string;
-  };
-  metrics?: Record<string, string>;
-}
-
-interface RawProject {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  techStack: string[];
-  links: {
-    live?: string;
-    github?: string;
-    caseStudy?: string;
-  };
-  metrics?: Record<string, unknown>;
-}
-
-const projects: Project[] = projectsDataJson.projects.map((p: RawProject) => ({
-  ...p,
-  type: p.type as "case-study" | "standard",
-  metrics: p.metrics
-    ? (Object.fromEntries(
-        Object.entries(p.metrics).filter(
-          ([, value]) => typeof value === "string"
-        )
-      ) as Record<string, string>)
-    : undefined,
-}));
+import type { Project } from "@/types/project";
 
 const categories = ["All", "Full Stack", "SEO", "Web Design"];
 
 const gridVariants: Variants = {
+  animate: { opacity: 1, transition: { duration: 0.4, ease: "easeOut" }, y: 0 },
+  exit: { opacity: 0, transition: { duration: 0.3, ease: "easeIn" }, y: -30 },
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
-  exit: { opacity: 0, y: -30, transition: { duration: 0.3, ease: "easeIn" } },
 };
 
-const ProjectsShowcase: React.FC = () => {
+const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
   const filteredProjects = useMemo(() => {
@@ -112,7 +69,7 @@ const ProjectsShowcase: React.FC = () => {
       );
     }
     return [];
-  }, [activeCategory]);
+  }, [activeCategory, projects]);
 
   const featuredProjects = filteredProjects.slice(0, 4);
   const otherProjects = filteredProjects.slice(4);
@@ -157,13 +114,13 @@ const ProjectsShowcase: React.FC = () => {
                 <m.div
                   className="group"
                   initial={{ opacity: 0, y: 24 }}
-                  key={project.id}
+                  key={project.slug}
                   transition={{
+                    delay: index * ANIMATION_DELAY_PROJECT,
                     duration: ANIMATION_DURATION_PROJECT,
                     ease: ANIMATION_EASE_CUBIC,
-                    delay: index * ANIMATION_DELAY_PROJECT,
                   }}
-                  viewport={{ once: true, amount: 0.1 }}
+                  viewport={{ amount: 0.1, once: true }}
                   whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Project Image */}
@@ -270,7 +227,7 @@ const ProjectsShowcase: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col gap-8 pt-32"
               initial={{ opacity: 0, y: 30 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
             >
               <h2 className="pb-12 font-mono text-muted text-xs uppercase tracking-widest">
                 Freelance & Individual Projects
@@ -280,7 +237,7 @@ const ProjectsShowcase: React.FC = () => {
                   <m.div
                     className="group grid grid-cols-1 items-start gap-4 border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:grid-cols-12 md:items-center"
                     initial={{ opacity: 0, y: 10 }}
-                    key={project.id}
+                    key={project.slug}
                     transition={{ delay: index * 0.05 }}
                     whileInView={{ opacity: 1, y: 0 }}
                   >

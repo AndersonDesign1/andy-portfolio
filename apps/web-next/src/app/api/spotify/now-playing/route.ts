@@ -12,15 +12,15 @@ const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
 async function getAccessToken() {
   const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${basic}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
     body: new URLSearchParams({
       grant_type: "refresh_token",
       refresh_token,
     }),
+    headers: {
+      Authorization: `Basic ${basic}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    method: "POST",
   });
   return response.json();
 }

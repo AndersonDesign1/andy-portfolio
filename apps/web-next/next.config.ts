@@ -1,10 +1,11 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import { withGraft } from "@usegraft/sdk-next/config";
 import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  partialPrefetching: true,
+  compress: true,
   experimental: {
     optimizePackageImports: ["@hugeicons/react", "@hugeicons/core-free-icons"],
   },
@@ -12,34 +13,28 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-        pathname: "/images/**",
-      },
-      {
-        protocol: "https",
         hostname: "mosaic.scdn.co",
         pathname: "/**",
+        protocol: "https",
       },
       {
-        protocol: "https",
         hostname: "i.scdn.co",
         pathname: "/**",
+        protocol: "https",
       },
     ],
   },
-  trailingSlash: false,
-  skipTrailingSlashRedirect: true,
-  reactCompiler: true,
-  compress: true,
+  partialPrefetching: true,
   poweredByHeader: false,
+  reactCompiler: true,
+  skipTrailingSlashRedirect: true,
+  trailingSlash: false,
 };
 
 // Enable bundle analyzer when ANALYZE=true
 const analyzeEnabled = process.env.ANALYZE === "true";
-
 const configuredNextConfig = analyzeEnabled
   ? withBundleAnalyzer({ enabled: true })(nextConfig)
   : nextConfig;
 
-export default withBotId(configuredNextConfig);
+export default withGraft(withBotId(configuredNextConfig));

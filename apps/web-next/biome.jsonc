@@ -1,8 +1,10 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  // Nested config: Biome 2.x discovers this from the repo root, so it must
-  // declare `root: false` or it breaks the root run.
-  "root": false,
+  // Independent Biome project: `bun run --filter=@andy-portfolio/web-next lint`
+  // runs from this directory. `root: false` would walk up to the repo Biome
+  // config, whose `!!apps/web-next/**` force-ignore then matches `.` and
+  // processes zero files.
+  "root": true,
   // `ultracite/core|react|next` are the *oxlint* presets and have no Biome
   // export — leaving them here made every root Biome run fail with
   // "Could not resolve ultracite/core". Only the `ultracite/biome/*` presets
@@ -11,5 +13,31 @@
     "ultracite/biome/core",
     "ultracite/biome/react",
     "ultracite/biome/next"
-  ]
+  ],
+  "files": {
+    "includes": ["!public"]
+  },
+  "linter": {
+    "rules": {
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      },
+      "complexity": {
+        "noRedundantDefaultExport": "off",
+        "noUselessCatchBinding": "off"
+      },
+      "performance": {
+        "noAwaitInLoops": "off",
+        "noJsxPropsBind": "off"
+      },
+      "style": {
+        "useDestructuring": "off",
+        "useErrorCause": "off"
+      },
+      "suspicious": {
+        "noLeakedRender": "off",
+        "noReactForwardRef": "off"
+      }
+    }
+  }
 }

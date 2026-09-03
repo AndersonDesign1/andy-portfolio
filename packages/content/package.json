@@ -1,0 +1,20 @@
+{
+  "name": "@andy-portfolio/content",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./graft.config.ts",
+    "./paths": "./src/paths.ts"
+  },
+  "scripts": {
+    "compile": "graft compile",
+    "graft:dev": "graft dev"
+  },
+  "dependencies": {
+    "@usegraft/core": "^1.0.0-beta.0"
+  },
+  "devDependencies": {
+    "@usegraft/cli": "^1.0.0-beta.0"
+  }
+}

@@ -33,8 +33,9 @@ export function constructMetadata({
   }
 
   return {
-    title,
+    authors: [{ name: "Anderson Joseph" }],
     description,
+    icons,
     keywords: [
       "Anderson Joseph",
       "Web Developer",
@@ -44,36 +45,35 @@ export function constructMetadata({
       "Next.js Developer",
       "React Developer",
     ],
-    authors: [{ name: "Anderson Joseph" }],
+    metadataBase: new URL("https://www.andersonjoseph.com"),
     openGraph: {
-      title,
       description,
-      url: "https://www.andersonjoseph.com",
-      siteName: "Anderson Joseph",
-      locale: "en_US",
-      type: "website",
       images: [
         {
+          alt: title,
+          height: 630,
           url: finalImage,
           width: 1200,
-          height: 630,
-          alt: title,
         },
       ],
+      locale: "en_US",
+      siteName: "Anderson Joseph",
+      title,
+      type: "website",
+      url: "https://www.andersonjoseph.com",
     },
+    title,
     twitter: {
       card: "summary_large_image",
-      title,
+      creator: "@andersonjoseph",
       description,
       images: [finalImage],
-      creator: "@andersonjoseph",
+      title,
     },
-    icons,
-    metadataBase: new URL("https://www.andersonjoseph.com"),
     ...(noIndex && {
       robots: {
-        index: false,
         follow: false,
+        index: false,
       },
     }),
   };

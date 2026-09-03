@@ -1,13 +1,13 @@
-import { client } from "@andy-portfolio/sanity-config";
 import type { Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
 import BlogList from "@/components/bloglist";
+import { getGraft } from "@/lib/graft";
 import { constructMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Blog",
   description:
     "Thoughts on web development, SEO strategies, and lessons learned from building digital products.",
+  title: "Blog",
 });
 
 async function getPosts() {
@@ -15,31 +15,18 @@ async function getPosts() {
   cacheLife("days");
   cacheTag("post");
 
-  try {
-    return await client.fetch(
-      `*[_type == "post"] | order(publishedAt desc){
-        _id,
-        title,
-        slug,
-        excerpt,
-        _createdAt,
-        publishedAt,
-        mainImage{
-          asset->,
-          alt,
-          caption
-        },
-        categories[]->{
-          _id,
-          title,
-          slug,
-          description
-        }
-      }`
+  const documents = await getGraft().listContent("posts");
+  return documents
+    .map((document) => ({
+      excerpt: document.data.excerpt,
+      publishedAt: document.data.publishedAt,
+      slug: document.slug,
+      title: document.data.title,
+    }))
+    .toSorted(
+      (left, right) =>
+        Date.parse(right.publishedAt) - Date.parse(left.publishedAt)
     );
-  } catch (_error) {
-    return [];
-  }
 }
 
 export default async function BlogPage() {

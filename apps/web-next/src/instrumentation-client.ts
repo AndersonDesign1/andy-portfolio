@@ -3,11 +3,11 @@ import { initBotId } from "botid/client/core";
 initBotId({
   protect: [
     {
-      path: "/contact",
-      method: "POST",
       advancedOptions: {
         checkLevel: "basic",
       },
+      method: "POST",
+      path: "/contact",
     },
   ],
 });

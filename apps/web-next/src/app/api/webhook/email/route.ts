@@ -5,7 +5,6 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface EmailReceivedEvent {
-  type: "email.received";
   created_at: string;
   data: {
     email_id: string;
@@ -24,11 +23,12 @@ interface EmailReceivedEvent {
       content_id?: string;
     }>;
   };
+  type: "email.received";
 }
 
 interface AttachmentWithUrl {
-  filename: string;
   download_url: string;
+  filename: string;
 }
 
 // Helper: Fetch and download attachments
@@ -49,8 +49,8 @@ async function fetchAttachments(
       const response = await fetch(attachment.download_url);
       const buffer = Buffer.from(await response.arrayBuffer());
       attachments.push({
-        filename: attachment.filename,
         content: buffer.toString("base64"),
+        filename: attachment.filename,
       });
     } catch {
       // Silently skip failed attachment downloads
@@ -100,12 +100,12 @@ export async function POST(request: NextRequest) {
 
       try {
         resend.webhooks.verify({
-          payload: body,
           headers: {
             id: svixId,
-            timestamp: svixTimestamp,
             signature: svixSignature,
+            timestamp: svixTimestamp,
           },
+          payload: body,
           webhookSecret,
         });
       } catch {
@@ -140,9 +140,8 @@ export async function POST(request: NextRequest) {
 
     // Forward the email
     const { error } = await resend.emails.send({
+      attachments: attachments.length > 0 ? attachments : undefined,
       from: "contact@andersonjoseph.com",
-      to: ["josanderson25@gmail.com"],
-      subject: `[Forwarded] ${subject}`,
       html: buildForwardedHtml(
         from,
         to,
@@ -150,8 +149,9 @@ export async function POST(request: NextRequest) {
         email.html ?? undefined,
         email.text ?? undefined
       ),
+      subject: `[Forwarded] ${subject}`,
       text: `From: ${from}\nTo: ${to.join(", ")}\nSubject: ${subject}\n\n${email.text || "No content"}`,
-      attachments: attachments.length > 0 ? attachments : undefined,
+      to: ["josanderson25@gmail.com"],
     });
 
     if (error) {

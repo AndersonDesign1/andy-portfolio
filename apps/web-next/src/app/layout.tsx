@@ -68,10 +68,10 @@ export default function RootLayout({
                 toastOptions={{
                   style: {
                     background: "var(--muted)",
-                    color: "var(--foreground)",
                     border: "1px solid var(--border)",
                     boxShadow:
                       "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
+                    color: "var(--foreground)",
                   },
                 }}
               />

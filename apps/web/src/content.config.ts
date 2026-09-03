@@ -1,13 +1,20 @@
+import { fileURLToPath } from "node:url";
+
 import { glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 import { z } from "zod";
 
 /**
- * Same MDX files Graft compiles. Astro owns body rendering (`render()`);
- * Graft owns typed list/get/search over the SQLite index.
+ * Same MDX files Graft compiles in `@andy-portfolio/content`.
+ * Astro owns body rendering (`render()`); Graft owns typed list/get/search.
  */
 const posts = defineCollection({
-  loader: glob({ base: "./content/posts", pattern: "**/*.mdx" }),
+  loader: glob({
+    base: fileURLToPath(
+      new URL("../../../packages/content/content/posts", import.meta.url)
+    ),
+    pattern: "**/*.mdx",
+  }),
   schema: z.object({
     categories: z.array(z.string()).optional(),
     excerpt: z.string(),

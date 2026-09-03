@@ -1,16 +1,16 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  SPOTIFY_CLIENT_ID: z.string().min(1, "Spotify Client ID is required"),
-  SPOTIFY_CLIENT_SECRET: z.string().min(1, "Spotify Client Secret is required"),
-  SPOTIFY_REFRESH_TOKEN: z.string().min(1, "Spotify Refresh Token is required"),
-
-  RESEND_API_KEY: z.string().min(1, "Resend API Key is required"),
   CONTACT_EMAIL: z.email().optional(),
 
   NODE_ENV: z
     .enum(["development", "production", "test"]) // pragma: allowlist secret
     .default("development"),
+
+  RESEND_API_KEY: z.string().min(1, "Resend API Key is required"),
+  SPOTIFY_CLIENT_ID: z.string().min(1, "Spotify Client ID is required"),
+  SPOTIFY_CLIENT_SECRET: z.string().min(1, "Spotify Client Secret is required"),
+  SPOTIFY_REFRESH_TOKEN: z.string().min(1, "Spotify Refresh Token is required"),
 });
 
 function validateEnv() {
