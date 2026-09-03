@@ -48,7 +48,7 @@ Next is a **workspace** so `bun dev` / `bun lint` / `bun build` include it. It i
 
 - Next **16.3.0** with `cacheComponents: true` and `partialPrefetching: true`.
 - Blog / projects / case studies read the shared Graft index (`@usegraft/sdk-next`, `MdxBody` for post bodies).
-- Nested `biome.jsonc` (`root: false`). Root Biome **force-ignores** `!!apps/web-next/**`. Align `@biomejs/biome` with root **2.5.9**.
+- Nested `biome.jsonc` is **`"root": true`**. `root: false` walks up to the repo Biome config, whose `!!apps/web-next/**` force-ignore then lints zero files. Root Biome still **force-ignores** `!!apps/web-next/**` so `bun run format` does not rewrite the archive. Align `@biomejs/biome` with root **2.5.9**.
 
 ### Env / egress gotchas
 
