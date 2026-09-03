@@ -1,16 +1,14 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  "exclude": ["dist", "scripts"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@andy-portfolio/sanity-config": ["../../packages/sanity-config/src"],
-      "@andy-portfolio/sanity-config/*": ["../../packages/sanity-config/src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }

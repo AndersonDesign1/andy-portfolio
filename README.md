@@ -1,13 +1,14 @@
 # Andy Portfolio
 
-Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primary site, Sanity CMS, and a Next.js archive kept for reference.
+Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primary site, [Graft](https://graft.page) for the live blog, projects, and case studies, Sanity kept for Studio / the Next archive, and a Next.js archive kept for reference.
 
 ## Tech stack
 
 - **Monorepo**: [Turbo](https://turbo.build/) + [Bun](https://bun.sh/) `1.3.14`
 - **Web (primary)**: [Astro 7](https://astro.build/) + React islands + `@astrojs/vercel`
 - **Web (archive)**: [Next.js 16.3](https://nextjs.org/) in `apps/web-next` — source kept, **excluded from workspaces** ([restore](#restoring-the-next-archive))
-- **CMS**: [Sanity](https://www.sanity.io/) Studio (`apps/studio`, port 3333)
+- **CMS (Astro)**: [Graft](https://graft.page) static index (`apps/web/graft.config.ts`, `content/{posts,projects,case-studies}/`)
+- **CMS (Studio / Next archive)**: [Sanity](https://www.sanity.io/) (`apps/studio`, port 3333)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + shadcn-style primitives
 - **Motion**: [Motion](https://motion.dev/) + [Lenis](https://github.com/darkroomengineering/lenis)
 - **Lint (Astro)**: [Ultracite](https://www.ultracite.ai/) **7.10.3** → **Oxlint** + **Oxfmt**, with Astro/React presets, `oxlint-plugin-react-doctor`, and vendored [anti-slop](https://github.com/dmmulroy/anti-slop) at `tools/oxlint/anti-slop`
@@ -17,9 +18,9 @@ Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primar
 
 ```text
 ├── apps/
-│   ├── web/           # Astro 7 primary site (port 3000)
+│   ├── web/           # Astro 7 primary site (port 3000); Graft CMS
 │   ├── web-next/      # Next.js 16.3 archive — source only, not a workspace
-│   └── studio/        # Sanity CMS (port 3333)
+│   └── studio/        # Sanity CMS (port 3333; Next archive + leftover Studio)
 ├── packages/
 │   └── sanity-config/ # Shared Sanity schemas & client
 ├── tools/
@@ -32,14 +33,14 @@ Personal portfolio and blog. Bun + Turbo monorepo with **Astro 7** as the primar
 
 ```bash
 bun install
-cp .env.example .env.local   # fill Sanity, Spotify, Resend, etc.
+cp .env.example .env.local   # fill Spotify, Resend, etc.
 bun dev
 ```
 
-- Astro: http://localhost:3000  
-- Studio: http://localhost:3333 (use `localhost`, not `127.0.0.1`)
+- Astro: http://localhost:3000 (blog, projects, and case studies are Graft MDX; `graft compile` runs as part of `dev` / `build`)
+- Studio: http://localhost:3333 (use `localhost`, not `127.0.0.1`) — Sanity, not the live blog
 
-Oxlint TypeScript configs need **Node ≥22.18** on `PATH` (CI installs Node 22).
+Graft’s static index needs **Node ≥22.16**. Oxlint TypeScript configs need **Node ≥22.18** on `PATH` (CI installs Node 22).
 
 ## Restoring the Next archive
 
@@ -79,6 +80,7 @@ bun run --filter=@andy-portfolio/web-next dev
 
 ## Astro app highlights (`apps/web`)
 
+- **Blog / projects / case studies**: Graft MDX in `apps/web/content/{posts,projects,case-studies}/`; `graft compile` is part of `dev` / `build`
 - **Prefetch**: `prefetchAll` + `viewport` strategy in `astro.config.mjs`
 - **View transitions**: `<ClientRouter />` in `src/layouts/base-layout.astro`
 - **Spotify widget**: `/api/spotify/now-playing` returns normalized `albumArtUrl`; UI hides when idle with no track

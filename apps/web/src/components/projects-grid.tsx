@@ -7,22 +7,7 @@ import { useState } from "react";
 
 import MotionRoot from "@/components/motion-root";
 import { Button } from "@/components/ui/button";
-import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
-
-interface Project {
-  description: string;
-  featured?: boolean;
-  id: string;
-  links: {
-    live?: string;
-    github?: string;
-    caseStudy?: string;
-  };
-  techStack: string[];
-  thumbnail: string;
-  title: string;
-  type: "case-study" | "standard";
-}
+import type { Project } from "@/types/project";
 
 const ProjectRow = ({
   project,
@@ -92,8 +77,10 @@ const ProjectRow = ({
           <img
             alt={project.title}
             className="object-contain"
+            height={300}
             loading="lazy"
             src={project.thumbnail}
+            width={450}
           />
         </div>
       </a>
@@ -101,18 +88,7 @@ const ProjectRow = ({
   );
 };
 
-const normalizeProject = (
-  project: (typeof projectsDataJson.projects)[number]
-): Project => ({
-  ...project,
-  type: project.type === "case-study" ? "case-study" : "standard",
-});
-
-const featuredProjects = projectsDataJson.projects.flatMap((project) =>
-  project.featured ? [normalizeProject(project)] : []
-);
-
-const ProjectsGrid = () => (
+const ProjectsGrid = ({ projects }: { projects: Project[] }) => (
   <MotionRoot>
     <section className="bg-primary py-24 md:py-32">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
@@ -122,13 +98,13 @@ const ProjectsGrid = () => (
               Selected Works
             </h2>
             <span className="text-muted font-mono text-sm">
-              {featuredProjects.length} Projects
+              {projects.length} Projects
             </span>
           </div>
 
           <div className="flex flex-col">
-            {featuredProjects.map((project, index) => (
-              <ProjectRow index={index} key={project.id} project={project} />
+            {projects.map((project, index) => (
+              <ProjectRow index={index} key={project.slug} project={project} />
             ))}
           </div>
 

@@ -56,7 +56,7 @@ const selectedJsPlugins = {
 
 export default defineConfig({
   extends: [core, astro, react, selectedJsPlugins],
-  ignorePatterns: core.ignorePatterns,
+  ignorePatterns: [...(core.ignorePatterns ?? []), "scripts/**"],
   jsPlugins: [
     {
       name: "anti-slop",

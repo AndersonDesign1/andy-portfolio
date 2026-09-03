@@ -1,39 +1,102 @@
 ---
-import { client } from "@andy-portfolio/sanity-config";
-import BlogPost from "../../components/blogpost.tsx";
-import type { SanityPost } from "../../components/blogpost.tsx";
+import { getEntry, render } from "astro:content";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { blogMdxComponents } from "../../components/blog-mdx.tsx";
 import BaseLayout from "../../layouts/base-layout.astro";
+import { getGraft } from "../../lib/graft";
 
 export const prerender = true;
 
 export const getStaticPaths = async () => {
-  try {
-    const posts = await client.fetch<SanityPost[]>(
-      `*[_type == "post" && defined(slug.current)]{
-        _id, title, slug, excerpt, body, _createdAt, publishedAt,
-        mainImage{ asset->, alt, caption },
-        categories[]->{ _id, title, slug, description }
-      }`
-    );
-    return posts.map((post) => ({
-      params: { slug: post.slug.current },
-      props: { post },
-    }));
-  } catch {
-    return [];
-  }
+  const posts = await getGraft().listContent("posts");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
 };
 
-interface Props {
-  post: SanityPost;
+const { slug } = Astro.params;
+const post = slug ? await getGraft().getContent("posts", slug) : null;
+const entry = slug ? await getEntry("posts", slug) : undefined;
+if (!(post && entry && slug)) {
+  throw new Error(
+    `Blog post "${slug ?? "(missing slug)"}" is missing from the Graft index or the Astro content collection.`
+  );
 }
 
-const { post } = Astro.props;
+const { Content } = await render(entry);
+const { categories, excerpt, mainImage, publishedAt, seoDescription, seoTitle, title } =
+  post.data;
+const displayDate = new Date(publishedAt).toLocaleDateString("en-US", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 ---
 
 <BaseLayout
-  description={post.excerpt || "Read this blog post"}
-  title={post.title}
+  description={seoDescription || excerpt || "Read this blog post"}
+  title={seoTitle || title}
 >
-  <BlogPost post={post} client:visible />
+  <section class="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
+    <div class="mx-auto max-w-screen-md px-6">
+      <a
+        class="text-muted hover:text-primary inline-flex items-center gap-2 font-mono text-sm transition-colors"
+        href="/blog"
+      >
+        <HugeiconsIcon
+          color="currentColor"
+          icon={ArrowLeft01Icon}
+          size={16}
+          strokeWidth={1.5}
+        />
+        Back to Writing
+      </a>
+      <div class="pt-12">
+        <article>
+          <div class="border-subtle border-b pb-8">
+            <h1 class="text-primary pb-8 text-4xl leading-tight font-bold tracking-tighter md:text-6xl">
+              {title}
+            </h1>
+            <div class="text-muted flex flex-wrap items-center gap-6 font-mono text-sm">
+              <span>{displayDate}</span>
+              {
+                categories && categories.length > 0 && (
+                  <div class="flex items-center gap-2">
+                    <span>/</span>
+                    <span>{categories.join(", ")}</span>
+                  </div>
+                )
+              }
+            </div>
+          </div>
+
+          {
+            mainImage && (
+              <figure class="pt-16 pb-12 md:pb-16">
+                <div class="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
+                  <img
+                    alt={mainImage.alt || title}
+                    class="h-auto w-full object-cover"
+                    height={600}
+                    src={mainImage.src}
+                    width={1200}
+                  />
+                </div>
+                {mainImage.caption && (
+                  <figcaption class="text-muted pt-4 text-center font-mono text-sm">
+                    {mainImage.caption}
+                  </figcaption>
+                )}
+              </figure>
+            )
+          }
+
+          <div class="flex max-w-none flex-col gap-6">
+            <Content components={blogMdxComponents} />
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

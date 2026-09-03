@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "graft": {
+      "command": "bunx",
+      "args": ["-y", "@usegraft/cli", "mcp"],
+      "cwd": "apps/web"
+    }
+  }
+}

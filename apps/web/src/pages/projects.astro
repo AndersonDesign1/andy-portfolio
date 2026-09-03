@@ -1,8 +1,15 @@
 ---
 import ProjectsShowcase from "../components/projects-showcase.tsx";
 import BaseLayout from "../layouts/base-layout.astro";
+import { getGraft } from "../lib/graft";
+import { compareOrder, toProject } from "../lib/portfolio";
+
+export const prerender = true;
+
+const documents = await getGraft().listContent("projects");
+const projects = documents.map(toProject).toSorted(compareOrder);
 ---
 
 <BaseLayout description="Selected work by Anderson Joseph." title="Projects">
-  <ProjectsShowcase client:load />
+  <ProjectsShowcase client:load projects={projects} />
 </BaseLayout>

@@ -1,4 +1,5 @@
 // @ts-check
+import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
@@ -9,7 +10,6 @@ export default defineConfig({
   adapter: vercel(),
   image: {
     remotePatterns: [
-      { hostname: "cdn.sanity.io", protocol: "https" },
       { hostname: "mosaic.scdn.co", protocol: "https" },
       { hostname: "i.scdn.co", protocol: "https" },
       { hostname: "image-cdn-ak.spotifycdn.com", protocol: "https" },
@@ -17,7 +17,7 @@ export default defineConfig({
       { hostname: "wrapped-images.spotifycdn.com", protocol: "https" },
     ],
   },
-  integrations: [react(), sitemap()],
+  integrations: [react(), mdx(), sitemap()],
   output: "static",
   // Prefetch + ClientRouter: near-instant in-site navigations.
   // ClientRouter also defaults prefetchAll; keep this explicit for non-VT pages.

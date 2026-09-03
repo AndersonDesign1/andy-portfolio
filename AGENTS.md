@@ -8,8 +8,8 @@ Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 | --- | --- | --- | --- |
 | Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` |
 | Web (archive) | `apps/web-next` | `3001` | Next.js 16.3 reference — **not a workspace**, not installed. See [Next archive notes](#next-archive-notes-appsweb-next) |
-| Studio | `apps/studio` | `3333` | Sanity CMS (binds `localhost` / IPv6; use `http://localhost:3333`, not `127.0.0.1`) |
-| Shared | `packages/sanity-config` | — | Framework-agnostic Sanity schemas/client |
+| Studio | `apps/studio` | `3333` | Sanity CMS (kept for the Next archive; binds `localhost` / IPv6; use `http://localhost:3333`, not `127.0.0.1`) |
+| Shared | `packages/sanity-config` | — | Sanity schemas & client for Studio + Next archive |
 
 ### Package manager
 
@@ -32,13 +32,14 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 - Ultracite **7.10.3** + **Oxlint** / **Oxfmt** (`apps/web/oxlint.config.ts`, `oxfmt.config.ts`) with `ultracite/oxlint/{core,astro,react}` plus `oxlint-plugin-react-doctor`. Lint/fix: `bun run --filter=@andy-portfolio/web lint` / `lint:fix` (aliases for `ultracite check` / `fix`). Next archive still uses Biome.
 - Oxlint TS configs need **Node ^20.19 or ≥22.18** on `PATH` (loading `oxlint.config.ts` / `oxfmt.config.ts`). If `node -v` is older (e.g. VM default 22.14), use nvm Node 22.23+ first: `export PATH="$(dirname "$(nvm which 22)"):$PATH"`.
 - Prefetch is on (`prefetch.prefetchAll` + `defaultStrategy: "viewport"` in `apps/web/astro.config.mjs`). View transitions use `<ClientRouter />` in `base-layout.astro`. Do **not** `transition:persist` the `AppShell` that wraps the page `<slot />` — persisted islands keep stale children across navigations. Navbar listens for `astro:page-load` to keep the active link correct.
+- **Blog CMS is Graft (static), not Sanity.** Schema in `apps/web/graft.config.ts`. Posts live in `apps/web/content/posts/<slug>.mdx` (images under `public/blog/<slug>/`). Projects live in `content/projects/`; case studies in `content/case-studies/` (images stay as public-root paths). `graft compile` writes `.graft/index.db` (gitignored). Dev and Vercel build run `graft compile && astro build`. Graft’s SQLite FTS needs **Node ≥22.16** (`engines.node` stays `22.x` so Vercel does not jump to 24). Studio (`graft studio`) is Postgres-tier — not used here. Re-export blog posts from Sanity: `bun run --filter=@andy-portfolio/web export:sanity`.
 - Contact uses Astro Actions (`src/actions/index.ts` → `sendEmail`). Same-origin CSRF applies; curl must send a matching `Origin`.
 - **BotID (Astro ≠ Next):** client `initBotId` must protect `POST /_actions/sendEmail` (Astro Actions RPC), **not** `POST /contact` (that was Next Server Actions). `apps/web/vercel.json` must include the BotID challenge/proxy rewrites from the botid “Other Frameworks” docs. Do **not** recreate the BotID project for this — path + rewrites are enough.
 - Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
-- Env: prefer `PUBLIC_SANITY_*` / `SANITY_*`; `NEXT_PUBLIC_*` still accepted for compatibility. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.
+- Env: Spotify / Resend / BotID live on the Astro app. Sanity `PUBLIC_*` / `NEXT_PUBLIC_*` / `SANITY_STUDIO_*` are still used by Studio and the Next archive, and by `apps/web`’s one-time `export:sanity` script — **not** by the live blog. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.
 - Spotify/email Zod validation: `apps/web/src/lib/env.ts` (reads `import.meta.env` and `process.env`).
 - **Spotify OAuth (refresh token mint):** visit `/api/spotify/authorize` → callback `/api/spotify/callback`. Legacy `/callback` redirects there. Spotify Developer Dashboard redirect URIs must match the **exact** origin (add **www** and apex if both exist): `https://www.andersonjoseph.com/api/spotify/callback`, `https://andersonjoseph.com/api/spotify/callback`, `http://127.0.0.1:3000/api/spotify/callback`. No need to delete/recreate the Spotify app — only add missing URIs and rotate `SPOTIFY_REFRESH_TOKEN` in Vercel after authorize.
-- Revalidate stub: `/api/revalidate-tag` — requires `SANITY_REVALIDATE_SECRET` in app env. On Vercel cutover, point the Sanity webhook at the **Astro** deployment URL + shared secret or blog stays stale until rebuild.
+- Revalidate stub: `/api/revalidate-tag` still authenticates `SANITY_REVALIDATE_SECRET` so an old Sanity webhook does not 500. Live Astro blog freshness is **git push → Vercel rebuild**, not this webhook.
 - OG image route is `src/pages/api/og.ts` (`.tsx` endpoints are not registered by Astro — use `createElement` / `.ts`).
 - Giveaway routes are **ended** stubs (parity with archived Next behavior).
 
@@ -115,5 +116,5 @@ Scope: root `biome.jsonc` restricts `files.includes` to everything except three 
 1. Set the Vercel project **Root Directory** to `apps/web` (Astro). Framework should be **Astro** (`apps/web/vercel.json` sets `"framework": "astro"` — overrides a leftover Next.js preset).
 2. Node: app `engines.node` is `22.x` (avoid open `>=22` ranges that jump to 24.x on Vercel).
 3. Install uses repo-root `bun install --frozen-lockfile` via `apps/web/vercel.json`.
-4. Update Sanity webhook → Astro `/api/revalidate-tag` (or rebuild-on-publish).
-5. Confirm env vars on the Astro project (`PUBLIC_SANITY_*`, `RESEND_*`, `SPOTIFY_*`, BotID/Vercel analytics as needed).
+4. Live Astro blog content is MDX in git; a push rebuilds. `/api/revalidate-tag` is only a leftover Sanity webhook ack.
+5. Confirm env vars on the Astro project (`RESEND_*`, `SPOTIFY_*`, BotID/Vercel analytics as needed). Sanity vars remain for Studio / the Next archive, not for serving `/blog`.

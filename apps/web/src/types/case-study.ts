@@ -1,31 +1,31 @@
 export interface CaseStudy {
   approach: {
-    methodology: string;
-    phases: {
-      name: string;
-      duration: string;
-      activities: string[];
-    }[];
+    collaboration: string;
+    iterations: string[];
     keyDecisions: {
       decision: string;
       rationale: string;
     }[];
+    methodology: string;
+    phases: {
+      activities: string[];
+      duration: string;
+      name: string;
+    }[];
     research: string[];
-    wireframes?: string[];
-    collaboration: string;
-    iterations: string[];
     userFeedback: string;
+    wireframes?: string[];
   };
   challenge: {
-    problem: string;
     constraints: string[];
     context: string;
     metrics: string[];
+    problem: string;
   };
   gallery: {
     images: {
-      src: string;
       alt: string;
+      src: string;
       title: string;
     }[];
   };
@@ -35,30 +35,29 @@ export interface CaseStudy {
     success: string[];
   };
   hero: {
-    title: string;
     client: string;
     duration: string;
-    overview: string;
     heroImage: string;
-    technologies: string[];
     liveUrl?: string;
+    overview: string;
+    technologies: string[];
+    title: string;
   };
-  id: string;
   results: {
+    achievements: string[];
     beforeAfter: {
-      metric: string;
-      before: string;
       after: string;
+      before: string;
       improvement: string;
+      metric: string;
     }[];
+    deliverables: string[];
     metrics: string[];
     testimonials?: {
       name: string;
-      role: string;
       quote: string;
+      role: string;
     }[];
-    deliverables: string[];
-    achievements: string[];
   };
 }
 
@@ -71,8 +70,4 @@ export interface CaseStudyNavigation {
     slug: string;
     title: string;
   };
-}
-
-export interface CaseStudiesData {
-  caseStudies: Record<string, CaseStudy>;
 }

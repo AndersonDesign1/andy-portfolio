@@ -1,51 +1,52 @@
 ---
 import CaseStudyPage from "../../components/case-study-page.tsx";
-import caseStudiesDataJson from "../../data/case-studies.json";
 import BaseLayout from "../../layouts/base-layout.astro";
-import type { CaseStudiesData, CaseStudy } from "../../types/case-study";
+import { getGraft } from "../../lib/graft";
+import { toCaseStudy } from "../../lib/portfolio";
 
 export const prerender = true;
 
-const caseStudiesData: CaseStudiesData = caseStudiesDataJson;
-
-export const getStaticPaths = () =>
-  Object.entries(caseStudiesDataJson.caseStudies).map(([entrySlug, caseStudy]) => ({
-    params: { slug: entrySlug },
-    props: { caseStudy },
+export const getStaticPaths = async () => {
+  const documents = await getGraft().listContent("case-studies");
+  return documents.map((document) => ({
+    params: { slug: document.slug },
   }));
+};
 
-interface Props {
-  caseStudy: CaseStudy;
+const { slug } = Astro.params;
+const graft = getGraft();
+const document = slug ? await graft.getContent("case-studies", slug) : null;
+if (!(document && slug)) {
+  throw new Error(
+    `Case study "${slug ?? "(missing slug)"}" is missing from the Graft index.`
+  );
 }
 
-const { caseStudy: cs } = Astro.props;
-const { slug } = Astro.params;
-
-const slugs = Object.keys(caseStudiesData.caseStudies);
-const currentIndex = slugs.indexOf(slug ?? "");
-const prevSlug = currentIndex > 0 ? slugs[currentIndex - 1] : undefined;
-const nextSlug =
-  currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : undefined;
+const caseStudy = toCaseStudy(document);
+const studies = await graft.listContent("case-studies");
+const ordered = studies.toSorted(
+  (left, right) => left.data.order - right.data.order
+);
+const currentIndex = ordered.findIndex((entry) => entry.slug === slug);
+const prev = currentIndex > 0 ? ordered[currentIndex - 1] : undefined;
+const next =
+  currentIndex !== -1 && currentIndex < ordered.length - 1
+    ? ordered[currentIndex + 1]
+    : undefined;
 
 const navigation = {
-  next: nextSlug
-    ? {
-        slug: nextSlug,
-        title: caseStudiesData.caseStudies[nextSlug].hero.title,
-      }
+  next: next
+    ? { slug: next.slug, title: next.data.hero.title }
     : undefined,
-  prev: prevSlug
-    ? {
-        slug: prevSlug,
-        title: caseStudiesData.caseStudies[prevSlug].hero.title,
-      }
+  prev: prev
+    ? { slug: prev.slug, title: prev.data.hero.title }
     : undefined,
 };
 ---
 
 <BaseLayout
-  description={cs.hero.overview || "Anderson Joseph Case Study"}
-  title={`${cs.hero.title} - Case Study`}
+  description={caseStudy.hero.overview || "Anderson Joseph Case Study"}
+  title={`${caseStudy.hero.title} - Case Study`}
 >
-  <CaseStudyPage caseStudy={cs} navigation={navigation} client:visible />
+  <CaseStudyPage caseStudy={caseStudy} client:visible navigation={navigation} />
 </BaseLayout>
