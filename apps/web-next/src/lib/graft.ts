@@ -6,7 +6,7 @@
 import { existsSync } from "node:fs";
 
 import { collections } from "@andy-portfolio/content";
-import { INDEX_PATH } from "@andy-portfolio/content/paths";
+import { getIndexPath } from "@andy-portfolio/content/paths";
 import { openStaticIndex } from "@usegraft/db";
 import type { Graft } from "@usegraft/sdk-next";
 import { createGraft } from "@usegraft/sdk-next";
@@ -23,12 +23,13 @@ const openGraft = async (): Promise<SiteGraft> => {
   if (cached) {
     return cached;
   }
-  if (!existsSync(INDEX_PATH)) {
+  const indexPath = getIndexPath();
+  if (!existsSync(indexPath)) {
     throw new Error(
-      `Compiled Graft index not found at ${INDEX_PATH}. Run \`bun run --filter=@andy-portfolio/content compile\` first (dev and build scripts do this).`
+      `Compiled Graft index not found at ${indexPath}. Run \`bun run --filter=@andy-portfolio/content compile\` first (dev and build scripts do this).`
     );
   }
-  const index = await openStaticIndex(INDEX_PATH);
+  const index = await openStaticIndex(indexPath);
   cached = createGraft({ collections, index });
   return cached;
 };

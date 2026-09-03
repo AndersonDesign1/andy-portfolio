@@ -2,24 +2,34 @@ import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 
+const looksLikeContentRoot = (root: string): boolean =>
+  existsSync(join(root, "graft.config.ts")) ||
+  existsSync(join(root, ".graft/index.db"));
+
 /**
  * Resolve the content package root (graft.config.ts, content/, .graft/).
  *
- * Do not use `import.meta.url` relative to this file. Astro and Next bundle
- * this module into prerender chunks, so that URL becomes
- * `dist/server/.prerender/...` instead of `packages/content`.
+ * Do not trust `import.meta.url` relative to this file. Astro prerender
+ * rewrites it to `dist/server/.prerender`, and Next Turbopack can resolve
+ * the package to a virtual `[project]/packages/content` path that is not
+ * on disk. Always confirm the candidate exists before using it.
  */
 const resolveContentRoot = (): string => {
   const fromEnv = process.env.GRAFT_CONTENT_ROOT;
-  if (fromEnv) {
+  if (fromEnv && looksLikeContentRoot(fromEnv)) {
     return fromEnv;
   }
 
   try {
     const require = createRequire(import.meta.url);
-    return dirname(require.resolve("@andy-portfolio/content/package.json"));
+    const fromPackage = dirname(
+      require.resolve("@andy-portfolio/content/package.json")
+    );
+    if (looksLikeContentRoot(fromPackage)) {
+      return fromPackage;
+    }
   } catch {
-    // Bundled chunks still walk node_modules; if that fails, guess from cwd.
+    // Bundled / virtual module URLs fall through to cwd guesses.
   }
 
   const cwd = process.cwd();
@@ -31,10 +41,7 @@ const resolveContentRoot = (): string => {
   ];
 
   for (const guess of guesses) {
-    if (
-      existsSync(join(guess, "graft.config.ts")) ||
-      existsSync(join(guess, ".graft/index.db"))
-    ) {
+    if (looksLikeContentRoot(guess)) {
       return guess;
     }
   }
@@ -45,7 +52,8 @@ const resolveContentRoot = (): string => {
 };
 
 /** Directory that holds `graft.config.ts`, `content/`, and `.graft/`. */
-export const CONTENT_ROOT = resolveContentRoot();
+export const getContentRoot = (): string => resolveContentRoot();
 
 /** Compiled static SQLite index. Rebuild with `graft compile` in this package. */
-export const INDEX_PATH = join(CONTENT_ROOT, ".graft/index.db");
+export const getIndexPath = (): string =>
+  join(resolveContentRoot(), ".graft/index.db");
