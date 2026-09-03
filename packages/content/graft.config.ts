@@ -1,7 +1,7 @@
 /**
- * Schema for the Astro site. Agents: this is the source of truth for posts,
- * projects, and case studies. Author documents in content/<collection>/<slug>.mdx;
- * frontmatter must match.
+ * Shared Graft schema for Astro (`apps/web`) and Next (`apps/web-next`).
+ * Agents: this is the source of truth for posts, projects, and case studies.
+ * Author documents in content/<collection>/<slug>.mdx; frontmatter must match.
  *
  * Primitives from `graft add` live under graft/ and merge in via graft/index.ts.
  */
@@ -158,7 +158,7 @@ export const projects = defineCollection({
     type: field.string({
       description: 'Either "case-study" or "standard".',
       maxLength: 20,
-      pattern: /^(?<kind>case-study|standard)$/u,
+      pattern: /^(case-study|standard)$/u,
     }),
   },
   name: "projects",

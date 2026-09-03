@@ -4,14 +4,14 @@ import { Resend } from "resend";
 // import giveawayData from "@/data/giveaway-results.json";
 import { GiveawayConsolationEmail } from "@/emails/giveaway-consolation";
 import { GiveawayWinnerEmail } from "@/emails/giveaway-winner";
-import { env } from "@/lib/env";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(env.RESEND_API_KEY);
+const getResend = () => new Resend(getResendEnv().RESEND_API_KEY);
 
 interface Participant {
-  name: string;
-  email: string;
   category: string;
+  email: string;
+  name: string;
 }
 
 export async function sendGiveawayNotifications(testEmail?: string): Promise<{
@@ -27,42 +27,43 @@ export async function sendGiveawayNotifications(testEmail?: string): Promise<{
   const consolation = participants.filter((p) => p.category === "Disqualified");
 
   try {
+    const resend = getResend();
     if (testEmail) {
       // Send one of each to the test email
       await resend.emails.send({
         from: "Anderson Joseph <contact@andersonjoseph.com>",
-        to: [testEmail],
-        subject: "TEST: You won my giveaway!",
         react: GiveawayWinnerEmail({ name: "Tester" }),
+        subject: "TEST: You won my giveaway!",
+        to: [testEmail],
       });
 
       await resend.emails.send({
         from: "Anderson Joseph <contact@andersonjoseph.com>",
-        to: [testEmail],
-        subject: "Free website giveaway update",
         react: GiveawayConsolationEmail({ name: "Tester" }),
+        subject: "Free website giveaway update",
+        to: [testEmail],
       });
 
       return {
-        success: true,
         message: `Test emails sent to ${testEmail}`,
+        success: true,
       };
     }
 
     // Batch send winners
     const winnerRequests = winners.map((winner) => ({
       from: "Anderson Joseph <contact@andersonjoseph.com>",
-      to: [winner.email],
-      subject: "You won my giveaway! 🎉",
       react: GiveawayWinnerEmail({ name: winner.name }),
+      subject: "You won my giveaway! 🎉",
+      to: [winner.email],
     }));
 
     // Batch send consolation
     const consolationRequests = consolation.map((p) => ({
       from: "Anderson Joseph <contact@andersonjoseph.com>",
-      to: [p.email],
-      subject: "Free website giveaway update",
       react: GiveawayConsolationEmail({ name: p.name }),
+      subject: "Free website giveaway update",
+      to: [p.email],
     }));
 
     if (winnerRequests.length > 0) {
@@ -74,18 +75,18 @@ export async function sendGiveawayNotifications(testEmail?: string): Promise<{
     }
 
     return {
-      success: true,
       message: "All notifications sent successfully!",
       stats: {
-        winners: winnerRequests.length,
         consolation: consolationRequests.length,
+        winners: winnerRequests.length,
       },
+      success: true,
     };
   } catch (error) {
     console.error("Failed to send notifications:", error);
     return {
-      success: false,
       message: "Failed to send notifications. Check server logs.",
+      success: false,
     };
   }
 }

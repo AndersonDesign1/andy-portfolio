@@ -1,17 +1,15 @@
 /**
- * Graft handle for the Astro site — reads the compiled static SQLite index.
+ * Graft handle for the Astro site — reads the compiled static SQLite index
+ * shared with Next via `@andy-portfolio/content`.
  * Server-only: import from .astro frontmatter and endpoints, never islands.
  */
 import { existsSync } from "node:fs";
-import path from "node:path";
 
+import { collections } from "@andy-portfolio/content";
+import { getIndexPath } from "@andy-portfolio/content/paths";
 import { openStaticIndex } from "@usegraft/db";
 import { createGraft } from "@usegraft/sdk-astro";
 import type { Graft } from "@usegraft/sdk-astro";
-
-import { collections } from "../../graft.config";
-
-const INDEX_PATH = path.resolve(process.cwd(), ".graft/index.db");
 
 type SiteGraft = Graft<typeof collections>;
 type SiteGraftReads = Pick<
@@ -25,12 +23,13 @@ const openGraft = async (): Promise<SiteGraft> => {
   if (cached) {
     return cached;
   }
-  if (!existsSync(INDEX_PATH)) {
+  const indexPath = getIndexPath();
+  if (!existsSync(indexPath)) {
     throw new Error(
-      `Compiled Graft index not found at ${INDEX_PATH}. Run \`graft compile\` from apps/web first (dev and build scripts do this).`
+      `Compiled Graft index not found at ${indexPath}. Run \`bun run --filter=@andy-portfolio/content compile\` first (dev and build scripts do this).`
     );
   }
-  const index = await openStaticIndex(INDEX_PATH);
+  const index = await openStaticIndex(indexPath);
   cached = createGraft({ collections, index });
   return cached;
 };

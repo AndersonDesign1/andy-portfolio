@@ -3,33 +3,32 @@
 import { checkBotId } from "botid/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { env } from "@/lib/env";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(env.RESEND_API_KEY);
 const BLOCKED_SUBMISSION_MESSAGE =
   "We couldn't send your message. Please try again later.";
 
 export interface ContactSubmissionState {
-  success: boolean;
   message: string;
   status: "idle" | "success" | "error";
+  success: boolean;
 }
 
 export const INITIAL_CONTACT_SUBMISSION_STATE: ContactSubmissionState = {
-  success: false,
   message: "",
   status: "idle",
+  success: false,
 };
 
 const contactSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
   email: z.email("Invalid email address"),
+  message: z.string().min(1, "Message is required").max(5000),
+  name: z.string().min(1, "Name is required").max(100),
   subject: z
     .string()
     .max(200)
     .optional()
     .default("New Contact Form Submission"),
-  message: z.string().min(1, "Message is required").max(5000),
 });
 
 const honeypotSchema = z.object({
@@ -38,11 +37,11 @@ const honeypotSchema = z.object({
 
 function escapeHtml(text: string): string {
   const map: Record<string, string> = {
+    "'": "&#039;",
+    '"': "&quot;",
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
   };
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
@@ -59,9 +58,9 @@ export async function sendEmail(
 
   if (verification.isBot) {
     return {
-      success: false,
       message: BLOCKED_SUBMISSION_MESSAGE,
       status: "error",
+      success: false,
     };
   }
 
@@ -71,26 +70,26 @@ export async function sendEmail(
 
   if (!honeypot.success) {
     return {
-      success: false,
       message: BLOCKED_SUBMISSION_MESSAGE,
       status: "error",
+      success: false,
     };
   }
 
   const rawData = {
-    name: formData.get("name"),
     email: formData.get("email"),
-    subject: formData.get("subject") || undefined,
     message: formData.get("message"),
+    name: formData.get("name"),
+    subject: formData.get("subject") || undefined,
   };
 
   const result = contactSchema.safeParse(rawData);
 
   if (!result.success) {
     return {
-      success: false,
       message: result.error.issues[0]?.message || "Invalid input.",
       status: "error",
+      success: false,
     };
   }
 
@@ -103,11 +102,10 @@ export async function sendEmail(
   const safeMessage = escapeHtml(message).replace(/\n/g, "<br/>");
 
   try {
+    const { CONTACT_EMAIL, RESEND_API_KEY } = getResendEnv();
+    const resend = new Resend(RESEND_API_KEY);
     await resend.emails.send({
       from: "Contact Form <contact@andersonjoseph.com>",
-      to: [env.CONTACT_EMAIL ?? "josanderson25@gmail.com"],
-      subject: safeSubject,
-      replyTo: email,
       html: `
         <h2>New Contact Form Submission</h2>
         <p><b>Name:</b> ${safeName}</p>
@@ -115,17 +113,20 @@ export async function sendEmail(
         <p><b>Subject:</b> ${safeSubject}</p>
         <p><b>Message:</b><br/>${safeMessage}</p>
       `,
+      replyTo: email,
+      subject: safeSubject,
+      to: [CONTACT_EMAIL ?? "josanderson25@gmail.com"],
     });
     return {
-      success: true,
       message: "Message sent! I'll get back to you soon.",
       status: "success",
+      success: true,
     };
   } catch (_error) {
     return {
-      success: false,
       message: BLOCKED_SUBMISSION_MESSAGE,
       status: "error",
+      success: false,
     };
   }
 }

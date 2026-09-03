@@ -16,17 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 const WORD_COUNT_REGEX = /\s+/;
 
 const feedbackSchema = z.object({
-  name: z.string().optional(),
-  email: z.email("Invalid email address"),
-  brandDescription: z
-    .string()
-    .min(10, "Please provide a bit more detail (at least 10 characters)")
-    .refine((val) => {
-      const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
-      return wordCount >= 80;
-    }, "Please provide at least 80 words about your brand/project so I can understand it fully."),
-  features: z.string().min(5, "Please list at least one feature"),
-  domainStatus: z.enum(["yes", "no", "need_help"]),
   benefits: z
     .string()
     .min(5, "Please tell me how this helps you")
@@ -34,6 +23,17 @@ const feedbackSchema = z.object({
       const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
       return wordCount >= 30;
     }, "Please provide at least 30 words about the benefits."),
+  brandDescription: z
+    .string()
+    .min(10, "Please provide a bit more detail (at least 10 characters)")
+    .refine((val) => {
+      const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
+      return wordCount >= 80;
+    }, "Please provide at least 80 words about your brand/project so I can understand it fully."),
+  domainStatus: z.enum(["yes", "no", "need_help"]),
+  email: z.email("Invalid email address"),
+  features: z.string().min(5, "Please list at least one feature"),
+  name: z.string().optional(),
 });
 
 export default function GiveawayFeedbackPage() {
@@ -45,12 +45,12 @@ export default function GiveawayFeedbackPage() {
     const formData = new FormData(event.currentTarget);
 
     const values = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      brandDescription: formData.get("brandDescription"),
-      features: formData.get("features"),
-      domainStatus: formData.get("domainStatus"),
       benefits: formData.get("benefits"),
+      brandDescription: formData.get("brandDescription"),
+      domainStatus: formData.get("domainStatus"),
+      email: formData.get("email"),
+      features: formData.get("features"),
+      name: formData.get("name"),
     };
 
     const result = feedbackSchema.safeParse(values);
@@ -65,7 +65,7 @@ export default function GiveawayFeedbackPage() {
       const res = await submitGiveawayFeedback(formData);
       if (res.success) {
         setIsSubmitted(true);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ behavior: "smooth", top: 0 });
       } else {
         toast.error(res.message);
       }

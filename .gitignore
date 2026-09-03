@@ -44,8 +44,5 @@ next-env.d.ts
 # turborepo
 .turbo
 
-# sanity
-.sanity
-
 # Graft compiled content index (rebuild with `graft compile`)
 .graft/

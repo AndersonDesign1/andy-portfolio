@@ -25,27 +25,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 const websiteTypes = [
-  { value: "portfolio", label: "Portfolio" },
-  { value: "blog", label: "Personal Blog" },
-  { value: "business", label: "Business Website" },
-  { value: "landing", label: "Landing Page" },
-  { value: "other", label: "Other" },
+  { label: "Portfolio", value: "portfolio" },
+  { label: "Personal Blog", value: "blog" },
+  { label: "Business Website", value: "business" },
+  { label: "Landing Page", value: "landing" },
+  { label: "Other", value: "other" },
 ];
 
 const WORD_COUNT_REGEX = /\s+/;
 
 // Zod schema for form validation
 const entrySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .min(2, "Name must be at least 2 characters"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  websiteType: z.string().min(1, "Please select a website type"),
-  projectName: z.string().optional(),
   description: z
     .string()
     .min(1, "Please tell me about your project")
@@ -53,17 +43,27 @@ const entrySchema = z.object({
       const wordCount = val.trim().split(WORD_COUNT_REGEX).length;
       return wordCount >= 30;
     }, "Please provide at least 30 words about your project"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters"),
+  projectName: z.string().optional(),
+  websiteType: z.string().min(1, "Please select a website type"),
 });
 
 type EntryFormData = z.infer<typeof entrySchema>;
 type EntryFormErrors = Partial<Record<keyof EntryFormData, string>>;
 
 const initialForm: EntryFormData = {
-  name: "",
-  email: "",
-  websiteType: "",
-  projectName: "",
   description: "",
+  email: "",
+  name: "",
+  projectName: "",
+  websiteType: "",
 };
 
 function GiveawayEntrySidebar({

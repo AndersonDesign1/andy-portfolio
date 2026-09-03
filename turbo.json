@@ -9,9 +9,7 @@
         "RESEND_WEBHOOK_SECRET",
         "SPOTIFY_CLIENT_ID",
         "SPOTIFY_CLIENT_SECRET",
-        "SPOTIFY_REFRESH_TOKEN",
-        "NEXT_PUBLIC_SANITY_PROJECT_ID",
-        "NEXT_PUBLIC_SANITY_DATASET"
+        "SPOTIFY_REFRESH_TOKEN"
       ]
     },
     "dev": {

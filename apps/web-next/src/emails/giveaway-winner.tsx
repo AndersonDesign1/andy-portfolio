@@ -85,16 +85,16 @@ const main = {
 
 const container = {
   margin: "0 auto",
-  padding: "20px 0 48px",
   maxWidth: "580px",
+  padding: "20px 0 48px",
 };
 
 const h1 = {
   color: "#1a1a1a",
   fontSize: "24px",
   fontWeight: "bold",
-  textAlign: "center" as const,
   margin: "30px 0",
+  textAlign: "center" as const,
 };
 
 const imageSection = {
@@ -102,8 +102,8 @@ const imageSection = {
 };
 
 const image = {
-  margin: "0 auto",
   borderRadius: "8px",
+  margin: "0 auto",
 };
 
 const text = {
@@ -114,10 +114,10 @@ const text = {
 };
 
 const box = {
-  padding: "24px",
   backgroundColor: "#f9f9f9",
   borderRadius: "12px",
   margin: "24px 0",
+  padding: "24px",
 };
 
 const subheading = {
@@ -131,13 +131,13 @@ const button = {
   backgroundColor: "#000",
   borderRadius: "6px",
   color: "#fff",
+  display: "block",
   fontSize: "16px",
   fontWeight: "bold",
-  textDecoration: "none",
-  textAlign: "center" as const,
-  display: "block",
-  padding: "16px",
   margin: "16px 0",
+  padding: "16px",
+  textAlign: "center" as const,
+  textDecoration: "none",
 };
 
 const note = {

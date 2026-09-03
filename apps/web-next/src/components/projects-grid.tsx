@@ -7,22 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import projectsDataJson from "@/data/all-projects.json" with { type: "json" };
-
-interface Project {
-  id: string;
-  featured?: boolean;
-  type: "case-study" | "standard";
-  title: string;
-  description: string;
-  thumbnail: string;
-  techStack: string[];
-  links: {
-    live?: string;
-    github?: string;
-    caseStudy?: string;
-  };
-}
+import type { Project } from "@/types/project";
 
 function ProjectRow({ project, index }: { project: Project; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -38,11 +23,11 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
       className="relative border-subtle border-b last:border-none"
       initial={{ opacity: 0, y: 24 }}
       transition={{
+        delay: index * 0.05,
         duration: 0.45,
         ease: [0.22, 1, 0.36, 1],
-        delay: index * 0.05,
       }}
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ amount: 0.2, once: true }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       <Link
@@ -52,7 +37,6 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="flex items-center justify-between gap-8">
-          {/* Left: Index & Title */}
           <div className="flex items-baseline gap-8 transition-transform duration-300 ease-out group-hover:translate-x-4 md:gap-16">
             <span className="font-mono text-muted text-sm">
               {String(index + 1).padStart(2, "0")}
@@ -62,7 +46,6 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
             </h3>
           </div>
 
-          {/* Right: Tech & Year (or Arrow) */}
           <div className="flex items-center gap-8 md:gap-16">
             <p className="hidden font-mono text-secondary text-sm tracking-tight md:block">
               {project.techStack.slice(0, 3).join(" / ")}
@@ -99,9 +82,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
   );
 }
 
-const featuredProjects = projectsDataJson.projects.filter((p) => p.featured);
-
-export default function ProjectsGrid() {
+export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   return (
     <section className="bg-primary py-24 md:py-32">
       <div className="mx-auto max-w-screen-lg px-6 md:px-12">
@@ -111,20 +92,13 @@ export default function ProjectsGrid() {
               Selected Works
             </h2>
             <span className="font-mono text-muted text-sm">
-              {featuredProjects.length} Projects
+              {projects.length} Projects
             </span>
           </div>
 
           <div className="flex flex-col">
-            {featuredProjects.map((project, index) => (
-              <ProjectRow
-                index={index}
-                key={project.id}
-                project={{
-                  ...project,
-                  type: project.type as "case-study" | "standard",
-                }}
-              />
+            {projects.map((project, index) => (
+              <ProjectRow index={index} key={project.slug} project={project} />
             ))}
           </div>
 

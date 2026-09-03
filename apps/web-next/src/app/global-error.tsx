@@ -32,18 +32,18 @@ export default function GlobalError({
         style={{
           backgroundColor: "#050505",
           color: "#ededed",
-          margin: 0,
           fontFamily:
             "var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif",
-          WebkitFontSmoothing: "antialiased",
           MozOsxFontSmoothing: "grayscale",
+          margin: 0,
+          WebkitFontSmoothing: "antialiased",
         }}
       >
         <div
           style={{
+            alignItems: "center",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
             justifyContent: "center",
             minHeight: "100vh",
             padding: "24px",
@@ -63,11 +63,11 @@ export default function GlobalError({
 
           <p
             style={{
-              maxWidth: "400px",
               color: "#a3a3a3",
               fontSize: "clamp(0.875rem, 2vw, 1rem)",
               lineHeight: 1.6,
               marginBottom: "8px",
+              maxWidth: "400px",
             }}
           >
             A critical error occurred. You can try again or refresh the page.
@@ -76,9 +76,9 @@ export default function GlobalError({
           {error.digest && (
             <p
               style={{
+                color: "#525252",
                 fontFamily: "monospace",
                 fontSize: "0.75rem",
-                color: "#525252",
                 marginBottom: "24px",
               }}
             >
@@ -97,14 +97,14 @@ export default function GlobalError({
               className="error-btn"
               onClick={() => reset()}
               style={{
-                padding: "10px 32px",
-                fontSize: "0.875rem",
-                fontWeight: 500,
-                color: "#ededed",
                 backgroundColor: "transparent",
                 border: "1px solid rgba(255, 255, 255, 0.08)",
                 borderRadius: "6px",
+                color: "#ededed",
                 cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                padding: "10px 32px",
                 transition: "background-color 0.2s, box-shadow 0.2s",
               }}
               type="button"
@@ -115,16 +115,16 @@ export default function GlobalError({
             <Link
               href="/"
               style={{
-                padding: "10px 32px",
-                fontSize: "0.875rem",
-                fontWeight: 500,
-                color: "#a3a3a3",
+                alignItems: "center",
                 backgroundColor: "transparent",
                 border: "none",
+                color: "#a3a3a3",
                 cursor: "pointer",
-                textDecoration: "none",
                 display: "flex",
-                alignItems: "center",
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                padding: "10px 32px",
+                textDecoration: "none",
                 transition: "color 0.2s",
               }}
             >

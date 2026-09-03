@@ -17,11 +17,11 @@ const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
-    y: 0,
     transition: {
       duration: 0.4,
       ease: ANIMATION_EASE_CUBIC,
     },
+    y: 0,
   },
 };
 
@@ -29,7 +29,7 @@ const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+    transition: { delayChildren: 0.1, staggerChildren: 0.05 },
   },
 };
 
@@ -434,12 +434,12 @@ function CaseStudyLightbox({
             <span className="sr-only">Close</span>
           </button>
           <m.div
-            animate={{ scale: 1, opacity: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
             className="relative aspect-video w-full max-w-7xl overflow-hidden rounded-lg shadow-2xl"
-            exit={{ scale: 0.9, opacity: 0 }}
-            initial={{ scale: 0.9, opacity: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             onClick={(event) => event.stopPropagation()}
-            transition={{ type: "spring", duration: 0.5 }}
+            transition={{ duration: 0.5, type: "spring" }}
           >
             <Image
               alt="Enlarged gallery view"

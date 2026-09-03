@@ -1,17 +1,13 @@
 import { notFound } from "next/navigation";
 import CaseStudyPage from "@/components/case-study-page";
-import caseStudiesDataJson from "@/data/case-studies.json" with {
-  type: "json",
-};
-import type { CaseStudiesData, CaseStudy } from "@/types/case-study";
-
-const caseStudiesData: CaseStudiesData = caseStudiesDataJson;
+import { getGraft } from "@/lib/graft";
+import { constructMetadata } from "@/lib/metadata";
+import { toCaseStudy } from "@/lib/portfolio";
 
 export async function generateStaticParams() {
-  return Object.keys(caseStudiesData.caseStudies).map((slug) => ({ slug }));
+  const documents = await getGraft().listContent("case-studies");
+  return documents.map((document) => ({ slug: document.slug }));
 }
-
-import { constructMetadata } from "@/lib/metadata";
 
 export async function generateMetadata({
   params,
@@ -19,11 +15,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
+  const document = await getGraft().getContent("case-studies", slug);
 
   return constructMetadata({
-    title: cs ? `${cs.hero.title} - Case Study` : "Case Study Not Found",
-    description: cs?.hero.overview || "Anderson Joseph Case Study",
+    description: document?.data.hero.overview || "Anderson Joseph Case Study",
+    title: document
+      ? `${document.data.hero.title} - Case Study`
+      : "Case Study Not Found",
   });
 }
 
@@ -33,33 +31,29 @@ export default async function CaseStudyPageComponent({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const cs: CaseStudy | undefined = caseStudiesData.caseStudies[slug];
+  const graft = getGraft();
+  const document = await graft.getContent("case-studies", slug);
 
-  if (!cs) {
+  if (!document) {
     notFound();
   }
 
-  const slugs = Object.keys(caseStudiesData.caseStudies);
-  const currentIndex = slugs.indexOf(slug);
-
-  const prevSlug = currentIndex > 0 ? slugs[currentIndex - 1] : undefined;
-  const nextSlug =
-    currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : undefined;
+  const caseStudy = toCaseStudy(document);
+  const studies = await graft.listContent("case-studies");
+  const ordered = studies.toSorted(
+    (left, right) => left.data.order - right.data.order
+  );
+  const currentIndex = ordered.findIndex((entry) => entry.slug === slug);
+  const prev = currentIndex > 0 ? ordered[currentIndex - 1] : undefined;
+  const next =
+    currentIndex !== -1 && currentIndex < ordered.length - 1
+      ? ordered[currentIndex + 1]
+      : undefined;
 
   const navigation = {
-    prev: prevSlug
-      ? {
-          slug: prevSlug,
-          title: caseStudiesData.caseStudies[prevSlug].hero.title,
-        }
-      : undefined,
-    next: nextSlug
-      ? {
-          slug: nextSlug,
-          title: caseStudiesData.caseStudies[nextSlug].hero.title,
-        }
-      : undefined,
+    next: next ? { slug: next.slug, title: next.data.hero.title } : undefined,
+    prev: prev ? { slug: prev.slug, title: prev.data.hero.title } : undefined,
   };
 
-  return <CaseStudyPage caseStudy={cs} navigation={navigation} />;
+  return <CaseStudyPage caseStudy={caseStudy} navigation={navigation} />;
 }

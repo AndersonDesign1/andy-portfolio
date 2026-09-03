@@ -1,8 +1,8 @@
-import { client } from "@andy-portfolio/sanity-config";
 import type { Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import BlogPost from "@/components/blogpost";
+import { getGraft } from "@/lib/graft";
 import { constructMetadata } from "@/lib/metadata";
 
 async function getPost(slug: string) {
@@ -10,33 +10,7 @@ async function getPost(slug: string) {
   cacheLife("days");
   cacheTag("post");
 
-  try {
-    return await client.fetch(
-      `*[_type == "post" && slug.current == $slug][0]{
-        _id,
-        title,
-        slug,
-        excerpt,
-        body,
-        _createdAt,
-        publishedAt,
-        mainImage{
-          asset->,
-          alt,
-          caption
-        },
-        categories[]->{
-          _id,
-          title,
-          slug,
-          description
-        }
-      }`,
-      { slug }
-    );
-  } catch (_error) {
-    return null;
-  }
+  return getGraft().getContent("posts", slug);
 }
 
 export async function generateMetadata({
@@ -49,26 +23,21 @@ export async function generateMetadata({
 
   if (!post) {
     return constructMetadata({
-      title: "Blog Post",
       description: "Read this blog post",
+      title: "Blog Post",
     });
   }
 
   return constructMetadata({
-    title: post.title,
-    description: post.excerpt || "Read this blog post",
+    description:
+      post.data.seoDescription || post.data.excerpt || "Read this blog post",
+    title: post.data.seoTitle || post.data.title,
   });
 }
 
 export async function generateStaticParams() {
-  try {
-    const posts = await client.fetch<{ slug: { current: string } }[]>(
-      `*[_type == "post" && defined(slug.current)]{ slug }`
-    );
-    return posts.map((post) => ({ slug: post.slug.current }));
-  } catch (_error) {
-    return [];
-  }
+  const posts = await getGraft().listContent("posts");
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export default async function BlogPostPage({
@@ -83,5 +52,17 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  return <BlogPost post={post} />;
+  return (
+    <BlogPost
+      post={{
+        body: post.body,
+        data: {
+          categories: post.data.categories,
+          mainImage: post.data.mainImage,
+          publishedAt: post.data.publishedAt,
+          title: post.data.title,
+        },
+      }}
+    />
+  );
 }

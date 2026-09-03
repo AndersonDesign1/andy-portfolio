@@ -12,13 +12,12 @@
   // `next` is dropped: the only Next app, apps/web-next, is excluded below and
   // carries its own nested config.
   "extends": ["ultracite/biome/core", "ultracite/biome/react"],
-  // Root Biome covers only what no app owns: root config files, apps/studio,
-  // and packages/*.
+  // Root Biome covers only what no app owns: root config files and packages/*.
   //
   // - apps/web is formatted by Oxfmt/Oxlint (apps/web/oxfmt.config.ts). Letting
   //   Biome format it too would have the two formatters rewrite each other.
-  // - apps/web-next ships its own biome.jsonc and is excluded from workspaces,
-  //   so its dependencies are not installed.
+  // - apps/web-next ships its own biome.jsonc. Force-ignore so root format
+  //   does not rewrite that tree.
   // - tools/oxlint/anti-slop is vendored from upstream
   //   (github.com/dmmulroy/anti-slop). Reformatting it would make every future
   //   sync from upstream conflict; keep it byte-identical to its source.

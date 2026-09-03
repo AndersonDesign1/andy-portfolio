@@ -14,38 +14,38 @@ export function GET(req: NextRequest) {
     return new ImageResponse(
       <div
         style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
           alignItems: "flex-start",
-          justifyContent: "space-between",
           backgroundColor: "#050505",
           color: "#ededed",
+          display: "flex",
+          flexDirection: "column",
           fontFamily: "sans-serif",
-          position: "relative",
+          height: "100%",
+          justifyContent: "space-between",
           padding: "80px",
+          position: "relative",
+          width: "100%",
         }}
       >
         {/* Content */}
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
             alignItems: "flex-start",
-            justifyContent: "center",
+            display: "flex",
             flex: 1,
-            zIndex: 10,
+            flexDirection: "column",
+            justifyContent: "center",
             maxWidth: "950px",
+            zIndex: 10,
           }}
         >
           <div
             style={{
+              color: "#ededed",
               fontSize: 80,
               fontWeight: 800,
               letterSpacing: "-0.04em",
               lineHeight: 1.1,
-              color: "#ededed",
               marginBottom: 24,
             }}
           >
@@ -53,11 +53,11 @@ export function GET(req: NextRequest) {
           </div>
           <div
             style={{
+              color: "#a3a3a3",
               fontSize: 32,
               fontWeight: 400,
               letterSpacing: "-0.02em",
               lineHeight: 1.4,
-              color: "#a3a3a3",
               maxWidth: "800px",
             }}
           >
@@ -67,8 +67,8 @@ export function GET(req: NextRequest) {
 
         <div
           style={{
-            display: "flex",
             alignItems: "center",
+            display: "flex",
             justifyContent: "flex-end",
             width: "100%",
             zIndex: 10,
@@ -76,8 +76,8 @@ export function GET(req: NextRequest) {
         >
           <div
             style={{
-              fontSize: 24,
               color: "#737373",
+              fontSize: 24,
             }}
           >
             andersonjoseph.com
@@ -85,8 +85,8 @@ export function GET(req: NextRequest) {
         </div>
       </div>,
       {
-        width: 1200,
         height: 630,
+        width: 1200,
       }
     );
   } catch (_e) {

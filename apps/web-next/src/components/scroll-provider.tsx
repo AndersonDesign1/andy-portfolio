@@ -88,12 +88,12 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
             1,
             SCROLL_EASING_CONSTANT - 2 ** (SCROLL_EASING_EXPONENT * t)
           ),
-        orientation: "vertical",
         gestureOrientation: "vertical",
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.6,
         infinite: false,
+        orientation: "vertical",
+        smoothWheel: true,
+        touchMultiplier: 1.6,
+        wheelMultiplier: 1,
       });
 
       syncLenis(lenisInstance);

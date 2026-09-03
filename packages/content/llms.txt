@@ -1,0 +1,33 @@
+# Graft project — agent guide (shared CMS)
+
+Everything is code. Content lives in MDX files; git is authoritative; the
+content index is derived. If they disagree, git wins — recompile.
+
+This package (`@andy-portfolio/content`) is the CMS for **both** site
+versions: Astro (`apps/web`, live) and Next (`apps/web-next`, local archive).
+
+- Schema: graft.config.ts (`posts`, `projects`, `case-studies`). The single
+  source of truth.
+- Documents:
+  - content/posts/<slug>.mdx — blog bodies
+  - content/projects/<slug>.mdx — frontmatter only; listed on / and /projects
+  - content/case-studies/<slug>.mdx — frontmatter only; rendered at
+    /case-studies/<slug>
+- Images: blog assets under each app's public/blog/<slug>/; project and
+  case-study images are existing public-root paths (e.g. /welup-main.png).
+- Slugs are kebab-case; a frontmatter `slug:` overrides the filename.
+- Project into the index: `bun run --filter=@andy-portfolio/content compile`
+  (one-shot) or `graft:dev` (watch mode).
+- This project uses the **static index** (`index = "static"` in graft.config):
+  compile writes .graft/index.db — a SQLite artifact. No database, no env vars.
+- The artifact is derived, so it is git-ignored. Dev and Vercel build compile
+  this package first, then build the app.
+- Astro reads with `getGraft()` in apps/web/src/lib/graft.ts and renders blog
+  bodies through Astro content collections + `@astrojs/mdx`.
+- Next reads with `getGraft()` in apps/web-next/src/lib/graft.ts and renders
+  blog bodies with `@usegraft/sdk-next` `MdxBody`.
+- Branches here are just **git branches**: each checkout compiles its own artifact.
+- Studio, operational data, typed functions, and database branching need the
+  Postgres tier. Adding one fails with NEEDS_DATABASE.
+- Primitives: `graft add <item>` lands under graft/. Run `graft add` to list.
+- Every Graft error carries a `fix` — do what it says, then retry.

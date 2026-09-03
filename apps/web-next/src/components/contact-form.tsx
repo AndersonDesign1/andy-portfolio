@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { EMAIL_REGEX } from "@/lib/constants";
 
-const initialForm = { name: "", email: "", subject: "", message: "" };
+const initialForm = { email: "", message: "", name: "", subject: "" };
 
 export default function ContactForm() {
   const [form, setForm] = useState(initialForm);
@@ -130,28 +130,28 @@ export default function ContactForm() {
             </div>
             {[
               {
+                error: errors.name,
                 label: "Name",
                 name: "name",
+                placeholder: "John Doe",
                 type: "text",
                 value: form.name,
-                error: errors.name,
-                placeholder: "John Doe",
               },
               {
+                error: errors.email,
                 label: "Email",
                 name: "email",
+                placeholder: "john@example.com",
                 type: "email",
                 value: form.email,
-                error: errors.email,
-                placeholder: "john@example.com",
               },
               {
+                error: undefined,
                 label: "Subject",
                 name: "subject",
+                placeholder: "Project Inquiry",
                 type: "text",
                 value: form.subject,
-                error: undefined,
-                placeholder: "Project Inquiry",
               },
             ].map((field) => (
               <div className="flex flex-col gap-2" key={field.name}>

@@ -1,78 +1,73 @@
 export interface CaseStudy {
-  id: string;
-  hero: {
-    title: string;
-    client: string;
-    duration: string;
-    overview: string;
-    heroImage: string;
-    technologies: string[];
-    liveUrl?: string;
+  approach: {
+    collaboration: string;
+    iterations: string[];
+    keyDecisions: {
+      decision: string;
+      rationale: string;
+    }[];
+    methodology: string;
+    phases: {
+      activities: string[];
+      duration: string;
+      name: string;
+    }[];
+    research: string[];
+    userFeedback: string;
+    wireframes?: string[];
   };
   challenge: {
-    problem: string;
     constraints: string[];
     context: string;
     metrics: string[];
+    problem: string;
+  };
+  gallery: {
+    images: {
+      alt: string;
+      src: string;
+      title: string;
+    }[];
   };
   goals: {
     primary: string[];
     stakeholder: string[];
     success: string[];
   };
-  approach: {
-    methodology: string;
-    phases: Array<{
-      name: string;
-      duration: string;
-      activities: string[];
-    }>;
-    keyDecisions: Array<{
-      decision: string;
-      rationale: string;
-    }>;
-    research: string[];
-    wireframes?: string[];
-    collaboration: string;
-    iterations: string[];
-    userFeedback: string;
+  hero: {
+    client: string;
+    duration: string;
+    heroImage: string;
+    liveUrl?: string;
+    overview: string;
+    technologies: string[];
+    title: string;
   };
   results: {
-    beforeAfter: Array<{
-      metric: string;
-      before: string;
-      after: string;
-      improvement: string;
-    }>;
-    metrics: string[];
-    testimonials?: Array<{
-      name: string;
-      role: string;
-      quote: string;
-    }>;
-    deliverables: string[];
     achievements: string[];
-  };
-  gallery: {
-    images: Array<{
-      src: string;
-      alt: string;
-      title: string;
-    }>;
+    beforeAfter: {
+      after: string;
+      before: string;
+      improvement: string;
+      metric: string;
+    }[];
+    deliverables: string[];
+    metrics: string[];
+    testimonials?: {
+      name: string;
+      quote: string;
+      role: string;
+    }[];
   };
 }
 
 export interface CaseStudyNavigation {
-  prev?: {
-    slug: string;
-    title: string;
-  };
   next?: {
     slug: string;
     title: string;
   };
-}
-
-export interface CaseStudiesData {
-  caseStudies: Record<string, CaseStudy>;
+  prev?: {
+    slug: string;
+    title: string;
+  };
 }
