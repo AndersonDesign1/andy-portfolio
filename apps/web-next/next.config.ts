@@ -4,6 +4,8 @@ import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // agent-browser and some tools hit 127.0.0.1 while `next dev` binds localhost.
+  allowedDevOrigins: ["127.0.0.1"],
   cacheComponents: true,
   compress: true,
   experimental: {
