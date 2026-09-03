@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./graft.config.ts",
+    "./package.json": "./package.json",
     "./paths": "./src/paths.ts"
   },
   "scripts": {
