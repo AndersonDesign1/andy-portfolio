@@ -1,8 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => new Resend(getResendEnv().RESEND_API_KEY);
 
 interface EmailReceivedEvent {
   created_at: string;
@@ -33,6 +34,7 @@ interface AttachmentWithUrl {
 
 // Helper: Fetch and download attachments
 async function fetchAttachments(
+  resend: Resend,
   emailId: string
 ): Promise<Array<{ filename: string; content: string }>> {
   const attachments: Array<{ filename: string; content: string }> = [];
@@ -82,6 +84,7 @@ function buildForwardedHtml(
 
 export async function POST(request: NextRequest) {
   try {
+    const resend = getResend();
     const body = await request.text();
 
     // Verify webhook signature (if secret is configured)
@@ -136,7 +139,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch attachments
-    const attachments = await fetchAttachments(email_id);
+    const attachments = await fetchAttachments(resend, email_id);
 
     // Forward the email
     const { error } = await resend.emails.send({

@@ -1,32 +1,46 @@
 import { z } from "zod";
 
-const envSchema = z.object({
-  CONTACT_EMAIL: z.email().optional(),
+const optionalEmail = z.preprocess((value) => {
+  const parsed = z.string().optional().safeParse(value);
+  if (!(parsed.success && parsed.data)) {
+    return;
+  }
+  const trimmed = parsed.data.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}, z.email().optional());
 
-  NODE_ENV: z
-    .enum(["development", "production", "test"]) // pragma: allowlist secret
-    .default("development"),
+const readEnv = (key: string): string | undefined => {
+  const raw = process.env[key];
+  const parsed = z.string().optional().safeParse(raw);
+  if (!(parsed.success && parsed.data)) {
+    return undefined;
+  }
+  const trimmed = parsed.data.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+};
 
-  RESEND_API_KEY: z.string().min(1, "Resend API Key is required"),
-  SPOTIFY_CLIENT_ID: z.string().min(1, "Spotify Client ID is required"),
-  SPOTIFY_CLIENT_SECRET: z.string().min(1, "Spotify Client Secret is required"),
-  SPOTIFY_REFRESH_TOKEN: z.string().min(1, "Spotify Refresh Token is required"),
+const spotifyEnvSchema = z.object({
+  SPOTIFY_CLIENT_ID: z.string().min(1),
+  SPOTIFY_CLIENT_SECRET: z.string().min(1),
+  SPOTIFY_REFRESH_TOKEN: z.string().min(1),
 });
 
-function validateEnv() {
-  try {
-    return envSchema.parse(process.env);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const missingVars = error.issues.map(
-        (err) => `${err.path.join(".")}: ${err.message}`
-      );
-      throw new Error(
-        `Environment validation failed:\n${missingVars.join("\n")}`
-      );
-    }
-    throw error;
-  }
-}
+const resendEnvSchema = z.object({
+  CONTACT_EMAIL: optionalEmail,
+  RESEND_API_KEY: z.string().min(1),
+});
 
-export const env = validateEnv();
+/** Spotify API routes — parse on request, not at import (CI has no secrets). */
+export const getSpotifyEnv = () =>
+  spotifyEnvSchema.parse({
+    SPOTIFY_CLIENT_ID: readEnv("SPOTIFY_CLIENT_ID"),
+    SPOTIFY_CLIENT_SECRET: readEnv("SPOTIFY_CLIENT_SECRET"),
+    SPOTIFY_REFRESH_TOKEN: readEnv("SPOTIFY_REFRESH_TOKEN"),
+  });
+
+/** Contact action + giveaway mailers. */
+export const getResendEnv = () =>
+  resendEnvSchema.parse({
+    CONTACT_EMAIL: readEnv("CONTACT_EMAIL"),
+    RESEND_API_KEY: readEnv("RESEND_API_KEY"),
+  });

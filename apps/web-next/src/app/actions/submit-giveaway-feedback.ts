@@ -2,9 +2,9 @@
 
 import { Resend } from "resend";
 import { z } from "zod";
-import { env } from "@/lib/env";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(env.RESEND_API_KEY);
+const getResend = () => new Resend(getResendEnv().RESEND_API_KEY);
 
 function escapeHtml(text: string): string {
   const map: Record<string, string> = {
@@ -79,6 +79,7 @@ export async function submitGiveawayFeedback(formData: FormData) {
   const safeBenefits = escapeHtml(benefits).replace(/\n/g, "<br/>");
 
   try {
+    const resend = getResend();
     await resend.emails.send({
       from: "Giveaway Feedback <giveaway@andersonjoseph.com>",
       html: `

@@ -1,20 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { env } from "@/lib/env";
+import { getSpotifyEnv } from "@/lib/env";
 
 const HTTP_STATUS_NO_CONTENT = 204;
 const HTTP_STATUS_BAD_REQUEST = 400;
-
-const client_id = env.SPOTIFY_CLIENT_ID;
-const client_secret = env.SPOTIFY_CLIENT_SECRET;
-const refresh_token = env.SPOTIFY_REFRESH_TOKEN;
-
-const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
+const IDLE_PAYLOAD = { isPlaying: false } as const;
 
 async function getAccessToken() {
+  const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } =
+    getSpotifyEnv();
+  const basic = Buffer.from(
+    `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
+  ).toString("base64");
   const response = await fetch("https://accounts.spotify.com/api/token", {
     body: new URLSearchParams({
       grant_type: "refresh_token",
-      refresh_token,
+      refresh_token: SPOTIFY_REFRESH_TOKEN,
     }),
     headers: {
       Authorization: `Basic ${basic}`,
@@ -26,6 +26,12 @@ async function getAccessToken() {
 }
 
 export async function GET(_req: NextRequest) {
+  try {
+    getSpotifyEnv();
+  } catch {
+    return NextResponse.json(IDLE_PAYLOAD);
+  }
+
   const { access_token } = await getAccessToken();
 
   let res = await fetch(

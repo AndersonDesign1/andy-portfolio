@@ -3,9 +3,9 @@
 import { Resend } from "resend";
 import { z } from "zod";
 import GiveawayFeedback from "@/emails/giveaway-feedback";
-import { env } from "@/lib/env";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(env.RESEND_API_KEY);
+const getResend = () => new Resend(getResendEnv().RESEND_API_KEY);
 
 const WORD_COUNT_REGEX = /\s+/;
 
@@ -80,6 +80,7 @@ export async function submitGiveawayEntry(
   const safeDescription = escapeHtml(description).replace(/\n/g, "<br/>");
 
   try {
+    const resend = getResend();
     // Send notification to you
     await resend.emails.send({
       from: "Giveaway <giveaway@andersonjoseph.com>",

@@ -4,9 +4,9 @@ import { Resend } from "resend";
 // import giveawayData from "@/data/giveaway-results.json";
 import { GiveawayConsolationEmail } from "@/emails/giveaway-consolation";
 import { GiveawayWinnerEmail } from "@/emails/giveaway-winner";
-import { env } from "@/lib/env";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(env.RESEND_API_KEY);
+const getResend = () => new Resend(getResendEnv().RESEND_API_KEY);
 
 interface Participant {
   category: string;
@@ -27,6 +27,7 @@ export async function sendGiveawayNotifications(testEmail?: string): Promise<{
   const consolation = participants.filter((p) => p.category === "Disqualified");
 
   try {
+    const resend = getResend();
     if (testEmail) {
       // Send one of each to the test email
       await resend.emails.send({

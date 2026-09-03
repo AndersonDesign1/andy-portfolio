@@ -3,9 +3,8 @@
 import { checkBotId } from "botid/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { env } from "@/lib/env";
+import { getResendEnv } from "@/lib/env";
 
-const resend = new Resend(env.RESEND_API_KEY);
 const BLOCKED_SUBMISSION_MESSAGE =
   "We couldn't send your message. Please try again later.";
 
@@ -103,6 +102,8 @@ export async function sendEmail(
   const safeMessage = escapeHtml(message).replace(/\n/g, "<br/>");
 
   try {
+    const { CONTACT_EMAIL, RESEND_API_KEY } = getResendEnv();
+    const resend = new Resend(RESEND_API_KEY);
     await resend.emails.send({
       from: "Contact Form <contact@andersonjoseph.com>",
       html: `
@@ -114,7 +115,7 @@ export async function sendEmail(
       `,
       replyTo: email,
       subject: safeSubject,
-      to: [env.CONTACT_EMAIL ?? "josanderson25@gmail.com"],
+      to: [CONTACT_EMAIL ?? "josanderson25@gmail.com"],
     });
     return {
       message: "Message sent! I'll get back to you soon.",
