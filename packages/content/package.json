@@ -13,9 +13,9 @@
     "graft:dev": "graft dev"
   },
   "dependencies": {
-    "@usegraft/core": "^1.0.0-beta.0"
+    "@usegraft/core": "1.0.0-beta.7"
   },
   "devDependencies": {
-    "@usegraft/cli": "^1.0.0-beta.0"
+    "@usegraft/cli": "1.0.0-beta.7"
   }
 }
