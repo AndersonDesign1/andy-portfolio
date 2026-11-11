@@ -3,7 +3,7 @@
 import { AnimatePresence, m } from "motion/react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import useSWR from "swr";
-import { z } from "zod";
+import * as z from "zod/mini";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,35 +11,36 @@ import {
   SPOTIFY_POLLING_INTERVAL_PLAYING,
 } from "@/lib/constants";
 
+// zod/mini keeps this client island small; the schema only needs basic shapes.
 const spotifyTrackSchema = z.object({
-  album: z
-    .object({
-      images: z
-        .array(
+  album: z.optional(
+    z.object({
+      images: z.optional(
+        z.array(
           z.object({
-            url: z.string().optional(),
+            url: z.optional(z.string()),
           })
         )
-        .optional(),
-      name: z.string().optional(),
-      release_date: z.string().optional(),
+      ),
+      name: z.optional(z.string()),
+      release_date: z.optional(z.string()),
     })
-    .optional(),
-  albumArtUrl: z.string().nullable().optional(),
-  artists: z
-    .array(
+  ),
+  albumArtUrl: z.optional(z.nullable(z.string())),
+  artists: z.optional(
+    z.array(
       z.object({
-        name: z.string().optional(),
+        name: z.optional(z.string()),
       })
     )
-    .optional(),
-  external_urls: z
-    .object({
-      spotify: z.string().optional(),
+  ),
+  external_urls: z.optional(
+    z.object({
+      spotify: z.optional(z.string()),
     })
-    .optional(),
-  isPlaying: z.boolean().optional(),
-  name: z.string().min(1),
+  ),
+  isPlaying: z.optional(z.boolean()),
+  name: z.string().check(z.minLength(1)),
 });
 
 type SpotifyTrack = z.infer<typeof spotifyTrackSchema>;

@@ -7,7 +7,7 @@ Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 | App | Path | Dev port | Role |
 | --- | --- | --- | --- |
 | Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` — live on Vercel |
-| Web (archive) | `apps/web-next` | `3001` | Next.js 16.3 — workspace, local only, same Graft CMS |
+| Web (archive) | `apps/web-next` | `3001` | Next.js 16.4 — workspace, local only, same Graft CMS |
 | Shared CMS | `packages/content` | — | Graft schema + MDX for both apps |
 
 ### Package manager
@@ -36,6 +36,7 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 - **BotID (Astro ≠ Next):** client `initBotId` must protect `POST /_actions/sendEmail` (Astro Actions RPC), **not** `POST /contact` (that was Next Server Actions). `apps/web/vercel.json` must include the BotID challenge/proxy rewrites from the botid “Other Frameworks” docs. Do **not** recreate the BotID project for this — path + rewrites are enough.
 - Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
 - Env: Spotify / Resend / BotID live on the Astro app. Graft needs no env. Copy secrets into **app** `.env` / `.env.local` (and root `.env.local`); restart after changes.
+- **Held-back upgrades (bundle size):** `react`/`react-dom` stay on **19.2.x** (19.3 adds ~8 KB gzip to every page) and `motion` stays on **13.x** (14 adds ~5 KB gzip to the shared `react` chunk) until those are re-measured. Client islands should import `zod/mini` (see `spotify-now-playing.tsx`), not full `zod`, which grew ~6.7 KB gzip in 4.6.
 - Spotify/email Zod validation: `apps/web/src/lib/env.ts` (reads `import.meta.env` and `process.env`).
 - **Spotify OAuth (refresh token mint):** visit `/api/spotify/authorize` → callback `/api/spotify/callback`. Legacy `/callback` redirects there. Spotify Developer Dashboard redirect URIs must match the **exact** origin (add **www** and apex if both exist): `https://www.andersonjoseph.com/api/spotify/callback`, `https://andersonjoseph.com/api/spotify/callback`, `http://127.0.0.1:3000/api/spotify/callback`. No need to delete/recreate the Spotify app — only add missing URIs and rotate `SPOTIFY_REFRESH_TOKEN` in Vercel after authorize.
 - Blog freshness is **git push → Vercel rebuild**. There is no revalidate webhook.
@@ -46,7 +47,7 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 
 Next is a **workspace** so `bun dev` / `bun lint` / `bun build` include it. It is **not deployed** — Vercel Root Directory stays `apps/web`.
 
-- Next **16.3.0** with `cacheComponents: true` and `partialPrefetching: true`.
+- Next **16.4.6** with `cacheComponents: true` and `partialPrefetching: true`.
 - Blog / projects / case studies read the shared Graft index (`@usegraft/sdk-next`, `MdxBody` for post bodies).
 - Nested `biome.jsonc` is **`"root": true`**. `root: false` walks up to the repo Biome config, whose `!!apps/web-next/**` force-ignore then lints zero files. Root Biome still **force-ignores** `!!apps/web-next/**` so `bun run format` does not rewrite the archive. Align `@biomejs/biome` with root **2.5.9**.
 
