@@ -1,7 +1,11 @@
 {
-  "$schema": "https://turbo.build/schema.json",
+  "$schema": "https://turborepo.dev/schema.json",
+  "agentGuidance": true,
+  "cacheMaxAge": "14d",
+  "cacheMaxSize": "2GB",
   "tasks": {
     "build": {
+      "description": "Compiles the Graft content index and builds each app for production",
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
@@ -13,19 +17,24 @@
       ]
     },
     "dev": {
+      "description": "Runs the Astro (3000) and Next archive (3001) dev servers",
       "cache": false,
       "persistent": true
     },
     "lint": {
+      "description": "Checks formatting and lint rules (Oxlint/Oxfmt for web, Biome for web-next)",
       "dependsOn": ["^lint"]
     },
     "lint:fix": {
+      "description": "Applies lint and format autofixes",
       "dependsOn": ["^lint:fix"]
     },
     "typecheck": {
+      "description": "Type-checks each app (astro check / tsc --noEmit)",
       "dependsOn": ["^typecheck"]
     },
     "deploy": {
+      "description": "Builds, then deploys",
       "dependsOn": ["build"],
       "cache": false
     }
