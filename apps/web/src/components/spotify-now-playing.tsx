@@ -3,7 +3,16 @@
 import { AnimatePresence, m } from "motion/react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import useSWR from "swr";
-import * as z from "zod/mini";
+import {
+  array,
+  boolean,
+  minLength,
+  nullable,
+  object,
+  optional,
+  string,
+} from "zod/mini";
+import type { infer as Infer } from "zod/mini";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,38 +21,38 @@ import {
 } from "@/lib/constants";
 
 // zod/mini keeps this client island small; the schema only needs basic shapes.
-const spotifyTrackSchema = z.object({
-  album: z.optional(
-    z.object({
-      images: z.optional(
-        z.array(
-          z.object({
-            url: z.optional(z.string()),
+const spotifyTrackSchema = object({
+  album: optional(
+    object({
+      images: optional(
+        array(
+          object({
+            url: optional(string()),
           })
         )
       ),
-      name: z.optional(z.string()),
-      release_date: z.optional(z.string()),
+      name: optional(string()),
+      release_date: optional(string()),
     })
   ),
-  albumArtUrl: z.optional(z.nullable(z.string())),
-  artists: z.optional(
-    z.array(
-      z.object({
-        name: z.optional(z.string()),
+  albumArtUrl: optional(nullable(string())),
+  artists: optional(
+    array(
+      object({
+        name: optional(string()),
       })
     )
   ),
-  external_urls: z.optional(
-    z.object({
-      spotify: z.optional(z.string()),
+  external_urls: optional(
+    object({
+      spotify: optional(string()),
     })
   ),
-  isPlaying: z.optional(z.boolean()),
-  name: z.string().check(z.minLength(1)),
+  isPlaying: optional(boolean()),
+  name: string().check(minLength(1)),
 });
 
-type SpotifyTrack = z.infer<typeof spotifyTrackSchema>;
+type SpotifyTrack = Infer<typeof spotifyTrackSchema>;
 
 const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
   const res = await fetch(url, { cache: "no-store" });
