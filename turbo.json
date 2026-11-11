@@ -34,7 +34,6 @@
       "dependsOn": ["^typecheck"]
     },
     "deploy": {
-      "description": "Builds, then deploys",
       "dependsOn": ["build"],
       "cache": false
     }

@@ -7,7 +7,7 @@ Personal portfolio and blog. Bun + Turbo monorepo with **two site versions** and
 | Version | Path | Port | Role |
 | --- | --- | --- | --- |
 | **Astro 7** | `apps/web` | 3000 | Live site on Vercel |
-| **Next.js 16.3** | `apps/web-next` | 3001 | Local archive — same Graft content, not deployed |
+| **Next.js 16.4** | `apps/web-next` | 3001 | Local archive — same Graft content, not deployed |
 
 `bun dev` starts both. Vercel Root Directory is `apps/web`; do not add a Vercel project for Next.
 
@@ -15,7 +15,7 @@ Personal portfolio and blog. Bun + Turbo monorepo with **two site versions** and
 
 - **Monorepo**: [Turbo](https://turbo.build/) + [Bun](https://bun.sh/) `1.4.0`
 - **Web (live)**: [Astro 7](https://astro.build/) + React islands + `@astrojs/vercel`
-- **Web (archive)**: [Next.js 16.3](https://nextjs.org/) — workspace, local only
+- **Web (archive)**: [Next.js 16.4](https://nextjs.org/) — workspace, local only
 - **CMS**: [Graft](https://graft.page) static index in `packages/content` (`content/{posts,projects,case-studies}/`)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + shadcn-style primitives
 - **Motion**: [Motion](https://motion.dev/) + [Lenis](https://github.com/darkroomengineering/lenis)
@@ -27,7 +27,7 @@ Personal portfolio and blog. Bun + Turbo monorepo with **two site versions** and
 ```text
 ├── apps/
 │   ├── web/           # Astro 7 live site (port 3000)
-│   └── web-next/      # Next.js 16.3 archive (port 3001, not deployed)
+│   └── web-next/      # Next.js 16.4 archive (port 3001, not deployed)
 ├── packages/
 │   └── content/       # Shared Graft CMS (schema + MDX)
 ├── tools/

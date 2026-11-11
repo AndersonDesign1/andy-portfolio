@@ -1,6 +1,6 @@
 # `@andy-portfolio/web-next`
 
-Next.js 16.3 archive of the portfolio. Same Graft CMS as the live Astro site. **Local only** — not deployed.
+Next.js 16.4 archive of the portfolio. Same Graft CMS as the live Astro site. **Local only** — not deployed.
 
 ## Features
 
@@ -39,4 +39,4 @@ Required in root `.env.local` (same as Astro; no CMS secrets):
 
 ## Stack
 
-- Next.js 16.3, Tailwind 4, shadcn/ui, Zod, `@usegraft/sdk-next`.
+- Next.js 16.4, Tailwind 4, shadcn/ui, Zod, `@usegraft/sdk-next`.
