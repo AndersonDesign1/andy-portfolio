@@ -3,7 +3,16 @@
 import { AnimatePresence, m } from "motion/react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import useSWR from "swr";
-import { z } from "zod";
+import {
+  array,
+  boolean,
+  minLength,
+  nullable,
+  object,
+  optional,
+  string,
+} from "zod/mini";
+import type { infer as Infer } from "zod/mini";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,38 +20,39 @@ import {
   SPOTIFY_POLLING_INTERVAL_PLAYING,
 } from "@/lib/constants";
 
-const spotifyTrackSchema = z.object({
-  album: z
-    .object({
-      images: z
-        .array(
-          z.object({
-            url: z.string().optional(),
+// zod/mini keeps this client island small; the schema only needs basic shapes.
+const spotifyTrackSchema = object({
+  album: optional(
+    object({
+      images: optional(
+        array(
+          object({
+            url: optional(string()),
           })
         )
-        .optional(),
-      name: z.string().optional(),
-      release_date: z.string().optional(),
+      ),
+      name: optional(string()),
+      release_date: optional(string()),
     })
-    .optional(),
-  albumArtUrl: z.string().nullable().optional(),
-  artists: z
-    .array(
-      z.object({
-        name: z.string().optional(),
+  ),
+  albumArtUrl: optional(nullable(string())),
+  artists: optional(
+    array(
+      object({
+        name: optional(string()),
       })
     )
-    .optional(),
-  external_urls: z
-    .object({
-      spotify: z.string().optional(),
+  ),
+  external_urls: optional(
+    object({
+      spotify: optional(string()),
     })
-    .optional(),
-  isPlaying: z.boolean().optional(),
-  name: z.string().min(1),
+  ),
+  isPlaying: optional(boolean()),
+  name: string().check(minLength(1)),
 });
 
-type SpotifyTrack = z.infer<typeof spotifyTrackSchema>;
+type SpotifyTrack = Infer<typeof spotifyTrackSchema>;
 
 const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
   const res = await fetch(url, { cache: "no-store" });
