@@ -29,7 +29,8 @@ const actionClass =
 
 <section class="bg-primary relative flex min-h-[85vh] items-end pt-40 pb-20 md:pt-48 md:pb-32">
   <div class="mx-auto w-full max-w-screen-lg px-6 md:px-12">
-    <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-16">
+     <div class="flex flex-col gap-8">
       <p
         aria-hidden="true"
         class="hero-title text-primary -ml-[0.05em] text-[7rem] leading-[0.9] font-bold tracking-tighter select-none md:text-[12rem] lg:text-[16rem]"
@@ -42,18 +43,20 @@ const actionClass =
       </p>
 
       <div class="flex flex-col justify-between gap-12 pt-4 md:flex-row md:items-end md:pt-8">
-        <div class="hero-subtitle flex max-w-md flex-col gap-4">
-          <h1 class="text-primary text-3xl leading-tight font-bold tracking-tighter md:text-4xl">
-            {error.title}
-          </h1>
-          <p class="text-secondary text-lg leading-relaxed md:text-xl">
-            {description ?? error.description}
-          </p>
+        <div class="hero-subtitle flex max-w-md flex-col gap-6">
+          <div class="flex flex-col gap-4">
+            <h1 class="text-primary text-3xl leading-tight font-bold tracking-tighter md:text-4xl">
+              {error.title}
+            </h1>
+            <p class="text-secondary text-lg leading-relaxed md:text-xl">
+              {description ?? error.description}
+            </p>
+          </div>
 
           {
             showPath && (
               <div
-                class="mt-2 hidden flex-col gap-2 font-mono text-xs"
+                class="hidden flex-col gap-2 font-mono text-xs"
                 data-error-path
               >
                 <p class="text-secondary tracking-widest uppercase">
@@ -63,11 +66,10 @@ const actionClass =
                 <p class="text-secondary hidden" data-error-suggestion>
                   Did you mean{" "}
                   <a
-                    class="text-primary underline underline-offset-4 hover:opacity-70"
+                    class="text-primary relative touch-manipulation underline underline-offset-4 before:absolute before:-inset-x-2 before:-inset-y-4 hover:opacity-70"
                     data-error-suggestion-link
                     href="/"
                   />
-                  ?
                 </p>
               </div>
             )
@@ -101,16 +103,17 @@ const actionClass =
           }
         </div>
       </div>
+     </div>
 
       <nav
         aria-label="Other pages"
-        class="border-subtle mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 border-t pt-8 font-mono text-xs tracking-widest uppercase"
+        class="border-subtle flex flex-wrap items-center gap-x-8 border-t pt-8 font-mono text-xs tracking-widest uppercase"
       >
-        <span class="text-muted">Try instead</span>
+        <span class="text-muted inline-flex min-h-11 items-center">Try instead</span>
         {
           quickLinks.map(({ href, label }) => (
             <a
-              class="text-secondary hover:text-primary transition-colors duration-200"
+              class="text-secondary hover:text-primary inline-flex min-h-11 touch-manipulation items-center transition-colors duration-200"
               href={href}
             >
               {label}

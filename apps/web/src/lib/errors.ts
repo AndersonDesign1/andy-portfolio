@@ -114,8 +114,9 @@ const isKnownStatus = (status: number): status is keyof typeof KNOWN_ERRORS =>
 
 /**
  * Turns an HTTP status code into human copy and a visual tone.
- * Unknown 4xx codes fall back to a generic client message, anything else
- * to a generic server message, so callers never need to guard the input.
+ * Unknown codes below 500 fall back to a generic client message, and
+ * codes from 500 up to a generic server message, so callers never need to
+ * guard the input.
  */
 export const interpretError = (status: number): ErrorInfo => {
   if (isKnownStatus(status)) {
