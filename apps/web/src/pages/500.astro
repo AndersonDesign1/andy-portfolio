@@ -1,0 +1,12 @@
+---
+import ErrorPage from "../components/error-page.astro";
+import BaseLayout from "../layouts/base-layout.astro";
+---
+
+<BaseLayout
+  description="Something went wrong on Anderson Joseph's site."
+  noindex
+  title="500 | Something went wrong"
+>
+  <ErrorPage status={500} />
+</BaseLayout>

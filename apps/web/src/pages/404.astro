@@ -1,0 +1,12 @@
+---
+import ErrorPage from "../components/error-page.astro";
+import BaseLayout from "../layouts/base-layout.astro";
+---
+
+<BaseLayout
+  description="That page doesn't exist on Anderson Joseph's site."
+  noindex
+  title="404 | Page not found"
+>
+  <ErrorPage showPath status={404} />
+</BaseLayout>
