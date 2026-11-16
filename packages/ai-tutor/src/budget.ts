@@ -1,6 +1,6 @@
 import type { Provider } from "./models.ts";
 
-/** Monthly spend caps in USD. A provider at or over its cap is skipped. */
+/** Monthly spend caps in USD. A provider that cannot fit a reservation is skipped. */
 export type BudgetCaps = Record<Provider, number>;
 
 /**
@@ -10,11 +10,32 @@ export type BudgetCaps = Record<Provider, number>;
 export const DEFAULT_CAPS: BudgetCaps = { neon: 4, openrouter: 5 };
 
 /**
- * Where spend is recorded. Serverless instances don't share memory, so
- * production uses PostgresBudgetStore (one row per provider per month).
+ * Where spend is recorded. The tutor reserves an attempt's worst-case cost
+ * before calling a provider and settles to the real cost afterwards, so
+ * concurrent replies cannot overshoot a cap. Serverless instances don't share
+ * memory, so production uses PostgresBudgetStore (one row per provider per month).
  */
 export interface BudgetStore {
+  /** Total recorded for the period, including open reservations. */
   spent: (provider: Provider, period: string) => Promise<number>;
+  /**
+   * Atomically add `usd` if the total stays at or under `cap`.
+   * Returns false, changing nothing, when it would not fit.
+   */
+  reserve: (
+    provider: Provider,
+    period: string,
+    usd: number,
+    cap: number
+  ) => Promise<boolean>;
+  /** Replace a reservation with the real cost of the attempt (0 if nothing was billed). */
+  settle: (
+    provider: Provider,
+    period: string,
+    reservedUsd: number,
+    actualUsd: number
+  ) => Promise<void>;
+  /** Unconditionally add spend (used to seed tests or record external charges). */
   add: (provider: Provider, period: string, usd: number) => Promise<void>;
 }
 
@@ -23,6 +44,33 @@ export class MemoryBudgetStore implements BudgetStore {
 
   spent(provider: Provider, period: string): Promise<number> {
     return Promise.resolve(this.#totals.get(`${provider}:${period}`) ?? 0);
+  }
+
+  reserve(
+    provider: Provider,
+    period: string,
+    usd: number,
+    cap: number
+  ): Promise<boolean> {
+    const key = `${provider}:${period}`;
+    const next = (this.#totals.get(key) ?? 0) + usd;
+
+    if (next > cap) {
+      return Promise.resolve(false);
+    }
+
+    this.#totals.set(key, next);
+
+    return Promise.resolve(true);
+  }
+
+  settle(
+    provider: Provider,
+    period: string,
+    reservedUsd: number,
+    actualUsd: number
+  ): Promise<void> {
+    return this.add(provider, period, actualUsd - reservedUsd);
   }
 
   add(provider: Provider, period: string, usd: number): Promise<void> {

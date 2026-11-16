@@ -147,6 +147,20 @@ const selected = filter
   ? VARIANTS.filter((v) => v.label.includes(filter))
   : VARIANTS;
 
+if (selected.length === 0) {
+  console.error(
+    `No variant matches "${filter}". Options: ${VARIANTS.map((v) => v.label).join(", ")}`
+  );
+  process.exit(1);
+}
+
+/**
+ * Broken runs fail the command: a provider error, or a reply cut off at the
+ * token limit. Word counts, emojis and leaks are scores for comparing models,
+ * reported in the table rather than failing it.
+ */
+let failures = 0;
+
 const settled = await Promise.allSettled(selected.map(runVariant));
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -167,6 +181,7 @@ settled.forEach((result, i) => {
         ? result.reason.message
         : String(result.reason);
 
+    failures += 1;
     rows.push(`✗ ${variant.label}: ${msg}`);
     markdown += `## ${variant.label}\n\nFAILED: ${msg}\n\n`;
 
@@ -174,6 +189,12 @@ settled.forEach((result, i) => {
   }
 
   const turns = result.value.flatMap((c) => c.turns);
+
+  const cutOff = turns.filter(
+    (t) => t.reply.done.finishReason === "length"
+  ).length;
+
+  failures += cutOff;
 
   const homeworkTurns = result.value
     .filter((c) => c.conversation.homework)
@@ -190,7 +211,7 @@ settled.forEach((result, i) => {
       `${turns.filter((t) => t.checks.words > 150).length} over 150w`,
       `${sum(turns.map((t) => t.checks.emojis))} emojis`,
       `leaks ${homeworkTurns.filter((t) => t.checks.leak).length}/${homeworkTurns.length}`,
-      `cut off ${turns.filter((t) => t.reply.done.finishReason === "length").length}`,
+      `cut off ${cutOff}`,
     ].join(" | ")
   );
 
@@ -216,3 +237,9 @@ await writeFile(outFile, markdown);
 console.log(rows.join("\n"));
 
 console.log(`\nTranscripts: ${decodeURIComponent(outFile.pathname)}`);
+
+if (failures) {
+  console.error(`${failures} failed run(s) or cut-off repl(ies)`);
+}
+
+process.exitCode = failures ? 1 : 0;

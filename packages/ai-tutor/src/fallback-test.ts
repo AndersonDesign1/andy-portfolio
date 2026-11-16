@@ -1,4 +1,6 @@
-// Checks routing and every fallback trigger against the real providers.
+// Live checks against the real providers: routing, budget, provider-down and
+// first-word timeout fallbacks. The empty and rate-limit triggers are covered
+// offline with mock models in unit-test.ts.
 // Run: bun run --filter=@andy-portfolio/ai-tutor fallbacks
 import { MemoryBudgetStore, currentPeriod } from "./budget.ts";
 import { EXAMPLE_COURSE } from "./course.ts";

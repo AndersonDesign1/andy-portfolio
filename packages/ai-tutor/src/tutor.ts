@@ -43,7 +43,11 @@ export interface TutorRequest {
   stallTimeoutMs?: number;
   /** Abort a model's reply that runs longer than this in total. Default 60s. */
   totalTimeoutMs?: number;
-  /** Older turns beyond this are dropped to keep input cost flat. Default 12 (6 exchanges). */
+  /**
+   * Most recent messages sent, including the current one; older turns are
+   * dropped to keep input cost flat. Default 12 (6 exchanges). 0 sends only the
+   * current message.
+   */
   maxHistoryMessages?: number;
   /** Force a specific chain, e.g. ["glm"] in tests. Defaults to the route for the message. */
   chain?: ModelKey[];
@@ -118,7 +122,19 @@ function billedCost(
 const RATE_LIMIT_MESSAGE =
   /rate limit|too many requests|REQUEST_LIMIT_EXCEEDED/i;
 
+/** The SDK aborted the stream, e.g. its stall or total time limit fired. */
+class StreamAbortedError extends Error {
+  constructor(reason: string | undefined) {
+    super(reason ? `aborted: ${reason}` : "aborted");
+    this.name = "StreamAbortedError";
+  }
+}
+
 function classifyError(error: Error): FallbackReason {
+  if (error instanceof StreamAbortedError) {
+    return "timeout";
+  }
+
   const rateLimited =
     (APICallError.isInstance(error) && error.statusCode === 429) ||
     RATE_LIMIT_MESSAGE.test(error.message);
@@ -135,7 +151,9 @@ function cleanHistory(messages: ModelMessage[], max: number): ModelMessage[] {
     (m) => m.role === "user" || m.role === "assistant"
   );
 
-  const trimmed = chat.slice(-max);
+  // slice(-0) would return everything. A limit of 0 (or less) means no earlier
+  // turns: only the student's current message is sent.
+  const trimmed = max > 0 ? chat.slice(-max) : chat.slice(-1);
 
   // A conversation must start with the student, not a dangling tutor reply.
   return trimmed[0]?.role === "assistant" ? trimmed.slice(1) : trimmed;
@@ -175,28 +193,60 @@ function usageFrom(usage: LanguageModelUsage): UsageCounts {
   };
 }
 
-/** Providers already at their monthly cap, read in one batch before trying any model. */
-async function providersOverBudget(
+/**
+ * Worst-case cost of one attempt: every prompt token billed uncached (about
+ * 4 characters per token, rounded up) plus the full output budget.
+ */
+function reservationFor(
+  profile: ModelProfile,
+  instructions: SystemModelMessage,
+  messages: ModelMessage[]
+): number {
+  const characters =
+    instructions.content.length + JSON.stringify(messages).length;
+
+  return estimateCost(profile.price, {
+    ...NO_USAGE,
+    input: Math.ceil(characters / 4),
+    output: profile.maxOutputTokens,
+  });
+}
+
+/**
+ * Replace a reservation with the real cost. Accounting must never break a reply
+ * the student already has, so a failing store is logged, not thrown; the
+ * reservation it leaves behind keeps the cap conservative.
+ */
+async function settleSpend(
   request: TutorRequest,
-  profiles: ModelProfile[],
-  period: string
-): Promise<Set<Provider>> {
-  const { budget } = request;
-
-  if (!budget) {
-    return new Set();
+  provider: Provider,
+  period: string,
+  amounts: { reserved: number; actual: number }
+): Promise<void> {
+  try {
+    await request.budget?.settle(
+      provider,
+      period,
+      amounts.reserved,
+      amounts.actual
+    );
+  } catch (error) {
+    console.error("ai-tutor: could not settle spend", provider, error);
   }
+}
 
-  const caps = request.caps ?? DEFAULT_CAPS;
-  const providers = [...new Set(profiles.map((p) => p.provider))];
+/** Cost of a finished attempt: OpenRouter's billed figure, else list price × tokens. */
+async function costOf(
+  profile: ModelProfile,
+  result: ReturnType<typeof startStream>,
+  finish: Finish | undefined
+): Promise<{ cost: number; billed: boolean }> {
+  const billed = billedCost(await result.providerMetadata);
 
-  const spent = await Promise.all(
-    providers.map((provider) => budget.spent(provider, period))
-  );
-
-  return new Set(
-    providers.filter((provider, i) => (spent[i] ?? 0) >= caps[provider])
-  );
+  return {
+    cost: billed ?? estimateCost(profile.price, finish?.usage ?? NO_USAGE),
+    billed: billed !== undefined,
+  };
 }
 
 type Route = Extract<TutorEvent, { type: "start" }>["route"];
@@ -216,13 +266,13 @@ interface AttemptContext {
 function startStream(
   profile: ModelProfile,
   request: TutorRequest,
-  messages: ModelMessage[],
+  input: { instructions: SystemModelMessage; messages: ModelMessage[] },
   signal: AbortSignal
 ) {
   return streamText({
     model: profile.create(),
-    instructions: instructionsFor(profile, request.course, request.addendum),
-    messages,
+    instructions: input.instructions,
+    messages: input.messages,
     maxOutputTokens: profile.maxOutputTokens,
     providerOptions: profile.providerOptions,
     abortSignal: signal,
@@ -269,7 +319,7 @@ async function* relayReply(
     } else if (part.type === "error") {
       throw part.error;
     } else if (part.type === "abort") {
-      throw new Error("aborted");
+      throw new StreamAbortedError(part.reason);
     } else if (part.type === "finish") {
       finish = {
         finishReason: part.finishReason,
@@ -282,9 +332,48 @@ async function* relayReply(
 }
 
 /**
+ * Reserve this attempt's worst-case cost before any paid call. Fails closed:
+ * if the store cannot be reached the model is skipped, so an outage can't
+ * turn into unbounded spend.
+ */
+async function reserveSpend(
+  request: TutorRequest,
+  profile: ModelProfile,
+  period: string,
+  usd: number
+): Promise<FailedAttempt | undefined> {
+  if (!request.budget) {
+    return undefined;
+  }
+
+  const cap = (request.caps ?? DEFAULT_CAPS)[profile.provider];
+
+  try {
+    const fits = await request.budget.reserve(
+      profile.provider,
+      period,
+      usd,
+      cap
+    );
+
+    return fits ? undefined : { reason: "budget" };
+  } catch (error) {
+    return {
+      reason: "budget",
+      detail: `budget store unavailable: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+/**
  * Streams one model's reply. Returns a FailedAttempt when the next model should
  * be tried (nothing reached the student yet); throws once text has been sent,
  * because switching models mid-answer would garble it.
+ *
+ * Spend: the worst case is reserved first and always settled. Finished
+ * attempts (answered or empty) settle to their real cost; errors before any
+ * output release the reservation; timeouts and mid-answer failures keep it,
+ * because tokens were probably billed.
  */
 async function* attemptModel(
   key: ModelKey,
@@ -292,6 +381,27 @@ async function* attemptModel(
   request: TutorRequest,
   context: AttemptContext
 ): AsyncGenerator<TutorEvent, FailedAttempt | undefined> {
+  const instructions = instructionsFor(
+    profile,
+    request.course,
+    request.addendum
+  );
+
+  const reserved = request.budget
+    ? reservationFor(profile, instructions, context.messages)
+    : 0;
+
+  const refused = await reserveSpend(
+    request,
+    profile,
+    context.period,
+    reserved
+  );
+
+  if (refused) {
+    return refused;
+  }
+
   const firstWord = new AbortController();
 
   const timer = setTimeout(
@@ -305,9 +415,15 @@ async function* attemptModel(
 
   const started = performance.now();
   let answering = false;
+  let actual = reserved;
 
   try {
-    const result = startStream(profile, request, context.messages, signal);
+    const result = startStream(
+      profile,
+      request,
+      { instructions, messages: context.messages },
+      signal
+    );
 
     const { answered, finish } = yield* relayReply(
       result.fullStream,
@@ -318,22 +434,19 @@ async function* attemptModel(
       }
     );
 
+    const { cost, billed } = await costOf(profile, result, finish);
+    actual = cost;
+
     if (!answered) {
       return { reason: "empty" };
     }
 
-    const usage = finish?.usage ?? NO_USAGE;
-    const billed = billedCost(await result.providerMetadata);
-    const cost = billed ?? estimateCost(profile.price, usage);
-
-    await request.budget?.add(profile.provider, context.period, cost);
-
     yield {
       type: "done",
       model: key,
-      usage,
+      usage: finish?.usage ?? NO_USAGE,
       cost,
-      costIsBilled: billed !== undefined,
+      costIsBilled: billed,
       ms: Math.round(performance.now() - started),
       finishReason: finish?.finishReason ?? "unknown",
     };
@@ -347,12 +460,24 @@ async function* attemptModel(
     // Providers throw Error subclasses; wrap anything else so it is handled the same way.
     const failure = error instanceof Error ? error : new Error(String(error));
 
-    return {
-      reason: firstWord.signal.aborted ? "timeout" : classifyError(failure),
-      detail: failure.message.slice(0, 200),
-    };
+    const reason = firstWord.signal.aborted
+      ? "timeout"
+      : classifyError(failure);
+
+    if (reason !== "timeout") {
+      actual = 0;
+    }
+
+    return { reason, detail: failure.message.slice(0, 200) };
   } finally {
     clearTimeout(timer);
+
+    if (request.budget) {
+      await settleSpend(request, profile.provider, context.period, {
+        reserved,
+        actual,
+      });
+    }
   }
 }
 
@@ -377,12 +502,6 @@ export async function* streamTutorReply(
     request.models?.[key] ?? MODELS[key],
   ]);
 
-  const overBudget = await providersOverBudget(
-    request,
-    profiles.map(([, profile]) => profile),
-    period
-  );
-
   const context = {
     messages: cleanHistory(request.messages, request.maxHistoryMessages ?? 12),
     period,
@@ -392,9 +511,10 @@ export async function* streamTutorReply(
   const attempts: TutorUnavailableError["attempts"] = [];
 
   for (const [key, profile] of profiles) {
-    const failed: FailedAttempt | undefined = overBudget.has(profile.provider)
-      ? { reason: "budget" }
-      : yield* attemptModel(key, profile, request, context);
+    // A cancelled request (e.g. the student closed the page) tries no more models.
+    request.signal?.throwIfAborted();
+
+    const failed = yield* attemptModel(key, profile, request, context);
 
     if (!failed) {
       return;
@@ -455,11 +575,21 @@ export function tutorTextResponse(
   ) => void | Promise<void>
 ): Response {
   const encoder = new TextEncoder();
+  // Aborted when the client cancels the body, so the provider call stops too.
+  const cancelled = new AbortController();
+
+  const signal = request.signal
+    ? AbortSignal.any([request.signal, cancelled.signal])
+    : cancelled.signal;
 
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
-        for await (const event of streamTutorReply(request)) {
+        for await (const event of streamTutorReply({ ...request, signal })) {
+          if (cancelled.signal.aborted) {
+            return;
+          }
+
           if (event.type === "text") {
             controller.enqueue(encoder.encode(event.text));
           } else if (event.type === "done") {
@@ -469,6 +599,10 @@ export function tutorTextResponse(
 
         controller.close();
       } catch (error) {
+        if (cancelled.signal.aborted) {
+          return;
+        }
+
         if (error instanceof TutorUnavailableError) {
           controller.enqueue(
             encoder.encode(
@@ -482,6 +616,9 @@ export function tutorTextResponse(
 
         controller.error(error);
       }
+    },
+    cancel(reason) {
+      cancelled.abort(reason);
     },
   });
 
