@@ -6,6 +6,7 @@ import type { AddendumKey } from "./prompts.ts";
 export type ProviderOptions = Parameters<
   typeof generateText
 >[0]["providerOptions"];
+
 export type Provider = "neon" | "openrouter";
 
 /** USD per 1M tokens. Checked 2026-11-16 against neon.com/models.json and openrouter.ai/api/v1/models. */
@@ -29,23 +30,22 @@ export interface ModelProfile {
 }
 
 let openrouterClient: ReturnType<typeof createOpenRouter> | undefined;
+
 function openrouter() {
   openrouterClient ??= createOpenRouter({
     apiKey: process.env.OPENROUTER_API_KEY,
   });
+
   return openrouterClient;
 }
 
-const openrouterOptions = (
-  extra: Record<string, unknown> = {}
-): ProviderOptions => ({
+const openrouterOptions = (): ProviderOptions => ({
   openrouter: {
     reasoning: { effort: "low" },
     // Report billed cost per request.
     usage: { include: true },
     // Cheapest host. Without this, OpenRouter's load balancing billed GLM 2.5x list price in testing.
     provider: { sort: "price" },
-    ...extra,
   },
 });
 
@@ -107,6 +107,7 @@ export const ROUTES: Record<"general" | "homework", ModelKey[]> = {
 
 export function estimateCost(price: Price, usage: UsageCounts): number {
   const fresh = Math.max(0, usage.input - usage.cacheRead - usage.cacheWrite);
+
   return (
     (fresh * price.input +
       usage.cacheRead * price.cacheRead +

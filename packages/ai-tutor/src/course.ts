@@ -40,7 +40,7 @@ export const EXAMPLE_COURSE: CourseContext = {
 - Arrays are ordered lists: const scores = [90, 72, 88]; scores[0] is 90; scores.length is 3.
 - Core methods we use: push, pop, includes, indexOf, slice (copy part), splice (change in place).
 - Loop styles: for...of for values, classic for loop when you need the index, forEach for side effects.
-- Transform methods return NEW arrays and do not change the original: map (change every item), filter (keep some items), find (first match), reduce (combine into one value).
+- These methods never change the original array: map (a new array with every item changed) and filter (a new array with only some items) return new arrays; find returns the first matching item itself, or undefined if none match; reduce combines the array into one value of any type (a number, string, object...).
 - Objects store named values: const book = { title: "Dune", pages: 412 }. Read with book.title or book["title"].
 - Destructuring: const { title, pages } = book; const [first, second] = scores;
 - Spread copies: const copy = [...scores]; const updated = { ...book, pages: 500 };

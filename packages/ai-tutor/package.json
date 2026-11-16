@@ -4,19 +4,27 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/tutor.ts",
+    "./budget": "./src/budget.ts",
+    "./postgres-budget": "./src/postgres-budget.ts",
+    "./models": "./src/models.ts",
+    "./prompts": "./src/prompts.ts",
+    "./route": "./src/route.ts"
   },
   "scripts": {
     "conversations": "bun --env-file=../../.env.local --env-file=.env.local run src/conversation-test.ts",
     "fallbacks": "bun --env-file=../../.env.local --env-file=.env.local run src/fallback-test.ts",
     "budget": "bun --env-file=../../.env.local --env-file=.env.local run src/budget-test.ts",
+    "timeouts": "bun run src/timeout-test.ts",
+    "unit": "bun run src/unit-test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@neon/ai-sdk-provider": "^1.3.2",
     "@neondatabase/serverless": "^1.2.1",
     "@openrouter/ai-sdk-provider": "^3.1.0",
-    "ai": "^7.0.173"
+    "ai": "^7.0.173",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@neon/config": "^1.14.0",

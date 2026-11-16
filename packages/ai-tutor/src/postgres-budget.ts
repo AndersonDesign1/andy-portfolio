@@ -1,8 +1,22 @@
 import { neon } from "@neondatabase/serverless";
+import { z } from "zod";
+
 import type { BudgetStore } from "./budget.ts";
 import type { Provider } from "./models.ts";
 
 type Sql = ReturnType<typeof neon>;
+
+/**
+ * Postgres `numeric` arrives as a string to keep its precision. Reject anything
+ * that is not a finite, non-negative amount: a NaN total would compare as
+ * "under cap" and silently disable the budget.
+ */
+const usdColumn = z
+  .string()
+  .transform(Number)
+  .pipe(z.number().finite().nonnegative());
+
+const spendRows = z.array(z.object({ usd: usdColumn }));
 
 /**
  * One row per provider per month. Additive table; safe to run more than once.
@@ -24,7 +38,7 @@ export async function ensureBudgetTable(sql: Sql): Promise<void> {
 /**
  * Spend totals in Neon Postgres, shared by every serverless instance.
  * Uses the HTTP driver, so each call is one round trip with no connection to manage.
- * `add` is a single atomic upsert, so concurrent replies never lose an increment.
+ * Every write is a single statement, so concurrent replies serialize on the row lock.
  */
 export class PostgresBudgetStore implements BudgetStore {
   readonly #sql: Sql;
@@ -35,6 +49,7 @@ export class PostgresBudgetStore implements BudgetStore {
         "PostgresBudgetStore needs DATABASE_URL (run `neon env pull` in packages/ai-tutor)"
       );
     }
+
     this.#sql = neon(connectionString);
   }
 
@@ -43,19 +58,66 @@ export class PostgresBudgetStore implements BudgetStore {
   }
 
   async spent(provider: Provider, period: string): Promise<number> {
-    const rows = (await this.#sql`
-      SELECT usd FROM tutor_spend WHERE provider = ${provider} AND period = ${period}
-    `) as { usd: string }[];
-    return rows[0] ? Number(rows[0].usd) : 0;
+    const rows = spendRows.parse(
+      await this.#sql`
+        SELECT usd FROM tutor_spend WHERE provider = ${provider} AND period = ${period}
+      `
+    );
+
+    return rows[0]?.usd ?? 0;
+  }
+
+  /**
+   * Insert-or-increment guarded by the cap in one statement. On conflict the
+   * row is locked, so two reservations can never both fit into the last cents.
+   * A first reservation larger than the cap is rejected before the query.
+   */
+  async reserve(
+    provider: Provider,
+    period: string,
+    usd: number,
+    cap: number
+  ): Promise<boolean> {
+    if (usd > cap) {
+      return false;
+    }
+
+    const rows = spendRows.parse(
+      await this.#sql`
+        INSERT INTO tutor_spend (provider, period, usd, requests)
+        VALUES (${provider}, ${period}, ${usd}, 0)
+        ON CONFLICT (provider, period) DO UPDATE
+        SET usd = tutor_spend.usd + EXCLUDED.usd,
+            updated_at = now()
+        WHERE tutor_spend.usd + EXCLUDED.usd <= ${cap}
+        RETURNING usd
+      `
+    );
+
+    return rows.length > 0;
+  }
+
+  async settle(
+    provider: Provider,
+    period: string,
+    reservedUsd: number,
+    actualUsd: number
+  ): Promise<void> {
+    await this.#sql`
+      UPDATE tutor_spend
+      SET usd = GREATEST(usd + ${actualUsd - reservedUsd}, 0),
+          requests = requests + 1,
+          updated_at = now()
+      WHERE provider = ${provider} AND period = ${period}
+    `;
   }
 
   async add(provider: Provider, period: string, usd: number): Promise<void> {
     await this.#sql`
       INSERT INTO tutor_spend (provider, period, usd, requests)
-      VALUES (${provider}, ${period}, ${usd}, 1)
+      VALUES (${provider}, ${period}, ${usd}, 0)
       ON CONFLICT (provider, period) DO UPDATE
       SET usd = tutor_spend.usd + EXCLUDED.usd,
-          requests = tutor_spend.requests + 1,
           updated_at = now()
     `;
   }
