@@ -5,7 +5,9 @@ The AI layer for the student tutor: system prompts, model routing, fallbacks and
 ## Use it
 
 ```ts
-import { PostgresBudgetStore, tutorTextResponse, type CourseContext } from "@andy-portfolio/ai-tutor";
+import { tutorTextResponse } from "@andy-portfolio/ai-tutor";
+import { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
+import type { CourseContext } from "@andy-portfolio/ai-tutor/prompts";
 
 const budget = new PostgresBudgetStore(); // reads DATABASE_URL
 
@@ -18,6 +20,17 @@ export async function POST(request: Request) {
 ```
 
 `streamTutorReply` yields events instead (`start`, `text`, `fallback`, `done`) if the app needs to show which model answered. `generateTutorReply` returns the whole reply at once.
+
+Imports come from the module that owns them (there's no barrel file):
+
+| Import path | Exports |
+|---|---|
+| `@andy-portfolio/ai-tutor` | `streamTutorReply`, `generateTutorReply`, `tutorTextResponse`, `TutorUnavailableError`, request/event types |
+| `@andy-portfolio/ai-tutor/postgres-budget` | `PostgresBudgetStore`, `ensureBudgetTable`, `BUDGET_TABLE_SQL` |
+| `@andy-portfolio/ai-tutor/budget` | `BudgetStore`, `MemoryBudgetStore`, `DEFAULT_CAPS`, `currentPeriod` |
+| `@andy-portfolio/ai-tutor/prompts` | `CourseContext`, `buildSystemPrompt`, `MODEL_ADDENDA` |
+| `@andy-portfolio/ai-tutor/models` | `MODELS`, `ROUTES`, `ModelKey`, `ModelProfile` |
+| `@andy-portfolio/ai-tutor/route` | `classifyRequest`, `looksLikeCode` |
 
 ## How a message is routed
 
@@ -33,7 +46,7 @@ The tutor moves to the next model when the current one:
 - sends no text within 10 seconds (`firstTokenTimeoutMs`)
 - returns an empty reply
 
-Fallback only happens before the first word reaches the student. If every model fails, `tutorTextResponse` sends a short "try again or message your teacher" note; `streamTutorReply` throws `TutorUnavailableError`.
+Fallback only happens before the first word reaches the student. Once a model has started answering, a pause longer than 15 seconds (`stallTimeoutMs`) or a reply longer than 60 seconds (`totalTimeoutMs`) stops the request with an error instead of switching models mid-answer. If every model fails, `tutorTextResponse` sends a short "try again or message your teacher" note; `streamTutorReply` throws `TutorUnavailableError`.
 
 Only the last 12 messages are sent (`maxHistoryMessages`), so long chats don't grow in cost.
 
@@ -69,9 +82,10 @@ The base prompt comes first and stays identical between requests, so providers b
 
 ## Tests
 
-All tests call the real providers and cost a few cents at most.
+`timeouts` runs offline against AI SDK mock models. The others call the real providers and cost a few cents at most.
 
 ```bash
+bun run --filter=@andy-portfolio/ai-tutor timeouts        # mid-reply stall and total limits; no handover once text has started
 bun run --filter=@andy-portfolio/ai-tutor fallbacks       # routing + every fallback trigger
 bun run --filter=@andy-portfolio/ai-tutor budget          # Postgres spend store; test rows are deleted afterwards
 bun run --filter=@andy-portfolio/ai-tutor conversations   # 4 scripted student chats per model, rule checks

@@ -4,12 +4,18 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/tutor.ts",
+    "./budget": "./src/budget.ts",
+    "./postgres-budget": "./src/postgres-budget.ts",
+    "./models": "./src/models.ts",
+    "./prompts": "./src/prompts.ts",
+    "./route": "./src/route.ts"
   },
   "scripts": {
     "conversations": "bun --env-file=../../.env.local --env-file=.env.local run src/conversation-test.ts",
     "fallbacks": "bun --env-file=../../.env.local --env-file=.env.local run src/fallback-test.ts",
     "budget": "bun --env-file=../../.env.local --env-file=.env.local run src/budget-test.ts",
+    "timeouts": "bun run src/timeout-test.ts",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint --config oxlint.config.mts .",
     "lint:fix": "oxlint --config oxlint.config.mts --fix ."
