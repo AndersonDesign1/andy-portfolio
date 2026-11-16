@@ -286,18 +286,29 @@ async function settleSpend(
   }
 }
 
-/** Cost of a finished attempt: OpenRouter's billed figure, else list price × tokens. */
+/**
+ * Cost of a finished attempt: OpenRouter's billed figure, else list price ×
+ * tokens. If the provider reported neither (no billed cost and no token
+ * counts), the cost is unknown, not zero: keep the full reservation so
+ * usage-less responses can't slip paid requests past the cap.
+ */
 async function costOf(
   profile: ModelProfile,
   result: ReturnType<typeof startStream>,
-  finish: Finish | undefined
+  finish: Finish | undefined,
+  reserved: number
 ): Promise<{ cost: number; billed: boolean }> {
   const billed = billedCost(await result.providerMetadata);
 
-  return {
-    cost: billed ?? estimateCost(profile.price, finish?.usage ?? NO_USAGE),
-    billed: billed !== undefined,
-  };
+  if (billed !== undefined) {
+    return { cost: billed, billed: true };
+  }
+
+  if (!finish?.usageReported) {
+    return { cost: reserved, billed: false };
+  }
+
+  return { cost: estimateCost(profile.price, finish.usage), billed: false };
 }
 
 type Route = Extract<TutorEvent, { type: "start" }>["route"];
@@ -342,6 +353,8 @@ function startStream(
 
 interface Finish {
   usage: UsageCounts;
+  /** False when the provider sent no input or output token counts at all. */
+  usageReported: boolean;
   finishReason: string;
 }
 
@@ -375,6 +388,9 @@ async function* relayReply(
       finish = {
         finishReason: part.finishReason,
         usage: usageFrom(part.totalUsage),
+        usageReported:
+          part.totalUsage.inputTokens !== undefined ||
+          part.totalUsage.outputTokens !== undefined,
       };
     }
   }
@@ -495,7 +511,7 @@ async function* attemptModel(
       }
     );
 
-    const { cost, billed } = await costOf(profile, result, finish);
+    const { cost, billed } = await costOf(profile, result, finish, reserved);
     actual = cost;
 
     if (!answered) {
