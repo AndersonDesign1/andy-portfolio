@@ -572,10 +572,32 @@ export async function generateTutorReply(
   return { text, model: start.model, route: start.route, fallbacks, done };
 }
 
+type DoneEvent = Extract<TutorEvent, { type: "done" }>;
+
+/**
+ * The answer has already streamed by the time onDone runs, so a failing hook
+ * (e.g. saving the conversation) must not error the response: the client would
+ * see a delivered answer as failed and retry a paid request. Log it instead.
+ */
+async function runOnDone(
+  onDone: ((event: DoneEvent) => void | Promise<void>) | undefined,
+  event: DoneEvent
+): Promise<void> {
+  try {
+    await onDone?.(event);
+  } catch (error) {
+    console.error(
+      "ai-tutor: onDone hook failed after the reply was sent",
+      error
+    );
+  }
+}
+
 /**
  * Plain-text streaming Response for an API route. The model that answered is
  * reported through onDone (for logging and saving the conversation), not headers,
- * because headers are sent before the fallback chain settles.
+ * because headers are sent before the fallback chain settles. A failing onDone
+ * is logged and never errors the response.
  */
 export function tutorTextResponse(
   request: TutorRequest,
@@ -602,7 +624,7 @@ export function tutorTextResponse(
           if (event.type === "text") {
             controller.enqueue(encoder.encode(event.text));
           } else if (event.type === "done") {
-            await onDone?.(event);
+            await runOnDone(onDone, event);
           }
         }
 
