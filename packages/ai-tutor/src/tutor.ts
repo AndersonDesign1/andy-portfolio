@@ -143,7 +143,9 @@ const STALL_TIMEOUT_MS = 15_000;
 const TOTAL_TIMEOUT_MS = 60_000;
 
 /** OpenRouter's usage accounting, present when a request sets `usage: { include: true }`. */
-const openrouterBilling = z.object({ usage: z.object({ cost: z.number() }) });
+const openrouterBilling = z.object({
+  usage: z.object({ cost: z.number().finite().nonnegative() }),
+});
 
 function billedCost(
   metadata: ProviderMetadata | undefined
@@ -235,10 +237,12 @@ const PROMPT_OVERHEAD_TOKENS = 256;
 
 /**
  * Worst-case cost of one attempt: the full output budget plus an upper bound on
- * input tokens, billed uncached. Every token covers at least one UTF-8 byte, so
- * the prompt's byte length (as serialized JSON, which only adds bytes) bounds
- * its token count; ~4 characters per token is only the average and can
- * undercount dense text. The extra input reserved costs fractions of a cent.
+ * input tokens at the most expensive input rate. Every token covers at least
+ * one UTF-8 byte, so the prompt's byte length (as serialized JSON, which only
+ * adds bytes) bounds its token count; ~4 characters per token is only the
+ * average and can undercount dense text. Input is priced at the higher of the
+ * fresh and cache-write rates, since Anthropic bills a cache write above the
+ * normal input price. The extra input reserved costs fractions of a cent.
  */
 function reservationFor(
   profile: ModelProfile,
@@ -249,11 +253,14 @@ function reservationFor(
     utf8.encode(instructions.content).length +
     utf8.encode(JSON.stringify(messages)).length;
 
-  return estimateCost(profile.price, {
-    ...NO_USAGE,
-    input: promptBytes + PROMPT_OVERHEAD_TOKENS,
-    output: profile.maxOutputTokens,
-  });
+  const inputTokens = promptBytes + PROMPT_OVERHEAD_TOKENS;
+  const { price } = profile;
+
+  const inputRate = Math.max(price.input, price.cacheWrite ?? price.input);
+
+  return (
+    (inputTokens * inputRate + profile.maxOutputTokens * price.output) / 1e6
+  );
 }
 
 /**
