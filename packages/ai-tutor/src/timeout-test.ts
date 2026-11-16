@@ -25,8 +25,13 @@ const usage = {
   outputTokens: { total: 5, text: 5, reasoning: undefined },
 };
 
+/** Records whether the SDK aborted the provider call. */
+interface AbortProbe {
+  aborted: boolean;
+}
+
 /** Sends one word, then goes silent until the request is aborted. */
-function stallingModel() {
+function stallingModel(probe: AbortProbe) {
   return new MockLanguageModelV4({
     doStream: ({ abortSignal }) =>
       Promise.resolve({
@@ -39,9 +44,10 @@ function stallingModel() {
               id: "t",
               delta: "A closure ",
             });
-            abortSignal?.addEventListener("abort", () =>
-              controller.error(abortSignal.reason)
-            );
+            abortSignal?.addEventListener("abort", () => {
+              probe.aborted = true;
+              controller.error(abortSignal.reason);
+            });
           },
         }),
       }),
@@ -49,7 +55,7 @@ function stallingModel() {
 }
 
 /** Keeps sending a word every 20ms and never finishes. */
-function endlessModel() {
+function endlessModel(probe: AbortProbe) {
   return new MockLanguageModelV4({
     doStream: ({ abortSignal }) =>
       Promise.resolve({
@@ -67,6 +73,7 @@ function endlessModel() {
             }, 20);
 
             abortSignal?.addEventListener("abort", () => {
+              probe.aborted = true;
               clearInterval(interval);
               controller.error(abortSignal.reason);
             });
@@ -173,8 +180,30 @@ function describe(run: Awaited<ReturnType<typeof collect>>) {
   };
 }
 
+const TIMEOUT_MESSAGE = /timeout|timed out/i;
+
+/**
+ * A real time-limit stop: the SDK aborted the provider call, the error names a
+ * timeout, and it happened no earlier than the configured limit (so an
+ * immediate provider failure can't pass) and well before the 5s other limit.
+ */
+function stoppedByLimit(
+  run: Awaited<ReturnType<typeof collect>>,
+  probe: AbortProbe,
+  limitMs: number
+): boolean {
+  return (
+    probe.aborted &&
+    TIMEOUT_MESSAGE.test(run.failure?.message ?? "") &&
+    run.ms >= limitMs &&
+    run.ms < 1500
+  );
+}
+
 // 1. Reply starts, then stalls → stops after the stall limit, no handover.
-const stall = await collect(stallingModel(), {
+const stallProbe: AbortProbe = { aborted: false };
+
+const stall = await collect(stallingModel(stallProbe), {
   stallTimeoutMs: 150,
   totalTimeoutMs: 5000,
 });
@@ -183,8 +212,10 @@ const stallResult = describe(stall);
 
 expect(
   "stall after first words stops the reply",
-  stallResult.started && stallResult.stoppedWithError && stall.ms < 1500,
-  `got "${stallResult.text.trim()}", stopped after ${stall.ms}ms (limit 150ms): ${stall.failure?.message ?? "no error"}`
+  stallResult.started &&
+    stallResult.stoppedWithError &&
+    stoppedByLimit(stall, stallProbe, 150),
+  `got "${stallResult.text.trim()}", provider aborted: ${stallProbe.aborted}, stopped after ${stall.ms}ms (limit 150ms): ${stall.failure?.message ?? "no error"}`
 );
 
 expect(
@@ -194,7 +225,9 @@ expect(
 );
 
 // 2. Reply keeps streaming past the total limit → stops at the total limit, no handover.
-const endless = await collect(endlessModel(), {
+const endlessProbe: AbortProbe = { aborted: false };
+
+const endless = await collect(endlessModel(endlessProbe), {
   stallTimeoutMs: 5000,
   totalTimeoutMs: 300,
 });
@@ -203,8 +236,10 @@ const endlessResult = describe(endless);
 
 expect(
   "over-long reply stops at the total limit",
-  endlessResult.started && endlessResult.stoppedWithError && endless.ms < 1500,
-  `streamed ${endlessResult.text.split(" ").length - 1} words, stopped after ${endless.ms}ms (limit 300ms): ${endless.failure?.message ?? "no error"}`
+  endlessResult.started &&
+    endlessResult.stoppedWithError &&
+    stoppedByLimit(endless, endlessProbe, 300),
+  `streamed ${endlessResult.text.split(" ").length - 1} words, provider aborted: ${endlessProbe.aborted}, stopped after ${endless.ms}ms (limit 300ms): ${endless.failure?.message ?? "no error"}`
 );
 
 expect(

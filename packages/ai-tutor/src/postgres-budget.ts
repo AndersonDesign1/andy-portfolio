@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { z } from "zod";
 
-import type { BudgetStore } from "./budget.ts";
+import { assertUsdAmounts, type BudgetStore } from "./budget.ts";
 import type { Provider } from "./models.ts";
 
 type Sql = ReturnType<typeof neon>;
@@ -78,6 +78,8 @@ export class PostgresBudgetStore implements BudgetStore {
     usd: number,
     cap: number
   ): Promise<boolean> {
+    assertUsdAmounts({ usd, cap });
+
     if (usd > cap) {
       return false;
     }
@@ -103,6 +105,8 @@ export class PostgresBudgetStore implements BudgetStore {
     reservedUsd: number,
     actualUsd: number
   ): Promise<void> {
+    assertUsdAmounts({ reservedUsd, actualUsd });
+
     await this.#sql`
       UPDATE tutor_spend
       SET usd = GREATEST(usd + ${actualUsd - reservedUsd}, 0),
@@ -113,6 +117,8 @@ export class PostgresBudgetStore implements BudgetStore {
   }
 
   async add(provider: Provider, period: string, usd: number): Promise<void> {
+    assertUsdAmounts({ usd });
+
     await this.#sql`
       INSERT INTO tutor_spend (provider, period, usd, requests)
       VALUES (${provider}, ${period}, ${usd}, 0)

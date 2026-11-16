@@ -39,6 +39,22 @@ export interface BudgetStore {
   add: (provider: Provider, period: string, usd: number) => Promise<void>;
 }
 
+/**
+ * Throw unless every amount is a finite, non-negative number. A NaN or
+ * negative value would otherwise slip past the `<= cap` comparison and either
+ * bypass the cap or poison the stored total. Both stores call this before
+ * changing anything; the tutor treats the throw as "skip this model".
+ */
+export function assertUsdAmounts(amounts: Record<string, number>): void {
+  for (const [name, value] of Object.entries(amounts)) {
+    if (!(Number.isFinite(value) && value >= 0)) {
+      throw new RangeError(
+        `${name} must be a finite, non-negative USD amount (got ${value})`
+      );
+    }
+  }
+}
+
 export class MemoryBudgetStore implements BudgetStore {
   readonly #totals = new Map<string, number>();
 
@@ -52,6 +68,8 @@ export class MemoryBudgetStore implements BudgetStore {
     usd: number,
     cap: number
   ): Promise<boolean> {
+    assertUsdAmounts({ usd, cap });
+
     const key = `${provider}:${period}`;
     const next = (this.#totals.get(key) ?? 0) + usd;
 
@@ -70,10 +88,18 @@ export class MemoryBudgetStore implements BudgetStore {
     reservedUsd: number,
     actualUsd: number
   ): Promise<void> {
-    return this.add(provider, period, actualUsd - reservedUsd);
+    assertUsdAmounts({ reservedUsd, actualUsd });
+
+    const key = `${provider}:${period}`;
+    const total = (this.#totals.get(key) ?? 0) + actualUsd - reservedUsd;
+    this.#totals.set(key, Math.max(total, 0));
+
+    return Promise.resolve();
   }
 
   add(provider: Provider, period: string, usd: number): Promise<void> {
+    assertUsdAmounts({ usd });
+
     const key = `${provider}:${period}`;
     this.#totals.set(key, (this.#totals.get(key) ?? 0) + usd);
 

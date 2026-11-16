@@ -58,7 +58,7 @@ The tutor moves to the next model when the current one:
 
 - can't fit its worst-case cost under the monthly cap (`DEFAULT_CAPS`: Neon $4, OpenRouter $5); caps apply **only when a `budget` store is passed**
 - errors or is rate limited (Neon allows roughly 33 answers a minute per model)
-- sends no text within 10 seconds (`firstTokenTimeoutMs`), or its hidden thinking stalls for 15 seconds before any text
+- sends no answer text within 10 seconds (`firstTokenTimeoutMs`); hidden thinking counts toward this wait, so with the defaults a model that is still thinking at 10 seconds is skipped. If `firstTokenTimeoutMs` is set above `stallTimeoutMs` (15 seconds), thinking that pauses longer than `stallTimeoutMs` is also skipped
 - returns an empty reply
 
 Fallback only happens before the first word reaches the student. Once a model has started answering, a pause longer than 15 seconds (`stallTimeoutMs`) or a reply longer than 60 seconds (`totalTimeoutMs`) stops the request with an error instead of switching models mid-answer. If every model fails, `tutorTextResponse` sends a short "try again or message your teacher" note; `streamTutorReply` throws `TutorUnavailableError`.

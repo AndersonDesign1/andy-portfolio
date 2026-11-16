@@ -5,7 +5,11 @@
 import { APICallError, type ModelMessage } from "ai";
 import { MockLanguageModelV4 } from "ai/test";
 
-import { currentPeriod, MemoryBudgetStore } from "./budget.ts";
+import {
+  type BudgetStore,
+  currentPeriod,
+  MemoryBudgetStore,
+} from "./budget.ts";
 import { EXAMPLE_COURSE } from "./course.ts";
 import type { ModelProfile } from "./models.ts";
 import { classifyRequest } from "./route.ts";
@@ -98,6 +102,14 @@ const routes: [string, string, "general" | "homework"][] = [
   ],
   ["fenced block", "why is this wrong?\n```js\nlet a = 1\n```", "homework"],
   ["assignment mention", "is assignment 3 due friday?", "homework"],
+  ["Python function", "def add(a, b):\n    return a + b", "homework"],
+  ["Python loop", "for i in range(3):\n    print(i)", "homework"],
+  ["Python if/else", "if score >= 90:\n    grade = 'A'\nelse:", "homework"],
+  [
+    "prose with a colon",
+    "Here is my question:\nWhy does the loop run forever?",
+    "general",
+  ],
 ];
 
 for (const [label, text, expected] of routes) {
@@ -164,6 +176,26 @@ for (const [label, text, expected] of routes) {
       ),
   });
 
+  // Spy on the store so "released" is distinguishable from "never reserved".
+  const calls: string[] = [];
+
+  const spied: BudgetStore = {
+    spent: (provider, period) => budget.spent(provider, period),
+    reserve: (provider, period, usd, cap) => {
+      calls.push(`reserve:${provider}:${usd > 0 ? "positive" : "zero"}`);
+
+      return budget.reserve(provider, period, usd, cap);
+    },
+    settle: (provider, period, reserved, actual) => {
+      calls.push(
+        `settle:${provider}:${reserved > 0 ? "positive" : "zero"}->${actual}`
+      );
+
+      return budget.settle(provider, period, reserved, actual);
+    },
+    add: (provider, period, usd) => budget.add(provider, period, usd),
+  };
+
   const reply = await generateTutorReply({
     course: EXAMPLE_COURSE,
     messages: ask,
@@ -172,10 +204,11 @@ for (const [label, text, expected] of routes) {
       luna: profile("luna", limited),
       haiku: profile("haiku", healthyModel()),
     },
-    budget,
+    budget: spied,
   });
 
   const neonSpend = await budget.spent("neon", currentPeriod());
+  const neonCalls = calls.filter((c) => c.includes(":neon:"));
 
   expect(
     "429 falls back as rate_limit",
@@ -183,9 +216,11 @@ for (const [label, text, expected] of routes) {
     reply.fallbacks.map((f) => `${f.model}:${f.reason}`).join(", ")
   );
   expect(
-    "rate-limited attempt releases its reservation",
-    neonSpend === 0,
-    `neon spend $${neonSpend}`
+    "rate-limited attempt reserved, then released its reservation",
+    JSON.stringify(neonCalls) ===
+      JSON.stringify(["reserve:neon:positive", "settle:neon:positive->0"]) &&
+      neonSpend === 0,
+    `${neonCalls.join(", ")}; neon spend $${neonSpend}`
   );
 }
 
@@ -211,6 +246,8 @@ for (const [label, text, expected] of routes) {
       }),
   });
 
+  const started = performance.now();
+
   const reply = await generateTutorReply({
     course: EXAMPLE_COURSE,
     messages: ask,
@@ -223,12 +260,19 @@ for (const [label, text, expected] of routes) {
     stallTimeoutMs: 100,
   });
 
+  const elapsed = Math.round(performance.now() - started);
+  const detail = reply.fallbacks[0]?.detail ?? "";
+
+  // Proves the 100ms stall timer fired, not the 5s first-word timer: it fell
+  // back well before 5s, and the SDK's chunk-timeout message is in the detail.
   expect(
     "stall during hidden thinking is reported as timeout",
-    reply.model === "haiku" && reply.fallbacks[0]?.reason === "timeout",
-    reply.fallbacks
-      .map((f) => `${f.model}:${f.reason} (${f.detail ?? ""})`)
-      .join(", ")
+    reply.model === "haiku" &&
+      reply.fallbacks[0]?.reason === "timeout" &&
+      detail.includes("Chunk timeout") &&
+      elapsed >= 100 &&
+      elapsed < 2000,
+    `${reply.fallbacks.map((f) => `${f.model}:${f.reason}`).join(", ")} after ${elapsed}ms (stall 100ms, first-word 5000ms): ${detail}`
   );
 }
 
@@ -326,6 +370,8 @@ for (const [label, text, expected] of routes) {
 
 // 7. A failing onDone hook (e.g. saving the chat) must not error a delivered reply.
 {
+  let onDoneCalled = false;
+
   const response = tutorTextResponse(
     {
       course: EXAMPLE_COURSE,
@@ -333,7 +379,11 @@ for (const [label, text, expected] of routes) {
       chain: ["luna"],
       models: { luna: profile("luna", healthyModel("Here is the answer.")) },
     },
-    () => Promise.reject(new Error("database is down"))
+    () => {
+      onDoneCalled = true;
+
+      return Promise.reject(new Error("database is down"));
+    }
   );
 
   let body = "";
@@ -347,8 +397,41 @@ for (const [label, text, expected] of routes) {
 
   expect(
     "failing onDone keeps the delivered reply intact",
-    !streamFailed && body === "Here is the answer.",
-    `body "${body}", stream ${streamFailed ? "errored" : "closed normally"}`
+    onDoneCalled && !streamFailed && body === "Here is the answer.",
+    `onDone called: ${onDoneCalled}; body "${body}", stream ${streamFailed ? "errored" : "closed normally"}`
+  );
+}
+
+// 9. Malformed amounts are rejected instead of bypassing or poisoning the cap.
+{
+  const budget = new MemoryBudgetStore();
+  const period = currentPeriod();
+
+  const attempts = await Promise.all(
+    [
+      ["NaN usd", Number.NaN, 1],
+      ["negative usd", -1, 1],
+      ["NaN cap", 0.01, Number.NaN],
+      ["infinite cap", 0.01, Number.POSITIVE_INFINITY],
+    ].map(async ([label, usd, cap]) => {
+      try {
+        await budget.reserve("neon", period, Number(usd), Number(cap));
+
+        return `${label}: accepted`;
+      } catch (error) {
+        return error instanceof RangeError
+          ? `${label}: rejected`
+          : `${label}: ${String(error)}`;
+      }
+    })
+  );
+
+  const total = await budget.spent("neon", period);
+
+  expect(
+    "NaN, negative and infinite amounts are rejected",
+    attempts.every((a) => a.endsWith("rejected")) && total === 0,
+    `${attempts.join("; ")}; total $${total}`
   );
 }
 

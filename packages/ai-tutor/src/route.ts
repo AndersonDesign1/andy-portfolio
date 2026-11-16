@@ -5,10 +5,14 @@ const ASSIGNMENT_WORDS =
 
 /**
  * Syntax that only appears in code, so prose that happens to use words like
- * "if", "for" or "return" is not mistaken for a pasted snippet:
+ * "if", "for" or "return" is not mistaken for a pasted snippet. Covers
+ * brace-style languages (JavaScript, Java, C) and indentation-style ones
+ * (Python), since the course language is configurable:
  * - a line ending in `;`, `{` or `}`, or containing `=>`
  * - a declaration or control statement with its syntax:
  *   `const x =`, `function f(`, `if (`, `def f(`, `class Name`
+ * - a lowercase control line ending in a colon: `for i in range(3):`, `else:`
+ * - an indented `return`, `yield`, `break`, `continue`, `pass` or `raise` line
  * - an assignment such as `x = 1` or `total += price` (not `==`)
  * - a bare call on its own line, such as `print(x)` or `console.log("hi");`
  */
@@ -19,6 +23,8 @@ const CODE_SYNTAX = [
   /^\s*(?:if|for|while|switch|catch)\s*\(/,
   /^\s*(?:def|class)\s+[\w$]+/,
   /^\s*(?:import|export)\s+[\w${*"']/,
+  /^\s*(?:if|elif|else|for|while|try|except|finally|with)\b[^:]*:\s*$/,
+  /^\s+(?:return|yield|break|continue|pass|raise)\b/,
   /^\s*[\w$.[\]]+\s*[-+*/%]?=(?!=)\s*\S/,
   /^\s*[\w$.]+\([^()]*\)\s*;?\s*$/,
 ];
