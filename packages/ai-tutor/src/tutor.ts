@@ -288,9 +288,9 @@ async function settleSpend(
 
 /**
  * Cost of a finished attempt: OpenRouter's billed figure, else list price ×
- * tokens. If the provider reported neither (no billed cost and no token
- * counts), the cost is unknown, not zero: keep the full reservation so
- * usage-less responses can't slip paid requests past the cap.
+ * tokens. If there's no billed cost and the token counts are missing or
+ * partial (input or output absent), the cost is unknown, not zero or partial:
+ * keep the full reservation so such responses can't slip spend past the cap.
  */
 async function costOf(
   profile: ModelProfile,
@@ -353,7 +353,10 @@ function startStream(
 
 interface Finish {
   usage: UsageCounts;
-  /** False when the provider sent no input or output token counts at all. */
+  /**
+   * True only when the provider sent both input and output token counts. A
+   * missing count would otherwise default to 0 and undercount the attempt.
+   */
   usageReported: boolean;
   finishReason: string;
 }
@@ -389,7 +392,7 @@ async function* relayReply(
         finishReason: part.finishReason,
         usage: usageFrom(part.totalUsage),
         usageReported:
-          part.totalUsage.inputTokens !== undefined ||
+          part.totalUsage.inputTokens !== undefined &&
           part.totalUsage.outputTokens !== undefined,
       };
     }
