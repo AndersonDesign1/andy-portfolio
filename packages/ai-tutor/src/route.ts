@@ -63,28 +63,36 @@ function hasMedia(message: ModelMessage): boolean {
 }
 
 /**
- * "homework" when the latest student message pastes code, attaches an image or
- * file (likely a screenshot of their code), or talks about graded work.
- * Those go to the models that best kept the no-full-solutions rule in testing.
- * The tutor itself rejects media before calling a model; this keeps the
- * classifier safe for callers that use it on its own.
+ * How many of the student's most recent messages decide the route. A homework
+ * chat stays on the homework route for follow-ups like "what does handle
+ * errors mean?", which carry no code or assignment words of their own.
+ */
+const HOMEWORK_MEMORY_TURNS = 3;
+
+/** Code, an attachment (likely a screenshot of code), or talk of graded work. */
+function isHomeworkTurn(message: ModelMessage): boolean {
+  if (hasMedia(message)) {
+    return true;
+  }
+
+  const text = textOf(message);
+
+  return looksLikeCode(text) || ASSIGNMENT_WORDS.test(text);
+}
+
+/**
+ * "homework" when any of the student's last few messages pastes code, attaches
+ * an image or file, or talks about graded work, so follow-ups in the same chat
+ * keep the route. Those go to the models that best kept the no-full-solutions
+ * rule in testing. The tutor itself rejects media before calling a model; the
+ * media check keeps the classifier safe for callers that use it on its own.
  */
 export function classifyRequest(
   messages: ModelMessage[]
 ): "general" | "homework" {
-  const lastUser = messages.findLast((m) => m.role === "user");
+  const recentStudentTurns = messages
+    .filter((m) => m.role === "user")
+    .slice(-HOMEWORK_MEMORY_TURNS);
 
-  if (!lastUser) {
-    return "general";
-  }
-
-  if (hasMedia(lastUser)) {
-    return "homework";
-  }
-
-  const text = textOf(lastUser);
-
-  return looksLikeCode(text) || ASSIGNMENT_WORDS.test(text)
-    ? "homework"
-    : "general";
+  return recentStudentTurns.some(isHomeworkTurn) ? "homework" : "general";
 }

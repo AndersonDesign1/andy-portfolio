@@ -52,7 +52,9 @@ Imports come from the module that owns them (there's no barrel file):
 | General question | GPT-6 Luna (Neon) → Claude Haiku 5.5 (Neon) → DeepSeek V4.1 Flash (OpenRouter) → GLM 5.3 Flash (OpenRouter) |
 | Pasted code or mentions an assignment | Claude Haiku 5.5 (Neon) → GPT-6 Luna (Neon) → DeepSeek → GLM |
 
-"Pasted code" means a fenced code block or at least two lines with code-only syntax (`x = 1`, `print(x)`, `if (`, a line ending in `;` or `{`). Prose that merely uses words like "if" or "return" stays on the general route.
+"Pasted code" means a fenced code block or at least two lines with code-only syntax (`x = 1`, `print(x)`, `if (`, `for i in range(3):`, a line ending in `;` or `{`). Prose that merely uses words like "if" or "return" stays on the general route.
+
+The route looks at the student's last 3 messages, so a follow-up in a homework chat ("what does handle errors mean?") stays on the homework route even with no code in it.
 
 The tutor moves to the next model when the current one:
 
