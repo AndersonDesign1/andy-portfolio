@@ -46,9 +46,22 @@ export function looksLikeCode(text: string): boolean {
   return text.split("\n").filter(isCodeLine).length >= 2;
 }
 
+/** An image or file part, e.g. a screenshot of code that the text checks can't read. */
+function hasMedia(message: ModelMessage): boolean {
+  return (
+    Array.isArray(message.content) &&
+    message.content.some(
+      (part) => part.type === "image" || part.type === "file"
+    )
+  );
+}
+
 /**
- * "homework" when the latest student message pastes code or talks about graded work.
+ * "homework" when the latest student message pastes code, attaches an image or
+ * file (likely a screenshot of their code), or talks about graded work.
  * Those go to the models that best kept the no-full-solutions rule in testing.
+ * The tutor itself rejects media before calling a model; this keeps the
+ * classifier safe for callers that use it on its own.
  */
 export function classifyRequest(
   messages: ModelMessage[]
@@ -57,6 +70,10 @@ export function classifyRequest(
 
   if (!lastUser) {
     return "general";
+  }
+
+  if (hasMedia(lastUser)) {
+    return "homework";
   }
 
   const text = textOf(lastUser);

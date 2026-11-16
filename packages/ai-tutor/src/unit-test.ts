@@ -9,7 +9,11 @@ import { currentPeriod, MemoryBudgetStore } from "./budget.ts";
 import { EXAMPLE_COURSE } from "./course.ts";
 import type { ModelProfile } from "./models.ts";
 import { classifyRequest } from "./route.ts";
-import { generateTutorReply, tutorTextResponse } from "./tutor.ts";
+import {
+  generateTutorReply,
+  TutorInputError,
+  tutorTextResponse,
+} from "./tutor.ts";
 
 let failures = 0;
 
@@ -343,6 +347,74 @@ for (const [label, text, expected] of routes) {
     "failing onDone keeps the delivered reply intact",
     !streamFailed && body === "Here is the answer.",
     `body "${body}", stream ${streamFailed ? "errored" : "closed normally"}`
+  );
+}
+
+// 8. Image/file parts: rejected before any model or budget is touched; the
+//    classifier alone routes them as homework.
+{
+  const screenshot: ModelMessage[] = [
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "why is this wrong?" },
+        {
+          type: "image",
+          image: new URL("https://example.test/assignment-5.png"),
+        },
+      ],
+    },
+  ];
+
+  const budget = new MemoryBudgetStore();
+  const model = healthyModel();
+  let rejected = "";
+
+  try {
+    await generateTutorReply({
+      course: EXAMPLE_COURSE,
+      messages: screenshot,
+      chain: ["luna"],
+      models: { luna: profile("luna", model) },
+      budget,
+    });
+  } catch (error) {
+    rejected =
+      error instanceof TutorInputError
+        ? error.message
+        : `other: ${String(error)}`;
+  }
+
+  const spend = await budget.spent("neon", currentPeriod());
+
+  expect(
+    "image parts are rejected before any spend",
+    rejected.startsWith("The tutor accepts text only") &&
+      model.doStreamCalls.length === 0 &&
+      spend === 0,
+    `${rejected || "not rejected"}; model called ${model.doStreamCalls.length}×; spend $${spend}`
+  );
+
+  const response = tutorTextResponse({
+    course: EXAMPLE_COURSE,
+    messages: screenshot,
+    chain: ["luna"],
+    models: { luna: profile("luna", healthyModel()) },
+  });
+
+  const body = await response.text();
+
+  expect(
+    "the HTTP response explains text-only input",
+    body.startsWith("The tutor accepts text only"),
+    `"${body}"`
+  );
+
+  const route = classifyRequest(screenshot);
+  expect(
+    "classifier routes media turns as homework",
+    route === "homework",
+    route
   );
 }
 

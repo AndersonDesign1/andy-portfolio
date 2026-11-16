@@ -101,6 +101,41 @@ export class TutorUnavailableError extends Error {
   }
 }
 
+/**
+ * The request contains something the tutor does not accept (currently image or
+ * file parts). Thrown before any model is called, so nothing is spent.
+ */
+export class TutorInputError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TutorInputError";
+  }
+}
+
+/** Message part types the tutor rejects; see assertTextOnly. */
+const MEDIA_PART_TYPES = new Set(["image", "file"]);
+
+/**
+ * The tutor is text-only. Image and file parts are rejected because:
+ * - their billed tokens can't be bounded from the request (a URL's length says
+ *   nothing about the image), so the spend reservation would not be a ceiling;
+ * - a screenshot of graded code would skip the homework routing, which only
+ *   reads text.
+ */
+function assertTextOnly(messages: ModelMessage[]): void {
+  const hasMedia = messages.some(
+    (message) =>
+      Array.isArray(message.content) &&
+      message.content.some((part) => MEDIA_PART_TYPES.has(part.type))
+  );
+
+  if (hasMedia) {
+    throw new TutorInputError(
+      "The tutor accepts text only. Paste code or questions as text instead of an image or file."
+    );
+  }
+}
+
 /** Longest pause allowed between chunks once a reply has started. */
 const STALL_TIMEOUT_MS = 15_000;
 
@@ -494,10 +529,13 @@ async function* attemptModel(
  * Streams a tutor reply, falling back down the model chain when a model is over budget,
  * errors, is rate limited, is too slow to start, or returns nothing.
  * Fallback only happens before the first text arrives; once a model starts answering, it finishes.
+ * Throws TutorInputError, before spending anything, if a message contains images or files.
  */
 export async function* streamTutorReply(
   request: TutorRequest
 ): AsyncGenerator<TutorEvent> {
+  assertTextOnly(request.messages);
+
   const period = currentPeriod();
 
   const route: Route = request.chain
@@ -594,6 +632,25 @@ async function runOnDone(
 }
 
 /**
+ * What to show the student instead of an errored stream, for failures they can
+ * act on. Anything else returns undefined and errors the response.
+ */
+function studentMessageFor(
+  error: Error,
+  teacherName: string
+): string | undefined {
+  if (error instanceof TutorInputError) {
+    return error.message;
+  }
+
+  if (error instanceof TutorUnavailableError) {
+    return `Sorry, the tutor is unavailable right now. Please try again in a minute, or message ${teacherName}.`;
+  }
+
+  return undefined;
+}
+
+/**
  * Plain-text streaming Response for an API route. The model that answered is
  * reported through onDone (for logging and saving the conversation), not headers,
  * because headers are sent before the fallback chain settles. A failing onDone
@@ -634,18 +691,19 @@ export function tutorTextResponse(
           return;
         }
 
-        if (error instanceof TutorUnavailableError) {
-          controller.enqueue(
-            encoder.encode(
-              `Sorry, the tutor is unavailable right now. Please try again in a minute, or message ${request.course.teacherName}.`
-            )
-          );
-          controller.close();
+        const message =
+          error instanceof Error
+            ? studentMessageFor(error, request.course.teacherName)
+            : undefined;
+
+        if (message === undefined) {
+          controller.error(error);
 
           return;
         }
 
-        controller.error(error);
+        controller.enqueue(encoder.encode(message));
+        controller.close();
       }
     },
     cancel(reason) {
