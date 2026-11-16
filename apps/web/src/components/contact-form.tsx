@@ -21,20 +21,25 @@ const ContactForm = () => {
 
   const validate = () => {
     const e: Record<string, string> = {};
+
     if (!form.name.trim()) {
       e.name = "Name is required";
     }
+
     if (!form.email.trim()) {
       e.email = "Email is required";
     } else if (!EMAIL_REGEX.test(form.email)) {
       e.email = "Please enter a valid email address";
     }
+
     if (!form.message.trim()) {
       e.message = "Message is required";
     } else if (form.message.trim().length < 10) {
       e.message = "Message must be at least 10 characters";
     }
+
     setErrors(e);
+
     return Object.keys(e).length === 0;
   };
 
@@ -45,6 +50,7 @@ const ContactForm = () => {
       ...currentForm,
       [e.target.name]: e.target.value,
     }));
+
     if (errors[e.target.name]) {
       setErrors((currentErrors) => ({
         ...currentErrors,
@@ -55,8 +61,10 @@ const ContactForm = () => {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!validate()) {
       toast.error("Please fix the errors in the form");
+
       return;
     }
 
@@ -67,8 +75,10 @@ const ContactForm = () => {
 
         if (result.error) {
           toast.error(result.error.message || "Failed to send message.");
+
           return;
         }
+
         toast.success(result.data?.message || "Message sent!");
         setErrors({});
         setForm(initialForm);

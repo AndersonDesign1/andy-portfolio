@@ -56,11 +56,13 @@ type SpotifyTrack = Infer<typeof spotifyTrackSchema>;
 
 const fetcher = async (url: string): Promise<SpotifyTrack | null> => {
   const res = await fetch(url, { cache: "no-store" });
+
   if (!res.ok) {
     throw new Error(`Spotify request failed (${res.status})`);
   }
 
   const parsed = spotifyTrackSchema.safeParse(await res.json());
+
   return parsed.success ? parsed.data : null;
 };
 
@@ -85,6 +87,7 @@ const getAlbumImageUrl = (track: SpotifyTrack, preferredIndex = 0): string => {
   }
 
   const images = track.album?.images;
+
   if (!images || images.length === 0) {
     return PLACEHOLDER_IMAGE;
   }
@@ -98,6 +101,7 @@ const getArtistNames = (artists: { name?: string }[] | undefined): string => {
   }
 
   const names = artists.flatMap((artist) => (artist.name ? [artist.name] : []));
+
   return names.length > 0 ? names.join(", ") : "Unknown artist";
 };
 
@@ -109,6 +113,7 @@ const MusicBars = ({
   variant?: "light" | "dark";
 }) => {
   const bgColor = variant === "light" ? "bg-white" : "bg-foreground";
+
   return (
     <div aria-hidden="true" className="flex h-3 items-end gap-0.5">
       <div
@@ -315,6 +320,7 @@ const SpotifyNowPlaying = () => {
         if (!latestData?.name) {
           return 0;
         }
+
         return latestData.isPlaying
           ? SPOTIFY_POLLING_INTERVAL_PLAYING
           : SPOTIFY_POLLING_INTERVAL_PAUSED;
@@ -336,7 +342,9 @@ const SpotifyNowPlaying = () => {
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 

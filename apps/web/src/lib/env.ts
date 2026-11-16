@@ -2,20 +2,26 @@ import { z } from "zod";
 
 const optionalEmail = z.preprocess((value) => {
   const parsed = z.string().optional().safeParse(value);
+
   if (!parsed.success || !parsed.data) {
     return;
   }
+
   const trimmed = parsed.data.trim();
+
   return trimmed.length > 0 ? trimmed : undefined;
 }, z.email().optional());
 
 const readEnv = (key: string): string | undefined => {
   const raw = process.env[key] ?? import.meta.env[key];
   const parsed = z.string().optional().safeParse(raw);
+
   if (!parsed.success || !parsed.data) {
     return undefined;
   }
+
   const trimmed = parsed.data.trim();
+
   return trimmed.length > 0 ? trimmed : undefined;
 };
 

@@ -62,6 +62,7 @@ const Footer: React.FC = () => (
           >
             {(() => {
               const CustomIcon = link.customIcon;
+
               if (link.icon) {
                 return (
                   <HugeiconsIcon
@@ -72,9 +73,11 @@ const Footer: React.FC = () => (
                   />
                 );
               }
+
               if (CustomIcon) {
                 return <CustomIcon className="size-4" />;
               }
+
               return null;
             })()}
           </a>

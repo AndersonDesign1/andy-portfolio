@@ -10,12 +10,12 @@ export type BudgetCaps = Record<Provider, number>;
 export const DEFAULT_CAPS: BudgetCaps = { neon: 4, openrouter: 5 };
 
 /**
- * Where spend is recorded. Serverless instances don't share memory, so production
- * should back this with a database row per provider per month.
+ * Where spend is recorded. Serverless instances don't share memory, so
+ * production uses PostgresBudgetStore (one row per provider per month).
  */
 export interface BudgetStore {
-  spent(provider: Provider, period: string): Promise<number>;
-  add(provider: Provider, period: string, usd: number): Promise<void>;
+  spent: (provider: Provider, period: string) => Promise<number>;
+  add: (provider: Provider, period: string, usd: number) => Promise<void>;
 }
 
 export class MemoryBudgetStore implements BudgetStore {
@@ -28,6 +28,7 @@ export class MemoryBudgetStore implements BudgetStore {
   add(provider: Provider, period: string, usd: number): Promise<void> {
     const key = `${provider}:${period}`;
     this.#totals.set(key, (this.#totals.get(key) ?? 0) + usd);
+
     return Promise.resolve();
   }
 }

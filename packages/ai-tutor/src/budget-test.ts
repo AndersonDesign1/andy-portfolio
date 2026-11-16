@@ -11,6 +11,7 @@ let failures = 0;
 
 function expect(label: string, ok: boolean, detail: string) {
   console.log(`${ok ? "✓" : "✗"} ${label} — ${detail}`);
+
   if (!ok) {
     failures += 1;
   }
@@ -46,6 +47,7 @@ try {
 
   // Over the cap → Neon skipped, OpenRouter answers and its cost lands in the table.
   await store.add("neon", period, 999);
+
   const reply = await generateTutorReply({
     course: EXAMPLE_COURSE,
     messages: [{ role: "user", content: "what does typeof null return?" }],
@@ -54,6 +56,7 @@ try {
       add: (provider, _p, usd) => store.add(provider, period, usd),
     },
   });
+
   const openrouterTotal = await store.spent("openrouter", period);
   expect(
     "cap enforced from Postgres",
@@ -68,4 +71,5 @@ try {
 console.log(
   failures ? `${failures} check(s) failed` : "All budget checks passed"
 );
+
 process.exitCode = failures ? 1 : 0;

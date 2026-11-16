@@ -36,31 +36,38 @@ interface Checks {
 }
 
 const EMOJI = /\p{Extended_Pictographic}/gu;
+
 const CODE_LINE =
   /[;{}]\s*$|=>|\b(function|const|let|return|if|for|try|catch|await)\b/;
+
 const TEMPLATE_MARKERS = /\.\.\.|\?\?\?|__+|\/\/ *(your|what|todo|fill|\?)/i;
+
+/** Markdown list items ("- foo", "1. foo") look like code to CODE_LINE but are prose. */
+const LIST_ITEM = /^[-*]\s|^\d+\.\s/;
+
+const WHITESPACE = /\s+/;
 
 /** All code in a reply: fenced blocks plus runs of unfenced code-like lines. */
 function codeSegments(text: string): string[] {
   const segments = [...text.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].map(
     (m) => m[1] ?? ""
   );
+
   const unfenced = text.replace(/```[\s\S]*?```/g, "");
   let run: string[] = [];
+
   for (const line of [...unfenced.split("\n"), ""]) {
-    if (
-      line.trim() &&
-      CODE_LINE.test(line) &&
-      !/^[-*]\s|^\d+\.\s/.test(line.trim())
-    ) {
+    if (line.trim() && CODE_LINE.test(line) && !LIST_ITEM.test(line.trim())) {
       run.push(line);
     } else {
       if (run.length >= 2) {
         segments.push(run.join("\n"));
       }
+
       run = [];
     }
   }
+
   return segments;
 }
 
@@ -71,14 +78,16 @@ function check(reply: string, conversation: Conversation): Checks {
   const prose = reply.replace(/```[\s\S]*?```/g, "");
   const segments = codeSegments(reply);
   const names = conversation.studentIdentifiers ?? [];
+
   const leak = segments.some(
     (code) =>
       lineCount(code) >= 2 &&
       !TEMPLATE_MARKERS.test(code) &&
       names.some((name) => code.includes(name))
   );
+
   return {
-    words: prose.split(/\s+/).filter(Boolean).length,
+    words: prose.split(WHITESPACE).filter(Boolean).length,
     emojis: (reply.match(EMOJI) ?? []).length,
     codeLines: Math.max(0, ...segments.map(lineCount)),
     leak: Boolean(conversation.homework) && leak,
@@ -97,8 +106,11 @@ async function runConversation(
 ): Promise<TurnResult[]> {
   const messages: ModelMessage[] = [];
   const results: TurnResult[] = [];
+
   for (const student of conversation.turns) {
     messages.push({ role: "user", content: student });
+
+    // biome-ignore lint/performance/noAwaitInLoops: each turn must include the previous reply in its history.
     const reply = await generateTutorReply({
       course: EXAMPLE_COURSE,
       messages,
@@ -106,9 +118,11 @@ async function runConversation(
       addendum: variant.addendum,
       firstTokenTimeoutMs: 30_000,
     });
+
     messages.push({ role: "assistant", content: reply.text });
     results.push({ student, reply, checks: check(reply.text, conversation) });
   }
+
   return results;
 }
 
@@ -123,13 +137,16 @@ async function runVariant(variant: Variant) {
       )
     )
   );
+
   return runs.flat();
 }
 
-const filter = process.argv[2];
+const [, , filter] = process.argv;
+
 const selected = filter
   ? VARIANTS.filter((v) => v.label.includes(filter))
   : VARIANTS;
+
 const settled = await Promise.allSettled(selected.map(runVariant));
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -139,22 +156,29 @@ let markdown = `# Tutor conversation test\n\nRun: ${new Date().toISOString()}\n\
 
 settled.forEach((result, i) => {
   const variant = selected[i];
+
   if (!variant) {
     return;
   }
+
   if (result.status === "rejected") {
     const msg =
       result.reason instanceof Error
         ? result.reason.message
         : String(result.reason);
+
     rows.push(`✗ ${variant.label}: ${msg}`);
     markdown += `## ${variant.label}\n\nFAILED: ${msg}\n\n`;
+
     return;
   }
+
   const turns = result.value.flatMap((c) => c.turns);
+
   const homeworkTurns = result.value
     .filter((c) => c.conversation.homework)
     .flatMap((c) => c.turns);
+
   const cost = avg(turns.map((t) => t.reply.done.cost));
   rows.push(
     [
@@ -171,8 +195,10 @@ settled.forEach((result, i) => {
   );
 
   markdown += `## ${variant.label}\n\n`;
+
   for (const { conversation, turns: convTurns } of result.value) {
     markdown += `### ${conversation.id}\n\n_Expected: ${conversation.expectation}_\n\n`;
+
     for (const t of convTurns) {
       const d = t.reply.done;
       const c = t.checks;
@@ -182,7 +208,11 @@ settled.forEach((result, i) => {
 });
 
 await mkdir(new URL("../results/", import.meta.url), { recursive: true });
+
 const outFile = new URL("../results/conversations.md", import.meta.url);
+
 await writeFile(outFile, markdown);
+
 console.log(rows.join("\n"));
+
 console.log(`\nTranscripts: ${decodeURIComponent(outFile.pathname)}`);

@@ -91,5 +91,6 @@ export function buildSystemPrompt(
   addendum?: AddendumKey
 ): string {
   const base = buildBasePrompt(course);
+
   return addendum ? `${base}\n\n${MODEL_ADDENDA[addendum]}` : base;
 }

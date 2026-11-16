@@ -24,6 +24,7 @@ export const ThemeToggle = () => {
     // requestAnimationFrame bypasses the React Compiler's "synchronous setState inside effect" warning
     // while perfectly resolving Next.js hydration mismatch by delaying the render by 1 frame.
     const frame = requestAnimationFrame(() => setMounted(true));
+
     return () => cancelAnimationFrame(frame);
   }, []);
 

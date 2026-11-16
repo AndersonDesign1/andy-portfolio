@@ -16,15 +16,18 @@ const looksLikeContentRoot = (root: string): boolean =>
  */
 const resolveContentRoot = (): string => {
   const fromEnv = process.env.GRAFT_CONTENT_ROOT;
+
   if (fromEnv && looksLikeContentRoot(fromEnv)) {
     return fromEnv;
   }
 
   try {
     const require = createRequire(import.meta.url);
+
     const fromPackage = dirname(
       require.resolve("@andy-portfolio/content/package.json")
     );
+
     if (looksLikeContentRoot(fromPackage)) {
       return fromPackage;
     }
@@ -33,6 +36,7 @@ const resolveContentRoot = (): string => {
   }
 
   const cwd = process.cwd();
+
   const guesses = [
     cwd,
     join(cwd, "packages/content"),

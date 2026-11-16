@@ -13,12 +13,15 @@ export const prerender = true;
 
 const documents = await getGraft().listContent("projects");
 const featured: Project[] = [];
+
 for (const document of documents) {
   const project = toProject(document);
+
   if (project.featured) {
     featured.push(project);
   }
 }
+
 const featuredProjects = featured.toSorted(compareOrder);
 ---
 

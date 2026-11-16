@@ -1,4 +1,5 @@
 "use client";
+
 import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
@@ -28,12 +29,14 @@ const trapDialogFocus = (
   const focusableElements = [
     ...dialogElement.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
   ].filter((element) => element.tabIndex >= 0);
+
   const [firstFocusableElement] = focusableElements;
   const lastFocusableElement = focusableElements.at(-1);
 
   if (!firstFocusableElement || !lastFocusableElement) {
     event.preventDefault();
     dialogElement.focus();
+
     return;
   }
 
@@ -42,6 +45,7 @@ const trapDialogFocus = (
   if (!focusIsInsideDialog) {
     event.preventDefault();
     (event.shiftKey ? lastFocusableElement : firstFocusableElement).focus();
+
     return;
   }
 
@@ -462,35 +466,42 @@ const CaseStudyLightbox = ({
 
     const previousBodyOverflow = document.body.style.overflow;
     const dialogElement = dialogRef.current;
+
     const siblingInertStates = dialogElement?.parentElement
-      ? [...dialogElement.parentElement.children]
-          .filter(
-            (element): element is HTMLElement =>
-              element instanceof HTMLElement && element !== dialogElement
-          )
-          .map((element) => [element, element.inert] as const)
+      ? [...dialogElement.parentElement.children].flatMap((element) =>
+          element instanceof HTMLElement && element !== dialogElement
+            ? [[element, element.inert] as const]
+            : []
+        )
       : [];
 
     document.body.style.overflow = "hidden";
+
     for (const [element] of siblingInertStates) {
       element.inert = true;
     }
+
     closeButtonRef.current?.focus();
+
     const handleDocumentKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
         closeLightbox();
+
         return;
       }
+
       if (dialogElement) {
         trapDialogFocus(event, dialogElement);
       }
     };
+
     document.addEventListener("keydown", handleDocumentKeyDown);
 
     return () => {
       document.body.style.overflow = previousBodyOverflow;
       document.removeEventListener("keydown", handleDocumentKeyDown);
+
       for (const [element, wasInert] of siblingInertStates) {
         element.inert = wasInert;
       }
@@ -557,6 +568,7 @@ const CaseStudyPage = ({
     galleryTriggerRef.current = trigger;
     setSelectedImage(src);
   };
+
   const handleCloseLightbox = () => {
     setSelectedImage(null);
     requestAnimationFrame(() => galleryTriggerRef.current?.focus());

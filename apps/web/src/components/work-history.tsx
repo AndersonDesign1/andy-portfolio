@@ -14,6 +14,7 @@ const WorkHistory = () => {
   const filteredExperience = workExperience.filter((job) => {
     const title = job.position.toLowerCase();
     const company = job.company.toLowerCase();
+
     return (
       title.includes("full stack") ||
       title.includes("developer") ||

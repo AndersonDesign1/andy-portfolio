@@ -7,7 +7,10 @@
  */
 import { defineCollection, field, mergePrimitives } from "@usegraft/core";
 
-import * as primitives from "./graft";
+import {
+  collections as primitiveCollections,
+  functions as primitiveFunctions,
+} from "./graft";
 
 const MAX_EXCERPT_LENGTH = 200;
 const MAX_HEADING_LENGTH = 120;
@@ -343,5 +346,5 @@ export const caseStudies = defineCollection({
 
 export const { collections, functions } = mergePrimitives([
   { collections: { "case-studies": caseStudies, posts, projects } },
-  primitives,
+  { collections: primitiveCollections, functions: primitiveFunctions },
 ]);

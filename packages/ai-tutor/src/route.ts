@@ -2,17 +2,17 @@ import type { ModelMessage } from "ai";
 
 const ASSIGNMENT_WORDS =
   /\b(assignment|homework|hw|graded|due (today|tomorrow|tonight)|deadline)\b/i;
+
 const CODE_LINE =
   /[;{}]\s*$|=>|\b(function|const|let|var|return|if|for|while|class|import|console\.log)\b/;
 
 function textOf(message: ModelMessage): string {
-  if (typeof message.content === "string") {
+  if (!Array.isArray(message.content)) {
     return message.content;
   }
+
   return message.content
-    .map((part) =>
-      "text" in part && typeof part.text === "string" ? part.text : ""
-    )
+    .map((part) => (part.type === "text" ? part.text : ""))
     .join("\n");
 }
 
@@ -21,6 +21,7 @@ export function looksLikeCode(text: string): boolean {
   if (text.includes("```")) {
     return true;
   }
+
   return text.split("\n").filter((line) => CODE_LINE.test(line)).length >= 2;
 }
 
@@ -32,10 +33,13 @@ export function classifyRequest(
   messages: ModelMessage[]
 ): "general" | "homework" {
   const lastUser = messages.findLast((m) => m.role === "user");
+
   if (!lastUser) {
     return "general";
   }
+
   const text = textOf(lastUser);
+
   return looksLikeCode(text) || ASSIGNMENT_WORDS.test(text)
     ? "homework"
     : "general";

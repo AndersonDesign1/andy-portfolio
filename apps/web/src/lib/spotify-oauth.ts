@@ -7,18 +7,23 @@ export const escapeHtml = (text: string): string =>
       case '"': {
         return "&quot;";
       }
+
       case "&": {
         return "&amp;";
       }
+
       case "'": {
         return "&#039;";
       }
+
       case "<": {
         return "&lt;";
       }
+
       case ">": {
         return "&gt;";
       }
+
       default: {
         return character;
       }
@@ -37,8 +42,10 @@ export const readCookieValue = (
 
   for (const part of cookieHeader.split(";")) {
     const [rawKey, ...rawValueParts] = part.trim().split("=");
+
     if (rawKey === name) {
       const rawValue = rawValueParts.join("=");
+
       return rawValue ? decodeURIComponent(rawValue) : null;
     }
   }
@@ -77,6 +84,7 @@ export const clearOAuthStateCookie = (secure: boolean): string => {
 
 export const appendSetCookie = (headers: Headers, cookie: string): Headers => {
   headers.append("Set-Cookie", cookie);
+
   return headers;
 };
 
@@ -88,6 +96,7 @@ export const spotifyOAuthHtmlPage = (
   const headers = new Headers({
     "Content-Type": "text/html; charset=utf-8",
   });
+
   if (options?.setCookie) {
     appendSetCookie(headers, options.setCookie);
   }

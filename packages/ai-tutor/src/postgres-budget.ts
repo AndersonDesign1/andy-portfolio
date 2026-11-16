@@ -1,8 +1,13 @@
 import { neon } from "@neondatabase/serverless";
+import { z } from "zod";
+
 import type { BudgetStore } from "./budget.ts";
 import type { Provider } from "./models.ts";
 
 type Sql = ReturnType<typeof neon>;
+
+/** Postgres `numeric` arrives as a string to keep its precision. */
+const spendRows = z.array(z.object({ usd: z.string() }));
 
 /**
  * One row per provider per month. Additive table; safe to run more than once.
@@ -35,6 +40,7 @@ export class PostgresBudgetStore implements BudgetStore {
         "PostgresBudgetStore needs DATABASE_URL (run `neon env pull` in packages/ai-tutor)"
       );
     }
+
     this.#sql = neon(connectionString);
   }
 
@@ -43,9 +49,12 @@ export class PostgresBudgetStore implements BudgetStore {
   }
 
   async spent(provider: Provider, period: string): Promise<number> {
-    const rows = (await this.#sql`
-      SELECT usd FROM tutor_spend WHERE provider = ${provider} AND period = ${period}
-    `) as { usd: string }[];
+    const rows = spendRows.parse(
+      await this.#sql`
+        SELECT usd FROM tutor_spend WHERE provider = ${provider} AND period = ${period}
+      `
+    );
+
     return rows[0] ? Number(rows[0].usd) : 0;
   }
 

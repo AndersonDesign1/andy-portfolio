@@ -47,6 +47,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
     if (activeCategory === "All") {
       return projects;
     }
+
     if (activeCategory === "Full Stack") {
       return projects.filter((project) =>
         project.techStack.some((tech) =>
@@ -60,6 +61,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
         )
       );
     }
+
     if (activeCategory === "SEO") {
       return projects.filter((project) =>
         project.techStack.some((tech) =>
@@ -75,6 +77,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
         )
       );
     }
+
     if (activeCategory === "Web Design") {
       return projects.filter((project) =>
         project.techStack.some((tech) =>
@@ -82,6 +85,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
         )
       );
     }
+
     return [];
   })();
 

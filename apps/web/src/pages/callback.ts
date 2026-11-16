@@ -9,5 +9,6 @@ export const prerender = false;
 export const GET: APIRoute = ({ url }) => {
   const target = new URL("/api/spotify/callback", url.origin);
   target.search = url.search;
+
   return Response.redirect(target.toString(), 302);
 };

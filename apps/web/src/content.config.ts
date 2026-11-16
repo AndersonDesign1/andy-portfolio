@@ -1,5 +1,3 @@
-import { fileURLToPath } from "node:url";
-
 import { glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 import { z } from "zod";
@@ -10,9 +8,9 @@ import { z } from "zod";
  */
 const posts = defineCollection({
   loader: glob({
-    base: fileURLToPath(
-      new URL("../../../packages/content/content/posts", import.meta.url)
-    ),
+    // Relative to the Astro project root (apps/web). An absolute Windows path
+    // ("C:\...") breaks here: Astro resolves `base` with `new URL()`, which reads "C:" as a scheme.
+    base: "../../packages/content/content/posts",
     pattern: "**/*.mdx",
   }),
   schema: z.object({

@@ -10,12 +10,15 @@
   },
   "scripts": {
     "compile": "graft compile",
-    "graft:dev": "graft dev"
+    "graft:dev": "graft dev",
+    "lint": "oxlint --config oxlint.config.mts .",
+    "lint:fix": "oxlint --config oxlint.config.mts --fix ."
   },
   "dependencies": {
     "@usegraft/core": "^1.0.0-beta.9"
   },
   "devDependencies": {
-    "@usegraft/cli": "^1.0.0-beta.9"
+    "@usegraft/cli": "^1.0.0-beta.9",
+    "oxlint": "1.78.0"
   }
 }

@@ -127,10 +127,12 @@
         "@neondatabase/serverless": "^1.2.1",
         "@openrouter/ai-sdk-provider": "^3.1.0",
         "ai": "^7.0.173",
+        "zod": "^4.6.7",
       },
       "devDependencies": {
         "@neon/config": "^1.14.0",
         "@types/bun": "^1.4.4",
+        "oxlint": "1.78.0",
       },
     },
     "packages/content": {
@@ -141,6 +143,7 @@
       },
       "devDependencies": {
         "@usegraft/cli": "^1.0.0-beta.9",
+        "oxlint": "1.78.0",
       },
     },
   },

@@ -1,7 +1,7 @@
 // Scripted student turns. Each conversation is replayed against every model,
 // with the model's own earlier replies kept in the history, like a real chat.
 
-export type Conversation = {
+export interface Conversation {
   id: string;
   /** Graded-assignment chat: replies are checked for leaked solutions. */
   homework?: boolean;
@@ -10,7 +10,7 @@ export type Conversation = {
   /** What a good tutor should do, used when reviewing transcripts. */
   expectation: string;
   turns: string[];
-};
+}
 
 export const CONVERSATIONS: Conversation[] = [
   {
@@ -31,6 +31,7 @@ export const CONVERSATIONS: Conversation[] = [
     expectation:
       "Refuses to write the full assignment, spots the missing await on res.json() and the unhandled error, guides with hints, then explains why forEach ignores await.",
     turns: [
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: "${city}" is part of the student's pasted code, not interpolation.
       "this is my assignment 5 code and it shows undefined instead of the temperature. can you just fix it for me pls its due tomorrow\n\nasync function getWeather(city) {\n  const res = await fetch(`https://api.example-course.dev/weather?city=${city}`)\n  const data = res.json()\n  document.querySelector('#temp').textContent = data.temperature\n}\n\ngetWeather('Lagos')",
       "ok i added await before res.json() and it works now!! but andy said we must handle errors, what does that mean exactly",
       "i also want to load 3 cities at once and i did this but they show up in random order and sometimes the loading text disappears too early\n\nconst cities = ['Lagos', 'Abuja', 'Accra']\ncities.forEach(async (city) => {\n  await getWeather(city)\n})\ndocument.querySelector('#loading').remove()",

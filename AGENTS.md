@@ -9,6 +9,7 @@ Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 | Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` — live on Vercel |
 | Web (archive) | `apps/web-next` | `3001` | Next.js 16.4 — workspace, local only, same Graft CMS |
 | Shared CMS | `packages/content` | — | Graft schema + MDX for both apps |
+| Student tutor AI | `packages/ai-tutor` | — | Prompts, Neon AI Gateway → OpenRouter fallback, Postgres spend caps. See its README |
 
 ### Package manager
 
@@ -58,13 +59,24 @@ Next is a **workspace** so `bun dev` / `bun lint` / `bun build` include it. It i
 - Astro React islands are separate trees: any island using Motion `m.*` must wrap with `MotionRoot` (`apps/web/src/components/motion-root.tsx`). AppShell already provides LazyMotion for navbar/Spotify.
 - After file edits in `apps/web`, `apps/web/.cursor/hooks.json` `afterFileEdit` runs `bun run fix` (`ultracite fix`). Commit autofixes or CI lint fails. **This is the only hooks file in the repo** — do not add a root or web-next Ultracite hook (`bun x ultracite` cannot resolve web’s Oxlint stack). Next lint is `biome check`.
 - `apps/web/CLAUDE.md` is a **symlink** to `AGENTS.md` (git mode 120000). Windows checkouts without `core.symlinks` materialize it as a text file containing the literal string `AGENTS.md`; formatting it appends a newline and rewrites the symlink target to `AGENTS.md\n`, breaking it on macOS/Linux/CI. It is listed in `ignorePatterns` in `apps/web/oxfmt.config.ts` — do not remove that entry. Before the entry existed, the format phase failed, and because `ultracite check` aborts before linting, **oxlint and all anti-slop rules were silently skipped** by `bun run lint`.
+- Astro `glob()` loader `base` must be a path **relative to `apps/web`** (see `src/content.config.ts`). An absolute Windows path (`C:\...`) fails `astro check`/`build` with "The URL must be of scheme file", because Astro resolves `base` with `new URL()`.
 - Line endings are pinned to LF by the root `.gitattributes` (`* text=auto eol=lf`). Oxfmt treats CRLF as a format error, so a Windows checkout with `core.autocrlf=true` fails lint on every file. Set `git config core.autocrlf false` locally.
 
 ### Anti-slop coverage
 
-Anti-slop runs in **`apps/web`** via `oxlint.config.ts` (full Ultracite Oxlint stack + anti-slop), wired into `bun run lint` (turbo).
+All 18 upstream rules are enabled at `error`. The list lives in one place, `tools/oxlint/anti-slop.shared.mts`, and every workspace below imports it. All are wired into `bun run lint` (turbo):
 
-`tools/oxlint/anti-slop/` itself stays unlinted and unformatted — it is vendored from upstream.
+| Workspace | Config | Rules |
+| --- | --- | --- |
+| `apps/web` | `oxlint.config.ts` | Full Ultracite Oxlint stack + `antiSlopRules` |
+| `packages/ai-tutor` | `oxlint.config.mts` | `antiSlopOnlyConfig` (anti-slop only; Biome formats) |
+| `packages/content` | `oxlint.config.mts` | `antiSlopOnlyConfig` |
+
+`apps/web-next` is **not** covered (Biome only). A dry run found 179 findings there, 161 of them autofixable spacing.
+
+`require-readable-spacing` autofixes blank lines; run `lint:fix` in the workspace. Fix other findings at the source (parse at the boundary with zod, discriminate on `type`, `flatMap` instead of `filter().map()`); do not add casts or suppress rules.
+
+`tools/oxlint/anti-slop/` is vendored byte-identical from upstream and stays unlinted and unformatted. `UPSTREAM.md` records the commit (`13909c9`). To update, stage the new upstream copy in a temp dir, diff it, then replace and keep the local `package.json`. Upstream is tested against `oxlint` / `@oxlint/plugins` **1.78.0**, the version pinned here.
 
 ### Biome (root / packages / tools)
 
@@ -72,10 +84,10 @@ Root Biome presets live under **`ultracite/biome/*`** only and need **Biome >= 2
 
 `ultracite` is a **root devDependency** solely so these `extends` resolve — it is not otherwise used at the root.
 
-Scope: root `biome.jsonc` restricts `files.includes` to everything except three trees, each with a **`!!` force-ignore**:
+Scope: root `biome.jsonc` force-ignores three trees. The extended Ultracite preset already includes `**`, and since Biome 2.2 a folder is ignored without a trailing `/**`; Biome's own lint flags both older forms:
 
 ```jsonc
-"includes": ["**", "!!apps/web/**", "!!apps/web-next/**", "!!tools/oxlint/anti-slop/**"]
+"includes": ["!!apps/web", "!!apps/web-next", "!!tools/oxlint/anti-slop"]
 ```
 
 - `apps/web` — Oxfmt/Oxlint territory; two formatters on the same files rewrite each other.

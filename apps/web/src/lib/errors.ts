@@ -113,5 +113,6 @@ export const interpretError = (status: number): ErrorInfo => {
     status >= CLIENT_ERROR_START && status < SERVER_ERROR_START
       ? FALLBACK_CLIENT
       : FALLBACK_SERVER;
+
   return { ...fallback, status };
 };

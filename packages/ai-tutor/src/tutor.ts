@@ -1,4 +1,12 @@
-import { type ModelMessage, type SystemModelMessage, streamText } from "ai";
+import {
+  APICallError,
+  type ModelMessage,
+  type ProviderMetadata,
+  type SystemModelMessage,
+  streamText,
+} from "ai";
+import { z } from "zod";
+
 import {
   type BudgetCaps,
   type BudgetStore,
@@ -81,18 +89,32 @@ export class TutorUnavailableError extends Error {
   }
 }
 
-function classifyError(error: unknown): FallbackReason {
-  const status =
-    typeof error === "object" && error !== null && "statusCode" in error
-      ? error.statusCode
-      : undefined;
-  const message = error instanceof Error ? error.message : String(error);
-  if (
-    status === 429 ||
-    /rate limit|too many requests|REQUEST_LIMIT_EXCEEDED/i.test(message)
-  ) {
+/** Longest pause allowed between chunks once a reply has started. */
+const STALL_TIMEOUT_MS = 15_000;
+
+/** Hard ceiling for one model's whole reply (a ~150-word answer takes 2-15s). */
+const TOTAL_TIMEOUT_MS = 60_000;
+
+/** OpenRouter's usage accounting, present when a request sets `usage: { include: true }`. */
+const openrouterBilling = z.object({ usage: z.object({ cost: z.number() }) });
+
+function billedCost(
+  metadata: ProviderMetadata | undefined
+): number | undefined {
+  const parsed = openrouterBilling.safeParse(metadata?.openrouter);
+
+  return parsed.success ? parsed.data.usage.cost : undefined;
+}
+
+function classifyError(error: Error): FallbackReason {
+  const rateLimited =
+    (APICallError.isInstance(error) && error.statusCode === 429) ||
+    /rate limit|too many requests|REQUEST_LIMIT_EXCEEDED/i.test(error.message);
+
+  if (rateLimited) {
     return "rate_limit";
   }
+
   return "error";
 }
 
@@ -100,7 +122,9 @@ function cleanHistory(messages: ModelMessage[], max: number): ModelMessage[] {
   const chat = messages.filter(
     (m) => m.role === "user" || m.role === "assistant"
   );
+
   const trimmed = chat.slice(-max);
+
   // A conversation must start with the student, not a dangling tutor reply.
   return trimmed[0]?.role === "assistant" ? trimmed.slice(1) : trimmed;
 }
@@ -133,10 +157,12 @@ export async function* streamTutorReply(
   const period = currentPeriod();
   const route = request.chain ? "forced" : classifyRequest(request.messages);
   const chain = request.chain ?? ROUTES[route === "forced" ? "general" : route];
+
   const messages = cleanHistory(
     request.messages,
     request.maxHistoryMessages ?? 12
   );
+
   const attempts: TutorUnavailableError["attempts"] = [];
 
   for (const key of chain) {
@@ -153,13 +179,16 @@ export async function* streamTutorReply(
     }
 
     const timeout = new AbortController();
+
     const timer = setTimeout(
       () => timeout.abort(),
       request.firstTokenTimeoutMs ?? 10_000
     );
+
     const signal = request.signal
       ? AbortSignal.any([request.signal, timeout.signal])
       : timeout.signal;
+
     const started = performance.now();
     let answering = false;
 
@@ -175,12 +204,17 @@ export async function* streamTutorReply(
         maxOutputTokens: profile.maxOutputTokens,
         providerOptions: profile.providerOptions,
         abortSignal: signal,
+        // The first-word wait is our own timer above: the SDK's `firstChunkMs`
+        // also counts hidden reasoning, which the student never sees.
+        // These catch a reply that stalls mid-answer or drags on.
+        timeout: { chunkMs: STALL_TIMEOUT_MS, totalMs: TOTAL_TIMEOUT_MS },
         maxRetries: 0,
         // Errors are handled from fullStream below; stop the SDK also logging them.
         onError: () => undefined,
       });
 
       let finish: { usage: UsageCounts; finishReason: string } | undefined;
+
       for await (const part of result.fullStream) {
         if (part.type === "text-delta" && part.text.length > 0) {
           if (!answering) {
@@ -188,6 +222,7 @@ export async function* streamTutorReply(
             clearTimeout(timer);
             yield { type: "start", model: key, route };
           }
+
           yield { type: "text", text: part.text };
         } else if (part.type === "error") {
           throw part.error;
@@ -221,10 +256,11 @@ export async function* streamTutorReply(
         output: 0,
         reasoning: 0,
       };
+
       const metadata = await result.providerMetadata;
-      const billed = (
-        metadata?.openrouter as { usage?: { cost?: number } } | undefined
-      )?.usage?.cost;
+
+      const billed = billedCost(metadata);
+
       const cost = billed ?? estimateCost(profile.price, usage);
       await request.budget?.add(profile.provider, period, cost);
 
@@ -237,18 +273,27 @@ export async function* streamTutorReply(
         ms: Math.round(performance.now() - started),
         finishReason: finish?.finishReason ?? "unknown",
       };
+
       return;
     } catch (error) {
       if (request.signal?.aborted) {
         throw error;
       }
+
       if (answering) {
         // Text already reached the student; switching models mid-answer would garble it.
         throw error;
       }
-      const reason = timeout.signal.aborted ? "timeout" : classifyError(error);
-      const detail =
-        error instanceof Error ? error.message.slice(0, 200) : undefined;
+
+      // Providers throw Error subclasses; wrap anything else so it is handled the same way.
+      const failure = error instanceof Error ? error : new Error(String(error));
+
+      const reason = timeout.signal.aborted
+        ? "timeout"
+        : classifyError(failure);
+
+      const detail = failure.message.slice(0, 200);
+
       attempts.push({ model: key, reason, detail });
       yield { type: "fallback", model: key, reason, detail };
     } finally {
@@ -287,9 +332,11 @@ export async function generateTutorReply(
       done = event;
     }
   }
+
   if (!(start && done)) {
     throw new Error("Tutor stream ended without a reply");
   }
+
   return { text, model: start.model, route: start.route, fallbacks, done };
 }
 
@@ -305,6 +352,7 @@ export function tutorTextResponse(
   ) => void | Promise<void>
 ): Response {
   const encoder = new TextEncoder();
+
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
@@ -315,6 +363,7 @@ export function tutorTextResponse(
             await onDone?.(event);
           }
         }
+
         controller.close();
       } catch (error) {
         if (error instanceof TutorUnavailableError) {
@@ -324,12 +373,15 @@ export function tutorTextResponse(
             )
           );
           controller.close();
+
           return;
         }
+
         controller.error(error);
       }
     },
   });
+
   return new Response(body, {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
