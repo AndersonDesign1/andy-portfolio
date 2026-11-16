@@ -318,6 +318,34 @@ for (const [label, text, expected] of routes) {
   );
 }
 
+// 7. A failing onDone hook (e.g. saving the chat) must not error a delivered reply.
+{
+  const response = tutorTextResponse(
+    {
+      course: EXAMPLE_COURSE,
+      messages: ask,
+      chain: ["luna"],
+      models: { luna: profile("luna", healthyModel("Here is the answer.")) },
+    },
+    () => Promise.reject(new Error("database is down"))
+  );
+
+  let body = "";
+  let streamFailed = false;
+
+  try {
+    body = await response.text();
+  } catch {
+    streamFailed = true;
+  }
+
+  expect(
+    "failing onDone keeps the delivered reply intact",
+    !streamFailed && body === "Here is the answer.",
+    `body "${body}", stream ${streamFailed ? "errored" : "closed normally"}`
+  );
+}
+
 console.log(
   failures ? `\n${failures} check(s) failed` : "\nAll unit checks passed"
 );
