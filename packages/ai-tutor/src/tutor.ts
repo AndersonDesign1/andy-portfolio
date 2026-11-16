@@ -453,6 +453,16 @@ async function* attemptModel(
     return refused;
   }
 
+  // The student may have left while the reservation was in flight. Nothing has
+  // been sent to the provider yet, so release it rather than count it as spend.
+  if (request.signal?.aborted) {
+    await settleSpend(request, profile.provider, context.period, {
+      reserved,
+      actual: 0,
+    });
+    request.signal.throwIfAborted();
+  }
+
   const firstWord = new AbortController();
 
   const timer = setTimeout(

@@ -503,6 +503,52 @@ for (const [label, text, expected] of routes) {
   );
 }
 
+// 10. The student leaves while the reservation is in flight: no provider call,
+//     and the reservation is released instead of counted as spend.
+{
+  const budget = new MemoryBudgetStore();
+  const leave = new AbortController();
+  const model = healthyModel();
+
+  const slowStore: BudgetStore = {
+    spent: (provider, period) => budget.spent(provider, period),
+    reserve: async (provider, period, usd, cap) => {
+      const granted = await budget.reserve(provider, period, usd, cap);
+      leave.abort(new Error("student closed the page"));
+      return granted;
+    },
+    settle: (provider, period, reserved, actual) =>
+      budget.settle(provider, period, reserved, actual),
+    add: (provider, period, usd) => budget.add(provider, period, usd),
+  };
+
+  let outcome = "answered";
+
+  try {
+    await generateTutorReply({
+      course: EXAMPLE_COURSE,
+      messages: ask,
+      chain: ["luna", "haiku"],
+      models: {
+        luna: profile("luna", model),
+        haiku: profile("haiku", healthyModel()),
+      },
+      budget: slowStore,
+      signal: leave.signal,
+    });
+  } catch {
+    outcome = "cancelled";
+  }
+
+  const spend = await budget.spent("neon", currentPeriod());
+
+  expect(
+    "cancel during reservation releases it and calls no provider",
+    outcome === "cancelled" && model.doStreamCalls.length === 0 && spend === 0,
+    `${outcome}; provider called ${model.doStreamCalls.length}×; neon spend $${spend}`
+  );
+}
+
 console.log(
   failures ? `\n${failures} check(s) failed` : "\nAll unit checks passed"
 );
