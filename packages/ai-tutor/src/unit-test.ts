@@ -117,6 +117,39 @@ for (const [label, text, expected] of routes) {
   expect(`route: ${label}`, got === expected, `${got} (expected ${expected})`);
 }
 
+// Follow-ups keep the homework route while a recent student turn was homework.
+{
+  const homeworkThenFollowUp: ModelMessage[] = [
+    { role: "user", content: "my assignment 5 shows undefined, pls fix" },
+    { role: "assistant", content: "Look at the res.json() line..." },
+    { role: "user", content: "what does handle errors mean exactly?" },
+  ];
+
+  const longAgo: ModelMessage[] = [
+    { role: "user", content: "my assignment 5 shows undefined, pls fix" },
+    { role: "assistant", content: "..." },
+    { role: "user", content: "thanks!" },
+    { role: "assistant", content: "..." },
+    { role: "user", content: "what is a closure?" },
+    { role: "assistant", content: "..." },
+    { role: "user", content: "and what is scope?" },
+  ];
+
+  const followUp = classifyRequest(homeworkThenFollowUp);
+  const stale = classifyRequest(longAgo);
+
+  expect(
+    "route: follow-up in a homework chat stays homework",
+    followUp === "homework",
+    followUp
+  );
+  expect(
+    "route: homework more than 3 student turns ago no longer applies",
+    stale === "general",
+    stale
+  );
+}
+
 // 2. Empty reply: falls back, and its tokens are still charged to the budget.
 {
   const budget = new MemoryBudgetStore();
@@ -438,69 +471,98 @@ for (const [label, text, expected] of routes) {
 // 8. Image/file parts: rejected before any model or budget is touched; the
 //    classifier alone routes them as homework.
 {
-  const screenshot: ModelMessage[] = [
-    {
-      role: "user",
-      content: [
-        { type: "text", text: "why is this wrong?" },
+  const mediaTurns: [string, ModelMessage[]][] = [
+    [
+      "image",
+      [
         {
-          type: "image",
-          image: new URL("https://example.test/assignment-5.png"),
+          role: "user",
+          content: [
+            { type: "text", text: "why is this wrong?" },
+            {
+              type: "image",
+              image: new URL("https://example.test/assignment-5.png"),
+            },
+          ],
         },
       ],
-    },
+    ],
+    [
+      "file",
+      [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "here is my code" },
+            {
+              type: "file",
+              data: new URL("https://example.test/assignment-5.pdf"),
+              mediaType: "application/pdf",
+            },
+          ],
+        },
+      ],
+    ],
   ];
 
-  const budget = new MemoryBudgetStore();
-  const model = healthyModel();
-  let rejected = "";
+  const results = await Promise.all(
+    mediaTurns.map(async ([kind, messages]) => {
+      const budget = new MemoryBudgetStore();
+      const model = healthyModel();
+      let rejected = "";
 
-  try {
-    await generateTutorReply({
-      course: EXAMPLE_COURSE,
-      messages: screenshot,
-      chain: ["luna"],
-      models: { luna: profile("luna", model) },
-      budget,
-    });
-  } catch (error) {
-    rejected =
-      error instanceof TutorInputError
-        ? error.message
-        : `other: ${String(error)}`;
+      try {
+        await generateTutorReply({
+          course: EXAMPLE_COURSE,
+          messages,
+          chain: ["luna"],
+          models: { luna: profile("luna", model) },
+          budget,
+        });
+      } catch (error) {
+        rejected =
+          error instanceof TutorInputError
+            ? error.message
+            : `other: ${String(error)}`;
+      }
+
+      const body = await tutorTextResponse({
+        course: EXAMPLE_COURSE,
+        messages,
+        chain: ["luna"],
+        models: { luna: profile("luna", healthyModel()) },
+      }).text();
+
+      return {
+        kind,
+        rejected,
+        calls: model.doStreamCalls.length,
+        spend: await budget.spent("neon", currentPeriod()),
+        body,
+        route: classifyRequest(messages),
+      };
+    })
+  );
+
+  for (const r of results) {
+    expect(
+      `${r.kind} parts are rejected before any spend`,
+      r.rejected.startsWith("The tutor accepts text only") &&
+        r.calls === 0 &&
+        r.spend === 0,
+      `${r.rejected || "not rejected"}; model called ${r.calls}×; spend $${r.spend}`
+    );
+    expect(
+      `${r.kind}: the HTTP response explains text-only input`,
+      r.body.startsWith("The tutor accepts text only"),
+      `"${r.body}"`
+    );
+    expect(
+      `${r.kind}: classifier routes the turn as homework`,
+      r.route === "homework",
+      r.route
+    );
   }
-
-  const spend = await budget.spent("neon", currentPeriod());
-
-  expect(
-    "image parts are rejected before any spend",
-    rejected.startsWith("The tutor accepts text only") &&
-      model.doStreamCalls.length === 0 &&
-      spend === 0,
-    `${rejected || "not rejected"}; model called ${model.doStreamCalls.length}×; spend $${spend}`
-  );
-
-  const response = tutorTextResponse({
-    course: EXAMPLE_COURSE,
-    messages: screenshot,
-    chain: ["luna"],
-    models: { luna: profile("luna", healthyModel()) },
-  });
-
-  const body = await response.text();
-
-  expect(
-    "the HTTP response explains text-only input",
-    body.startsWith("The tutor accepts text only"),
-    `"${body}"`
-  );
-
-  const route = classifyRequest(screenshot);
-  expect(
-    "classifier routes media turns as homework",
-    route === "homework",
-    route
-  );
 }
 
 // 10. The student leaves while the reservation is in flight: no provider call,
