@@ -515,6 +515,7 @@ for (const [label, text, expected] of routes) {
     reserve: async (provider, period, usd, cap) => {
       const granted = await budget.reserve(provider, period, usd, cap);
       leave.abort(new Error("student closed the page"));
+
       return granted;
     },
     settle: (provider, period, reserved, actual) =>
