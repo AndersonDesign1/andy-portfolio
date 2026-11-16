@@ -612,75 +612,101 @@ for (const [label, text, expected] of routes) {
   );
 }
 
-// 11. A provider that reports no usage: the cost is unknown, so the full
-//     reservation is kept instead of settling the paid request to $0.
+// 11. A provider that reports no usage, or only input or only output: the cost
+//     is unknown, so the full reservation is kept instead of settling to $0 or
+//     to a partial cost.
 {
-  const budget = new MemoryBudgetStore();
-  const settled: number[] = [];
-
-  const watched: BudgetStore = {
-    spent: (provider, period) => budget.spent(provider, period),
-    reserve: (provider, period, usd, cap) =>
-      budget.reserve(provider, period, usd, cap),
-    settle: (provider, period, reservedUsd, actualUsd) => {
-      settled.push(reservedUsd, actualUsd);
-
-      return budget.settle(provider, period, reservedUsd, actualUsd);
-    },
-    add: (provider, period, usd) => budget.add(provider, period, usd),
-  };
-
-  const noUsage = new MockLanguageModelV4({
-    doStream: () =>
-      Promise.resolve({
-        stream: new ReadableStream({
-          start(controller) {
-            controller.enqueue({ type: "stream-start", warnings: [] });
-            controller.enqueue({ type: "text-start", id: "t" });
-            controller.enqueue({ type: "text-delta", id: "t", delta: "Hi." });
-            controller.enqueue({ type: "text-end", id: "t" });
-            controller.enqueue({
-              type: "finish",
-              finishReason: { unified: "stop", raw: undefined },
-              usage: {
-                inputTokens: {
-                  total: undefined,
-                  noCache: undefined,
-                  cacheRead: undefined,
-                  cacheWrite: undefined,
+  /** A reply whose finish event reports the given token totals (undefined = missing). */
+  function modelReporting(
+    input: number | undefined,
+    output: number | undefined
+  ) {
+    return new MockLanguageModelV4({
+      doStream: () =>
+        Promise.resolve({
+          stream: new ReadableStream({
+            start(controller) {
+              controller.enqueue({ type: "stream-start", warnings: [] });
+              controller.enqueue({ type: "text-start", id: "t" });
+              controller.enqueue({ type: "text-delta", id: "t", delta: "Hi." });
+              controller.enqueue({ type: "text-end", id: "t" });
+              controller.enqueue({
+                type: "finish",
+                finishReason: { unified: "stop", raw: undefined },
+                usage: {
+                  inputTokens: {
+                    total: input,
+                    noCache: input,
+                    cacheRead: undefined,
+                    cacheWrite: undefined,
+                  },
+                  outputTokens: {
+                    total: output,
+                    text: output,
+                    reasoning: undefined,
+                  },
                 },
-                outputTokens: {
-                  total: undefined,
-                  text: undefined,
-                  reasoning: undefined,
-                },
-              },
-            });
-            controller.close();
-          },
+              });
+              controller.close();
+            },
+          }),
         }),
-      }),
-  });
+    });
+  }
 
-  const reply = await generateTutorReply({
-    course: EXAMPLE_COURSE,
-    messages: ask,
-    chain: ["luna"],
-    models: { luna: profile("luna", noUsage) },
-    budget: watched,
-  });
+  const cases: [string, number | undefined, number | undefined][] = [
+    ["no usage", undefined, undefined],
+    ["input only", 1000, undefined],
+    ["output only", undefined, 200],
+  ];
 
-  const [reserved = 0, actual = -1] = settled;
-  const spend = await budget.spent("neon", currentPeriod());
+  const results = await Promise.all(
+    cases.map(async ([label, input, output]) => {
+      const budget = new MemoryBudgetStore();
+      const settled: number[] = [];
 
-  expect(
-    "missing usage keeps the reservation instead of settling to $0",
-    reserved > 0 &&
-      actual === reserved &&
-      Math.abs(spend - reserved) < 1e-12 &&
-      reply.done.cost === reserved,
-    `reserved $${reserved.toFixed(6)}, settled to $${actual.toFixed(6)}, spend $${spend.toFixed(6)}`
+      const watched: BudgetStore = {
+        spent: (provider, period) => budget.spent(provider, period),
+        reserve: (provider, period, usd, cap) =>
+          budget.reserve(provider, period, usd, cap),
+        settle: (provider, period, reservedUsd, actualUsd) => {
+          settled.push(reservedUsd, actualUsd);
+
+          return budget.settle(provider, period, reservedUsd, actualUsd);
+        },
+        add: (provider, period, usd) => budget.add(provider, period, usd),
+      };
+
+      const reply = await generateTutorReply({
+        course: EXAMPLE_COURSE,
+        messages: ask,
+        chain: ["luna"],
+        models: { luna: profile("luna", modelReporting(input, output)) },
+        budget: watched,
+      });
+
+      const [reserved = 0, actual = -1] = settled;
+
+      return {
+        label,
+        reserved,
+        actual,
+        spend: await budget.spent("neon", currentPeriod()),
+        cost: reply.done.cost,
+      };
+    })
   );
+
+  for (const r of results) {
+    expect(
+      `${r.label}: keeps the full reservation`,
+      r.reserved > 0 &&
+        r.actual === r.reserved &&
+        Math.abs(r.spend - r.reserved) < 1e-12 &&
+        r.cost === r.reserved,
+      `reserved $${r.reserved.toFixed(6)}, settled to $${r.actual.toFixed(6)}, spend $${r.spend.toFixed(6)}`
+    );
+  }
 }
 
 console.log(
