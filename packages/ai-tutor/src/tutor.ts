@@ -193,21 +193,30 @@ function usageFrom(usage: LanguageModelUsage): UsageCounts {
   };
 }
 
+const utf8 = new TextEncoder();
+
+/** Extra room for provider overhead tokens (chat template, role markers). */
+const PROMPT_OVERHEAD_TOKENS = 256;
+
 /**
- * Worst-case cost of one attempt: every prompt token billed uncached (about
- * 4 characters per token, rounded up) plus the full output budget.
+ * Worst-case cost of one attempt: the full output budget plus an upper bound on
+ * input tokens, billed uncached. Every token covers at least one UTF-8 byte, so
+ * the prompt's byte length (as serialized JSON, which only adds bytes) bounds
+ * its token count; ~4 characters per token is only the average and can
+ * undercount dense text. The extra input reserved costs fractions of a cent.
  */
 function reservationFor(
   profile: ModelProfile,
   instructions: SystemModelMessage,
   messages: ModelMessage[]
 ): number {
-  const characters =
-    instructions.content.length + JSON.stringify(messages).length;
+  const promptBytes =
+    utf8.encode(instructions.content).length +
+    utf8.encode(JSON.stringify(messages)).length;
 
   return estimateCost(profile.price, {
     ...NO_USAGE,
-    input: Math.ceil(characters / 4),
+    input: promptBytes + PROMPT_OVERHEAD_TOKENS,
     output: profile.maxOutputTokens,
   });
 }
