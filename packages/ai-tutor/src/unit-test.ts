@@ -624,6 +624,7 @@ for (const [label, text, expected] of routes) {
       budget.reserve(provider, period, usd, cap),
     settle: (provider, period, reservedUsd, actualUsd) => {
       settled.push(reservedUsd, actualUsd);
+
       return budget.settle(provider, period, reservedUsd, actualUsd);
     },
     add: (provider, period, usd) => budget.add(provider, period, usd),
