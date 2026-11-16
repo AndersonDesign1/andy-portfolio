@@ -651,6 +651,27 @@ function studentMessageFor(
 }
 
 /**
+ * End the response after a failure: a short note for failures the student can
+ * act on, otherwise an errored stream.
+ */
+function endWithFailure(
+  controller: ReadableStreamDefaultController<Uint8Array>,
+  failure: Error,
+  teacherName: string
+): void {
+  const message = studentMessageFor(failure, teacherName);
+
+  if (message === undefined) {
+    controller.error(failure);
+
+    return;
+  }
+
+  controller.enqueue(new TextEncoder().encode(message));
+  controller.close();
+}
+
+/**
  * Plain-text streaming Response for an API route. The model that answered is
  * reported through onDone (for logging and saving the conversation), not headers,
  * because headers are sent before the fallback chain settles. A failing onDone
@@ -687,23 +708,14 @@ export function tutorTextResponse(
 
         controller.close();
       } catch (error) {
-        if (cancelled.signal.aborted) {
-          return;
+        if (!cancelled.signal.aborted) {
+          // Providers throw Error subclasses; wrap anything else the same way.
+          endWithFailure(
+            controller,
+            error instanceof Error ? error : new Error(String(error)),
+            request.course.teacherName
+          );
         }
-
-        const message =
-          error instanceof Error
-            ? studentMessageFor(error, request.course.teacherName)
-            : undefined;
-
-        if (message === undefined) {
-          controller.error(error);
-
-          return;
-        }
-
-        controller.enqueue(encoder.encode(message));
-        controller.close();
       }
     },
     cancel(reason) {
