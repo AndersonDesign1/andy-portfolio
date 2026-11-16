@@ -76,6 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   let payloadData: z.infer<typeof emailEventSchema>;
+
   try {
     payloadData = emailEventSchema.parse(JSON.parse(payload));
   } catch {
@@ -87,6 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const { from, to, subject, email_id } = payloadData.data ?? {};
+
   if (!email_id) {
     return Response.json({ error: "Missing email_id" }, { status: 400 });
   }

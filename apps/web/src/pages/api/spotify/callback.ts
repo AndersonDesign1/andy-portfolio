@@ -34,6 +34,7 @@ export const GET: APIRoute = async ({ request, url }) => {
   const code = url.searchParams.get("code");
   const oauthError = url.searchParams.get("error");
   const returnedState = url.searchParams.get("state");
+
   const expectedState = readCookieValue(
     request.headers.get("cookie"),
     SPOTIFY_OAUTH_STATE_COOKIE
@@ -68,6 +69,7 @@ export const GET: APIRoute = async ({ request, url }) => {
   try {
     const env = getSpotifyEnv();
     const redirectUri = new URL("/api/spotify/callback", url.origin).toString();
+
     const basic = Buffer.from(
       `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
     ).toString("base64");
@@ -86,6 +88,7 @@ export const GET: APIRoute = async ({ request, url }) => {
     });
 
     const raw: unknown = await tokenRes.json();
+
     if (!tokenRes.ok) {
       return spotifyOAuthHtmlPage(
         "Spotify token exchange failed",
@@ -98,6 +101,7 @@ export const GET: APIRoute = async ({ request, url }) => {
     }
 
     const parsed = tokenResponseSchema.safeParse(raw);
+
     if (!parsed.success || !parsed.data.refresh_token) {
       return spotifyOAuthHtmlPage(
         "Spotify token incomplete",
@@ -121,6 +125,7 @@ export const GET: APIRoute = async ({ request, url }) => {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unknown callback error";
+
     return spotifyOAuthHtmlPage(
       "Spotify callback error",
       `<h1>Callback error</h1><pre>${escapeHtml(message)}</pre>`,

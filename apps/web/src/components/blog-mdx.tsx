@@ -9,6 +9,7 @@ export const blogMdxComponents = {
     ...props
   }: JSX.IntrinsicElements["a"]): JSX.Element => {
     const isInternal = href?.startsWith("/") ?? false;
+
     if (isInternal) {
       return (
         <a
@@ -20,6 +21,7 @@ export const blogMdxComponents = {
         </a>
       );
     }
+
     return (
       <a
         className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"

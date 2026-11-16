@@ -48,6 +48,7 @@ const Select = ({
     </SelectContentIdContext.Provider>
   );
 };
+
 Select.displayName = SelectRoot.displayName;
 
 const SelectGroup = SelectGroupPrimitive;
@@ -85,6 +86,7 @@ const SelectTrigger = ({
     </SelectTriggerPrimitive>
   );
 };
+
 SelectTrigger.displayName = SelectTriggerPrimitive.displayName;
 
 const SelectScrollUpButton = ({
@@ -108,6 +110,7 @@ const SelectScrollUpButton = ({
     />
   </SelectScrollUpButtonPrimitive>
 );
+
 SelectScrollUpButton.displayName = SelectScrollUpButtonPrimitive.displayName;
 
 const SelectScrollDownButton = ({
@@ -131,6 +134,7 @@ const SelectScrollDownButton = ({
     />
   </SelectScrollDownButtonPrimitive>
 );
+
 SelectScrollDownButton.displayName =
   SelectScrollDownButtonPrimitive.displayName;
 
@@ -172,6 +176,7 @@ const SelectContent = ({
     </SelectPortalPrimitive>
   );
 };
+
 SelectContent.displayName = SelectContentPrimitive.displayName;
 
 const SelectLabel = ({
@@ -185,6 +190,7 @@ const SelectLabel = ({
     {...props}
   />
 );
+
 SelectLabel.displayName = SelectLabelPrimitive.displayName;
 
 const SelectItem = ({
@@ -214,6 +220,7 @@ const SelectItem = ({
     <SelectItemTextPrimitive>{children}</SelectItemTextPrimitive>
   </SelectItemPrimitive>
 );
+
 SelectItem.displayName = SelectItemPrimitive.displayName;
 
 const SelectSeparator = ({
@@ -227,6 +234,7 @@ const SelectSeparator = ({
     {...props}
   />
 );
+
 SelectSeparator.displayName = SelectSeparatorPrimitive.displayName;
 
 export {

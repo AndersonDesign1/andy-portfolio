@@ -27,6 +27,7 @@ const usePathname = (initialPathname: string) => {
     // keep the active nav link in sync after soft route changes.
     document.addEventListener("astro:page-load", syncPathname);
     window.addEventListener("popstate", syncPathname);
+
     return () => {
       document.removeEventListener("astro:page-load", syncPathname);
       window.removeEventListener("popstate", syncPathname);
@@ -55,12 +56,14 @@ const Navbar = ({ pathname: initialPathname }: { pathname: string }) => {
     }, 10);
 
     window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -100,6 +103,7 @@ const Navbar = ({ pathname: initialPathname }: { pathname: string }) => {
             <ul className="flex gap-6">
               {menuItems.map(({ label, link }) => {
                 const isActive = pathname === link;
+
                 return (
                   <li key={label}>
                     <a
@@ -180,6 +184,7 @@ const Navbar = ({ pathname: initialPathname }: { pathname: string }) => {
             <div className="flex flex-1 flex-col items-center justify-center gap-8">
               {menuItems.map(({ label, link }, index) => {
                 const isActive = pathname === link;
+
                 return (
                   <m.div
                     animate={{ opacity: 1, y: 0 }}

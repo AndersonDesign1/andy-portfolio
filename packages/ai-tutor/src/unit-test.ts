@@ -153,6 +153,7 @@ for (const [label, text, expected] of routes) {
 // 2. Empty reply: falls back, and its tokens are still charged to the budget.
 {
   const budget = new MemoryBudgetStore();
+
   const empty = new MockLanguageModelV4({
     doStream: () =>
       Promise.resolve({
@@ -195,6 +196,7 @@ for (const [label, text, expected] of routes) {
 // 3. Rate limit (HTTP 429): falls back with reason rate_limit, reservation released.
 {
   const budget = new MemoryBudgetStore();
+
   const limited = new MockLanguageModelV4({
     doStream: () =>
       Promise.reject(
@@ -214,12 +216,14 @@ for (const [label, text, expected] of routes) {
     spent: (provider, period) => budget.spent(provider, period),
     reserve: (provider, period, usd, cap) => {
       calls.push(`reserve:${provider}:${usd > 0 ? "positive" : "zero"}`);
+
       return budget.reserve(provider, period, usd, cap);
     },
     settle: (provider, period, reserved, actual) => {
       calls.push(
         `settle:${provider}:${reserved > 0 ? "positive" : "zero"}->${actual}`
       );
+
       return budget.settle(provider, period, reserved, actual);
     },
     add: (provider, period, usd) => budget.add(provider, period, usd),
@@ -410,6 +414,7 @@ for (const [label, text, expected] of routes) {
     },
     () => {
       onDoneCalled = true;
+
       return Promise.reject(new Error("database is down"));
     }
   );
@@ -444,6 +449,7 @@ for (const [label, text, expected] of routes) {
     ].map(async ([label, usd, cap]) => {
       try {
         await budget.reserve("neon", period, Number(usd), Number(cap));
+
         return `${label}: accepted`;
       } catch (error) {
         return error instanceof RangeError
@@ -571,6 +577,7 @@ for (const [label, text, expected] of routes) {
     reserve: async (provider, period, usd, cap) => {
       const granted = await budget.reserve(provider, period, usd, cap);
       leave.abort(new Error("student closed the page"));
+
       return granted;
     },
     settle: (provider, period, reserved, actual) =>
@@ -664,6 +671,7 @@ for (const [label, text, expected] of routes) {
           budget.reserve(provider, period, usd, cap),
         settle: (provider, period, reservedUsd, actualUsd) => {
           settled.push(reservedUsd, actualUsd);
+
           return budget.settle(provider, period, reservedUsd, actualUsd);
         },
         add: (provider, period, usd) => budget.add(provider, period, usd),
@@ -704,4 +712,5 @@ for (const [label, text, expected] of routes) {
 console.log(
   failures ? `\n${failures} check(s) failed` : "\nAll unit checks passed"
 );
+
 process.exitCode = failures ? 1 : 0;

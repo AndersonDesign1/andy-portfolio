@@ -10,6 +10,7 @@ import { ensureBudgetTable, PostgresBudgetStore } from "./postgres-budget.ts";
 import { generateTutorReply } from "./tutor.ts";
 
 const store = new PostgresBudgetStore();
+
 // Unique per run, so parallel runs never share (or delete) each other's rows.
 const period = `test-${Date.now()}-${randomUUID().slice(0, 8)}`;
 let failures = 0;
@@ -124,4 +125,5 @@ try {
 console.log(
   failures ? `${failures} check(s) failed` : "All budget checks passed"
 );
+
 process.exitCode = failures ? 1 : 0;

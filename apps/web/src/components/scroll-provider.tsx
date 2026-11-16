@@ -18,6 +18,7 @@ import {
 
 const LENIS_IDLE_TIMEOUT_MS = 900;
 const LENIS_FALLBACK_DELAY_MS = 180;
+
 const LENIS_START_EVENTS: (keyof WindowEventMap)[] = [
   "wheel",
   "touchstart",
@@ -42,6 +43,7 @@ interface ScrollProviderProps {
 const subscribeReducedMotion = (onStoreChange: () => void) => {
   const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   mediaQuery.addEventListener("change", onStoreChange);
+
   return () => mediaQuery.removeEventListener("change", onStoreChange);
 };
 
@@ -65,12 +67,14 @@ const subscribeLenisStart = (
       passive: eventName !== "keydown",
     });
   }
+
   document.addEventListener("visibilitychange", handleVisibilityChange);
 
   return () => {
     for (const eventName of LENIS_START_EVENTS) {
       window.removeEventListener(eventName, startLenis);
     }
+
     document.removeEventListener("visibilitychange", handleVisibilityChange);
   };
 };
@@ -91,10 +95,12 @@ const ScrollProvider = ({ children }: ScrollProviderProps) => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let idleId: number | null = null;
     let removeStartListeners: (() => void) | null = null;
+
     const requestIdle =
       "requestIdleCallback" in globalThis
         ? globalThis.requestIdleCallback.bind(globalThis)
         : null;
+
     const cancelIdle =
       "cancelIdleCallback" in globalThis
         ? globalThis.cancelIdleCallback.bind(globalThis)
@@ -121,6 +127,7 @@ const ScrollProvider = ({ children }: ScrollProviderProps) => {
       if (started || prefersReducedMotion) {
         return;
       }
+
       started = true;
 
       const lenisInstance = new Lenis({
@@ -158,12 +165,15 @@ const ScrollProvider = ({ children }: ScrollProviderProps) => {
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
+
       destroyLenis();
     } else {
       timeoutId = globalThis.setTimeout(startLenis, LENIS_FALLBACK_DELAY_MS);
+
       if (requestIdle && cancelIdle) {
         idleId = requestIdle(startLenis, { timeout: LENIS_IDLE_TIMEOUT_MS });
       }
+
       removeStartListeners = subscribeLenisStart(
         startLenis,
         handleVisibilityChange
@@ -174,14 +184,18 @@ const ScrollProvider = ({ children }: ScrollProviderProps) => {
       if (timeoutId !== null) {
         globalThis.clearTimeout(timeoutId);
       }
+
       if (idleId !== null && cancelIdle) {
         cancelIdle(idleId);
       }
+
       removeStartListeners?.();
+
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
+
       destroyLenis();
     };
   }, [prefersReducedMotion]);

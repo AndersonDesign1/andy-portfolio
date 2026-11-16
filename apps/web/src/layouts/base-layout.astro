@@ -43,10 +43,12 @@ const meta = buildPageMeta({ description, title });
       (() => {
         try {
           const t = localStorage.getItem("andy-theme");
+
           const d =
             t === "dark" ||
             ((!t || t === "system") &&
               window.matchMedia("(prefers-color-scheme: dark)").matches);
+
           const c = document.documentElement.classList;
           c.remove("light", "dark");
           c.add(d ? "dark" : "light");

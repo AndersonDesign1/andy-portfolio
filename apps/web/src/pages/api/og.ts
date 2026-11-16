@@ -13,6 +13,7 @@ const el = (
 
 export const GET: APIRoute = ({ url }) => {
   const title = url.searchParams.get("title") || "Anderson Joseph";
+
   const description =
     url.searchParams.get("description") ||
     "Full Stack Developer & SEO Specialist";

@@ -13,18 +13,23 @@ const escapeHtml = (text: string): string =>
       case '"': {
         return "&quot;";
       }
+
       case "&": {
         return "&amp;";
       }
+
       case "'": {
         return "&#039;";
       }
+
       case "<": {
         return "&lt;";
       }
+
       case ">": {
         return "&gt;";
       }
+
       default: {
         return character;
       }
@@ -46,6 +51,7 @@ export const server = {
           const verification = await checkBotId({
             advancedOptions: { checkLevel: "basic" },
           });
+
           if (verification.isBot) {
             throw new ActionError({ code: "FORBIDDEN", message: BLOCKED });
           }

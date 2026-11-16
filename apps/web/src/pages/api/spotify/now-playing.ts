@@ -90,6 +90,7 @@ const logSpotifyFailure = (stage: string, detail: string) => {
 const getAccessToken = async (): Promise<string | null> => {
   try {
     const env = getSpotifyEnv();
+
     const basic = Buffer.from(
       `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
     ).toString("base64");
@@ -105,30 +106,38 @@ const getAccessToken = async (): Promise<string | null> => {
       },
       method: "POST",
     });
+
     if (!response.ok) {
       const body = await response.json().catch(() => null);
       const reason = tokenErrorSchema.safeParse(body);
+
       const description = reason.success
         ? `${reason.data.error}${reason.data.error_description ? ` — ${reason.data.error_description}` : ""}`
         : "unparseable error body";
+
       logSpotifyFailure(
         "token refresh failed",
         `${response.status} ${description}. Re-authorize at /api/spotify/authorize and update SPOTIFY_REFRESH_TOKEN.`
       );
+
       return null;
     }
 
     const parsed = tokenResponseSchema.safeParse(await response.json());
+
     if (!parsed.success) {
       logSpotifyFailure("token refresh", "response missing access_token");
+
       return null;
     }
+
     return parsed.data.access_token;
   } catch (error) {
     logSpotifyFailure(
       "token refresh threw",
       error instanceof Error ? error.message : String(error)
     );
+
     return null;
   }
 };
@@ -137,10 +146,12 @@ const pickAlbumArtUrl = (images: SpotifyImage[] | undefined): string | null => {
   if (!images || images.length === 0) {
     return null;
   }
+
   // Spotify returns largest → smallest; prefer mid-size, then largest, then any.
   const mid = images[1]?.url;
   const largest = images[0]?.url;
   const smallest = images.at(-1)?.url;
+
   return mid || largest || smallest || null;
 };
 
@@ -170,20 +181,25 @@ const fetchRecentlyPlayed = async (accessToken: string) => {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
+
     if (!res.ok) {
       logSpotifyFailure("recently-played failed", `HTTP ${res.status}`);
+
       return IDLE_PAYLOAD;
     }
 
     const parsed = recentlyPlayedSchema.safeParse(await res.json());
+
     if (!parsed.success) {
       logSpotifyFailure("recently-played", "unexpected response shape");
+
       return IDLE_PAYLOAD;
     }
 
     const trackParsed = spotifyTrackSchema.safeParse(
       parsed.data.items?.[0]?.track
     );
+
     return toNowPlayingPayload(
       trackParsed.success ? trackParsed.data : null,
       false
@@ -196,6 +212,7 @@ const fetchRecentlyPlayed = async (accessToken: string) => {
 export const GET: APIRoute = async () => {
   try {
     const accessToken = await getAccessToken();
+
     if (!accessToken) {
       return Response.json(IDLE_PAYLOAD, {
         headers: { "Cache-Control": "no-store" },
@@ -216,12 +233,14 @@ export const GET: APIRoute = async () => {
           `HTTP ${currentRes.status}, falling back to recently-played`
         );
       }
+
       return Response.json(await fetchRecentlyPlayed(accessToken), {
         headers: { "Cache-Control": "no-store" },
       });
     }
 
     const parsed = currentlyPlayingSchema.safeParse(await currentRes.json());
+
     if (!parsed.success) {
       return Response.json(await fetchRecentlyPlayed(accessToken), {
         headers: { "Cache-Control": "no-store" },
@@ -229,6 +248,7 @@ export const GET: APIRoute = async () => {
     }
 
     const itemParsed = spotifyTrackSchema.safeParse(parsed.data.item);
+
     if (!itemParsed.success) {
       return Response.json(await fetchRecentlyPlayed(accessToken), {
         headers: { "Cache-Control": "no-store" },

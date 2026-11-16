@@ -100,9 +100,11 @@ const Hero = () => (
                         />
                       );
                     }
+
                     if (CustomIcon) {
                       return <CustomIcon className="size-6" />;
                     }
+
                     return null;
                   })()}
                 </a>

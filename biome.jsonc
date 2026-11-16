@@ -26,11 +26,6 @@
   // its own directory regardless of what the root config excludes. Force-ignore
   // stops the scanner descending at all.
   "files": {
-    "includes": [
-      "**",
-      "!!apps/web/**",
-      "!!apps/web-next/**",
-      "!!tools/oxlint/anti-slop/**"
-    ]
+    "includes": ["!!apps/web", "!!apps/web-next", "!!tools/oxlint/anti-slop"]
   }
 }
