@@ -5,9 +5,9 @@ The AI layer for the student tutor: system prompts, model routing, fallbacks and
 ## Use it
 
 ```ts
-import { MemoryBudgetStore, tutorTextResponse, type CourseContext } from "@andy-portfolio/ai-tutor";
+import { PostgresBudgetStore, tutorTextResponse, type CourseContext } from "@andy-portfolio/ai-tutor";
 
-const budget = new MemoryBudgetStore(); // swap for a database-backed store in production
+const budget = new PostgresBudgetStore(); // reads DATABASE_URL
 
 export async function POST(request: Request) {
   const { messages } = await request.json(); // [{ role: "user" | "assistant", content }]
@@ -37,6 +37,18 @@ Fallback only happens before the first word reaches the student. If every model 
 
 Only the last 12 messages are sent (`maxHistoryMessages`), so long chats don't grow in cost.
 
+## Spend tracking
+
+`PostgresBudgetStore` keeps one row per provider per month in a `tutor_spend` table on the Neon branch. Each reply adds its cost with a single atomic upsert, so serverless instances share one total and simultaneous replies never lose an increment. Create the table once before first use: run `ensureBudgetTable(budget.sql)` or the `BUDGET_TABLE_SQL` statement. It's already created on `student-submissions` / `main`.
+
+To see this month's spend:
+
+```sql
+SELECT provider, period, usd, requests FROM tutor_spend ORDER BY period DESC, provider;
+```
+
+`MemoryBudgetStore` is available for local scripts. Its totals reset on restart.
+
 ## Prompts
 
 `src/prompts.ts` builds every model's prompt from:
@@ -52,6 +64,7 @@ The base prompt comes first and stays identical between requests, so providers b
 | Variable | Where | Source |
 |---|---|---|
 | `NEON_AI_GATEWAY_BASE_URL`, `NEON_AI_GATEWAY_TOKEN` | `packages/ai-tutor/.env.local` | `neon link` / `neon deploy` (project `student-submissions`, branch `main`) |
+| `DATABASE_URL` | `packages/ai-tutor/.env.local` | Same `neon link` / `neon env pull` |
 | `OPENROUTER_API_KEY` | repo root `.env.local` | OpenRouter dashboard |
 
 ## Tests
@@ -60,13 +73,13 @@ All tests call the real providers and cost a few cents at most.
 
 ```bash
 bun run --filter=@andy-portfolio/ai-tutor fallbacks       # routing + every fallback trigger
+bun run --filter=@andy-portfolio/ai-tutor budget          # Postgres spend store; test rows are deleted afterwards
 bun run --filter=@andy-portfolio/ai-tutor conversations   # 4 scripted student chats per model, rule checks
 bun run --filter=@andy-portfolio/ai-tutor typecheck
 ```
 
 `conversations` writes full transcripts to `results/conversations.md` (gitignored). Pass a word to run only matching models, e.g. `conversations glm`.
 
-## Before production
+## Prices
 
-- Back `BudgetStore` with Postgres (the Neon branch already has `DATABASE_URL`); in-memory totals reset on every serverless cold start.
-- Prices in `src/models.ts` were checked on 2026-11-16. OpenRouter costs come from its billing data; Neon costs are list price × tokens.
+Prices in `src/models.ts` were checked on 2026-11-16. Recorded OpenRouter costs come from its billing data; Neon costs are list price × tokens.
