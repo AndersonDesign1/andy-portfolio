@@ -26,8 +26,13 @@ const ATTEMPT_TIMEOUT_MS = 20_000;
 /** About a minute of speech is ~200 words; this leaves room without paying for runaway output. */
 const MAX_TRANSCRIPT_TOKENS = 400;
 
-/** The page stops recording at 60 s; 4 MB covers that in any browser codec. */
-const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
+/**
+ * The page records at 32 kbps and stops at 60 s (~250 KB); 1 MB leaves room
+ * for browsers that ignore the bitrate hint. It also bounds what a direct
+ * caller can push through: transcripts are capped at MAX_TRANSCRIPT_TOKENS,
+ * and every clip counts against the per-visitor rate limit.
+ */
+const MAX_AUDIO_BYTES = 1024 * 1024;
 
 /** MediaRecorder container → OpenRouter `format`. */
 const FORMATS = new Map([

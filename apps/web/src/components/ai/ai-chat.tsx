@@ -143,6 +143,7 @@ export const AiChat = () => {
     chat.clear();
     dictation.cancel();
     setInput("");
+    setDraftFromVoice(false);
     setDrawerOpen(false);
   };
 

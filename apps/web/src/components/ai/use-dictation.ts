@@ -8,6 +8,9 @@ import { failureText } from "@/components/ai/chat-stream";
 /** Recording stops on its own here; Gemini bills ~32 audio tokens a second. */
 const MAX_RECORDING_MS = 60_000;
 
+/** Plenty for speech; keeps a full minute under ~250 KB so the server's size cap stays tight. */
+const AUDIO_BITS_PER_SECOND = 32_000;
+
 /** Shorter than this is a tap, not speech; nothing is sent. */
 const MIN_RECORDING_MS = 400;
 
@@ -246,7 +249,15 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     let instance: MediaRecorder;
 
     try {
-      instance = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+      const options: MediaRecorderOptions = {
+        audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
+      };
+
+      if (mimeType) {
+        options.mimeType = mimeType;
+      }
+
+      instance = new MediaRecorder(stream, options);
     } catch {
       failSetup();
 
