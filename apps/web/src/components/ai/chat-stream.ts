@@ -3,6 +3,8 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   failed?: boolean;
+  /** Cut off by Stop: shown, but not sent back as history. */
+  stopped?: boolean;
 }
 
 export type ChatStatus = "idle" | "thinking" | "answering";

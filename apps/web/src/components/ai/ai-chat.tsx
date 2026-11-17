@@ -68,8 +68,8 @@ export const AiChat = () => {
     dictation.cancel();
 
     const history = [
-      ...messages.flatMap(({ role, content, failed }) =>
-        failed || !content ? [] : [{ content, role }]
+      ...messages.flatMap(({ role, content, failed, stopped }) =>
+        failed || stopped || !content ? [] : [{ content, role }]
       ),
       { content: question, role: "user" as const },
     ].slice(-HISTORY_SENT);
@@ -115,7 +115,9 @@ export const AiChat = () => {
       // A stopped reply keeps any text it got; an empty one says it stopped.
       if (!controller.signal.aborted) {
         updateReply({ content: OFFLINE_TEXT, failed: true });
-      } else if (!received) {
+      } else if (received) {
+        updateReply({ stopped: true });
+      } else {
         updateReply({ content: STOPPED_TEXT, failed: true });
       }
     } finally {

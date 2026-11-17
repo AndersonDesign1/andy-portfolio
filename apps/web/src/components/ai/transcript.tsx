@@ -42,6 +42,7 @@ const Message = ({ message }: { message: ChatMessage }) => {
   return (
     <div className="text-secondary text-[1.0625rem] leading-relaxed">
       <ReplyText text={message.content} />
+      {message.stopped && <p className="text-muted text-sm italic">Stopped.</p>}
     </div>
   );
 };

@@ -81,7 +81,7 @@ export const Composer = ({
   return (
     <>
       <form
-        className="border-subtle bg-background/85 sticky bottom-4 rounded-md border p-2 shadow-[0_10px_40px_-18px_color-mix(in_oklch,var(--foreground)_35%,transparent)] backdrop-blur-md"
+        className="border-subtle bg-background/85 focus-within:border-foreground/40 sticky bottom-4 rounded-md border p-2 shadow-[0_10px_40px_-18px_color-mix(in_oklch,var(--foreground)_35%,transparent)] backdrop-blur-md"
         onSubmit={onSubmit}
       >
         <label className="sr-only" htmlFor="ai-question">
