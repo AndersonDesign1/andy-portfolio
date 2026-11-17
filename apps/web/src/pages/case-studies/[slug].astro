@@ -51,6 +51,7 @@ const navigation = {
 
 <BaseLayout
   description={caseStudy.hero.overview || "Anderson Joseph Case Study"}
+  og={{ client: caseStudy.hero.client, kind: "case-study", title: caseStudy.hero.title }}
   title={`${caseStudy.hero.title} - Case Study`}
 >
   <CaseStudyPage caseStudy={caseStudy} client:visible navigation={navigation} />
