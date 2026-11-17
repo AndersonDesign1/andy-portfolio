@@ -21,7 +21,7 @@ const wavSeconds = (audio: Buffer): number | undefined => {
     const id = audio.toString("ascii", offset, offset + 4);
     const size = audio.readUInt32LE(offset + 4);
 
-    if (id === "fmt " && offset + 16 <= audio.length) {
+    if (id === "fmt " && offset + 20 <= audio.length) {
       byteRate = audio.readUInt32LE(offset + 16);
     }
 
@@ -226,7 +226,15 @@ const webmSeconds = (audio: Buffer): number | undefined => {
     return undefined;
   }
 
-  return Math.max(...timecodes) / 1000 + MAX_BLOCK_OFFSET_SECONDS;
+  // A loop, not Math.max(...timecodes), so a huge untrusted file can't
+  // overflow the call stack.
+  let largest = 0;
+
+  for (const timecode of timecodes) {
+    largest = Math.max(largest, timecode);
+  }
+
+  return largest / 1000 + MAX_BLOCK_OFFSET_SECONDS;
 };
 
 const READERS = new Map([

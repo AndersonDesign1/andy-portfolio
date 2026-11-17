@@ -37,7 +37,9 @@ const INSTRUCTION = `Transcribe the speech in this audio exactly. Output only th
 const cleanTranscript = (text: string) => {
   const trimmed = text.trim();
 
-  return trimmed.toLowerCase().includes(NO_SPEECH) ? "" : trimmed;
+  // Only the bare marker (allowing a stray period) means silence; real speech
+  // that happens to contain it is kept.
+  return trimmed.toLowerCase().replace(/\.$/u, "") === NO_SPEECH ? "" : trimmed;
 };
 
 /** A stalled provider gives up after this, so the next fallback still gets a turn. */
@@ -463,7 +465,14 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
     return plain(400, "No audio was received.");
   }
 
-  const seconds = audioSeconds(audio, format);
+  let seconds: number | undefined;
+
+  try {
+    seconds = audioSeconds(audio, format);
+  } catch {
+    // A malformed header (e.g. a truncated WAV chunk) isn't playable audio.
+    return plain(400, "That audio file couldn't be read.");
+  }
 
   if (seconds !== undefined && seconds > MAX_CLIP_SECONDS) {
     return plain(413, "That recording is too long. Keep it under a minute.");
