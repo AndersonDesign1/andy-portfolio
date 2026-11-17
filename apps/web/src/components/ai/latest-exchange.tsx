@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
 import { Message } from "@/components/ai/message-list";
-import { ScrollToLatest } from "@/components/ai/scroll-to-latest";
+import { AnchoredScroll } from "@/components/ai/scroll-to-latest";
 
 interface LatestExchangeProps {
   messages: ChatMessage[];
@@ -62,7 +62,7 @@ const CopyButton = ({ text }: { text: string }) => {
 
 /**
  * Just the latest question and answer under the orb, in a bounded card that
- * follows the answer as it streams; copy and retry sit under the answer, and
+ * pins the question to the top while the answer streams in below it; copy and retry sit under the answer, and
  * the full history lives in the conversation drawer.
  */
 export const LatestExchange = ({
@@ -82,9 +82,11 @@ export const LatestExchange = ({
 
   return (
     <div className="flex min-h-0 w-full flex-col gap-3">
-      <ScrollToLatest
+      <AnchoredScroll
+        anchorKey={question?.id}
         className="border-subtle rounded-md border"
         contentClassName="flex flex-col gap-5 p-4 md:p-5"
+        label="Latest answer"
       >
         {question && <Message message={question} />}
         {reply && <Message message={reply} streaming={busy} />}
@@ -102,7 +104,7 @@ export const LatestExchange = ({
             </button>
           </div>
         )}
-      </ScrollToLatest>
+      </AnchoredScroll>
 
       <div className="flex shrink-0 items-center justify-between gap-2">
         <button

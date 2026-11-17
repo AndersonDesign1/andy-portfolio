@@ -40,6 +40,7 @@ const displayDate = new Date(publishedAt).toLocaleDateString("en-US", {
 
 <BaseLayout
   description={seoDescription || excerpt || "Read this blog post"}
+  og={{ kind: "blog", title }}
   title={seoTitle || title}
 >
   <section class="bg-primary min-h-screen pt-40 pb-24 md:pt-48">

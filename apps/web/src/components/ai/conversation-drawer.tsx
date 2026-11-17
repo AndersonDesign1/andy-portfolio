@@ -60,7 +60,11 @@ export const ConversationDrawer = ({
           </button>
         </header>
         {open && (
-          <ScrollToLatest className="flex-1" contentClassName="px-5 py-6">
+          <ScrollToLatest
+            className="flex-1"
+            contentClassName="px-5 py-6"
+            label="Conversation history"
+          >
             <MessageList busy={busy} messages={messages} />
           </ScrollToLatest>
         )}

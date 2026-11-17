@@ -652,3 +652,30 @@
   font-size: 1em;
   font-weight: 600;
 }
+
+/* AI reply scroll areas: a thin, always-visible scrollbar (it's the only cue
+   a long answer continues), and soft fades at whichever edge hides text. */
+.ai-scroll {
+  scrollbar-color: color-mix(in oklab, var(--foreground) 22%, transparent)
+    transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.ai-scroll.ai-fade-top {
+  mask-image: linear-gradient(to bottom, transparent, #000 2.5rem);
+}
+
+.ai-scroll.ai-fade-bottom {
+  mask-image: linear-gradient(to top, transparent, #000 2.5rem);
+}
+
+.ai-scroll.ai-fade-top.ai-fade-bottom {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 2.5rem,
+    #000 calc(100% - 2.5rem),
+    transparent
+  );
+}

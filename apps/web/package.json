@@ -34,7 +34,7 @@
     "@usegraft/db": "^1.0.0-beta.9",
     "@usegraft/sdk-astro": "^1.0.0-beta.9",
     "@vercel/analytics": "^2.0.1",
-    "@vercel/og": "^1.0.3",
+    "@vercel/og": "0.11.1",
     "@vercel/speed-insights": "^2.1.0",
     "astro": "^7.4.10",
     "botid": "^1.5.13",
