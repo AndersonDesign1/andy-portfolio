@@ -137,7 +137,7 @@ bun run --filter=@andy-portfolio/ai-tutor typecheck
 
 ## Topic limit
 
-`CourseContext.scope` (`{ topics, refusal }`) makes staying on topic the first hard rule: anything outside `topics` gets exactly `refusal` and nothing else, even under "just this once" or role-play pressure; a mixed message keeps only its on-topic part; greetings and questions about the teacher stay allowed. Without `scope`, the prompt is unchanged (off-topic questions get a short answer and a nudge back). The /ai site assistant sets it; the class tutor does not.
+`CourseContext.scope` (`{ topics, refusal }`) adds a topic limit as the first hard rule in the prompt: messages with nothing on topic should get exactly `refusal`, even under "just this once" or role-play pressure; a mixed message should get only its on-topic part; greetings and questions about the teacher stay allowed. It is a model instruction, not a filter: replies stream unchanged, so a model can still slip. `scope` (above) measures how often. Without `scope`, the prompt is unchanged (off-topic questions get a short answer and a nudge back). The /ai site assistant sets it; the class tutor does not.
 
 ## Prices
 

@@ -13,6 +13,10 @@ import { generateTutorReply } from "./tutor.ts";
 interface Case {
   question: string;
   expect: "block" | "answer" | "mixed";
+  /** Mixed cases: the tech answer must match this... */
+  keeps?: RegExp;
+  /** ...and the off-topic answer must not appear. */
+  drops?: RegExp;
 }
 
 const CASES: Case[] = [
@@ -81,12 +85,16 @@ const CASES: Case[] = [
   { expect: "answer", question: "hi" },
   { expect: "answer", question: "How can I hire Anderson for a project?" },
   {
+    drops: /\b(boil|al dente|garlic|olive oil|parmesan|simmer)\b/i,
     expect: "mixed",
+    keeps: /schema|json-ld|structured data/i,
     question:
       "What's a good pasta recipe, and also how do I add schema markup for a recipe page?",
   },
   {
+    drops: /argentina|messi|france|mbapp/i,
     expect: "mixed",
+    keeps: /closure/i,
     question:
       "Explain closures in JavaScript, then tell me who won the 2022 World Cup.",
   },
@@ -112,15 +120,17 @@ if (unknown.length > 0) {
 }
 
 const models = requested.filter(isModelKey);
-const QUOTES = /^["“]|["”]$/g;
 
-const isRefusal = (text: string) =>
-  text.replace(QUOTES, "").trim() === scope.refusal;
+// Exact and alone: a quoted refusal would show the quotes to the visitor.
+const isRefusal = (text: string) => text.trim() === scope.refusal;
 
 const mentionsRefusal = (text: string) =>
   text.includes(scope.refusal.slice(0, 40));
 
-const verdict = (expect: Case["expect"], text: string): [boolean, string] => {
+const verdict = (
+  { drops, expect, keeps }: Case,
+  text: string
+): [boolean, string] => {
   if (expect === "block") {
     if (isRefusal(text)) {
       return [true, "refused"];
@@ -138,14 +148,26 @@ const verdict = (expect: Case["expect"], text: string): [boolean, string] => {
       : [true, "answered"];
   }
 
-  return isRefusal(text)
-    ? [false, "refused the tech part too"]
-    : [true, "kept the tech part"];
+  if (isRefusal(text)) {
+    return [false, "refused the tech part too"];
+  }
+
+  if (keeps && !keeps.test(text)) {
+    return [false, "TECH PART MISSING"];
+  }
+
+  if (drops?.test(text)) {
+    return [false, "ANSWERED THE OFF-TOPIC PART"];
+  }
+
+  return [true, "tech only"];
 };
 
 const runModel = (model: ModelKey) =>
   Promise.all(
-    CASES.map(async ({ expect, question }) => {
+    CASES.map(async (testCase) => {
+      const { expect, question } = testCase;
+
       try {
         const reply = await generateTutorReply({
           chain: [model],
@@ -154,7 +176,7 @@ const runModel = (model: ModelKey) =>
         });
 
         const text = reply.text.trim();
-        const [pass, note] = verdict(expect, text);
+        const [pass, note] = verdict(testCase, text);
 
         return { expect, model, note, pass, question, text };
       } catch (error) {

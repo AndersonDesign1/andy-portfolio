@@ -129,6 +129,21 @@ export const AnchoredScroll = ({
     const measure = () =>
       setEdges((current) => sameEdges(current, readEdges(area)));
 
+    // Any move up lets go of the bottom at once, including a scrollbar drag
+    // still in progress (its pointerup only comes at the end). The code here
+    // only ever scrolls down, except the reset to the top, which stops
+    // following anyway.
+    let lastTop = area.scrollTop;
+
+    const onScroll = () => {
+      if (area.scrollTop < lastTop - 1) {
+        following.current = false;
+      }
+
+      lastTop = area.scrollTop;
+      measure();
+    };
+
     // As the reply grows, keep the end in view only for a reader who chose it.
     const observer = new ResizeObserver(() => {
       if (following.current) {
@@ -151,7 +166,7 @@ export const AnchoredScroll = ({
 
     observer.observe(content);
     observer.observe(area);
-    area.addEventListener("scroll", measure, options);
+    area.addEventListener("scroll", onScroll, options);
     area.addEventListener("wheel", onUserScroll, options);
     area.addEventListener("touchmove", onUserScroll, options);
     area.addEventListener("keydown", onUserScroll, options);
@@ -167,7 +182,12 @@ export const AnchoredScroll = ({
     const area = scrollRef.current;
 
     following.current = true;
-    area?.scrollTo({ behavior: "smooth", top: area.scrollHeight });
+    area?.scrollTo({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      top: area.scrollHeight,
+    });
   };
 
   // A <section> with a label is a named region; browsers make an overflowing
