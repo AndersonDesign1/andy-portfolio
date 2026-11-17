@@ -4,6 +4,7 @@ import { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
 import type { APIRoute } from "astro";
 import { z } from "zod";
 
+import { audioSeconds } from "@/lib/audio-duration";
 import { getTutorEnv } from "@/lib/env";
 import { checkRateLimit, visitorId } from "@/lib/tutor-rate-limit";
 
@@ -23,8 +24,21 @@ const NEON_MODELS = ["gemini-3-1-flash-lite", "gemini-3-5-flash-lite"];
 const OPENROUTER_MODEL = "openai/whisper-large-v3-turbo";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/audio/transcriptions";
 
-const INSTRUCTION =
-  "Transcribe the speech in this audio exactly. Output only the words spoken, with normal punctuation. If there is no speech, output nothing.";
+/**
+ * Told "output nothing", Flash-Lite invented a sentence for 30 s of silence
+ * in testing; an explicit marker is easier for it to follow, and is mapped
+ * back to an empty transcript ("didn't catch any words").
+ */
+const NO_SPEECH = "[no speech]";
+
+const INSTRUCTION = `Transcribe the speech in this audio exactly. Output only the words actually spoken, with normal punctuation. Never guess or invent words. If the audio is silent, is only noise, or has no clearly spoken words, output exactly ${NO_SPEECH} and nothing else.`;
+
+/** The transcript, or empty when the model reported no speech. */
+const cleanTranscript = (text: string) => {
+  const trimmed = text.trim();
+
+  return trimmed.toLowerCase().includes(NO_SPEECH) ? "" : trimmed;
+};
 
 /** A stalled provider gives up after this, so the next fallback still gets a turn. */
 const ATTEMPT_TIMEOUT_MS = 20_000;
@@ -33,13 +47,19 @@ const ATTEMPT_TIMEOUT_MS = 20_000;
 const MAX_TRANSCRIPT_TOKENS = 400;
 
 /**
- * Billing follows audio length, which the server can't read reliably from a
- * WebM recording. So each attempt reserves the longest a clip of its size
- * could be: no accepted codec encodes speech below ~6 kbps (Opus; MP3 and
- * AAC are higher), so assuming 4 kbps over-covers every format. That's
- * ~35 minutes for the 1 MB cap; a real 60 s page recording reserves ~8 min.
+ * Billing follows audio length, which a size cap can't bound (Opus sends
+ * almost nothing during silence). The server reads the length from the file
+ * (see audio-duration.ts) and refuses clips over this. The page stops at
+ * 60 s; WebM's estimate can run ~33 s long, hence the margin.
  */
-const MIN_BITS_PER_SECOND = 4000;
+const MAX_CLIP_SECONDS = 120;
+
+/**
+ * When a format's length can't be read (MP4/AAC/MP3), reserve for the
+ * longest audio one Gemini request accepts (~9.5 hours). Settlement then
+ * records what was really billed.
+ */
+const UNKNOWN_LENGTH_SECONDS = 9.5 * 60 * 60;
 
 /** Gemini bills about 32 tokens per second of audio. */
 const AUDIO_TOKENS_PER_SECOND = 32;
@@ -52,22 +72,18 @@ const GEMINI_OUTPUT_USD = 2.5 / 1e6;
 /** Whisper Turbo on its priciest OpenRouter host. */
 const WHISPER_USD_PER_SECOND = 0.000011;
 
-/** The longest a clip of this many bytes could play for. */
-const maxAudioSeconds = (bytes: number) => (bytes * 8) / MIN_BITS_PER_SECOND;
-
-const neonWorstCaseUsd = (bytes: number) =>
-  maxAudioSeconds(bytes) * AUDIO_TOKENS_PER_SECOND * GEMINI_AUDIO_USD +
+const neonWorstCaseUsd = (seconds: number) =>
+  seconds * AUDIO_TOKENS_PER_SECOND * GEMINI_AUDIO_USD +
   500 * GEMINI_TEXT_USD +
   MAX_TRANSCRIPT_TOKENS * GEMINI_OUTPUT_USD;
 
-const openrouterWorstCaseUsd = (bytes: number) =>
-  maxAudioSeconds(bytes) * WHISPER_USD_PER_SECOND;
+const openrouterWorstCaseUsd = (seconds: number) =>
+  seconds * WHISPER_USD_PER_SECOND;
 
 /**
  * The page records at 32 kbps and stops at 60 s (~250 KB); 1 MB leaves room
- * for browsers that ignore the bitrate hint. It also bounds what a direct
- * caller can push through: transcripts are capped at MAX_TRANSCRIPT_TOKENS,
- * and every clip counts against the per-visitor rate limit.
+ * for browsers that ignore the bitrate hint. Cost is bounded by duration,
+ * not size: see MAX_CLIP_SECONDS.
  */
 const MAX_AUDIO_BYTES = 1024 * 1024;
 
@@ -121,8 +137,8 @@ type Attempt =
 
 interface Clip {
   base64: string;
-  /** Raw audio size, which bounds how long the clip can be. */
-  bytes: number;
+  /** Upper bound on how long the clip plays, for the cost reservation. */
+  seconds: number;
   format: string;
   mime: string;
 }
@@ -272,7 +288,7 @@ const budgeted =
     provider: Provider;
     run: Run;
     store: PostgresBudgetStore;
-    worstCaseUsd: (bytes: number) => number;
+    worstCaseUsd: (seconds: number) => number;
   }): Transcriber =>
   async (clip, signal) => {
     if (signal.aborted) {
@@ -280,7 +296,7 @@ const budgeted =
     }
 
     const period = currentPeriod();
-    const reservedUsd = worstCaseUsd(clip.bytes);
+    const reservedUsd = worstCaseUsd(clip.seconds);
     let reserved = false;
 
     try {
@@ -366,7 +382,7 @@ const neonRun =
     return {
       costUsd,
       kind: "ok",
-      text: result.data.choices[0]?.message.content?.trim() ?? "",
+      text: cleanTranscript(result.data.choices[0]?.message.content ?? ""),
     };
   };
 
@@ -447,11 +463,17 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
     return plain(400, "No audio was received.");
   }
 
+  const seconds = audioSeconds(audio, format);
+
+  if (seconds !== undefined && seconds > MAX_CLIP_SECONDS) {
+    return plain(413, "That recording is too long. Keep it under a minute.");
+  }
+
   const clip: Clip = {
     base64: audio.toString("base64"),
-    bytes: audio.byteLength,
     format,
     mime,
+    seconds: seconds ?? UNKNOWN_LENGTH_SECONDS,
   };
 
   const store = budget;
