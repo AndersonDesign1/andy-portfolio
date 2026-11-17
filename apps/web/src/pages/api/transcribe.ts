@@ -33,10 +33,13 @@ const ATTEMPT_TIMEOUT_MS = 20_000;
 const MAX_TRANSCRIPT_TOKENS = 400;
 
 /**
- * Billing follows audio length, and a direct caller could fit ~30 minutes of
- * very low-bitrate audio into the 1 MB cap, so each attempt reserves that.
+ * Billing follows audio length, which the server can't read reliably from a
+ * WebM recording. So each attempt reserves the longest a clip of its size
+ * could be: no accepted codec encodes speech below ~6 kbps (Opus; MP3 and
+ * AAC are higher), so assuming 4 kbps over-covers every format. That's
+ * ~35 minutes for the 1 MB cap; a real 60 s page recording reserves ~8 min.
  */
-const WORST_CASE_AUDIO_SECONDS = 1800;
+const MIN_BITS_PER_SECOND = 4000;
 
 /** Gemini bills about 32 tokens per second of audio. */
 const AUDIO_TOKENS_PER_SECOND = 32;
@@ -49,13 +52,16 @@ const GEMINI_OUTPUT_USD = 2.5 / 1e6;
 /** Whisper Turbo on its priciest OpenRouter host. */
 const WHISPER_USD_PER_SECOND = 0.000011;
 
-const NEON_WORST_CASE_USD =
-  WORST_CASE_AUDIO_SECONDS * AUDIO_TOKENS_PER_SECOND * GEMINI_AUDIO_USD +
+/** The longest a clip of this many bytes could play for. */
+const maxAudioSeconds = (bytes: number) => (bytes * 8) / MIN_BITS_PER_SECOND;
+
+const neonWorstCaseUsd = (bytes: number) =>
+  maxAudioSeconds(bytes) * AUDIO_TOKENS_PER_SECOND * GEMINI_AUDIO_USD +
   500 * GEMINI_TEXT_USD +
   MAX_TRANSCRIPT_TOKENS * GEMINI_OUTPUT_USD;
 
-const OPENROUTER_WORST_CASE_USD =
-  WORST_CASE_AUDIO_SECONDS * WHISPER_USD_PER_SECOND;
+const openrouterWorstCaseUsd = (bytes: number) =>
+  maxAudioSeconds(bytes) * WHISPER_USD_PER_SECOND;
 
 /**
  * The page records at 32 kbps and stops at 60 s (~250 KB); 1 MB leaves room
@@ -95,20 +101,28 @@ const whisperSchema = z.object({
   usage: z.object({ cost: z.number().nonnegative().optional() }).optional(),
 });
 
-/** How a provider call ended. Only "rejected" (an HTTP error) is known to be unbilled. */
+/**
+ * How a provider call ended. "notSent" (aborted before dispatch) and
+ * "rejected" (a 4xx: the request was refused) are known to be unbilled;
+ * anything else, including 5xx, may have been billed.
+ */
 type Outcome<T> =
   | { kind: "ok"; data: T }
+  | { kind: "notSent" }
   | { kind: "rejected" }
   | { kind: "unknown" };
 
 /** A transcription attempt: the text and its cost when the provider reported usage. */
 type Attempt =
   | { kind: "ok"; text: string; costUsd: number | undefined }
+  | { kind: "notSent" }
   | { kind: "rejected" }
   | { kind: "unknown" };
 
 interface Clip {
   base64: string;
+  /** Raw audio size, which bounds how long the clip can be. */
+  bytes: number;
   format: string;
   mime: string;
 }
@@ -178,6 +192,11 @@ const postJson = async <T>({
   token: string;
   url: string;
 }): Promise<Outcome<T>> => {
+  // The visitor left before this attempt started: nothing was sent.
+  if (signal.aborted) {
+    return { kind: "notSent" };
+  }
+
   try {
     const response = await fetch(url, {
       body: JSON.stringify(body),
@@ -198,7 +217,8 @@ const postJson = async <T>({
         `[transcribe] ${label}: ${response.status} ${detail.slice(0, 200)}`
       );
 
-      return { kind: "rejected" };
+      // A 4xx was refused up front; a 5xx may have failed after billing.
+      return response.status < 500 ? { kind: "rejected" } : { kind: "unknown" };
     }
 
     const parsed = schema.safeParse(await response.json());
@@ -222,14 +242,18 @@ type Transcriber = (
   signal: AbortSignal
 ) => Promise<string | undefined>;
 
-/** What to settle a reservation to: real cost if known, 0 if rejected, else the full reservation. */
+/**
+ * What to settle a reservation to: 0 when nothing was billed, the full
+ * reported cost when known (even above the reservation, so the cap sees it),
+ * otherwise the whole reservation.
+ */
 const settledCost = (attempt: Attempt, reservedUsd: number) => {
-  if (attempt.kind === "rejected") {
+  if (attempt.kind === "rejected" || attempt.kind === "notSent") {
     return 0;
   }
 
   if (attempt.kind === "ok" && attempt.costUsd !== undefined) {
-    return Math.min(attempt.costUsd, reservedUsd);
+    return attempt.costUsd;
   }
 
   return reservedUsd;
@@ -248,17 +272,22 @@ const budgeted =
     provider: Provider;
     run: Run;
     store: PostgresBudgetStore;
-    worstCaseUsd: number;
+    worstCaseUsd: (bytes: number) => number;
   }): Transcriber =>
   async (clip, signal) => {
+    if (signal.aborted) {
+      return;
+    }
+
     const period = currentPeriod();
+    const reservedUsd = worstCaseUsd(clip.bytes);
     let reserved = false;
 
     try {
       reserved = await store.reserve(
         provider,
         period,
-        worstCaseUsd,
+        reservedUsd,
         DEFAULT_CAPS[provider]
       );
     } catch (error) {
@@ -280,8 +309,8 @@ const budgeted =
       await store.settle(
         provider,
         period,
-        worstCaseUsd,
-        settledCost(attempt, worstCaseUsd)
+        reservedUsd,
+        settledCost(attempt, reservedUsd)
       );
     } catch (error) {
       // The full reservation stays counted, which errs on the safe side.
@@ -324,13 +353,15 @@ const neonRun =
     }
 
     const { usage } = result.data;
-    const audioTokens = usage?.audio_input_tokens ?? 0;
+    const audioTokens = usage?.audio_input_tokens;
 
-    const costUsd = usage
-      ? audioTokens * GEMINI_AUDIO_USD +
-        Math.max(0, usage.prompt_tokens - audioTokens) * GEMINI_TEXT_USD +
-        usage.completion_tokens * GEMINI_OUTPUT_USD
-      : undefined;
+    // Without an audio token count the cost is unknown: keep the reservation.
+    const costUsd =
+      usage && audioTokens !== undefined
+        ? audioTokens * GEMINI_AUDIO_USD +
+          Math.max(0, usage.prompt_tokens - audioTokens) * GEMINI_TEXT_USD +
+          usage.completion_tokens * GEMINI_OUTPUT_USD
+        : undefined;
 
     return {
       costUsd,
@@ -416,7 +447,12 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
     return plain(400, "No audio was received.");
   }
 
-  const clip: Clip = { base64: audio.toString("base64"), format, mime };
+  const clip: Clip = {
+    base64: audio.toString("base64"),
+    bytes: audio.byteLength,
+    format,
+    mime,
+  };
 
   const store = budget;
   let capReached = false;
@@ -436,7 +472,7 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
           env.NEON_AI_GATEWAY_TOKEN
         ),
         store,
-        worstCaseUsd: NEON_WORST_CASE_USD,
+        worstCaseUsd: neonWorstCaseUsd,
       })
     ),
     budgeted({
@@ -444,14 +480,15 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
       provider: "openrouter",
       run: openrouterRun(env.OPENROUTER_API_KEY),
       store,
-      worstCaseUsd: OPENROUTER_WORST_CASE_USD,
+      worstCaseUsd: openrouterWorstCaseUsd,
     }),
   ];
 
   const firstWorking = async (index: number): Promise<string | undefined> => {
     const transcribe = transcribers[index];
 
-    if (!transcribe) {
+    // Stop trying (and reserving) once the visitor has gone.
+    if (!transcribe || request.signal.aborted) {
       return undefined;
     }
 
