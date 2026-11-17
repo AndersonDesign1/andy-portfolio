@@ -96,10 +96,13 @@ SELECT provider, period, usd, requests FROM tutor_spend ORDER BY period DESC, pr
 `src/prompts.ts` builds every model's prompt from:
 
 1. **Base rules**, shared by all models:
-   - **Hard rules:** no full assignment solutions; replies under 150 words unless the student asks for more detail; code examples of 8 lines or fewer.
+   - **Hard rules:** no full assignment solutions; replies under `maxWords` (default 150) unless the student asks for more detail; code examples of 8 lines or fewer.
    - **How to explain.**
    - **How to handle pasted assignment code.**
-2. **The teacher's course**, as a `CourseContext`: notes, graded assignments, logistics. It's wrapped in tags and marked as reference material, with a closing reminder that the hard rules win, so text inside the course material can't override them. `src/course.ts` is the example course.
+2. **The teacher's course**, as a `CourseContext`: notes, graded assignments, logistics. It's wrapped in tags and marked as reference material, with a closing reminder that the hard rules win, so text inside the course material can't override them. `src/course.ts` is the example course. Three optional fields adapt the prompt to a non-class deployment (the /ai page on the website uses all three, in `apps/web/src/lib/tutor-course.ts`):
+   - `intro` replaces the opening "study assistant for <course>" paragraph, e.g. to present the tutor as the teacher's assistant on a personal site.
+   - `maxWords` sets the reply-length rule (default 150). Raise it where answers need to teach, not just remind.
+   - `explainStyle` is appended to "How to explain": the teacher's own way of explaining (definition, analogy, numbered steps, takeaway).
 3. **A short per-model addendum** that fixes habits seen in testing: Haiku runs long, Luna skips examples, DeepSeek is loose with definitions, and GLM leaks code and uses emojis.
 
 The base prompt comes first and stays identical between requests, so providers bill it at the cached rate (about 85–95% of input tokens in testing).

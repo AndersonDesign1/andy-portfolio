@@ -42,6 +42,7 @@ const menuItems = [
   { label: "About", link: "/about" },
   { label: "Portfolio", link: "/projects" },
   { label: "Blog", link: "/blog" },
+  { label: "AI", link: "/ai" },
   { label: "Contact", link: "/contact" },
 ];
 

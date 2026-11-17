@@ -1,0 +1,39 @@
+---
+import { AiChat } from "../components/ai/ai-chat.tsx";
+import BaseLayout from "../layouts/base-layout.astro";
+
+export const prerender = true;
+
+const title = "Andy's AI: Ask Anderson About SEO, Code & AI";
+
+const description =
+  "Ask Andy's AI, Anderson Joseph's assistant, about SEO, web development, JavaScript and AI. Hold to talk or type, and get the answers Anderson would give.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  applicationCategory: "BusinessApplication",
+  author: {
+    "@type": "Person",
+    name: "Anderson Joseph",
+    url: "https://www.andersonjoseph.com",
+  },
+  browserRequirements: "Requires JavaScript",
+  description,
+  isAccessibleForFree: true,
+  name: "Andy's AI",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  operatingSystem: "Any",
+  url: "https://www.andersonjoseph.com/ai",
+};
+---
+
+<BaseLayout description={description} title={title}>
+  <script
+    is:inline
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData)}
+  />
+  <AiChat client:load />
+</BaseLayout>

@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+/* Streamdown (AI Elements' Markdown renderer) ships Tailwind classes. */
+@source "../../node_modules/streamdown/dist/*.js";
+@source "../../node_modules/@streamdown/code/dist/*.js";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -374,4 +378,277 @@
 @theme {
   --font-mono: JetBrains Mono, Fira Code, monospace;
   --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * /ai orb. Monochrome by design: every layer is the theme's --foreground at
+ * some transparency, so it follows light/dark automatically. State lives in
+ * [data-state]; --orb-level (0..1) is inherited from the stage, set by the mic meter.
+ */
+.ai-orb {
+  --orb-ink: var(--foreground);
+  position: relative;
+  aspect-ratio: 1;
+  isolation: isolate;
+  transform: scale(calc(1 + var(--orb-level, 0) * 0.18));
+  transition: transform 120ms var(--ease-out);
+}
+
+.ai-orb__halo {
+  position: absolute;
+  inset: -28%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--orb-ink) 22%, transparent) 0%,
+    transparent 62%
+  );
+  filter: blur(28px);
+  opacity: calc(0.45 + var(--orb-level, 0) * 0.55);
+  transition: opacity 600ms var(--ease-out);
+  animation: ai-orb-breathe 6s ease-in-out infinite;
+}
+
+.ai-orb__body {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+  animation:
+    ai-orb-morph 14s ease-in-out infinite,
+    ai-orb-breathe 6s ease-in-out infinite;
+}
+
+.ai-orb__core {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 34% 28%,
+      color-mix(in oklch, var(--orb-ink) 62%, transparent) 0%,
+      transparent 46%
+    ),
+    radial-gradient(
+      circle at 68% 72%,
+      color-mix(in oklch, var(--orb-ink) 34%, transparent) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      color-mix(in oklch, var(--orb-ink) 16%, transparent) 0%,
+      color-mix(in oklch, var(--orb-ink) 8%, transparent) 70%
+    );
+  filter: blur(10px);
+}
+
+.ai-orb__swirl {
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in oklch, var(--orb-ink) 30%, transparent) 70deg,
+    transparent 160deg,
+    color-mix(in oklch, var(--orb-ink) 18%, transparent) 250deg,
+    transparent 360deg
+  );
+  filter: blur(16px);
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+  animation: ai-orb-spin 9s linear infinite;
+}
+
+.ai-orb__sheen {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 22%,
+    color-mix(in oklch, var(--background) 55%, transparent) 0%,
+    transparent 32%
+  );
+  mix-blend-mode: soft-light;
+}
+
+.ai-orb[data-state="listening"] .ai-orb__halo {
+  opacity: calc(0.75 + var(--orb-level, 0) * 0.25);
+}
+
+.ai-orb[data-state="listening"] .ai-orb__body {
+  animation-duration: 6s, 2.4s;
+}
+
+.ai-orb[data-state="thinking"] .ai-orb__swirl {
+  opacity: 1;
+  animation-duration: 3.2s;
+}
+
+.ai-orb[data-state="thinking"] .ai-orb__body {
+  animation-duration: 8s, 3s;
+}
+
+.ai-orb[data-state="answering"] .ai-orb__swirl {
+  opacity: 0.55;
+}
+
+.ai-orb[data-state="answering"] .ai-orb__halo,
+.ai-orb[data-state="answering"] .ai-orb__body {
+  animation-duration: 10s, 1.6s;
+}
+
+.ai-orb[data-state="answering"] .ai-orb__halo {
+  animation-duration: 1.6s;
+}
+
+@keyframes ai-orb-morph {
+  0%,
+  100% {
+    border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+  }
+  33% {
+    border-radius: 54% 46% 44% 56% / 46% 56% 44% 54%;
+  }
+  66% {
+    border-radius: 48% 52% 58% 42% / 56% 48% 52% 44%;
+  }
+}
+
+@keyframes ai-orb-breathe {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.04;
+  }
+}
+
+@keyframes ai-orb-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-orb,
+  .ai-orb__halo,
+  .ai-orb__body,
+  .ai-orb__swirl {
+    animation: none;
+    transition: none;
+  }
+
+  /* No mic-driven scaling; the halo's brightness still shows listening. */
+  .ai-orb {
+    transform: none;
+  }
+}
+
+/*
+ * /ai voice status. Monochrome like the orb: level bars follow --orb-level
+ * while recording; the shimmer sweeps "Processing…" / "Thinking…" text.
+ */
+.ai-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+
+.ai-bars > span {
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--foreground);
+  height: calc(18% + var(--orb-level, 0) * var(--bar, 1) * 82%);
+  transition: height 90ms var(--ease-out);
+}
+
+.ai-bars > span:nth-child(1),
+.ai-bars > span:nth-child(5) {
+  --bar: 0.5;
+}
+
+.ai-bars > span:nth-child(2),
+.ai-bars > span:nth-child(4) {
+  --bar: 0.8;
+}
+
+.ai-shimmer {
+  color: transparent;
+  background: linear-gradient(
+      90deg,
+      var(--muted-foreground) 0%,
+      var(--foreground) 50%,
+      var(--muted-foreground) 100%
+    )
+    0 0 / 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: ai-shimmer 1.6s linear infinite;
+}
+
+@keyframes ai-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-bars > span {
+    transition: none;
+  }
+
+  .ai-shimmer {
+    color: var(--muted-foreground);
+    background: none;
+    animation: none;
+  }
+}
+
+/*
+ * /ai replies rendered by Streamdown: tuned to the site's type and spacing.
+ * Streamdown styles code blocks and tables itself; this sets the prose.
+ */
+.ai-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ai-reply :where(strong) {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.ai-reply :where(a) {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ai-reply :where(ul, ol) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-left: 1.25rem;
+}
+
+.ai-reply :where(ul) {
+  list-style: disc;
+}
+
+.ai-reply :where(ol) {
+  list-style: decimal;
+}
+
+.ai-reply :where(:not(pre) > code) {
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--secondary);
+  padding: 0.1em 0.35em;
+  font-size: 0.875em;
+}
+
+.ai-reply :where(h1, h2, h3, h4) {
+  color: var(--foreground);
+  font-size: 1em;
+  font-weight: 600;
 }
