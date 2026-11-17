@@ -13,6 +13,8 @@ import { useDictation } from "@/components/ai/use-dictation";
 /** Recent messages sent with each question; the tutor trims to its own limit. */
 const HISTORY_SENT = 20;
 
+const STOPPED_TEXT = "Stopped before an answer arrived.";
+
 const OFFLINE_TEXT =
   "Couldn't reach the tutor. Check your connection and try again.";
 
@@ -90,6 +92,7 @@ export const AiChat = () => {
 
     const controller = new AbortController();
     abortRef.current = controller;
+    let received = false;
 
     try {
       const response = await fetch("/api/tutor", {
@@ -101,6 +104,7 @@ export const AiChat = () => {
 
       if (response.ok && response.body) {
         await readStream(response.body, (text) => {
+          received = true;
           setStatus("answering");
           updateReply({ content: text });
         });
@@ -108,8 +112,11 @@ export const AiChat = () => {
         updateReply({ content: await failureText(response), failed: true });
       }
     } catch {
+      // A stopped reply keeps any text it got; an empty one says it stopped.
       if (!controller.signal.aborted) {
         updateReply({ content: OFFLINE_TEXT, failed: true });
+      } else if (!received) {
+        updateReply({ content: STOPPED_TEXT, failed: true });
       }
     } finally {
       abortRef.current = null;

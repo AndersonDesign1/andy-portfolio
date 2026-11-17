@@ -69,45 +69,54 @@ export const Transcript = ({
   listening,
   onToggleVoice,
   onReset,
-}: TranscriptProps) => (
-  <div className="flex flex-1 flex-col gap-10 pb-8">
-    <header className="flex items-center gap-3">
-      <button
-        aria-label={voiceSupported ? voiceLabel : "Andy's AI"}
-        aria-pressed={voiceSupported ? listening : undefined}
-        className="focus-visible:ring-foreground/40 size-11 shrink-0 rounded-full focus-visible:ring-2 focus-visible:outline-none disabled:cursor-default"
-        disabled={!voiceSupported}
-        onClick={onToggleVoice}
-        type="button"
-      >
-        <Orb ref={orbRef} state={orbState} />
-      </button>
-      <div className="min-w-0 flex-1">
-        <p className="text-primary text-sm font-semibold">Andy&apos;s AI</p>
-        <p aria-live="polite" className="text-muted text-xs">
-          {STATUS_LABEL[orbState]}
-        </p>
-      </div>
-      <button
-        className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-xs transition-colors"
-        onClick={onReset}
-        type="button"
-      >
-        <HugeiconsIcon icon={Refresh01Icon} size={14} />
-        New chat
-      </button>
-    </header>
+}: TranscriptProps) => {
+  const last = messages.at(-1);
+  const finished = last?.role === "assistant" ? last.content : "";
 
-    <ol className="space-y-8">
-      {messages.map((message) => (
-        <li
-          className="animate-in fade-in slide-in-from-bottom-4 duration-300"
-          key={message.id}
+  return (
+    <div className="flex flex-1 flex-col gap-10 pb-8">
+      <header className="flex items-center gap-3">
+        <button
+          aria-label={voiceSupported ? voiceLabel : "Andy's AI"}
+          aria-pressed={voiceSupported ? listening : undefined}
+          className="focus-visible:ring-foreground/40 size-11 shrink-0 rounded-full focus-visible:ring-2 focus-visible:outline-none disabled:cursor-default"
+          disabled={!voiceSupported}
+          onClick={onToggleVoice}
+          type="button"
         >
-          <Message message={message} />
-        </li>
-      ))}
-    </ol>
-    <div ref={endRef} />
-  </div>
-);
+          <Orb ref={orbRef} state={orbState} />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-primary text-sm font-semibold">Andy&apos;s AI</p>
+          <p aria-live="polite" className="text-muted text-xs">
+            {STATUS_LABEL[orbState]}
+          </p>
+        </div>
+        <button
+          className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-xs transition-colors"
+          onClick={onReset}
+          type="button"
+        >
+          <HugeiconsIcon icon={Refresh01Icon} size={14} />
+          New chat
+        </button>
+      </header>
+
+      <ol className="space-y-8">
+        {messages.map((message) => (
+          <li
+            className="animate-in fade-in slide-in-from-bottom-4 duration-300"
+            key={message.id}
+          >
+            <Message message={message} />
+          </li>
+        ))}
+      </ol>
+      {/* Streaming text would be read out chunk by chunk; announce each reply once, when it's done. */}
+      <p aria-live="polite" className="sr-only">
+        {orbState === "idle" && finished ? finished : ""}
+      </p>
+      <div ref={endRef} />
+    </div>
+  );
+};

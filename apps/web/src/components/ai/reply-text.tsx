@@ -9,7 +9,10 @@ import type { ReactNode } from "react";
  * Keys are character offsets into the reply, which stay stable while it streams.
  */
 
-const FENCE = /```[^\n]*\n?(?<code>[\s\S]*?)(?:```|$)/gu;
+/** Fences only open and close at the start of a line, so "```" inside code is kept. */
+const FENCE =
+  /^ {0,3}```[^\n]*(?:\n|(?![\s\S]))(?<code>[\s\S]*?)(?:^ {0,3}```[ \t]*$|(?![\s\S]))/gmu;
+
 const INLINE = /(?<token>`[^`\n]+`|\*\*[^*\n]+\*\*)/gu;
 const BULLET = /^\s*[-*]\s+/u;
 const NUMBERED = /^\s*\d+[.)]\s+/u;

@@ -13,18 +13,23 @@ const MAX_MESSAGE_CHARS = 2000;
 
 /** Tutor replies are capped at 1,500 output tokens; this leaves room for code-heavy answers. */
 const MAX_REPLY_CHARS = 12_000;
-const MAX_HISTORY_MESSAGES = 40;
+
+/** The page sends its last 20 messages. */
+const MAX_HISTORY_MESSAGES = 20;
+
+/** Comfortably above 20 maximum-length messages; bigger bodies are refused. */
+const MAX_BODY_BYTES = 512 * 1024;
 
 /** Text-only chat history from the /ai page, ending with the student's turn. */
-const requestSchema = z.object({
+const requestSchema = z.strictObject({
   messages: z
     .array(
       z.discriminatedUnion("role", [
-        z.object({
+        z.strictObject({
           content: z.string().trim().min(1).max(MAX_MESSAGE_CHARS),
           role: z.literal("user"),
         }),
-        z.object({
+        z.strictObject({
           content: z.string().trim().min(1).max(MAX_REPLY_CHARS),
           role: z.literal("assistant"),
         }),
@@ -45,10 +50,45 @@ const plain = (status: number, message: string, headers: HeadersInit = {}) =>
     status,
   });
 
+/** The body as text, or undefined once it passes MAX_BODY_BYTES (read no further). */
+const readCapped = async (request: Request): Promise<string | undefined> => {
+  const declared = Number(request.headers.get("content-length") ?? 0);
+
+  if (declared > MAX_BODY_BYTES || !request.body) {
+    return declared > MAX_BODY_BYTES ? undefined : "";
+  }
+
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder();
+
+  const pump = async (
+    text: string,
+    bytes: number
+  ): Promise<string | undefined> => {
+    const chunk = await reader.read();
+
+    if (chunk.done) {
+      return text + decoder.decode();
+    }
+
+    const total = bytes + chunk.value.byteLength;
+
+    if (total > MAX_BODY_BYTES) {
+      await reader.cancel();
+
+      return undefined;
+    }
+
+    return pump(text + decoder.decode(chunk.value, { stream: true }), total);
+  };
+
+  return await pump("", 0);
+};
+
 /** The validated body; invalid JSON fails the same way as a wrong shape. */
-const parseBody = async (request: Request) => {
+const parseBody = (text: string) => {
   try {
-    return requestSchema.safeParse(await request.json());
+    return requestSchema.safeParse(JSON.parse(text));
   } catch {
     return requestSchema.safeParse({});
   }
@@ -62,25 +102,35 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
     return plain(403, "Forbidden");
   }
 
-  const parsed = await parseBody(request);
-
-  if (!parsed.success) {
-    return plain(
-      400,
-      `Messages must be text, up to ${MAX_MESSAGE_CHARS} characters each.`
-    );
-  }
-
+  // Count every request (even malformed ones) before doing any parsing work.
   const env = getTutorEnv();
   budget ??= new PostgresBudgetStore(env.DATABASE_URL);
 
-  const limit = await checkRateLimit(budget, visitorId(clientAddress));
+  const limit = await checkRateLimit(
+    budget,
+    visitorId(clientAddress, env.DATABASE_URL)
+  );
 
   if (!limit.allowed) {
     return plain(
       429,
       `You're sending messages quickly. Try again in ${limit.retryAfterSeconds} seconds.`,
       { "Retry-After": String(limit.retryAfterSeconds) }
+    );
+  }
+
+  const body = await readCapped(request);
+
+  if (body === undefined) {
+    return plain(413, "That conversation is too long. Start a new chat.");
+  }
+
+  const parsed = parseBody(body);
+
+  if (!parsed.success) {
+    return plain(
+      400,
+      `Messages must be text, up to ${MAX_MESSAGE_CHARS} characters each.`
     );
   }
 

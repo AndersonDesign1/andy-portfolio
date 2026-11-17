@@ -61,7 +61,7 @@ const tutorEnvSchema = z.object({
 /**
  * AI tutor route (/api/tutor). The tutor package and its AI SDK providers read
  * `process.env`, but Astro only exposes `.env` files on `import.meta.env` in
- * dev, so the parsed values are copied onto `process.env` when missing.
+ * dev, so the parsed (trimmed) values are copied onto `process.env`.
  */
 export const getTutorEnv = () => {
   const env = tutorEnvSchema.parse({
@@ -72,7 +72,7 @@ export const getTutorEnv = () => {
   });
 
   for (const [key, value] of Object.entries(env)) {
-    process.env[key] ??= value;
+    process.env[key] = value;
   }
 
   return env;

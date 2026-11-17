@@ -533,4 +533,9 @@
     animation: none;
     transition: none;
   }
+
+  /* No mic-driven scaling; the halo's brightness still shows listening. */
+  .ai-orb {
+    transform: none;
+  }
 }

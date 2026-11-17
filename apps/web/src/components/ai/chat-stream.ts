@@ -20,7 +20,13 @@ export const readStream = (
     const chunk = await reader.read();
 
     if (chunk.done) {
-      return text;
+      const final = text + decoder.decode();
+
+      if (final !== text) {
+        onText(final);
+      }
+
+      return final;
     }
 
     const next = text + decoder.decode(chunk.value, { stream: true });
