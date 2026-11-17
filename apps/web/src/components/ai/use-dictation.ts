@@ -19,6 +19,9 @@ const MIME_TYPES = [
   "audio/ogg;codecs=opus",
 ];
 
+const RECORDING_FAILED_MESSAGE =
+  "Recording didn't work. Try again, or type your question instead.";
+
 const BLOCKED_MESSAGE =
   "Microphone access is blocked. Allow it in your browser to talk.";
 
@@ -232,8 +235,24 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       return;
     }
 
+    const failSetup = () => {
+      stopTracks(stream);
+      setListening(false);
+      setRecordingSince(0);
+      setErrorMessage(RECORDING_FAILED_MESSAGE);
+    };
+
     const mimeType = pickMimeType();
-    const instance = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+    let instance: MediaRecorder;
+
+    try {
+      instance = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+    } catch {
+      failSetup();
+
+      return;
+    }
+
     const chunks: Blob[] = [];
     const startedAt = performance.now();
 
@@ -244,6 +263,19 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       (event) => {
         if (event.data.size > 0) {
           chunks.push(event.data);
+        }
+      },
+      { signal: listeners.current.signal }
+    );
+
+    // A mid-recording failure drops the clip (it may be partial) and says so;
+    // the "stop" that follows only releases the mic.
+    instance.addEventListener(
+      "error",
+      () => {
+        if (id === session.current) {
+          session.current += 1;
+          setErrorMessage(RECORDING_FAILED_MESSAGE);
         }
       },
       { signal: listeners.current.signal }
@@ -288,8 +320,19 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       stopTracks(stream);
     };
 
+    try {
+      instance.start();
+    } catch {
+      listeners.current?.abort();
+      listeners.current = null;
+      release.current();
+      release.current = null;
+      failSetup();
+
+      return;
+    }
+
     recorder.current = instance;
-    instance.start();
     setRecordingSince(Date.now());
   };
 

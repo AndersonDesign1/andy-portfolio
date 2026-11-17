@@ -20,6 +20,9 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/audio/transcriptions";
 const INSTRUCTION =
   "Transcribe the speech in this audio exactly. Output only the words spoken, with normal punctuation. If there is no speech, output nothing.";
 
+/** A stalled provider gives up after this, so the next fallback still gets a turn. */
+const ATTEMPT_TIMEOUT_MS = 20_000;
+
 /** About a minute of speech is ~200 words; this leaves room without paying for runaway output. */
 const MAX_TRANSCRIPT_TOKENS = 400;
 
@@ -125,7 +128,10 @@ const postJson = async <T>({
         "Content-Type": "application/json",
       },
       method: "POST",
-      signal,
+      signal: AbortSignal.any([
+        signal,
+        AbortSignal.timeout(ATTEMPT_TIMEOUT_MS),
+      ]),
     });
 
     if (!response.ok) {

@@ -54,8 +54,6 @@ export const AiChat = () => {
   const abortRef = useRef<AbortController>(null);
   /** Where the next transcript goes: sent at once (orb) or into the text box (composer mic). */
   const voiceTarget = useRef<"send" | "input">("send");
-  /** What was already typed when composer dictation started; spoken words are appended. */
-  const typedBeforeDictation = useRef("");
 
   const busy = status !== "idle";
 
@@ -135,8 +133,12 @@ export const AiChat = () => {
         return;
       }
 
-      const typed = typedBeforeDictation.current;
-      setInput((typed ? `${typed} ${spoken}` : spoken).slice(0, MAX_CHARS));
+      // Appended to whatever is in the box now, including edits made while it was transcribing.
+      setInput((current) => {
+        const typed = current.trim();
+
+        return (typed ? `${typed} ${spoken}` : spoken).slice(0, MAX_CHARS);
+      });
     },
   });
 
@@ -174,7 +176,6 @@ export const AiChat = () => {
   const toggleComposerVoice = () => {
     if (!dictation.listening) {
       voiceTarget.current = "input";
-      typedBeforeDictation.current = input.trim();
     }
 
     dictation.toggle();
