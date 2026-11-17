@@ -6,9 +6,11 @@ import { useEffect, useRef } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
 import { MessageList } from "@/components/ai/message-list";
+import { ScrollToLatest } from "@/components/ai/scroll-to-latest";
 
 interface ConversationDrawerProps {
   open: boolean;
+  busy: boolean;
   messages: ChatMessage[];
   onClose: () => void;
 }
@@ -16,6 +18,7 @@ interface ConversationDrawerProps {
 /** The full conversation in a side sheet (bottom sheet on phones), on a native modal <dialog>. */
 export const ConversationDrawer = ({
   open,
+  busy,
   messages,
   onClose,
 }: ConversationDrawerProps) => {
@@ -56,9 +59,11 @@ export const ConversationDrawer = ({
             <HugeiconsIcon icon={Cancel01Icon} size={18} />
           </button>
         </header>
-        <div className="flex-1 overflow-y-auto px-5 py-6">
-          <MessageList messages={messages} />
-        </div>
+        {open && (
+          <ScrollToLatest className="flex-1" contentClassName="px-5 py-6">
+            <MessageList busy={busy} messages={messages} />
+          </ScrollToLatest>
+        )}
       </div>
     </dialog>
   );

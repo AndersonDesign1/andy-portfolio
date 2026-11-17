@@ -106,7 +106,7 @@ const Recording = ({
 const HoldHint = ({ compact }: { compact: boolean }) => (
   <span
     className={cn(
-      "text-muted absolute flex items-center gap-1 text-xs whitespace-nowrap sm:text-sm",
+      "text-secondary absolute flex items-center gap-1 text-xs font-medium whitespace-nowrap sm:text-sm",
       compact
         ? "top-1/2 left-full ml-2 -translate-y-1/2 max-[359px]:top-auto max-[359px]:bottom-0 max-[359px]:left-1/2 max-[359px]:ml-0 max-[359px]:-translate-x-1/2 max-[359px]:translate-y-full"
         : "bottom-0 left-1/2 -translate-x-1/2 translate-y-full sm:top-1/2 sm:bottom-auto sm:left-full sm:ml-2 sm:translate-x-0 sm:-translate-y-1/2"

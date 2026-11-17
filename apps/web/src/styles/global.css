@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+/* Streamdown (AI Elements' Markdown renderer) ships Tailwind classes. */
+@source "../../node_modules/streamdown/dist/*.js";
+@source "../../node_modules/@streamdown/code/dist/*.js";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -598,4 +602,53 @@
     background: none;
     animation: none;
   }
+}
+
+/*
+ * /ai replies rendered by Streamdown: tuned to the site's type and spacing.
+ * Streamdown styles code blocks and tables itself; this sets the prose.
+ */
+.ai-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ai-reply :where(strong) {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.ai-reply :where(a) {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ai-reply :where(ul, ol) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-left: 1.25rem;
+}
+
+.ai-reply :where(ul) {
+  list-style: disc;
+}
+
+.ai-reply :where(ol) {
+  list-style: decimal;
+}
+
+.ai-reply :where(:not(pre) > code) {
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--secondary);
+  padding: 0.1em 0.35em;
+  font-size: 0.875em;
+}
+
+.ai-reply :where(h1, h2, h3, h4) {
+  color: var(--foreground);
+  font-size: 1em;
+  font-weight: 600;
 }

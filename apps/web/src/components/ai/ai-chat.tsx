@@ -8,6 +8,7 @@ import { Composer, MAX_CHARS } from "@/components/ai/composer";
 import { ConversationDrawer } from "@/components/ai/conversation-drawer";
 import { EmptyState } from "@/components/ai/empty-state";
 import { LatestExchange } from "@/components/ai/latest-exchange";
+import { preloadReplyRenderer } from "@/components/ai/message-list";
 import type { OrbState } from "@/components/ai/orb";
 import { OrbButton } from "@/components/ai/orb-button";
 import { useChatSession } from "@/components/ai/use-chat-session";
@@ -157,6 +158,22 @@ export const AiChat = () => {
     }
   }, [typing]);
 
+  // Fetch the reply renderer once the page is idle, before the first answer.
+  // (Older Safari has no requestIdleCallback; a short timeout stands in.)
+  useEffect(() => {
+    if ("requestIdleCallback" in window) {
+      const handle = requestIdleCallback(preloadReplyRenderer, {
+        timeout: 4000,
+      });
+
+      return () => cancelIdleCallback(handle);
+    }
+
+    const timer = setTimeout(preloadReplyRenderer, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // Escape cancels any recording, wherever focus is.
   const recording = dictation.listening;
   const cancelVoice = dictation.cancel;
@@ -226,6 +243,7 @@ export const AiChat = () => {
             messages={chat.messages}
             onOpenConversation={() => setDrawerOpen(true)}
             onReset={reset}
+            onRetry={() => chat.retry()}
           />
         )}
       </div>
@@ -270,6 +288,7 @@ export const AiChat = () => {
       </div>
 
       <ConversationDrawer
+        busy={chat.busy}
         messages={chat.messages}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}

@@ -71,16 +71,21 @@ export const useChatSession = () => {
     }
   };
 
-  /** Starts a question; false (nothing sent) when it's empty or an answer is still coming. */
-  const send = (raw: string): boolean => {
+  /**
+   * Starts a question; false (nothing sent) when it's empty or an answer is
+   * still coming. `replaceLast` swaps out the last question and answer (retry).
+   */
+  const send = (raw: string, replaceLast = false): boolean => {
     const question = raw.trim();
 
     if (!question || busy) {
       return false;
     }
 
+    const kept = replaceLast ? messages.slice(0, -2) : messages;
+
     const history = [
-      ...messages.flatMap(({ role, content, failed, stopped }) =>
+      ...kept.flatMap(({ role, content, failed, stopped }) =>
         failed || stopped || !content ? [] : [{ content, role }]
       ),
       { content: question, role: "user" as const },
@@ -90,7 +95,7 @@ export const useChatSession = () => {
     nextId += 2;
 
     setMessages((current) => [
-      ...current,
+      ...(replaceLast ? current.slice(0, -2) : current),
       { content: question, id: replyId - 1, role: "user" },
       { content: "", id: replyId, role: "assistant" },
     ]);
@@ -98,6 +103,15 @@ export const useChatSession = () => {
     stream(history, replyId);
 
     return true;
+  };
+
+  /** Asks the last question again, replacing its answer. */
+  const retry = () => {
+    const last = messages.findLast((m) => m.role === "user");
+
+    if (last && messages.at(-1)?.role === "assistant") {
+      send(last.content, true);
+    }
   };
 
   const stop = () => {
@@ -112,5 +126,5 @@ export const useChatSession = () => {
   // Leaving the page stops an in-flight reply.
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  return { busy, clear, messages, send, status, stop };
+  return { busy, clear, messages, retry, send, status, stop };
 };

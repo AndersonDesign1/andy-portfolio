@@ -1,10 +1,36 @@
 "use client";
 
+import { lazy, Suspense } from "react";
+
 import type { ChatMessage } from "@/components/ai/chat-stream";
-import { ReplyText } from "@/components/ai/reply-text";
+
+/**
+ * The Markdown renderer (Streamdown + Shiki) is ~140 KB gzipped, so it loads
+ * after the page (see `preloadReplyRenderer`) instead of with it. Until it
+ * arrives, a reply shows as plain text.
+ */
+const loadReplyText = async () => {
+  const module = await import("@/components/ai/reply-text");
+
+  return { default: module.ReplyText };
+};
+
+const ReplyText = lazy(loadReplyText);
+
+/** Starts fetching the renderer early (on idle) so the first reply is formatted. */
+export const preloadReplyRenderer = () => {
+  loadReplyText();
+};
 
 /** One message: the visitor's question as a bubble, the reply as prose. */
-export const Message = ({ message }: { message: ChatMessage }) => {
+export const Message = ({
+  message,
+  streaming = false,
+}: {
+  message: ChatMessage;
+  /** This reply is still arriving (lets the renderer close unfinished Markdown). */
+  streaming?: boolean;
+}) => {
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
@@ -29,18 +55,31 @@ export const Message = ({ message }: { message: ChatMessage }) => {
 
   return (
     <div className="text-secondary text-[1.0625rem] leading-relaxed">
-      <ReplyText text={message.content} />
+      <Suspense
+        fallback={<p className="whitespace-pre-wrap">{message.content}</p>}
+      >
+        <ReplyText streaming={streaming} text={message.content} />
+      </Suspense>
       {message.stopped && <p className="text-muted text-sm italic">Stopped.</p>}
     </div>
   );
 };
 
-/** The whole conversation, oldest first. */
-export const MessageList = ({ messages }: { messages: ChatMessage[] }) => (
+/** The whole conversation, oldest first; `busy` means the last reply is still streaming. */
+export const MessageList = ({
+  messages,
+  busy = false,
+}: {
+  messages: ChatMessage[];
+  busy?: boolean;
+}) => (
   <ol className="flex flex-col gap-8">
-    {messages.map((message) => (
+    {messages.map((message, index) => (
       <li key={message.id}>
-        <Message message={message} />
+        <Message
+          message={message}
+          streaming={busy && index === messages.length - 1}
+        />
       </li>
     ))}
   </ol>

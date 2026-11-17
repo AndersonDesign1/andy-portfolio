@@ -1,24 +1,68 @@
 "use client";
 
 import {
+  Copy01Icon,
   MessageMultiple01Icon,
   Refresh01Icon,
+  RepeatIcon,
+  Tick02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
 import { Message } from "@/components/ai/message-list";
+import { ScrollToLatest } from "@/components/ai/scroll-to-latest";
 
 interface LatestExchangeProps {
   messages: ChatMessage[];
   busy: boolean;
   onOpenConversation: () => void;
   onReset: () => void;
+  onRetry: () => void;
 }
 
+const ICON_BUTTON =
+  "text-muted hover:text-primary hover:bg-secondary/60 inline-flex size-11 items-center justify-center rounded-sm transition-colors disabled:opacity-40 sm:size-8";
+
+/** Copy the reply text, with a brief tick to confirm. */
+const CopyButton = ({ text }: { text: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) {
+      return;
+    }
+
+    const timer = setTimeout(() => setCopied(false), 1500);
+
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+    } catch {
+      // Clipboard blocked (e.g. insecure context); nothing to confirm.
+    }
+  };
+
+  return (
+    <button
+      aria-label={copied ? "Copied" : "Copy answer"}
+      className={ICON_BUTTON}
+      onClick={copy}
+      type="button"
+    >
+      <HugeiconsIcon icon={copied ? Tick02Icon : Copy01Icon} size={15} />
+    </button>
+  );
+};
+
 /**
- * Just the latest question and answer under the orb, in a bounded card;
+ * Just the latest question and answer under the orb, in a bounded card that
+ * follows the answer as it streams; copy and retry sit under the answer, and
  * the full history lives in the conversation drawer.
  */
 export const LatestExchange = ({
@@ -26,35 +70,39 @@ export const LatestExchange = ({
   busy,
   onOpenConversation,
   onReset,
+  onRetry,
 }: LatestExchangeProps) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const question = messages.findLast((m) => m.role === "user");
 
   const reply =
     messages.at(-1)?.role === "assistant" ? messages.at(-1) : undefined;
 
   const earlier = Math.max(0, Math.floor((messages.length - 2) / 2));
-
-  // Keep the newest text in view while the answer streams.
-  const replyText = reply?.content;
-
-  useEffect(() => {
-    const box = scrollRef.current;
-
-    if (box && replyText) {
-      box.scrollTop = box.scrollHeight;
-    }
-  }, [replyText]);
+  const finished = !busy && reply?.content ? reply.content : "";
 
   return (
     <div className="flex min-h-0 w-full flex-col gap-3">
-      <div
-        className="border-subtle flex min-h-0 flex-col gap-5 overflow-y-auto rounded-md border p-4 md:p-5"
-        ref={scrollRef}
+      <ScrollToLatest
+        className="border-subtle rounded-md border"
+        contentClassName="flex flex-col gap-5 p-4 md:p-5"
       >
         {question && <Message message={question} />}
-        {reply && <Message message={reply} />}
-      </div>
+        {reply && <Message message={reply} streaming={busy} />}
+        {finished && (
+          <div className="-mt-2 -ml-2 flex items-center gap-0.5">
+            {!reply?.failed && <CopyButton text={finished} />}
+            <button
+              aria-label="Ask again"
+              className={ICON_BUTTON}
+              onClick={onRetry}
+              title="Ask again"
+              type="button"
+            >
+              <HugeiconsIcon icon={RepeatIcon} size={15} />
+            </button>
+          </div>
+        )}
+      </ScrollToLatest>
 
       <div className="flex shrink-0 items-center justify-between gap-2">
         <button
@@ -78,7 +126,7 @@ export const LatestExchange = ({
 
       {/* Streaming text would be read out chunk by chunk; announce each reply once, when it's done. */}
       <p aria-live="polite" className="sr-only">
-        {!busy && reply?.content ? reply.content : ""}
+        {finished}
       </p>
     </div>
   );
