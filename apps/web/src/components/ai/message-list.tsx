@@ -4,15 +4,25 @@ import { lazy, Suspense } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
 
+/** A reply as plain text: shown while the renderer loads, or if it can't. */
+const PlainReply = ({ text }: { text: string; streaming?: boolean }) => (
+  <p className="whitespace-pre-wrap">{text}</p>
+);
+
 /**
  * The Markdown renderer (Streamdown + Shiki) is ~140 KB gzipped, so it loads
- * after the page (see `preloadReplyRenderer`) instead of with it. Until it
- * arrives, a reply shows as plain text.
+ * after the page (see `preloadReplyRenderer`) instead of with it. If its
+ * chunk fails to load (offline, blocked), replies stay plain text instead of
+ * the error taking down the page.
  */
 const loadReplyText = async () => {
-  const module = await import("@/components/ai/reply-text");
+  try {
+    const module = await import("@/components/ai/reply-text");
 
-  return { default: module.ReplyText };
+    return { default: module.ReplyText };
+  } catch {
+    return { default: PlainReply };
+  }
 };
 
 const ReplyText = lazy(loadReplyText);
@@ -55,9 +65,7 @@ export const Message = ({
 
   return (
     <div className="text-secondary text-[1.0625rem] leading-relaxed">
-      <Suspense
-        fallback={<p className="whitespace-pre-wrap">{message.content}</p>}
-      >
+      <Suspense fallback={<PlainReply text={message.content} />}>
         <ReplyText streaming={streaming} text={message.content} />
       </Suspense>
       {message.stopped && <p className="text-muted text-sm italic">Stopped.</p>}
