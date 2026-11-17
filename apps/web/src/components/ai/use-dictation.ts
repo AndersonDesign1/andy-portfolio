@@ -174,14 +174,26 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
   /** Mic level for the orb; optional, so a failure here never stops recording. */
   const startMeter = (stream: MediaStream) => {
+    let context: AudioContext | undefined;
+    let frame = 0;
+
+    const stopMeter = async () => {
+      cancelAnimationFrame(frame);
+
+      try {
+        await context?.close();
+      } catch {
+        // Never opened, or already closed.
+      }
+    };
+
     try {
-      const context = new AudioContext();
+      context = new AudioContext();
       const analyser = context.createAnalyser();
       analyser.fftSize = 512;
       context.createMediaStreamSource(stream).connect(analyser);
 
       const samples = new Uint8Array(analyser.fftSize);
-      let frame = 0;
 
       const tick = () => {
         analyser.getByteTimeDomainData(samples);
@@ -190,20 +202,13 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       };
 
       tick();
-
-      return async () => {
-        cancelAnimationFrame(frame);
-
-        try {
-          await context.close();
-        } catch {
-          // Already closed.
-        }
-      };
     } catch {
-      // No meter (e.g. AudioContext blocked); recording carries on without it.
-      return () => Promise.resolve();
+      // No meter (e.g. AudioContext blocked); recording carries on without it,
+      // but a context that did open is closed now rather than left running.
+      stopMeter();
     }
+
+    return stopMeter;
   };
 
   const start = async () => {
