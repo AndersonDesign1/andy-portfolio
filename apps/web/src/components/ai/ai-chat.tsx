@@ -197,6 +197,20 @@ export const AiChat = () => {
 
   const empty = chat.messages.length === 0;
 
+  // Under the intro on the first screen (where eyes already are), docked at
+  // the bottom once a conversation is showing.
+  const typeButton = (
+    <button
+      className="border-foreground/20 bg-secondary text-primary hover:bg-muted hover:border-foreground/30 inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-sm font-medium shadow-sm transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.97]"
+      onClick={() => setTyping(true)}
+      ref={typeInsteadRef}
+      type="button"
+    >
+      <HugeiconsIcon icon={KeyboardIcon} size={16} />
+      {empty ? "Or type your question" : "Type instead"}
+    </button>
+  );
+
   return (
     <section className="mx-auto flex h-dvh w-full max-w-screen-md flex-col items-center gap-4 px-6 pt-24 pb-4 md:px-12 md:pt-28">
       <div
@@ -236,7 +250,10 @@ export const AiChat = () => {
         </div>
 
         {empty ? (
-          <EmptyState />
+          <div className="flex flex-col items-center gap-6">
+            <EmptyState />
+            {!showComposer && typeButton}
+          </div>
         ) : (
           <LatestExchange
             busy={chat.busy}
@@ -272,15 +289,7 @@ export const AiChat = () => {
             />
           </div>
         ) : (
-          <button
-            className="border-subtle text-secondary hover:text-primary hover:bg-secondary/60 bg-background/85 inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm backdrop-blur-md transition-colors"
-            onClick={() => setTyping(true)}
-            ref={typeInsteadRef}
-            type="button"
-          >
-            <HugeiconsIcon icon={KeyboardIcon} size={16} />
-            Type instead
-          </button>
+          !empty && typeButton
         )}
         <p className="text-muted text-center text-xs">
           AI can get things wrong. Double-check anything important.

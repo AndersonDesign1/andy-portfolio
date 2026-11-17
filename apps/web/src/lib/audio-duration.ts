@@ -51,6 +51,12 @@ const offsetsOf = (audio: Buffer, marker: Buffer | string) => {
   return found;
 };
 
+/** Ogg page header: the "first page of a stream" flag, and where the payload starts. */
+const OGG_BOS_FLAG = 0x02;
+
+const oggPayloadStart = (audio: Buffer, page: number) =>
+  page + 27 + (audio[page + 26] ?? 0);
+
 /**
  * Ogg Opus: a page's granule position is its sample count at 48 kHz. Granules
  * restart in each logical stream of a chained file, so the largest granule is
@@ -65,9 +71,22 @@ const oggSeconds = (audio: Buffer): number | undefined => {
   const perStream = new Map<number, bigint>();
 
   for (const page of offsetsOf(audio, "OggS")) {
-    if (page + 18 <= audio.length) {
+    if (page + 27 <= audio.length) {
       const granule = audio.readBigUInt64LE(page + 6);
       const serial = audio.readUInt32LE(page + 14);
+
+      const firstPage =
+        Math.floor((audio[page + 5] ?? 0) / OGG_BOS_FLAG) % 2 === 1;
+
+      // Only Opus counts granules at 48 kHz (Vorbis, FLAC... use their own
+      // rate). Any other codec: length unknown, so the caller assumes the worst.
+      if (firstPage) {
+        const start = oggPayloadStart(audio, page);
+
+        if (audio.toString("ascii", start, start + 8) !== "OpusHead") {
+          return undefined;
+        }
+      }
 
       // -1 marks a page with no completed packet.
       if (
@@ -85,8 +104,6 @@ const oggSeconds = (audio: Buffer): number | undefined => {
     samples += granule;
   }
 
-  // Opus always counts at 48 kHz; other codecs use a lower rate, which only
-  // makes this overestimate (the safe direction).
   return samples > 0n ? Number(samples) / 48_000 : undefined;
 };
 
@@ -115,6 +132,7 @@ const readVint = (audio: Buffer, offset: number) => {
 };
 
 const EBML_ID = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);
+const TIMECODE_SCALE_ID = Buffer.from([0x2a, 0xd7, 0xb1]);
 const CLUSTER_ID = Buffer.from([0x1f, 0x43, 0xb6, 0x75]);
 const TIMECODE_ID = 0xe7;
 
@@ -123,6 +141,33 @@ const TIMECODE_ID = 0xe7;
  * no block plays more than ~32.8 s after its cluster's timecode.
  */
 const MAX_BLOCK_OFFSET_SECONDS = 32.8;
+
+/** The default WebM TimecodeScale: 1,000,000 ns, i.e. timecodes in milliseconds. */
+const DEFAULT_TIMECODE_SCALE = 1_000_000;
+
+/** True if the file declares a TimecodeScale other than the default (or one we can't read). */
+const hasCustomTimecodeScale = (audio: Buffer) => {
+  const at = audio.indexOf(TIMECODE_SCALE_ID);
+
+  if (at === -1) {
+    return false;
+  }
+
+  const size = readVint(audio, at + 3);
+
+  if (!size || size.value > 8) {
+    return true;
+  }
+
+  const start = at + 3 + size.length;
+  let scale = 0;
+
+  for (let i = 0; i < size.value; i += 1) {
+    scale = scale * 256 + (audio[start + i] ?? 0);
+  }
+
+  return scale !== DEFAULT_TIMECODE_SCALE;
+};
 
 /** The timecode (ms) at the start of the cluster at `cluster`, if well formed. */
 const clusterTimecode = (audio: Buffer, cluster: number) => {
@@ -164,9 +209,10 @@ const webmSeconds = (audio: Buffer): number | undefined => {
     return undefined;
   }
 
-  // Several concatenated segments restart their timecodes; MediaRecorder
-  // never writes that, so treat the length as unknown (worst case).
-  if (offsetsOf(audio, EBML_ID).length > 1) {
+  // Several concatenated segments restart their timecodes, and a custom
+  // TimecodeScale changes their unit from milliseconds. MediaRecorder writes
+  // neither, so either one means "length unknown" (the caller assumes the worst).
+  if (offsetsOf(audio, EBML_ID).length > 1 || hasCustomTimecodeScale(audio)) {
     return undefined;
   }
 
