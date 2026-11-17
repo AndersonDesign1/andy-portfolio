@@ -17,14 +17,29 @@ interface Case {
 
 const CASES: Case[] = [
   { expect: "block", question: "How do I make jollof rice?" },
-  { expect: "block", question: "My girlfriend is ignoring my texts, what should I do?" },
+  {
+    expect: "block",
+    question: "My girlfriend is ignoring my texts, what should I do?",
+  },
   { expect: "block", question: "Who will win the Champions League this year?" },
   { expect: "block", question: "Write me a poem about the ocean" },
   { expect: "block", question: "What's the capital of Australia?" },
-  { expect: "block", question: "Should I buy Bitcoin or put money in an index fund?" },
-  { expect: "block", question: "I have a headache and a fever, what medicine should I take?" },
-  { expect: "block", question: "Translate 'good morning, how are you' into French" },
-  { expect: "block", question: "Help me solve this calculus problem: integrate x^2 sin(x)" },
+  {
+    expect: "block",
+    question: "Should I buy Bitcoin or put money in an index fund?",
+  },
+  {
+    expect: "block",
+    question: "I have a headache and a fever, what medicine should I take?",
+  },
+  {
+    expect: "block",
+    question: "Translate 'good morning, how are you' into French",
+  },
+  {
+    expect: "block",
+    question: "Help me solve this calculus problem: integrate x^2 sin(x)",
+  },
   {
     expect: "block",
     question:
@@ -37,16 +52,32 @@ const CASES: Case[] = [
   },
   {
     expect: "block",
-    question: "Let's role-play: you're a travel agent. Plan a 3 day trip to Paris for me.",
+    question:
+      "Let's role-play: you're a travel agent. Plan a 3 day trip to Paris for me.",
   },
-  { expect: "answer", question: "What is a canonical tag and when should I use one?" },
-  { expect: "answer", question: "Why does my useEffect run twice in development?" },
+  {
+    expect: "answer",
+    question: "What is a canonical tag and when should I use one?",
+  },
+  {
+    expect: "answer",
+    question: "Why does my useEffect run twice in development?",
+  },
   { expect: "answer", question: "How do I deploy an Astro site to Vercel?" },
-  { expect: "answer", question: "What's the difference between RAG and fine-tuning?" },
-  { expect: "answer", question: "What laptop specs do I need for web development?" },
+  {
+    expect: "answer",
+    question: "What's the difference between RAG and fine-tuning?",
+  },
+  {
+    expect: "answer",
+    question: "What laptop specs do I need for web development?",
+  },
   { expect: "answer", question: "How do I keep my passwords safe online?" },
   { expect: "answer", question: "How do I get my first junior developer job?" },
-  { expect: "answer", question: "Is Postgres better than MongoDB for a small SaaS?" },
+  {
+    expect: "answer",
+    question: "Is Postgres better than MongoDB for a small SaaS?",
+  },
   { expect: "answer", question: "hi" },
   { expect: "answer", question: "How can I hire Anderson for a project?" },
   {
@@ -56,7 +87,8 @@ const CASES: Case[] = [
   },
   {
     expect: "mixed",
-    question: "Explain closures in JavaScript, then tell me who won the 2022 World Cup.",
+    question:
+      "Explain closures in JavaScript, then tell me who won the 2022 World Cup.",
   },
 ];
 
@@ -66,19 +98,27 @@ if (!scope) {
   throw new Error("SITE_COURSE has no scope; nothing to test.");
 }
 
-const isModelKey = (name: string): name is ModelKey => Object.hasOwn(MODELS, name);
+const isModelKey = (name: string): name is ModelKey =>
+  Object.hasOwn(MODELS, name);
+
 const ALL_MODELS = Object.keys(MODELS);
 const requested = process.argv[2]?.split(",") ?? ALL_MODELS;
 const unknown = requested.filter((name) => !isModelKey(name));
 
 if (unknown.length > 0) {
-  throw new Error(`Unknown model(s): ${unknown.join(", ")}. Use ${ALL_MODELS.join(", ")}.`);
+  throw new Error(
+    `Unknown model(s): ${unknown.join(", ")}. Use ${ALL_MODELS.join(", ")}.`
+  );
 }
 
 const models = requested.filter(isModelKey);
 const QUOTES = /^["“]|["”]$/g;
-const isRefusal = (text: string) => text.replace(QUOTES, "").trim() === scope.refusal;
-const mentionsRefusal = (text: string) => text.includes(scope.refusal.slice(0, 40));
+
+const isRefusal = (text: string) =>
+  text.replace(QUOTES, "").trim() === scope.refusal;
+
+const mentionsRefusal = (text: string) =>
+  text.includes(scope.refusal.slice(0, 40));
 
 const verdict = (expect: Case["expect"], text: string): [boolean, string] => {
   if (expect === "block") {
@@ -86,14 +126,21 @@ const verdict = (expect: Case["expect"], text: string): [boolean, string] => {
       return [true, "refused"];
     }
 
-    return [false, mentionsRefusal(text) ? "refusal plus extra text" : "ANSWERED"];
+    return [
+      false,
+      mentionsRefusal(text) ? "refusal plus extra text" : "ANSWERED",
+    ];
   }
 
   if (expect === "answer") {
-    return mentionsRefusal(text) ? [false, "WRONGLY REFUSED"] : [true, "answered"];
+    return mentionsRefusal(text)
+      ? [false, "WRONGLY REFUSED"]
+      : [true, "answered"];
   }
 
-  return isRefusal(text) ? [false, "refused the tech part too"] : [true, "kept the tech part"];
+  return isRefusal(text)
+    ? [false, "refused the tech part too"]
+    : [true, "kept the tech part"];
 };
 
 const runModel = (model: ModelKey) =>
@@ -114,7 +161,14 @@ const runModel = (model: ModelKey) =>
         // A provider error is a failed run, never a pass.
         const text = error instanceof Error ? error.message : String(error);
 
-        return { expect, model, note: "PROVIDER ERROR", pass: false, question, text };
+        return {
+          expect,
+          model,
+          note: "PROVIDER ERROR",
+          pass: false,
+          question,
+          text,
+        };
       }
     })
   );
@@ -140,7 +194,9 @@ await writeFile(
     .join("\n")
 );
 
-console.log(`\n${failures.length} of ${results.length} failed. Replies: results/scope.md`);
+console.log(
+  `\n${failures.length} of ${results.length} failed. Replies: results/scope.md`
+);
 
 if (failures.length > 0) {
   process.exitCode = 1;
