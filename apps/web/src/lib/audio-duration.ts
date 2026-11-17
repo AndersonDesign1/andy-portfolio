@@ -52,25 +52,37 @@ const offsetsOf = (audio: Buffer, marker: Buffer | string) => {
 };
 
 /**
- * Ogg Opus: a page's granule position is its sample count at 48 kHz. The
- * largest across all pages is used, so a forged last page can't shorten it.
+ * Ogg Opus: a page's granule position is its sample count at 48 kHz. Granules
+ * restart in each logical stream of a chained file, so the largest granule is
+ * taken per stream (by serial number) and the streams are added up; using
+ * the largest per stream also means a forged last page can't shorten it.
  */
 const oggSeconds = (audio: Buffer): number | undefined => {
   if (audio.toString("ascii", 0, 4) !== "OggS") {
     return undefined;
   }
 
-  let samples = 0n;
+  const perStream = new Map<number, bigint>();
 
   for (const page of offsetsOf(audio, "OggS")) {
-    if (page + 14 <= audio.length) {
+    if (page + 18 <= audio.length) {
       const granule = audio.readBigUInt64LE(page + 6);
+      const serial = audio.readUInt32LE(page + 14);
 
       // -1 marks a page with no completed packet.
-      if (granule !== 0xff_ff_ff_ff_ff_ff_ff_ffn && granule > samples) {
-        samples = granule;
+      if (
+        granule !== 0xff_ff_ff_ff_ff_ff_ff_ffn &&
+        granule > (perStream.get(serial) ?? 0n)
+      ) {
+        perStream.set(serial, granule);
       }
     }
+  }
+
+  let samples = 0n;
+
+  for (const granule of perStream.values()) {
+    samples += granule;
   }
 
   // Opus always counts at 48 kHz; other codecs use a lower rate, which only
@@ -102,6 +114,7 @@ const readVint = (audio: Buffer, offset: number) => {
   return { length, value };
 };
 
+const EBML_ID = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);
 const CLUSTER_ID = Buffer.from([0x1f, 0x43, 0xb6, 0x75]);
 const TIMECODE_ID = 0xe7;
 
@@ -148,6 +161,12 @@ const clusterTimecode = (audio: Buffer, cluster: number) => {
  */
 const webmSeconds = (audio: Buffer): number | undefined => {
   if (audio.readUInt32BE(0) !== 0x1a_45_df_a3) {
+    return undefined;
+  }
+
+  // Several concatenated segments restart their timecodes; MediaRecorder
+  // never writes that, so treat the length as unknown (worst case).
+  if (offsetsOf(audio, EBML_ID).length > 1) {
     return undefined;
   }
 
