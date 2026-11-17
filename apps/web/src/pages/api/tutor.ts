@@ -50,7 +50,11 @@ const plain = (status: number, message: string, headers: HeadersInit = {}) =>
     status,
   });
 
-/** The body as text, or undefined once it passes MAX_BODY_BYTES (read no further). */
+/**
+ * The body as text, or undefined once it passes MAX_BODY_BYTES (read no
+ * further). A stream that fails mid-read comes back empty, so it fails
+ * validation with the usual 400.
+ */
 const readCapped = async (request: Request): Promise<string | undefined> => {
   const declared = Number(request.headers.get("content-length") ?? 0);
 
@@ -59,16 +63,14 @@ const readCapped = async (request: Request): Promise<string | undefined> => {
   }
 
   const reader = request.body.getReader();
-  const decoder = new TextDecoder();
+  // Raw chunks are collected and decoded once, so tiny chunks cost no copying.
+  const chunks: Uint8Array[] = [];
 
-  const pump = async (
-    text: string,
-    bytes: number
-  ): Promise<string | undefined> => {
+  const pump = async (bytes: number): Promise<string | undefined> => {
     const chunk = await reader.read();
 
     if (chunk.done) {
-      return text + decoder.decode();
+      return Buffer.concat(chunks).toString("utf-8");
     }
 
     const total = bytes + chunk.value.byteLength;
@@ -79,10 +81,16 @@ const readCapped = async (request: Request): Promise<string | undefined> => {
       return undefined;
     }
 
-    return pump(text + decoder.decode(chunk.value, { stream: true }), total);
+    chunks.push(chunk.value);
+
+    return pump(total);
   };
 
-  return await pump("", 0);
+  try {
+    return await pump(0);
+  } catch {
+    return "";
+  }
 };
 
 /** The validated body; invalid JSON fails the same way as a wrong shape. */

@@ -76,8 +76,13 @@ export const checkRateLimit = async (
 
   const now = Date.now();
 
+  // Best effort: a failed cleanup must not block the request.
   if (Math.random() < PRUNE_SHARE) {
-    await sql.query(PRUNE_SQL);
+    try {
+      await sql.query(PRUNE_SQL);
+    } catch {
+      // Retried on a later request.
+    }
   }
 
   const results = await Promise.all(
