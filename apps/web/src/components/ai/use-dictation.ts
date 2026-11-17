@@ -209,11 +209,13 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     instance.addEventListener(
       "result",
       (event) => {
-        let text = "";
+        // The spec defines the result list as indexed, not iterable.
+        const { results } = event;
 
-        for (const result of event.results) {
-          text += result[0]?.transcript ?? "";
-        }
+        const text = Array.from(
+          { length: results.length },
+          (_, index) => results[index]?.[0]?.transcript ?? ""
+        ).join("");
 
         networkFailures.current = 0;
         latest.current.onTranscript(text.trim());

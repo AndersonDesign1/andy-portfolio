@@ -17,7 +17,6 @@ interface SpeechRecognitionResult {
 interface SpeechRecognitionResultList {
   readonly length: number;
   readonly [index: number]: SpeechRecognitionResult;
-  [Symbol.iterator]: () => Iterator<SpeechRecognitionResult>;
 }
 
 interface SpeechRecognitionEvent extends Event {
