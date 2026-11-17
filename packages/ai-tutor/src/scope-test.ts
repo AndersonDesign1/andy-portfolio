@@ -148,8 +148,14 @@ const verdict = (
       : [true, "answered"];
   }
 
-  if (isRefusal(text)) {
-    return [false, "refused the tech part too"];
+  // Mixed replies drop the off-topic part silently: no refusal, even before a tech answer.
+  if (mentionsRefusal(text)) {
+    return [
+      false,
+      isRefusal(text)
+        ? "refused the tech part too"
+        : "REFUSAL TEXT IN MIXED REPLY",
+    ];
   }
 
   if (keeps && !keeps.test(text)) {
