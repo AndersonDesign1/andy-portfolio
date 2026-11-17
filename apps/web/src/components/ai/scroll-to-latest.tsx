@@ -19,6 +19,14 @@ const BOTTOM_SLACK = 24;
 const SCROLL_AREA =
   "ai-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain focus-visible:outline-none";
 
+/**
+ * The focus ring sits on the wrapper: the edge fades mask the scroll area
+ * itself, which would fade a ring drawn there. Only keyboard focus on the
+ * area shows it, not focus on a button inside.
+ */
+const FRAME =
+  "relative flex min-h-0 flex-col has-[>section:focus-visible]:ring-2 has-[>section:focus-visible]:ring-foreground/50";
+
 const JumpButton = ({ onClick }: { onClick: () => void }) => (
   <button
     aria-label="Jump to the latest"
@@ -39,21 +47,30 @@ export const ScrollToLatest = ({
   children,
   className,
   contentClassName,
+  label,
 }: {
   children: ReactNode;
   className?: string;
   contentClassName?: string;
+  /** Names the region for screen readers. */
+  label: string;
 }) => {
   const { contentRef, isAtBottom, scrollRef, scrollToBottom } =
     useStickToBottom({ initial: "instant", resize: "smooth" });
 
   return (
-    <div className={cn("relative flex min-h-0 flex-col", className)}>
-      <div className={SCROLL_AREA} data-lenis-prevent ref={scrollRef}>
+    <div className={cn(FRAME, className)}>
+      <section
+        aria-label={label}
+        className={SCROLL_AREA}
+        data-lenis-prevent
+        ref={scrollRef}
+        tabIndex={0}
+      >
         <div className={contentClassName} ref={contentRef}>
           {children}
         </div>
-      </div>
+      </section>
       {!isAtBottom && <JumpButton onClick={() => scrollToBottom()} />}
     </div>
   );
@@ -190,10 +207,11 @@ export const AnchoredScroll = ({
     });
   };
 
-  // A <section> with a label is a named region; browsers make an overflowing
-  // scroll area keyboard-focusable, so arrows and Page Up/Down work too.
+  // A labelled <section> is a named region. tabIndex makes it focusable in
+  // every browser (Safari doesn't focus scrollers by itself), so arrows and
+  // Page Up/Down scroll it.
   return (
-    <div className={cn("relative flex min-h-0 flex-col", className)}>
+    <div className={cn(FRAME, className)}>
       <section
         aria-label={label}
         className={cn(
@@ -203,6 +221,7 @@ export const AnchoredScroll = ({
         )}
         data-lenis-prevent
         ref={scrollRef}
+        tabIndex={0}
       >
         <div className={contentClassName} ref={contentRef}>
           {children}

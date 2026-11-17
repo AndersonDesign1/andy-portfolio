@@ -45,5 +45,14 @@ export default defineConfig({
   jsPlugins: [antiSlopPlugin],
   rules: {
     ...antiSlopRules,
+    // A scrollable <section> (a labelled region) needs tabIndex={0} so
+    // keyboard users can scroll it in Safari; Chromium and Firefox focus
+    // scrollers on their own. The rule only sees explicit roles, and an
+    // explicit role="region" on <section> trips no-redundant-roles, so the
+    // tag is allowed instead. Everything else stays forbidden.
+    "jsx-a11y/no-noninteractive-tabindex": [
+      "error",
+      { roles: ["tabpanel"], tags: ["section"] },
+    ],
   },
 });
