@@ -46,7 +46,7 @@ const hintFor = ({
     return `${length}/${MAX_CHARS}`;
   }
 
-  return canSend ? "⌘/Ctrl + Enter to send" : "";
+  return canSend ? "Shift + Enter for a new line" : "";
 };
 
 /** Text box docked to the bottom: dictation mic, then send (or stop while answering). */
@@ -69,10 +69,10 @@ export const Composer = ({
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enter adds a new line; ⌘/Ctrl+Enter sends (site guideline for textareas).
+    // Chat convention (as in ChatGPT, Claude): Enter sends, Shift+Enter adds a line.
     if (
       event.key === "Enter" &&
-      (event.metaKey || event.ctrlKey) &&
+      !event.shiftKey &&
       !event.nativeEvent.isComposing
     ) {
       event.preventDefault();

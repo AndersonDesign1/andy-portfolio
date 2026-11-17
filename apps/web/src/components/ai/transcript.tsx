@@ -5,8 +5,8 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import type { Ref } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
-import { Orb } from "@/components/ai/orb";
 import type { OrbState } from "@/components/ai/orb";
+import { OrbButton } from "@/components/ai/orb-button";
 import { ReplyText } from "@/components/ai/reply-text";
 
 const STATUS_LABEL: Record<OrbState, string> = {
@@ -53,9 +53,9 @@ interface TranscriptProps {
   endRef: Ref<HTMLDivElement>;
   orbState: OrbState;
   voiceSupported: boolean;
-  voiceLabel: string;
   listening: boolean;
-  onToggleVoice: () => void;
+  onHoldStart: () => void;
+  onHoldEnd: () => void;
   onReset: () => void;
 }
 
@@ -66,9 +66,9 @@ export const Transcript = ({
   endRef,
   orbState,
   voiceSupported,
-  voiceLabel,
   listening,
-  onToggleVoice,
+  onHoldStart,
+  onHoldEnd,
   onReset,
 }: TranscriptProps) => {
   const last = messages.at(-1);
@@ -77,16 +77,15 @@ export const Transcript = ({
   return (
     <div className="flex flex-1 flex-col gap-10 pb-8">
       <header className="flex items-center gap-3">
-        <button
-          aria-label={voiceSupported ? voiceLabel : "Andy's AI"}
-          aria-pressed={voiceSupported ? listening : undefined}
-          className="focus-visible:ring-foreground/40 size-11 shrink-0 rounded-full focus-visible:ring-2 focus-visible:outline-none disabled:cursor-default"
-          disabled={!voiceSupported}
-          onClick={onToggleVoice}
-          type="button"
-        >
-          <Orb ref={orbRef} state={orbState} />
-        </button>
+        <OrbButton
+          className="size-11 shrink-0"
+          listening={listening}
+          onHoldEnd={onHoldEnd}
+          onHoldStart={onHoldStart}
+          orbRef={orbRef}
+          orbState={orbState}
+          voiceSupported={voiceSupported}
+        />
         <div className="min-w-0 flex-1">
           <p className="text-primary text-sm font-semibold">Andy&apos;s AI</p>
           <p aria-live="polite" className="text-muted text-xs">

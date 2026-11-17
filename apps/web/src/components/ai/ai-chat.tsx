@@ -49,6 +49,23 @@ export const AiChat = () => {
     ? "Stop dictation"
     : "Dictate your question";
 
+  /** Push-to-talk on the orb: record only while it's held. */
+  const holdStart = () => {
+    if (dictation.listening) {
+      return;
+    }
+
+    typedBeforeDictation.current = input.trim();
+    dictation.start();
+  };
+
+  const holdEnd = () => {
+    if (dictation.listening) {
+      dictation.stop();
+      textareaRef.current?.focus();
+    }
+  };
+
   const toggleVoice = () => {
     if (!dictation.listening) {
       typedBeforeDictation.current = input.trim();
@@ -148,10 +165,10 @@ export const AiChat = () => {
 
   const voice = {
     listening: dictation.listening,
-    onToggleVoice: toggleVoice,
+    onHoldEnd: holdEnd,
+    onHoldStart: holdStart,
     orbRef,
     orbState,
-    voiceLabel,
     voiceSupported: dictation.supported,
   };
 

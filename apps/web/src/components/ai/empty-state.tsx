@@ -2,8 +2,8 @@
 
 import type { Ref } from "react";
 
-import { Orb } from "@/components/ai/orb";
 import type { OrbState } from "@/components/ai/orb";
+import { OrbButton } from "@/components/ai/orb-button";
 
 /** Short label on the chip, full question sent to the tutor. */
 const SUGGESTIONS = [
@@ -25,33 +25,32 @@ interface EmptyStateProps {
   orbRef: Ref<HTMLDivElement>;
   orbState: OrbState;
   voiceSupported: boolean;
-  voiceLabel: string;
   listening: boolean;
-  onToggleVoice: () => void;
+  onHoldStart: () => void;
+  onHoldEnd: () => void;
   onAsk: (question: string) => void;
 }
 
-/** First screen: the orb front and center (tap to talk), a line of intro, three starters. */
+/** First screen: the orb front and center (hold to talk), a line of intro, three starters. */
 export const EmptyState = ({
   orbRef,
   orbState,
   voiceSupported,
-  voiceLabel,
   listening,
-  onToggleVoice,
+  onHoldStart,
+  onHoldEnd,
   onAsk,
 }: EmptyStateProps) => (
   <div className="flex flex-1 flex-col items-center justify-center gap-8 pb-8 text-center">
-    <button
-      aria-label={voiceSupported ? voiceLabel : "Andy's AI"}
-      aria-pressed={voiceSupported ? listening : undefined}
-      className="focus-visible:ring-foreground/40 w-[min(58vw,264px,30dvh)] touch-manipulation rounded-full transition-transform duration-300 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:outline-none active:scale-[0.97] disabled:cursor-default motion-reduce:active:scale-100"
-      disabled={!voiceSupported}
-      onClick={onToggleVoice}
-      type="button"
-    >
-      <Orb ref={orbRef} state={orbState} />
-    </button>
+    <OrbButton
+      className="w-[min(58vw,264px,30dvh)] transition-transform duration-300 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:active:scale-100"
+      listening={listening}
+      onHoldEnd={onHoldEnd}
+      onHoldStart={onHoldStart}
+      orbRef={orbRef}
+      orbState={orbState}
+      voiceSupported={voiceSupported}
+    />
 
     <div className="space-y-3">
       <h1 className="text-primary text-4xl leading-[1.1] font-bold tracking-tighter md:text-5xl">
@@ -60,7 +59,7 @@ export const EmptyState = ({
       <p className="text-secondary mx-auto max-w-md text-lg leading-relaxed">
         Code, the web and AI, explained the way I teach.{" "}
         {voiceSupported
-          ? "Type a question, or tap the orb and talk."
+          ? "Type a question, or hold the orb and talk."
           : "Type a question to start."}
       </p>
     </div>
