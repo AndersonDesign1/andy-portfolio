@@ -70,8 +70,8 @@ export const Transcript = ({
   onToggleVoice,
   onReset,
 }: TranscriptProps) => (
-  <div className="flex-1 pb-8">
-    <header className="mb-10 flex items-center gap-3">
+  <div className="flex flex-1 flex-col gap-10 pb-8">
+    <header className="flex items-center gap-3">
       <button
         aria-label={voiceSupported ? voiceLabel : "Andy's AI"}
         aria-pressed={voiceSupported ? listening : undefined}

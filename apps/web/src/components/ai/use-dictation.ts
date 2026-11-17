@@ -62,6 +62,12 @@ const loudness = (samples: Uint8Array<ArrayBuffer>): number => {
   return Math.min(1, Math.sqrt(sum / samples.length) * 4);
 };
 
+const stopTracks = (stream: MediaStream) => {
+  for (const track of stream.getTracks()) {
+    track.stop();
+  }
+};
+
 interface DictationCallbacks {
   /** The full transcript so far for this session (final + in-progress words). */
   onTranscript: (text: string) => void;
@@ -90,6 +96,8 @@ export const useDictation = (callbacks: DictationCallbacks) => {
   const stopMeterRef = useRef<() => Promise<void>>(null);
   /** Removes the current recognition session's listeners. */
   const listeners = useRef<AbortController>(null);
+  /** Bumped whenever the meter stops, so a mic grant that lands late is released. */
+  const meterSession = useRef(0);
   const latest = useRef(callbacks);
 
   useEffect(() => {
@@ -97,6 +105,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
   });
 
   const stopMeter = () => {
+    meterSession.current += 1;
     stopMeterRef.current?.();
     stopMeterRef.current = null;
     latest.current.onLevel?.(0);
@@ -104,8 +113,19 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
   /** Mic level for the orb. Optional: dictation still works if this fails. */
   const startMeter = async () => {
+    const session = meterSession.current;
+    let stream: MediaStream | undefined;
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      // Dictation ended (or the page unmounted) while permission was pending.
+      if (session !== meterSession.current) {
+        stopTracks(stream);
+
+        return;
+      }
+
       const context = new AudioContext();
       const analyser = context.createAnalyser();
       analyser.fftSize = 512;
@@ -122,12 +142,11 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
       tick();
 
+      const active = stream;
+
       stopMeterRef.current = async () => {
         cancelAnimationFrame(frame);
-
-        for (const track of stream.getTracks()) {
-          track.stop();
-        }
+        stopTracks(active);
 
         try {
           await context.close();
@@ -137,11 +156,24 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       };
     } catch {
       // No level meter (permission or device); the orb still shows "listening".
+      if (stream) {
+        stopTracks(stream);
+      }
     }
   };
 
   const stop = () => {
     recognition.current?.stop();
+  };
+
+  /** Ends the session now and drops any words still arriving (after send or reset). */
+  const cancel = () => {
+    listeners.current?.abort();
+    listeners.current = null;
+    recognition.current?.abort();
+    recognition.current = null;
+    setListening(false);
+    stopMeter();
   };
 
   const start = () => {
@@ -216,6 +248,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
   useEffect(
     () => () => {
+      meterSession.current += 1;
       listeners.current?.abort();
       recognition.current?.abort();
       stopMeterRef.current?.();
@@ -223,5 +256,5 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     []
   );
 
-  return { error, listening, start, stop, supported, toggle };
+  return { cancel, error, listening, start, stop, supported, toggle };
 };

@@ -40,7 +40,11 @@ const hintFor = ({
     return "Speak now, then tap the mic to stop.";
   }
 
-  return length > MAX_CHARS - 200 ? `${length}/${MAX_CHARS}` : "";
+  if (length > MAX_CHARS - 200) {
+    return `${length}/${MAX_CHARS}`;
+  }
+
+  return length > 0 ? "⌘/Ctrl + Enter to send" : "";
 };
 
 /** Text box docked to the bottom: dictation mic, then send (or stop while answering). */
@@ -63,9 +67,10 @@ export const Composer = ({
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Enter adds a new line; ⌘/Ctrl+Enter sends (site guideline for textareas).
     if (
       event.key === "Enter" &&
-      !event.shiftKey &&
+      (event.metaKey || event.ctrlKey) &&
       !event.nativeEvent.isComposing
     ) {
       event.preventDefault();
@@ -111,7 +116,7 @@ export const Composer = ({
                 aria-label={voiceLabel}
                 aria-pressed={listening}
                 className={cn(
-                  "inline-flex size-9 items-center justify-center rounded-sm transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.94]",
+                  "inline-flex size-11 items-center justify-center rounded-sm transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.94] sm:size-9",
                   listening
                     ? "bg-foreground text-background"
                     : "text-secondary hover:text-primary hover:bg-secondary"
@@ -125,7 +130,7 @@ export const Composer = ({
             {busy ? (
               <button
                 aria-label="Stop the answer"
-                className="bg-foreground text-background inline-flex size-9 items-center justify-center rounded-sm active:scale-[0.94]"
+                className="bg-foreground text-background inline-flex size-11 items-center justify-center rounded-sm active:scale-[0.94] sm:size-9"
                 onClick={onStop}
                 type="button"
               >
@@ -134,7 +139,7 @@ export const Composer = ({
             ) : (
               <button
                 aria-label="Send"
-                className="bg-foreground text-background inline-flex size-9 items-center justify-center rounded-sm transition-opacity duration-200 active:scale-[0.94] disabled:opacity-30"
+                className="bg-foreground text-background inline-flex size-11 items-center justify-center rounded-sm transition-opacity duration-200 active:scale-[0.94] disabled:opacity-30 sm:size-9"
                 disabled={!value.trim()}
                 type="submit"
               >
@@ -144,7 +149,7 @@ export const Composer = ({
           </div>
         </div>
       </form>
-      <p className="text-muted mt-3 text-center text-xs">
+      <p className="text-muted text-center text-xs">
         AI can get things wrong. Double-check anything important.
       </p>
     </>

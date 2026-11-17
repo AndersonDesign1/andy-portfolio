@@ -63,7 +63,7 @@ export const AiChat = () => {
       return;
     }
 
-    dictation.stop();
+    dictation.cancel();
 
     const history = [
       ...messages.flatMap(({ role, content, failed }) =>
@@ -119,7 +119,7 @@ export const AiChat = () => {
 
   const reset = () => {
     abortRef.current?.abort();
-    dictation.stop();
+    dictation.cancel();
     setMessages([]);
     setInput("");
   };
@@ -147,7 +147,7 @@ export const AiChat = () => {
   };
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-1rem)] w-full max-w-screen-md flex-col px-6 pt-24 pb-6 md:px-12 md:pt-28">
+    <section className="mx-auto flex min-h-[calc(100dvh-1rem)] w-full max-w-screen-md flex-col gap-3 px-6 pt-24 pb-6 md:px-12 md:pt-28">
       {empty ? (
         <EmptyState {...voice} onAsk={(question) => send(question)} />
       ) : (

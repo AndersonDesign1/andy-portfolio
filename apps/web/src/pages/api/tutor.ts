@@ -10,16 +10,25 @@ import { checkRateLimit, visitorId } from "@/lib/tutor-rate-limit";
 export const prerender = false;
 
 const MAX_MESSAGE_CHARS = 2000;
+
+/** Tutor replies are capped at 1,500 output tokens; this leaves room for code-heavy answers. */
+const MAX_REPLY_CHARS = 12_000;
 const MAX_HISTORY_MESSAGES = 40;
 
 /** Text-only chat history from the /ai page, ending with the student's turn. */
 const requestSchema = z.object({
   messages: z
     .array(
-      z.object({
-        content: z.string().trim().min(1).max(MAX_MESSAGE_CHARS),
-        role: z.enum(["user", "assistant"]),
-      })
+      z.discriminatedUnion("role", [
+        z.object({
+          content: z.string().trim().min(1).max(MAX_MESSAGE_CHARS),
+          role: z.literal("user"),
+        }),
+        z.object({
+          content: z.string().trim().min(1).max(MAX_REPLY_CHARS),
+          role: z.literal("assistant"),
+        }),
+      ])
     )
     .min(1)
     .max(MAX_HISTORY_MESSAGES)
