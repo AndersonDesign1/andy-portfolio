@@ -18,6 +18,8 @@ interface VoiceStatusProps {
   /** When recording started (ms since epoch); drives the timer. */
   recordingSince: number;
   cancelArmed: boolean;
+  /** Small orb (a conversation is on screen): the hint always sits to its right. */
+  compact: boolean;
   /** A transcript is in the text box waiting to be checked and sent. */
   reviewing: boolean;
   voiceSupported: boolean;
@@ -97,13 +99,58 @@ const Recording = ({
 };
 
 /**
- * One line under the orb that always says what's happening: recording (level
+ * "Hold to talk" with a hand-drawn arrow pointing at the orb: to its right on
+ * wide screens (and beside the small orb), tucked under it on phones.
+ */
+const HoldHint = ({ compact }: { compact: boolean }) => (
+  <span
+    className={cn(
+      "text-muted absolute flex items-center gap-1 text-xs whitespace-nowrap sm:text-sm",
+      compact
+        ? "top-1/2 left-full ml-2 -translate-y-1/2"
+        : "bottom-0 left-1/2 -translate-x-1/2 translate-y-full sm:top-1/2 sm:bottom-auto sm:left-full sm:ml-2 sm:translate-x-0 sm:-translate-y-1/2"
+    )}
+  >
+    <svg
+      aria-hidden="true"
+      className={cn("size-5 shrink-0 sm:size-7", !compact && "max-sm:hidden")}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      viewBox="0 0 28 28"
+    >
+      <path d="M25 18c-5 1-12-1-19-9" />
+      <path d="M6 9l1 6M6 9l6 0" />
+    </svg>
+    <svg
+      aria-hidden="true"
+      className={cn("size-6 shrink-0 sm:hidden", compact && "hidden")}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+    >
+      <path d="M8 21c1-6 3-11 8-16" />
+      <path d="M16 5l-5 1M16 5l-1 5" />
+    </svg>
+    Hold to talk
+  </span>
+);
+
+/**
+ * The orb's status, overlaid on it so it takes no height: what's happening
+ * right now: recording (level
  * bars, timer, release hint), processing the voice, thinking, answering.
  */
 export const VoiceStatus = ({
   phase,
   recordingSince,
   cancelArmed,
+  compact,
   reviewing,
   voiceSupported,
   error,
@@ -164,22 +211,26 @@ export const VoiceStatus = ({
           );
         }
 
-        return (
-          <span className="text-muted text-sm">
-            {voiceSupported ? "Hold the orb to talk" : "Type your question"}
-          </span>
-        );
+        return null;
       }
     }
   })();
 
+  const showHint = content === null && voiceSupported;
+
+  // Overlaid on the orb's box, so the status takes no height of its own.
   return (
-    <p
+    <div
       aria-live="polite"
-      className="flex min-h-9 items-center justify-center text-center"
+      className="pointer-events-none absolute inset-0"
       id="ai-voice-status"
     >
-      {content}
-    </p>
+      {showHint && <HoldHint compact={compact} />}
+      {content !== null && (
+        <span className="border-subtle bg-background/85 pointer-events-auto absolute bottom-0 left-1/2 flex w-max max-w-[min(88vw,26rem)] -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-2xl border px-3.5 py-1.5 text-center shadow-sm backdrop-blur-md">
+          {content}
+        </span>
+      )}
+    </div>
   );
 };

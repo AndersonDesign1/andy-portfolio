@@ -53,7 +53,9 @@ const subscribeToSupport = (onChange: () => void) => {
 const isSupported = () =>
   "MediaRecorder" in window && "mediaDevices" in navigator;
 
-const isSupportedOnServer = () => false;
+// Every current browser can record, so the server renders the voice-first layout
+// (no flash of the text box before hydration).
+const isSupportedOnServer = () => true;
 
 const pickMimeType = () =>
   MIME_TYPES.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";

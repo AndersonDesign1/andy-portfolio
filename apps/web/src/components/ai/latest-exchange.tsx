@@ -47,16 +47,16 @@ export const LatestExchange = ({
   }, [replyText]);
 
   return (
-    <div className="flex w-full flex-col gap-3">
+    <div className="flex min-h-0 w-full flex-col gap-3">
       <div
-        className="border-subtle flex max-h-[42dvh] flex-col gap-5 overflow-y-auto rounded-md border p-4 md:p-5"
+        className="border-subtle flex min-h-0 flex-col gap-5 overflow-y-auto rounded-md border p-4 md:p-5"
         ref={scrollRef}
       >
         {question && <Message message={question} />}
         {reply && <Message message={reply} />}
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex shrink-0 items-center justify-between gap-2">
         <button
           className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors sm:min-h-8"
           onClick={onOpenConversation}

@@ -181,14 +181,17 @@ export const AiChat = () => {
   const empty = chat.messages.length === 0;
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-1rem)] w-full max-w-screen-md flex-col items-center gap-6 px-6 pt-24 pb-6 md:px-12 md:pt-28">
+    <section className="mx-auto flex h-dvh w-full max-w-screen-md flex-col items-center gap-4 px-6 pt-24 pb-4 md:px-12 md:pt-28">
       <div
         className={cn(
           "flex w-full flex-col items-center",
-          empty ? "flex-1 justify-center gap-8" : "gap-6"
+          empty ? "flex-1 justify-center gap-10" : "min-h-0 flex-1 gap-8"
         )}
       >
-        <div className="flex flex-col items-center gap-3" ref={stageRef}>
+        <div
+          className="relative flex shrink-0 flex-col items-center"
+          ref={stageRef}
+        >
           <OrbButton
             className={cn(
               "transition-[width] duration-500 ease-[var(--ease-out)] motion-reduce:transition-none",
@@ -204,6 +207,7 @@ export const AiChat = () => {
           />
           <VoiceStatus
             cancelArmed={cancelArmed}
+            compact={!empty}
             error={dictation.error}
             onCancelVoice={() => dictation.cancel()}
             onStopAnswer={() => chat.stop()}
@@ -215,7 +219,7 @@ export const AiChat = () => {
         </div>
 
         {empty ? (
-          <EmptyState onAsk={ask} />
+          <EmptyState />
         ) : (
           <LatestExchange
             busy={chat.busy}
@@ -226,7 +230,7 @@ export const AiChat = () => {
         )}
       </div>
 
-      <div className="sticky bottom-4 mt-auto flex w-full flex-col items-center gap-3">
+      <div className="flex w-full shrink-0 flex-col items-center gap-3">
         {showComposer ? (
           <div className="w-full">
             <Composer
