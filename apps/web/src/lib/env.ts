@@ -51,6 +51,33 @@ export const getResendEnv = () =>
     RESEND_API_KEY: readEnv("RESEND_API_KEY"),
   });
 
+const tutorEnvSchema = z.object({
+  DATABASE_URL: z.string().min(1),
+  NEON_AI_GATEWAY_BASE_URL: z.url(),
+  NEON_AI_GATEWAY_TOKEN: z.string().min(1),
+  OPENROUTER_API_KEY: z.string().min(1),
+});
+
+/**
+ * AI tutor route (/api/tutor). The tutor package and its AI SDK providers read
+ * `process.env`, but Astro only exposes `.env` files on `import.meta.env` in
+ * dev, so the parsed values are copied onto `process.env` when missing.
+ */
+export const getTutorEnv = () => {
+  const env = tutorEnvSchema.parse({
+    DATABASE_URL: readEnv("DATABASE_URL"),
+    NEON_AI_GATEWAY_BASE_URL: readEnv("NEON_AI_GATEWAY_BASE_URL"),
+    NEON_AI_GATEWAY_TOKEN: readEnv("NEON_AI_GATEWAY_TOKEN"),
+    OPENROUTER_API_KEY: readEnv("OPENROUTER_API_KEY"),
+  });
+
+  for (const [key, value] of Object.entries(env)) {
+    process.env[key] ??= value;
+  }
+
+  return env;
+};
+
 /** @deprecated Prefer getSpotifyEnv or getResendEnv for route-specific parsing. */
 export const getServerEnv = () => ({
   ...getSpotifyEnv(),

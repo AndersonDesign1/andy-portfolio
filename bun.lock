@@ -19,6 +19,7 @@
       "name": "@andy-portfolio/web",
       "version": "0.0.1",
       "dependencies": {
+        "@andy-portfolio/ai-tutor": "workspace:*",
         "@andy-portfolio/content": "workspace:*",
         "@astrojs/mdx": "8.1.4",
         "@astrojs/react": "^7.1.7",

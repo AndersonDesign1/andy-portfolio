@@ -1,0 +1,13 @@
+---
+import { AiChat } from "../components/ai/ai-chat.tsx";
+import BaseLayout from "../layouts/base-layout.astro";
+
+export const prerender = true;
+---
+
+<BaseLayout
+  description="Ask Andy's AI about programming, web development and AI. Type a question or dictate it."
+  title="Ask Andy's AI"
+>
+  <AiChat client:load />
+</BaseLayout>

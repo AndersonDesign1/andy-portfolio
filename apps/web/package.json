@@ -16,6 +16,7 @@
     "typecheck": "astro check"
   },
   "dependencies": {
+    "@andy-portfolio/ai-tutor": "workspace:*",
     "@andy-portfolio/content": "workspace:*",
     "@astrojs/mdx": "8.1.4",
     "@astrojs/react": "^7.1.7",
