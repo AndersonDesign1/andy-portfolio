@@ -13,6 +13,7 @@ interface ComposerProps {
   textareaRef: Ref<HTMLTextAreaElement>;
   busy: boolean;
   listening: boolean;
+  transcribing: boolean;
   voiceSupported: boolean;
   voiceLabel: string;
   voiceError?: string;
@@ -26,11 +27,13 @@ interface ComposerProps {
 const hintFor = ({
   voiceError,
   listening,
+  transcribing,
   length,
   canSend,
 }: {
   voiceError?: string;
   listening: boolean;
+  transcribing: boolean;
   length: number;
   canSend: boolean;
 }) => {
@@ -39,7 +42,11 @@ const hintFor = ({
   }
 
   if (listening) {
-    return "Speak now, then tap the mic to stop.";
+    return "Listening… let go (or tap the mic) when you're done.";
+  }
+
+  if (transcribing) {
+    return "Turning your voice into text…";
   }
 
   if (length > MAX_CHARS - 200) {
@@ -55,6 +62,7 @@ export const Composer = ({
   textareaRef,
   busy,
   listening,
+  transcribing,
   voiceSupported,
   voiceLabel,
   voiceError,
@@ -114,6 +122,7 @@ export const Composer = ({
               canSend: !busy && value.trim().length > 0,
               length: value.length,
               listening,
+              transcribing,
               voiceError,
             })}
           </p>

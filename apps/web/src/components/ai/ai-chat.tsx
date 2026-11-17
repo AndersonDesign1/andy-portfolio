@@ -43,11 +43,20 @@ export const AiChat = () => {
   });
 
   const busy = status !== "idle";
-  const orbState: OrbState = dictation.listening ? "listening" : status;
+
+  const orbStateFor = (): OrbState => {
+    if (dictation.listening) {
+      return "listening";
+    }
+
+    return dictation.transcribing ? "thinking" : status;
+  };
+
+  const orbState = orbStateFor();
 
   const voiceLabel = dictation.listening
-    ? "Stop dictation"
-    : "Dictate your question";
+    ? "Stop recording"
+    : "Record your question";
 
   /** Push-to-talk on the orb: record only while it's held. */
   const holdStart = () => {
@@ -193,6 +202,7 @@ export const AiChat = () => {
         onStop={() => abortRef.current?.abort()}
         onToggleVoice={toggleVoice}
         textareaRef={textareaRef}
+        transcribing={dictation.transcribing}
         value={input}
         voiceError={dictation.error}
         voiceLabel={voiceLabel}

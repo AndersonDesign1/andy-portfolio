@@ -1,50 +1,39 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { object, string } from "zod/mini";
 
-/**
- * Chrome-based browsers send audio to Google's speech service. Builds without
- * it (Brave, Electron apps, some Chromium forks) fail every session with a
- * "network" error even when online. One failure may just be a blip, so the mic
- * stays; a second in a row (with no words heard between) turns it off.
- */
-const NETWORK_RETRY_MESSAGE =
-  "Dictation couldn't reach the speech service. Tap the mic to try again.";
+/** Recording stops on its own here; Gemini bills ~32 audio tokens a second. */
+const MAX_RECORDING_MS = 60_000;
 
-const NETWORK_FAILURES_BEFORE_OFF = 2;
+/** Shorter than this is a tap, not speech; nothing is sent. */
+const MIN_RECORDING_MS = 400;
 
-const UNAVAILABLE_MESSAGE =
-  "Dictation doesn't work in this browser. Type instead, or try Chrome, Edge or Safari.";
+/** First the recorder supports wins: Chrome/Edge/Firefox take WebM, Safari MP4. */
+const MIME_TYPES = [
+  "audio/webm;codecs=opus",
+  "audio/webm",
+  "audio/mp4",
+  "audio/ogg;codecs=opus",
+];
 
 const BLOCKED_MESSAGE =
   "Microphone access is blocked. Allow it in your browser to talk.";
 
-/** A message worth showing for a recognition error; silence and aborts are ignored. */
-const errorMessage = (code: string): string | undefined => {
-  switch (code) {
-    case "audio-capture": {
-      return "No microphone was found.";
-    }
+const transcriptSchema = object({ text: string() });
 
-    case "network": {
-      return NETWORK_RETRY_MESSAGE;
-    }
-
-    case "not-allowed":
-    case "service-not-allowed": {
-      return BLOCKED_MESSAGE;
-    }
-
-    default: {
-      return undefined;
-    }
+/** A getUserMedia failure (by DOMException name) as a message for the student. */
+const micErrorMessage = (name: string): string => {
+  if (name === "NotAllowedError" || name === "SecurityError") {
+    return BLOCKED_MESSAGE;
   }
-};
 
-const recognitionConstructor = () =>
-  typeof window === "undefined"
-    ? undefined
-    : (window.SpeechRecognition ?? window.webkitSpeechRecognition);
+  if (name === "NotFoundError") {
+    return "No microphone was found.";
+  }
+
+  return "Couldn't start the microphone. Type your question instead.";
+};
 
 // Support only changes if the page is restored from the back/forward cache.
 const subscribeToSupport = (onChange: () => void) => {
@@ -53,8 +42,13 @@ const subscribeToSupport = (onChange: () => void) => {
   return () => window.removeEventListener("pageshow", onChange);
 };
 
-const isSupported = () => recognitionConstructor() !== undefined;
+const isSupported = () =>
+  "MediaRecorder" in window && "mediaDevices" in navigator;
+
 const isSupportedOnServer = () => false;
+
+const pickMimeType = () =>
+  MIME_TYPES.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
 
 /** Root-mean-square loudness of one analyser frame, scaled to roughly 0..1. */
 const loudness = (samples: Uint8Array<ArrayBuffer>): number => {
@@ -75,67 +69,102 @@ const stopTracks = (stream: MediaStream) => {
 };
 
 interface DictationCallbacks {
-  /** The full transcript so far for this session (final + in-progress words). */
+  /** The transcript of one recording, once the server returns it. */
   onTranscript: (text: string) => void;
-  /** Mic loudness from 0 to 1, once per animation frame while listening. */
+  /** Mic loudness from 0 to 1, once per animation frame while recording. */
   onLevel?: (level: number) => void;
 }
 
 /**
- * Browser dictation (Web Speech API): words appear live while the student
- * talks. Free and built into Chrome, Edge and Safari; `supported` is false in
- * browsers without it (Firefox), so the mic can be hidden there.
+ * Voice input that works in every modern browser: record with MediaRecorder,
+ * then transcribe the clip on the server (/api/transcribe). Recording stops
+ * on release (or at one minute); `transcribing` covers the wait for text.
  */
 export const useDictation = (callbacks: DictationCallbacks) => {
-  const browserSupport = useSyncExternalStore(
+  const supported = useSyncExternalStore(
     subscribeToSupport,
     isSupported,
     isSupportedOnServer
   );
 
   const [listening, setListening] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const [unavailable, setUnavailable] = useState(false);
-  const supported = browserSupport && !unavailable;
+  const [transcribing, setTranscribing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-  const recognition = useRef<SpeechRecognition>(null);
-  const stopMeterRef = useRef<() => Promise<void>>(null);
-  /** Removes the current recognition session's listeners. */
+  /** Bumped on every start and cancel; late results from an old session are dropped. */
+  const session = useRef(0);
+  const recorder = useRef<MediaRecorder>(null);
+  /** Stops the mic, level meter and auto-stop timer for the current recording. */
+  const release = useRef<() => void>(null);
+  /** Removes the current recorder's listeners. */
   const listeners = useRef<AbortController>(null);
-  /** Bumped whenever the meter stops, so a mic grant that lands late is released. */
-  const meterSession = useRef(0);
-  /** Consecutive "network" failures; reset whenever words come through. */
-  const networkFailures = useRef(0);
+  /** Cancels an in-flight transcription request. */
+  const upload = useRef<AbortController>(null);
   const latest = useRef(callbacks);
 
   useEffect(() => {
     latest.current = callbacks;
   });
 
-  const stopMeter = () => {
-    meterSession.current += 1;
-    stopMeterRef.current?.();
-    stopMeterRef.current = null;
+  const releaseMic = () => {
+    release.current?.();
+    release.current = null;
     latest.current.onLevel?.(0);
   };
 
-  /** Mic level for the orb. Optional: dictation still works if this fails. */
-  const startMeter = async () => {
-    const session = meterSession.current;
-    let stream: MediaStream | undefined;
-    let context: AudioContext | undefined;
+  const transcribe = async (clip: Blob, id: number) => {
+    const controller = new AbortController();
+    upload.current = controller;
+    setTranscribing(true);
 
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const response = await fetch("/api/transcribe", {
+        body: clip,
+        headers: { "Content-Type": clip.type.split(";")[0] ?? "audio/webm" },
+        method: "POST",
+        signal: controller.signal,
+      });
 
-      // Dictation ended (or the page unmounted) while permission was pending.
-      if (session !== meterSession.current) {
-        stopTracks(stream);
+      if (id !== session.current) {
+        return;
+      }
+
+      if (!response.ok) {
+        const message = await response.text();
+        setErrorMessage(message.trim() || "Couldn't transcribe that.");
 
         return;
       }
 
-      context = new AudioContext();
+      // zod/mini keeps this island small; the response only needs one field.
+      const parsed = transcriptSchema.safeParse(await response.json());
+      const text = parsed.success ? parsed.data.text.trim() : "";
+
+      if (id !== session.current) {
+        return;
+      }
+
+      if (text) {
+        latest.current.onTranscript(text);
+      } else {
+        setErrorMessage("Didn't catch any words. Try again a little closer.");
+      }
+    } catch {
+      if (!controller.signal.aborted && id === session.current) {
+        setErrorMessage("Couldn't reach the server. Check your connection.");
+      }
+    } finally {
+      if (upload.current === controller) {
+        upload.current = null;
+        setTranscribing(false);
+      }
+    }
+  };
+
+  /** Mic level for the orb; optional, so a failure here never stops recording. */
+  const startMeter = (stream: MediaStream) => {
+    try {
+      const context = new AudioContext();
       const analyser = context.createAnalyser();
       analyser.fftSize = 512;
       context.createMediaStreamSource(stream).connect(analyser);
@@ -151,119 +180,146 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
       tick();
 
-      const active = stream;
-      const activeContext = context;
-
-      stopMeterRef.current = async () => {
+      return async () => {
         cancelAnimationFrame(frame);
-        stopTracks(active);
 
         try {
-          await activeContext.close();
+          await context.close();
         } catch {
           // Already closed.
         }
       };
     } catch {
-      // No level meter (permission or device); the orb still shows "listening".
-      if (stream) {
-        stopTracks(stream);
-      }
-
-      try {
-        await context?.close();
-      } catch {
-        // Never opened, or already closed.
-      }
+      // No meter (e.g. AudioContext blocked); recording carries on without it.
+      return () => Promise.resolve();
     }
   };
 
-  const stop = () => {
-    recognition.current?.stop();
-  };
-
-  /** Ends the session now and drops any words still arriving (after send or reset). */
-  const cancel = () => {
-    listeners.current?.abort();
-    listeners.current = null;
-    recognition.current?.abort();
-    recognition.current = null;
-    setListening(false);
-    stopMeter();
-  };
-
-  const start = () => {
-    const Recognition = recognitionConstructor();
-
-    if (!Recognition || recognition.current) {
+  const start = async () => {
+    if (recorder.current || listening) {
       return;
     }
 
-    const instance = new Recognition();
-    instance.continuous = true;
-    instance.interimResults = true;
-    instance.lang = navigator.language || "en-US";
+    session.current += 1;
+    const id = session.current;
+    upload.current?.abort();
+    setErrorMessage(undefined);
+    setListening(true);
+
+    let stream: MediaStream;
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (error) {
+      if (id === session.current) {
+        setErrorMessage(
+          micErrorMessage(error instanceof DOMException ? error.name : "")
+        );
+        setListening(false);
+      }
+
+      return;
+    }
+
+    // Released (or cancelled) while the permission prompt was open.
+    if (id !== session.current) {
+      stopTracks(stream);
+
+      return;
+    }
+
+    const mimeType = pickMimeType();
+    const instance = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+    const chunks: Blob[] = [];
+    const startedAt = performance.now();
 
     listeners.current = new AbortController();
 
     instance.addEventListener(
-      "result",
+      "dataavailable",
       (event) => {
-        // The spec defines the result list as indexed, not iterable.
-        const { results } = event;
-
-        const text = Array.from(
-          { length: results.length },
-          (_, index) => results[index]?.[0]?.transcript ?? ""
-        ).join("");
-
-        networkFailures.current = 0;
-        latest.current.onTranscript(text.trim());
-      },
-      { signal: listeners.current.signal }
-    );
-
-    instance.addEventListener(
-      "error",
-      (event) => {
-        let message = errorMessage(event.error);
-
-        if (event.error === "network") {
-          networkFailures.current += 1;
-
-          if (networkFailures.current >= NETWORK_FAILURES_BEFORE_OFF) {
-            setUnavailable(true);
-            message = UNAVAILABLE_MESSAGE;
-          }
-        }
-
-        if (message) {
-          setError(message);
+        if (event.data.size > 0) {
+          chunks.push(event.data);
         }
       },
       { signal: listeners.current.signal }
     );
 
     instance.addEventListener(
-      "end",
+      "stop",
       () => {
         listeners.current?.abort();
-        recognition.current = null;
+        listeners.current = null;
+        recorder.current = null;
+        releaseMic();
         setListening(false);
-        stopMeter();
+
+        const long = performance.now() - startedAt >= MIN_RECORDING_MS;
+
+        if (id === session.current && long && chunks.length > 0) {
+          const clip = new Blob(chunks, {
+            type: instance.mimeType || mimeType || "audio/webm",
+          });
+
+          transcribe(clip, id);
+        } else if (id === session.current && !long) {
+          setErrorMessage("Hold the orb (or the mic) while you talk.");
+        }
       },
       { signal: listeners.current.signal }
     );
 
-    setError(undefined);
-    recognition.current = instance;
+    const stopMeter = startMeter(stream);
+
+    const autoStop = setTimeout(() => {
+      if (instance.state === "recording") {
+        instance.stop();
+      }
+    }, MAX_RECORDING_MS);
+
+    release.current = () => {
+      clearTimeout(autoStop);
+      stopMeter();
+      stopTracks(stream);
+    };
+
+    recorder.current = instance;
     instance.start();
-    setListening(true);
-    startMeter();
+  };
+
+  const stop = () => {
+    const instance = recorder.current;
+
+    if (instance?.state === "recording") {
+      instance.stop();
+
+      return;
+    }
+
+    // Released before the mic was ready: drop the pending start.
+    if (listening) {
+      session.current += 1;
+      setListening(false);
+    }
+  };
+
+  /** Ends everything now and drops any pending text (after send or reset). */
+  const cancel = () => {
+    session.current += 1;
+    upload.current?.abort();
+    upload.current = null;
+    setTranscribing(false);
+
+    if (recorder.current?.state === "recording") {
+      recorder.current.stop();
+    } else {
+      releaseMic();
+      setListening(false);
+    }
   };
 
   const toggle = () => {
-    if (recognition.current) {
+    if (listening) {
       stop();
     } else {
       start();
@@ -272,13 +328,27 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
   useEffect(
     () => () => {
-      meterSession.current += 1;
+      session.current += 1;
+      upload.current?.abort();
       listeners.current?.abort();
-      recognition.current?.abort();
-      stopMeterRef.current?.();
+
+      if (recorder.current?.state === "recording") {
+        recorder.current.stop();
+      }
+
+      release.current?.();
     },
     []
   );
 
-  return { cancel, error, listening, start, stop, supported, toggle };
+  return {
+    cancel,
+    error: errorMessage,
+    listening,
+    start,
+    stop,
+    supported,
+    toggle,
+    transcribing,
+  };
 };
