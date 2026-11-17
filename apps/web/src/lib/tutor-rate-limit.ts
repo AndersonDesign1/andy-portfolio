@@ -1,4 +1,5 @@
 import { createHmac } from "node:crypto";
+import { setTimeout as sleep } from "node:timers/promises";
 
 import type { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
 import { z } from "zod";
@@ -63,14 +64,22 @@ const ensureTable = async (store: PostgresBudgetStore) => {
   }
 };
 
+interface RateLimitResult {
+  allowed: boolean;
+  retryAfterSeconds: number;
+}
+
+/** Neon's HTTP driver occasionally drops a request ("fetch failed"); one retry covers it. */
+const RETRY_DELAY_MS = 300;
+
 /**
  * Count this request in every window and report whether any limit is exceeded.
  * One atomic upsert per window, so concurrent requests can't slip past.
  */
-export const checkRateLimit = async (
+const countRequest = async (
   store: PostgresBudgetStore,
   visitor: string
-): Promise<{ allowed: boolean; retryAfterSeconds: number }> => {
+): Promise<RateLimitResult> => {
   const { sql } = store;
   await ensureTable(store);
 
@@ -113,4 +122,21 @@ export const checkRateLimit = async (
     allowed: blocked.length === 0,
     retryAfterSeconds: Math.max(0, ...blocked.map((r) => r.resetsIn)),
   };
+};
+
+/**
+ * `countRequest`, retried once after a short pause. A second failure throws;
+ * routes turn that into a 503 rather than letting it surface as an HTML 500.
+ */
+export const checkRateLimit = async (
+  store: PostgresBudgetStore,
+  visitor: string
+): Promise<RateLimitResult> => {
+  try {
+    return await countRequest(store, visitor);
+  } catch {
+    await sleep(RETRY_DELAY_MS);
+
+    return countRequest(store, visitor);
+  }
 };

@@ -1,10 +1,14 @@
 "use client";
 
+import { useRef } from "react";
 import type { KeyboardEvent, PointerEvent, Ref } from "react";
 
 import { Orb } from "@/components/ai/orb";
 import type { OrbState } from "@/components/ai/orb";
 import { cn } from "@/lib/utils";
+
+/** Dragging this far from where the press began arms "release to cancel". */
+const CANCEL_DISTANCE_PX = 90;
 
 interface OrbButtonProps {
   orbRef: Ref<HTMLDivElement>;
@@ -12,7 +16,9 @@ interface OrbButtonProps {
   listening: boolean;
   voiceSupported: boolean;
   onHoldStart: () => void;
-  onHoldEnd: () => void;
+  /** `cancelled` is true when the press ended dragged away (or with Escape). */
+  onHoldEnd: (cancelled: boolean) => void;
+  onCancelArmedChange: (armed: boolean) => void;
   className?: string;
 }
 
@@ -20,8 +26,9 @@ const isHoldKey = (event: KeyboardEvent) =>
   event.key === " " || event.key === "Enter";
 
 /**
- * Push-to-talk: dictation runs while the orb is pressed (mouse, touch or
- * Space/Enter) and stops the moment it's released.
+ * Push-to-talk: recording runs while the orb is pressed (mouse, touch or
+ * Space/Enter) and is sent the moment it's released. Dragging away before
+ * letting go, or pressing Escape, cancels instead.
  */
 export const OrbButton = ({
   orbRef,
@@ -30,35 +37,79 @@ export const OrbButton = ({
   voiceSupported,
   onHoldStart,
   onHoldEnd,
+  onCancelArmedChange,
   className,
 }: OrbButtonProps) => {
+  const press = useRef({ active: false, armed: false, x: 0, y: 0 });
+
+  const setArmed = (armed: boolean) => {
+    if (press.current.armed !== armed) {
+      press.current.armed = armed;
+      onCancelArmedChange(armed);
+    }
+  };
+
+  const begin = (x: number, y: number) => {
+    press.current = { active: true, armed: false, x, y };
+    onHoldStart();
+  };
+
+  const end = (forceCancel = false) => {
+    if (!press.current.active) {
+      return;
+    }
+
+    const cancelled = forceCancel || press.current.armed;
+    press.current.active = false;
+    setArmed(false);
+    onHoldEnd(cancelled);
+  };
+
   const onPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
     if (event.button !== 0) {
       return;
     }
 
     event.preventDefault();
-    // Keep receiving pointerup even if the finger slides off the orb.
+    // Keep receiving pointer events even if the finger slides off the orb.
     event.currentTarget.setPointerCapture(event.pointerId);
-    onHoldStart();
+    begin(event.clientX, event.clientY);
+  };
+
+  const onPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
+    if (press.current.active) {
+      const distance = Math.hypot(
+        event.clientX - press.current.x,
+        event.clientY - press.current.y
+      );
+
+      setArmed(distance > CANCEL_DISTANCE_PX);
+    }
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === "Escape") {
+      end(true);
+
+      return;
+    }
+
     if (isHoldKey(event) && !event.repeat) {
       event.preventDefault();
-      onHoldStart();
+      begin(0, 0);
     }
   };
 
   const onKeyUp = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (isHoldKey(event)) {
       event.preventDefault();
-      onHoldEnd();
+      end();
     }
   };
 
   return (
     <button
+      aria-describedby="ai-voice-status"
       aria-label={voiceSupported ? "Hold to talk" : "Andy's AI"}
       aria-pressed={voiceSupported ? listening : undefined}
       className={cn(
@@ -66,13 +117,14 @@ export const OrbButton = ({
         className
       )}
       disabled={!voiceSupported}
-      onBlur={onHoldEnd}
+      onBlur={() => end()}
       onContextMenu={(event) => event.preventDefault()}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}
-      onPointerCancel={onHoldEnd}
+      onPointerCancel={() => end(true)}
       onPointerDown={onPointerDown}
-      onPointerUp={onHoldEnd}
+      onPointerMove={onPointerMove}
+      onPointerUp={() => end()}
       type="button"
     >
       <Orb ref={orbRef} state={orbState} />

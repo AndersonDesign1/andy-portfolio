@@ -42,6 +42,9 @@ const requestSchema = z.strictObject({
     }),
 });
 
+const UNAVAILABLE_TEXT =
+  "Andy's AI couldn't connect just now. Try again in a moment.";
+
 let budget: PostgresBudgetStore | undefined;
 
 const plain = (status: number, message: string, headers: HeadersInit = {}) =>
@@ -114,10 +117,18 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
   const env = getTutorEnv();
   budget ??= new PostgresBudgetStore(env.DATABASE_URL);
 
-  const limit = await checkRateLimit(
-    budget,
-    visitorId(clientAddress, env.DATABASE_URL)
-  );
+  let limit: Awaited<ReturnType<typeof checkRateLimit>>;
+
+  try {
+    limit = await checkRateLimit(
+      budget,
+      visitorId(clientAddress, env.DATABASE_URL)
+    );
+  } catch (error) {
+    console.error("[tutor] rate limit unavailable", error);
+
+    return plain(503, UNAVAILABLE_TEXT);
+  }
 
   if (!limit.allowed) {
     return plain(
@@ -142,10 +153,16 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
     );
   }
 
-  return tutorTextResponse({
-    budget,
-    course: SITE_COURSE,
-    messages: parsed.data.messages,
-    signal: request.signal,
-  });
+  try {
+    return tutorTextResponse({
+      budget,
+      course: SITE_COURSE,
+      messages: parsed.data.messages,
+      signal: request.signal,
+    });
+  } catch (error) {
+    console.error("[tutor] failed before streaming", error);
+
+    return plain(503, UNAVAILABLE_TEXT);
+  }
 };

@@ -379,15 +379,14 @@
 /*
  * /ai orb. Monochrome by design: every layer is the theme's --foreground at
  * some transparency, so it follows light/dark automatically. State lives in
- * [data-state]; --orb-level (0..1) is set from the mic meter while listening.
+ * [data-state]; --orb-level (0..1) is inherited from the stage, set by the mic meter.
  */
 .ai-orb {
-  --orb-level: 0;
   --orb-ink: var(--foreground);
   position: relative;
   aspect-ratio: 1;
   isolation: isolate;
-  transform: scale(calc(1 + var(--orb-level) * 0.18));
+  transform: scale(calc(1 + var(--orb-level, 0) * 0.18));
   transition: transform 120ms var(--ease-out);
 }
 
@@ -401,7 +400,7 @@
     transparent 62%
   );
   filter: blur(28px);
-  opacity: calc(0.45 + var(--orb-level) * 0.55);
+  opacity: calc(0.45 + var(--orb-level, 0) * 0.55);
   transition: opacity 600ms var(--ease-out);
   animation: ai-orb-breathe 6s ease-in-out infinite;
 }
@@ -467,7 +466,7 @@
 }
 
 .ai-orb[data-state="listening"] .ai-orb__halo {
-  opacity: calc(0.75 + var(--orb-level) * 0.25);
+  opacity: calc(0.75 + var(--orb-level, 0) * 0.25);
 }
 
 .ai-orb[data-state="listening"] .ai-orb__body {
@@ -537,5 +536,66 @@
   /* No mic-driven scaling; the halo's brightness still shows listening. */
   .ai-orb {
     transform: none;
+  }
+}
+
+/*
+ * /ai voice status. Monochrome like the orb: level bars follow --orb-level
+ * while recording; the shimmer sweeps "Processing…" / "Thinking…" text.
+ */
+.ai-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+
+.ai-bars > span {
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--foreground);
+  height: calc(18% + var(--orb-level, 0) * var(--bar, 1) * 82%);
+  transition: height 90ms var(--ease-out);
+}
+
+.ai-bars > span:nth-child(1),
+.ai-bars > span:nth-child(5) {
+  --bar: 0.5;
+}
+
+.ai-bars > span:nth-child(2),
+.ai-bars > span:nth-child(4) {
+  --bar: 0.8;
+}
+
+.ai-shimmer {
+  color: transparent;
+  background: linear-gradient(
+      90deg,
+      var(--muted-foreground) 0%,
+      var(--foreground) 50%,
+      var(--muted-foreground) 100%
+    )
+    0 0 / 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: ai-shimmer 1.6s linear infinite;
+}
+
+@keyframes ai-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-bars > span {
+    transition: none;
+  }
+
+  .ai-shimmer {
+    color: var(--muted-foreground);
+    background: none;
+    animation: none;
   }
 }

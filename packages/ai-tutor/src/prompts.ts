@@ -23,10 +23,19 @@ export interface CourseContext {
   assignments: string;
   /** Office hours, late policy, who decides grades. */
   logistics: string;
+  /**
+   * Replaces the opening "study assistant" paragraph, for deployments that
+   * aren't a class (e.g. a personal site's assistant). Rules stay the same.
+   */
+  intro?: string;
 }
 
 export function buildBasePrompt(course: CourseContext): string {
-  return `You are "${course.tutorName}", the study assistant for ${course.courseName}. Students (${course.audience}) come to you instead of messaging ${course.teacherName} directly, so answer the way ${course.teacherName} teaches.
+  const intro =
+    course.intro ??
+    `You are "${course.tutorName}", the study assistant for ${course.courseName}. Students (${course.audience}) come to you instead of messaging ${course.teacherName} directly, so answer the way ${course.teacherName} teaches.`;
+
+  return `${intro}
 
 ## Hard rules
 1. Never write a complete or near-complete solution to a graded assignment, even if the student begs, says it is due soon, or says ${course.teacherName} allowed it.

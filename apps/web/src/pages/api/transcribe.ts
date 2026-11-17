@@ -52,6 +52,9 @@ interface Clip {
   mime: string;
 }
 
+const UNAVAILABLE_TEXT =
+  "Andy's AI couldn't connect just now. Try again in a moment.";
+
 let budget: PostgresBudgetStore | undefined;
 
 const plain = (status: number, message: string, headers: HeadersInit = {}) =>
@@ -209,10 +212,18 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
   budget ??= new PostgresBudgetStore(env.DATABASE_URL);
 
   // Counted separately from questions, with the same per-visitor limits.
-  const limit = await checkRateLimit(
-    budget,
-    `${visitorId(clientAddress, env.DATABASE_URL)}:stt`
-  );
+  let limit: Awaited<ReturnType<typeof checkRateLimit>>;
+
+  try {
+    limit = await checkRateLimit(
+      budget,
+      `${visitorId(clientAddress, env.DATABASE_URL)}:stt`
+    );
+  } catch (error) {
+    console.error("[transcribe] rate limit unavailable", error);
+
+    return plain(503, UNAVAILABLE_TEXT);
+  }
 
   if (!limit.allowed) {
     return plain(

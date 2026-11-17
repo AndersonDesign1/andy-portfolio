@@ -40,10 +40,22 @@ export const readStream = (
   return pump("");
 };
 
-/** The student-visible error text for a failed request. */
+const GENERIC_FAILURE =
+  "Andy's AI couldn't answer just now. Try again in a moment.";
+
+/**
+ * The visitor-facing error text for a failed request. Only the API's own
+ * plain-text messages are shown; an HTML error page (or anything else) never is.
+ */
 export const failureText = async (response: Response): Promise<string> => {
+  const type = response.headers.get("content-type") ?? "";
+
+  if (!type.startsWith("text/plain")) {
+    return GENERIC_FAILURE;
+  }
+
   const body = await response.text();
   const message = body.trim();
 
-  return message || "Something went wrong. Try again in a moment.";
+  return message && message.length <= 300 ? message : GENERIC_FAILURE;
 };

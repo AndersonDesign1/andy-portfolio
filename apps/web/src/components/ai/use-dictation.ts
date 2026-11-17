@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { object, string } from "zod/mini";
 
+import { failureText } from "@/components/ai/chat-stream";
+
 /** Recording stops on its own here; Gemini bills ~32 audio tokens a second. */
 const MAX_RECORDING_MS = 60_000;
 
@@ -89,6 +91,8 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
   const [listening, setListening] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
+  /** When the current recording started (ms since epoch); 0 when not recording. */
+  const [recordingSince, setRecordingSince] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   /** Bumped on every start and cancel; late results from an old session are dropped. */
@@ -130,8 +134,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       }
 
       if (!response.ok) {
-        const message = await response.text();
-        setErrorMessage(message.trim() || "Couldn't transcribe that.");
+        setErrorMessage(await failureText(response));
 
         return;
       }
@@ -216,6 +219,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
           micErrorMessage(error instanceof DOMException ? error.name : "")
         );
         setListening(false);
+        setRecordingSince(0);
       }
 
       return;
@@ -253,6 +257,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
         recorder.current = null;
         releaseMic();
         setListening(false);
+        setRecordingSince(0);
 
         const long = performance.now() - startedAt >= MIN_RECORDING_MS;
 
@@ -285,6 +290,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
     recorder.current = instance;
     instance.start();
+    setRecordingSince(Date.now());
   };
 
   const stop = () => {
@@ -300,6 +306,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     if (listening) {
       session.current += 1;
       setListening(false);
+      setRecordingSince(0);
     }
   };
 
@@ -315,6 +322,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     } else {
       releaseMic();
       setListening(false);
+      setRecordingSince(0);
     }
   };
 
@@ -345,6 +353,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     cancel,
     error: errorMessage,
     listening,
+    recordingSince,
     start,
     stop,
     supported,
