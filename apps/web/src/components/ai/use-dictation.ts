@@ -5,8 +5,14 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 /**
  * Chrome-based browsers send audio to Google's speech service. Builds without
  * it (Brave, Electron apps, some Chromium forks) fail every session with a
- * "network" error even when online, so dictation is switched off for the visit.
+ * "network" error even when online. One failure may just be a blip, so the mic
+ * stays; a second in a row (with no words heard between) turns it off.
  */
+const NETWORK_RETRY_MESSAGE =
+  "Dictation couldn't reach the speech service. Tap the mic to try again.";
+
+const NETWORK_FAILURES_BEFORE_OFF = 2;
+
 const UNAVAILABLE_MESSAGE =
   "Dictation doesn't work in this browser. Type instead, or try Chrome, Edge or Safari.";
 
@@ -21,7 +27,7 @@ const errorMessage = (code: string): string | undefined => {
     }
 
     case "network": {
-      return UNAVAILABLE_MESSAGE;
+      return NETWORK_RETRY_MESSAGE;
     }
 
     case "not-allowed":
@@ -98,6 +104,8 @@ export const useDictation = (callbacks: DictationCallbacks) => {
   const listeners = useRef<AbortController>(null);
   /** Bumped whenever the meter stops, so a mic grant that lands late is released. */
   const meterSession = useRef(0);
+  /** Consecutive "network" failures; reset whenever words come through. */
+  const networkFailures = useRef(0);
   const latest = useRef(callbacks);
 
   useEffect(() => {
@@ -115,6 +123,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
   const startMeter = async () => {
     const session = meterSession.current;
     let stream: MediaStream | undefined;
+    let context: AudioContext | undefined;
 
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -126,7 +135,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
         return;
       }
 
-      const context = new AudioContext();
+      context = new AudioContext();
       const analyser = context.createAnalyser();
       analyser.fftSize = 512;
       context.createMediaStreamSource(stream).connect(analyser);
@@ -143,13 +152,14 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       tick();
 
       const active = stream;
+      const activeContext = context;
 
       stopMeterRef.current = async () => {
         cancelAnimationFrame(frame);
         stopTracks(active);
 
         try {
-          await context.close();
+          await activeContext.close();
         } catch {
           // Already closed.
         }
@@ -158,6 +168,12 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       // No level meter (permission or device); the orb still shows "listening".
       if (stream) {
         stopTracks(stream);
+      }
+
+      try {
+        await context?.close();
+      } catch {
+        // Never opened, or already closed.
       }
     }
   };
@@ -199,6 +215,7 @@ export const useDictation = (callbacks: DictationCallbacks) => {
           text += result[0]?.transcript ?? "";
         }
 
+        networkFailures.current = 0;
         latest.current.onTranscript(text.trim());
       },
       { signal: listeners.current.signal }
@@ -207,10 +224,15 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     instance.addEventListener(
       "error",
       (event) => {
-        const message = errorMessage(event.error);
+        let message = errorMessage(event.error);
 
         if (event.error === "network") {
-          setUnavailable(true);
+          networkFailures.current += 1;
+
+          if (networkFailures.current >= NETWORK_FAILURES_BEFORE_OFF) {
+            setUnavailable(true);
+            message = UNAVAILABLE_MESSAGE;
+          }
         }
 
         if (message) {

@@ -27,10 +27,12 @@ const hintFor = ({
   voiceError,
   listening,
   length,
+  canSend,
 }: {
   voiceError?: string;
   listening: boolean;
   length: number;
+  canSend: boolean;
 }) => {
   if (voiceError) {
     return voiceError;
@@ -44,7 +46,7 @@ const hintFor = ({
     return `${length}/${MAX_CHARS}`;
   }
 
-  return length > 0 ? "⌘/Ctrl + Enter to send" : "";
+  return canSend ? "⌘/Ctrl + Enter to send" : "";
 };
 
 /** Text box docked to the bottom: dictation mic, then send (or stop while answering). */
@@ -108,7 +110,12 @@ export const Composer = ({
               voiceError && "text-secondary"
             )}
           >
-            {hintFor({ length: value.length, listening, voiceError })}
+            {hintFor({
+              canSend: !busy && value.trim().length > 0,
+              length: value.length,
+              listening,
+              voiceError,
+            })}
           </p>
           <div className="flex shrink-0 items-center gap-1.5">
             {voiceSupported && (
