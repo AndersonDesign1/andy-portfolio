@@ -15,6 +15,7 @@
     "conversations": "bun --env-file=../../.env.local --env-file=.env.local run src/conversation-test.ts",
     "fallbacks": "bun --env-file=../../.env.local --env-file=.env.local run src/fallback-test.ts",
     "budget": "bun --env-file=../../.env.local --env-file=.env.local run src/budget-test.ts",
+    "scope": "bun --env-file=../../.env.local --env-file=.env.local run src/scope-test.ts",
     "timeouts": "bun run src/timeout-test.ts",
     "unit": "bun run src/unit-test.ts",
     "typecheck": "tsc --noEmit",

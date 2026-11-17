@@ -127,10 +127,17 @@ bun run --filter=@andy-portfolio/ai-tutor timeouts        # mid-reply stall and 
 bun run --filter=@andy-portfolio/ai-tutor fallbacks       # live routing, budget, provider-down and first-word timeout fallbacks
 bun run --filter=@andy-portfolio/ai-tutor budget          # Postgres reservations under concurrency; test rows are deleted afterwards
 bun run --filter=@andy-portfolio/ai-tutor conversations   # 4 scripted student chats per model, scored on rules
+bun run --filter=@andy-portfolio/ai-tutor scope           # site assistant's topic limit: 24 off-topic / tech / mixed messages per model
 bun run --filter=@andy-portfolio/ai-tutor typecheck
 ```
 
 `conversations` writes full transcripts to `results/conversations.md` (gitignored). Pass a word to run only matching models, e.g. `conversations glm`; an unknown word fails instead of running nothing. A provider error or a reply cut off at the token limit fails the run. Word counts, emojis and leaks are scores for comparing models, not pass/fail checks.
+
+`scope` uses the site's real course (`apps/web/src/lib/tutor-course.ts`). Off-topic messages pass only if the reply is exactly the refusal sentence; tech questions fail if refused. Replies go to `results/scope.md`. `scope deepseek,glm` limits the models.
+
+## Topic limit
+
+`CourseContext.scope` (`{ topics, refusal }`) makes staying on topic the first hard rule: anything outside `topics` gets exactly `refusal` and nothing else, even under "just this once" or role-play pressure; a mixed message keeps only its on-topic part; greetings and questions about the teacher stay allowed. Without `scope`, the prompt is unchanged (off-topic questions get a short answer and a nudge back). The /ai site assistant sets it; the class tutor does not.
 
 ## Prices
 

@@ -44,7 +44,7 @@ const domain = (): ReactElement =>
 const footerText = (text: string): ReactElement =>
   el("div", { color: "#a3a3a3", fontSize: 32, fontWeight: 500 }, text);
 
-// Shared by Home, Blog and Case Study: uppercase eyebrow over a large title.
+// Shared by Blog and Case Study: uppercase eyebrow over a large title.
 const labelled = (label: string, title: string): ReactElement =>
   el(
     "div",
@@ -120,13 +120,8 @@ const pageImage = (title: string, description: string): ReactElement =>
     ]),
   ]);
 
-const homeImage = (): ReactElement =>
-  frame([
-    labelled("Anderson Joseph", TAGLINE),
-    el("div", { display: "flex", justifyContent: "flex-end", width: "100%" }, [
-      domain(),
-    ]),
-  ]);
+// The name leads; the tagline sits under it, like the site's hero.
+const homeImage = (): ReactElement => pageImage("Anderson Joseph", TAGLINE);
 
 const blogImage = (title: string): ReactElement =>
   frame([
