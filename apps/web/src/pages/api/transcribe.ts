@@ -1,3 +1,5 @@
+import { currentPeriod, DEFAULT_CAPS } from "@andy-portfolio/ai-tutor/budget";
+import type { Provider } from "@andy-portfolio/ai-tutor/models";
 import { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
 import type { APIRoute } from "astro";
 import { z } from "zod";
@@ -12,6 +14,10 @@ export const prerender = false;
  * transcribes clips for well under $0.001 a minute out of the Neon credit
  * (a 3 s question cost ~$0.00004 in testing). Whisper Large v3 Turbo on
  * OpenRouter (~$0.00018/min) is the last resort and needs OpenRouter credit.
+ *
+ * Every attempt reserves its worst-case cost against the same monthly
+ * provider caps as the chat (DEFAULT_CAPS) before it runs, then settles to
+ * the real cost, so no number of callers can spend past those caps.
  */
 const NEON_MODELS = ["gemini-3-1-flash-lite", "gemini-3-5-flash-lite"];
 const OPENROUTER_MODEL = "openai/whisper-large-v3-turbo";
@@ -25,6 +31,31 @@ const ATTEMPT_TIMEOUT_MS = 20_000;
 
 /** About a minute of speech is ~200 words; this leaves room without paying for runaway output. */
 const MAX_TRANSCRIPT_TOKENS = 400;
+
+/**
+ * Billing follows audio length, and a direct caller could fit ~30 minutes of
+ * very low-bitrate audio into the 1 MB cap, so each attempt reserves that.
+ */
+const WORST_CASE_AUDIO_SECONDS = 1800;
+
+/** Gemini bills about 32 tokens per second of audio. */
+const AUDIO_TOKENS_PER_SECOND = 32;
+
+/** USD per token, set at or above Gemini Flash-Lite list prices (audio input costs more than text). */
+const GEMINI_AUDIO_USD = 1 / 1e6;
+const GEMINI_TEXT_USD = 0.5 / 1e6;
+const GEMINI_OUTPUT_USD = 2.5 / 1e6;
+
+/** Whisper Turbo on its priciest OpenRouter host. */
+const WHISPER_USD_PER_SECOND = 0.000011;
+
+const NEON_WORST_CASE_USD =
+  WORST_CASE_AUDIO_SECONDS * AUDIO_TOKENS_PER_SECOND * GEMINI_AUDIO_USD +
+  500 * GEMINI_TEXT_USD +
+  MAX_TRANSCRIPT_TOKENS * GEMINI_OUTPUT_USD;
+
+const OPENROUTER_WORST_CASE_USD =
+  WORST_CASE_AUDIO_SECONDS * WHISPER_USD_PER_SECOND;
 
 /**
  * The page records at 32 kbps and stops at 60 s (~250 KB); 1 MB leaves room
@@ -50,9 +81,31 @@ const chatSchema = z.object({
   choices: z
     .array(z.object({ message: z.object({ content: z.string().nullable() }) }))
     .min(1),
+  usage: z
+    .object({
+      audio_input_tokens: z.number().nonnegative().optional(),
+      completion_tokens: z.number().nonnegative(),
+      prompt_tokens: z.number().nonnegative(),
+    })
+    .optional(),
 });
 
-const whisperSchema = z.object({ text: z.string() });
+const whisperSchema = z.object({
+  text: z.string(),
+  usage: z.object({ cost: z.number().nonnegative().optional() }).optional(),
+});
+
+/** How a provider call ended. Only "rejected" (an HTTP error) is known to be unbilled. */
+type Outcome<T> =
+  | { kind: "ok"; data: T }
+  | { kind: "rejected" }
+  | { kind: "unknown" };
+
+/** A transcription attempt: the text and its cost when the provider reported usage. */
+type Attempt =
+  | { kind: "ok"; text: string; costUsd: number | undefined }
+  | { kind: "rejected" }
+  | { kind: "unknown" };
 
 interface Clip {
   base64: string;
@@ -109,7 +162,7 @@ const readAudio = async (request: Request): Promise<Buffer | undefined> => {
   }
 };
 
-/** POSTs JSON and returns the parsed body, or undefined (logged) on any failure. */
+/** POSTs JSON; says whether it succeeded, was rejected (unbilled) or ended unknown. */
 const postJson = async <T>({
   body,
   label,
@@ -124,7 +177,7 @@ const postJson = async <T>({
   signal: AbortSignal;
   token: string;
   url: string;
-}): Promise<T | undefined> => {
+}): Promise<Outcome<T>> => {
   try {
     const response = await fetch(url, {
       body: JSON.stringify(body),
@@ -145,28 +198,101 @@ const postJson = async <T>({
         `[transcribe] ${label}: ${response.status} ${detail.slice(0, 200)}`
       );
 
-      return undefined;
+      return { kind: "rejected" };
     }
 
     const parsed = schema.safeParse(await response.json());
 
-    return parsed.success ? parsed.data : undefined;
+    return parsed.success
+      ? { data: parsed.data, kind: "ok" }
+      : { kind: "unknown" };
   } catch (error) {
     if (!signal.aborted) {
       console.error(`[transcribe] ${label} errored`, error);
     }
 
-    return undefined;
+    return { kind: "unknown" };
   }
 };
+
+type Run = (clip: Clip, signal: AbortSignal) => Promise<Attempt>;
 
 type Transcriber = (
   clip: Clip,
   signal: AbortSignal
 ) => Promise<string | undefined>;
 
-const neonTranscriber =
-  (model: string, baseUrl: string, token: string): Transcriber =>
+/** What to settle a reservation to: real cost if known, 0 if rejected, else the full reservation. */
+const settledCost = (attempt: Attempt, reservedUsd: number) => {
+  if (attempt.kind === "rejected") {
+    return 0;
+  }
+
+  if (attempt.kind === "ok" && attempt.costUsd !== undefined) {
+    return Math.min(attempt.costUsd, reservedUsd);
+  }
+
+  return reservedUsd;
+};
+
+/** Wraps a provider call in a reservation against that provider's monthly cap. */
+const budgeted =
+  ({
+    onCapReached,
+    provider,
+    run,
+    store,
+    worstCaseUsd,
+  }: {
+    onCapReached: () => void;
+    provider: Provider;
+    run: Run;
+    store: PostgresBudgetStore;
+    worstCaseUsd: number;
+  }): Transcriber =>
+  async (clip, signal) => {
+    const period = currentPeriod();
+    let reserved = false;
+
+    try {
+      reserved = await store.reserve(
+        provider,
+        period,
+        worstCaseUsd,
+        DEFAULT_CAPS[provider]
+      );
+    } catch (error) {
+      console.error(`[transcribe] ${provider} budget unavailable`, error);
+
+      return;
+    }
+
+    if (!reserved) {
+      console.warn(`[transcribe] ${provider} monthly cap reached`);
+      onCapReached();
+
+      return;
+    }
+
+    const attempt = await run(clip, signal);
+
+    try {
+      await store.settle(
+        provider,
+        period,
+        worstCaseUsd,
+        settledCost(attempt, worstCaseUsd)
+      );
+    } catch (error) {
+      // The full reservation stays counted, which errs on the safe side.
+      console.error(`[transcribe] ${provider} settle failed`, error);
+    }
+
+    return attempt.kind === "ok" ? attempt.text : undefined;
+  };
+
+const neonRun =
+  (model: string, baseUrl: string, token: string): Run =>
   async (clip, signal) => {
     const result = await postJson({
       body: {
@@ -193,11 +319,28 @@ const neonTranscriber =
       url: `${baseUrl.replace(/\/+$/u, "")}/v1/chat/completions`,
     });
 
-    return result?.choices[0]?.message.content?.trim();
+    if (result.kind !== "ok") {
+      return result;
+    }
+
+    const { usage } = result.data;
+    const audioTokens = usage?.audio_input_tokens ?? 0;
+
+    const costUsd = usage
+      ? audioTokens * GEMINI_AUDIO_USD +
+        Math.max(0, usage.prompt_tokens - audioTokens) * GEMINI_TEXT_USD +
+        usage.completion_tokens * GEMINI_OUTPUT_USD
+      : undefined;
+
+    return {
+      costUsd,
+      kind: "ok",
+      text: result.data.choices[0]?.message.content?.trim() ?? "",
+    };
   };
 
-const openrouterTranscriber =
-  (apiKey: string): Transcriber =>
+const openrouterRun =
+  (apiKey: string): Run =>
   async (clip, signal) => {
     const result = await postJson({
       body: {
@@ -211,7 +354,15 @@ const openrouterTranscriber =
       url: OPENROUTER_URL,
     });
 
-    return result?.text.trim();
+    if (result.kind !== "ok") {
+      return result;
+    }
+
+    return {
+      costUsd: result.data.usage?.cost,
+      kind: "ok",
+      text: result.data.text.trim(),
+    };
   };
 
 export const POST: APIRoute = async ({ clientAddress, request }) => {
@@ -267,15 +418,34 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
 
   const clip: Clip = { base64: audio.toString("base64"), format, mime };
 
+  const store = budget;
+  let capReached = false;
+
+  const onCapReached = () => {
+    capReached = true;
+  };
+
   const transcribers: Transcriber[] = [
     ...NEON_MODELS.map((model) =>
-      neonTranscriber(
-        model,
-        env.NEON_AI_GATEWAY_BASE_URL,
-        env.NEON_AI_GATEWAY_TOKEN
-      )
+      budgeted({
+        onCapReached,
+        provider: "neon",
+        run: neonRun(
+          model,
+          env.NEON_AI_GATEWAY_BASE_URL,
+          env.NEON_AI_GATEWAY_TOKEN
+        ),
+        store,
+        worstCaseUsd: NEON_WORST_CASE_USD,
+      })
     ),
-    openrouterTranscriber(env.OPENROUTER_API_KEY),
+    budgeted({
+      onCapReached,
+      provider: "openrouter",
+      run: openrouterRun(env.OPENROUTER_API_KEY),
+      store,
+      worstCaseUsd: OPENROUTER_WORST_CASE_USD,
+    }),
   ];
 
   const firstWorking = async (index: number): Promise<string | undefined> => {
@@ -291,6 +461,13 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
   };
 
   const text = await firstWorking(0);
+
+  if (text === undefined && capReached) {
+    return plain(
+      503,
+      "Voice is paused for now. Please type your question instead."
+    );
+  }
 
   if (text === undefined) {
     return plain(502, "Couldn't transcribe that. Try again, or type instead.");
