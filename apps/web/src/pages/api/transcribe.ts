@@ -33,6 +33,12 @@ const NO_SPEECH = "[no speech]";
 
 const INSTRUCTION = `Transcribe the speech in this audio exactly. Output only the words actually spoken, with normal punctuation. Never guess or invent words. If the audio is silent, is only noise, or has no clearly spoken words, output exactly ${NO_SPEECH} and nothing else.`;
 
+/**
+ * Whisper invents text for silence too. Its verbose output scores each
+ * segment's chance of being non-speech; segments above this are dropped.
+ */
+const WHISPER_NO_SPEECH_THRESHOLD = 0.6;
+
 /** The transcript, or empty when the model reported no speech. */
 const cleanTranscript = (text: string) => {
   const trimmed = text.trim();
@@ -115,6 +121,14 @@ const chatSchema = z.object({
 });
 
 const whisperSchema = z.object({
+  segments: z
+    .array(
+      z.object({
+        no_speech_prob: z.number().optional(),
+        text: z.string(),
+      })
+    )
+    .optional(),
   text: z.string(),
   usage: z.object({ cost: z.number().nonnegative().optional() }).optional(),
 });
@@ -388,6 +402,29 @@ const neonRun =
     };
   };
 
+/** Whisper's transcript without segments it flags as likely non-speech. */
+const whisperText = ({
+  segments,
+  text,
+}: {
+  segments?: { no_speech_prob?: number; text: string }[];
+  text: string;
+}) => {
+  if (!segments) {
+    return cleanTranscript(text);
+  }
+
+  return cleanTranscript(
+    segments
+      .flatMap((segment) =>
+        (segment.no_speech_prob ?? 0) <= WHISPER_NO_SPEECH_THRESHOLD
+          ? [segment.text.trim()]
+          : []
+      )
+      .join(" ")
+  );
+};
+
 const openrouterRun =
   (apiKey: string): Run =>
   async (clip, signal) => {
@@ -395,6 +432,7 @@ const openrouterRun =
       body: {
         input_audio: { data: clip.base64, format: clip.format },
         model: OPENROUTER_MODEL,
+        response_format: "verbose_json",
       },
       label: OPENROUTER_MODEL,
       schema: whisperSchema,
@@ -410,7 +448,7 @@ const openrouterRun =
     return {
       costUsd: result.data.usage?.cost,
       kind: "ok",
-      text: result.data.text.trim(),
+      text: whisperText(result.data),
     };
   };
 

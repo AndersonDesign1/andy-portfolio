@@ -250,7 +250,7 @@ export const AiChat = () => {
         </div>
 
         {empty ? (
-          <div className="flex flex-col items-center gap-6">
+          <div className="flex w-full flex-col items-center gap-6">
             <EmptyState />
             {!showComposer && typeButton}
           </div>

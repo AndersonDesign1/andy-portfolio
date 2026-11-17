@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHmac, randomUUID } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
 
 import type { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
@@ -23,12 +23,21 @@ const RATE_LIMIT_TABLE_SQL = `CREATE TABLE IF NOT EXISTS tutor_rate_limit (
   PRIMARY KEY (visitor, window_name, window_start)
 )`;
 
+/** One row per counted request, so a retried increment can't count it twice. */
+const CLAIM_TABLE_SQL = `CREATE TABLE IF NOT EXISTS tutor_rate_limit_claim (
+  id uuid PRIMARY KEY,
+  created_at timestamptz NOT NULL DEFAULT now()
+)`;
+
 const RATE_LIMIT_INDEX_SQL =
   "CREATE INDEX IF NOT EXISTS tutor_rate_limit_window_start ON tutor_rate_limit (window_start)";
 
 /** Rows older than the longest window are dead; about 1 in 50 requests deletes them. */
 const PRUNE_SQL =
   "DELETE FROM tutor_rate_limit WHERE window_start < now() - interval '2 hours'";
+
+const PRUNE_CLAIMS_SQL =
+  "DELETE FROM tutor_rate_limit_claim WHERE created_at < now() - interval '1 hour'";
 
 const PRUNE_SHARE = 0.02;
 
@@ -44,6 +53,7 @@ export const visitorId = (ip: string, secret: string): string =>
 const createTable = async (store: PostgresBudgetStore) => {
   await store.sql.query(RATE_LIMIT_TABLE_SQL);
   await store.sql.query(RATE_LIMIT_INDEX_SQL);
+  await store.sql.query(CLAIM_TABLE_SQL);
 };
 
 /** Create the table once per instance; a failed attempt is retried next time. */
@@ -71,15 +81,31 @@ interface RateLimitResult {
 const RETRY_DELAY_MS = 300;
 
 /**
- * Both windows are incremented by ONE statement, so it commits all or
- * nothing: retrying a failed attempt can't count the same request twice.
+ * Counts one request in every window, in ONE statement (all or nothing), and
+ * only if its request id ($4) hasn't been claimed yet. If a commit's response
+ * is lost and the retry runs again, the claim already exists: nothing is
+ * incremented and the current counts are read back instead.
  */
-const INCREMENT_SQL = `INSERT INTO tutor_rate_limit (visitor, window_name, window_start, count)
-SELECT $1, window_name, window_start, 1
-FROM unnest($2::text[], $3::timestamptz[]) AS w(window_name, window_start)
-ON CONFLICT (visitor, window_name, window_start) DO UPDATE
-SET count = tutor_rate_limit.count + 1
-RETURNING window_name, count`;
+const INCREMENT_SQL = `WITH claim AS (
+  INSERT INTO tutor_rate_limit_claim (id) VALUES ($4::uuid)
+  ON CONFLICT (id) DO NOTHING
+  RETURNING id
+), bumped AS (
+  INSERT INTO tutor_rate_limit (visitor, window_name, window_start, count)
+  SELECT $1, w.window_name, w.window_start, 1
+  FROM unnest($2::text[], $3::timestamptz[]) AS w(window_name, window_start)
+  WHERE EXISTS (SELECT 1 FROM claim)
+  ON CONFLICT (visitor, window_name, window_start) DO UPDATE
+  SET count = tutor_rate_limit.count + 1
+  RETURNING window_name, count
+)
+SELECT window_name, count FROM bumped
+UNION ALL
+SELECT r.window_name, r.count
+FROM tutor_rate_limit r
+JOIN unnest($2::text[], $3::timestamptz[]) AS w(window_name, window_start)
+  ON r.window_name = w.window_name AND r.window_start = w.window_start
+WHERE r.visitor = $1 AND NOT EXISTS (SELECT 1 FROM claim)`;
 
 const windowRows = z.array(
   z.object({ count: z.number().int(), window_name: z.string() })
@@ -114,6 +140,7 @@ export const checkRateLimit = async (
   if (Math.random() < PRUNE_SHARE) {
     try {
       await sql.query(PRUNE_SQL);
+      await sql.query(PRUNE_CLAIMS_SQL);
     } catch {
       // Retried on a later request.
     }
@@ -130,12 +157,16 @@ export const checkRateLimit = async (
     };
   });
 
+  // Fixed before the first attempt, so a retry reuses it.
+  const requestId = randomUUID();
+
   const rows = windowRows.parse(
     await withRetry(() =>
       sql.query(INCREMENT_SQL, [
         visitor,
         windows.map((w) => w.name),
         windows.map((w) => new Date(w.start).toISOString()),
+        requestId,
       ])
     )
   );
