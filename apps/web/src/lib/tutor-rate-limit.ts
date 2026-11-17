@@ -29,6 +29,10 @@ const CLAIM_TABLE_SQL = `CREATE TABLE IF NOT EXISTS tutor_rate_limit_claim (
   created_at timestamptz NOT NULL DEFAULT now()
 )`;
 
+/** Lets the sampled cleanup delete old claims without scanning the table. */
+const CLAIM_INDEX_SQL =
+  "CREATE INDEX IF NOT EXISTS tutor_rate_limit_claim_created_at ON tutor_rate_limit_claim (created_at)";
+
 const RATE_LIMIT_INDEX_SQL =
   "CREATE INDEX IF NOT EXISTS tutor_rate_limit_window_start ON tutor_rate_limit (window_start)";
 
@@ -54,6 +58,7 @@ const createTable = async (store: PostgresBudgetStore) => {
   await store.sql.query(RATE_LIMIT_TABLE_SQL);
   await store.sql.query(RATE_LIMIT_INDEX_SQL);
   await store.sql.query(CLAIM_TABLE_SQL);
+  await store.sql.query(CLAIM_INDEX_SQL);
 };
 
 /** Create the table once per instance; a failed attempt is retried next time. */
