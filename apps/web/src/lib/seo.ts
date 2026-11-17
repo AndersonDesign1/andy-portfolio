@@ -1,4 +1,5 @@
 export type OgVariant =
+  | { kind: "home" }
   | { kind: "blog"; title: string }
   | { client?: string; kind: "case-study"; title: string };
 
@@ -15,7 +16,9 @@ export const buildPageMeta = ({
 } = {}) => {
   const ogUrl = new URL(`${baseUrl}/api/og`);
 
-  if (og?.kind === "case-study") {
+  if (og?.kind === "home") {
+    ogUrl.searchParams.set("kind", og.kind);
+  } else if (og?.kind === "case-study") {
     ogUrl.searchParams.set("kind", og.kind);
     ogUrl.searchParams.set("title", og.title);
 

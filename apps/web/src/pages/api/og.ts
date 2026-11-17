@@ -11,7 +11,9 @@ export const prerender = false;
 const SIZE = { height: 630, width: 1200 };
 const DOMAIN = "andersonjoseph.com";
 const DEFAULT_TITLE = "Anderson Joseph";
-const DEFAULT_DESCRIPTION = "Full Stack Developer & SEO Specialist";
+
+const TAGLINE =
+  "Building digital products with a focus on growth, interaction, and precise engineering.";
 
 type Style = Record<string, string | number>;
 
@@ -42,7 +44,7 @@ const domain = (): ReactElement =>
 const footerText = (text: string): ReactElement =>
   el("div", { color: "#a3a3a3", fontSize: 32, fontWeight: 500 }, text);
 
-// Shared by Blog and Case Study: uppercase eyebrow over a large title.
+// Shared by Home, Blog and Case Study: uppercase eyebrow over a large title.
 const labelled = (label: string, title: string): ReactElement =>
   el(
     "div",
@@ -118,6 +120,14 @@ const pageImage = (title: string, description: string): ReactElement =>
     ]),
   ]);
 
+const homeImage = (): ReactElement =>
+  frame([
+    labelled("Anderson Joseph", TAGLINE),
+    el("div", { display: "flex", justifyContent: "flex-end", width: "100%" }, [
+      domain(),
+    ]),
+  ]);
+
 const blogImage = (title: string): ReactElement =>
   frame([
     labelled("Blog", title),
@@ -150,6 +160,10 @@ const render = (params: URLSearchParams): ReactElement => {
   const title = params.get("title") || DEFAULT_TITLE;
   const kind = params.get("kind");
 
+  if (kind === "home") {
+    return homeImage();
+  }
+
   if (kind === "blog") {
     return blogImage(title);
   }
@@ -158,7 +172,7 @@ const render = (params: URLSearchParams): ReactElement => {
     return caseStudyImage(title, params.get("client"));
   }
 
-  return pageImage(title, params.get("description") || DEFAULT_DESCRIPTION);
+  return pageImage(title, params.get("description") || TAGLINE);
 };
 
 export const GET: APIRoute = ({ url }) =>
