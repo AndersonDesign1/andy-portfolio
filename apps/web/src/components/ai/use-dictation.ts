@@ -2,6 +2,14 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
+/**
+ * Chrome-based browsers send audio to Google's speech service. Builds without
+ * it (Brave, Electron apps, some Chromium forks) fail every session with a
+ * "network" error even when online, so dictation is switched off for the visit.
+ */
+const UNAVAILABLE_MESSAGE =
+  "Dictation doesn't work in this browser. Type instead, or try Chrome, Edge or Safari.";
+
 const BLOCKED_MESSAGE =
   "Microphone access is blocked. Allow it in your browser to talk.";
 
@@ -13,7 +21,7 @@ const errorMessage = (code: string): string | undefined => {
     }
 
     case "network": {
-      return "Dictation needs an internet connection.";
+      return UNAVAILABLE_MESSAGE;
     }
 
     case "not-allowed":
@@ -67,7 +75,7 @@ interface DictationCallbacks {
  * browsers without it (Firefox), so the mic can be hidden there.
  */
 export const useDictation = (callbacks: DictationCallbacks) => {
-  const supported = useSyncExternalStore(
+  const browserSupport = useSyncExternalStore(
     subscribeToSupport,
     isSupported,
     isSupportedOnServer
@@ -75,6 +83,8 @@ export const useDictation = (callbacks: DictationCallbacks) => {
 
   const [listening, setListening] = useState(false);
   const [error, setError] = useState<string | undefined>();
+  const [unavailable, setUnavailable] = useState(false);
+  const supported = browserSupport && !unavailable;
 
   const recognition = useRef<SpeechRecognition>(null);
   const stopMeterRef = useRef<() => Promise<void>>(null);
@@ -166,6 +176,10 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       "error",
       (event) => {
         const message = errorMessage(event.error);
+
+        if (event.error === "network") {
+          setUnavailable(true);
+        }
 
         if (message) {
           setError(message);

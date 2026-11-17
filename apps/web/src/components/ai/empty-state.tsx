@@ -5,10 +5,20 @@ import type { Ref } from "react";
 import { Orb } from "@/components/ai/orb";
 import type { OrbState } from "@/components/ai/orb";
 
+/** Short label on the chip, full question sent to the tutor. */
 const SUGGESTIONS = [
-  "Explain closures like I'm new to JavaScript",
-  "How does async/await actually work?",
-  "RAG or fine-tuning: when do I use which?",
+  {
+    label: "Closures, simply",
+    question: "Explain closures like I'm new to JavaScript",
+  },
+  {
+    label: "How async/await works",
+    question: "How does async/await actually work?",
+  },
+  {
+    label: "RAG vs fine-tuning",
+    question: "RAG or fine-tuning: when do I use which?",
+  },
 ];
 
 interface EmptyStateProps {
@@ -31,11 +41,11 @@ export const EmptyState = ({
   onToggleVoice,
   onAsk,
 }: EmptyStateProps) => (
-  <div className="flex flex-1 flex-col items-center justify-center gap-10 pb-10 text-center">
+  <div className="flex flex-1 flex-col items-center justify-center gap-8 pb-8 text-center">
     <button
       aria-label={voiceSupported ? voiceLabel : "Andy's AI"}
       aria-pressed={voiceSupported ? listening : undefined}
-      className="focus-visible:ring-foreground/40 w-[min(58vw,264px)] touch-manipulation rounded-full transition-transform duration-300 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:outline-none active:scale-[0.97] disabled:cursor-default motion-reduce:active:scale-100"
+      className="focus-visible:ring-foreground/40 w-[min(58vw,264px,30dvh)] touch-manipulation rounded-full transition-transform duration-300 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:outline-none active:scale-[0.97] disabled:cursor-default motion-reduce:active:scale-100"
       disabled={!voiceSupported}
       onClick={onToggleVoice}
       type="button"
@@ -55,15 +65,16 @@ export const EmptyState = ({
       </p>
     </div>
 
-    <ul className="flex max-w-xl flex-wrap justify-center gap-2">
-      {SUGGESTIONS.map((suggestion) => (
-        <li key={suggestion}>
+    <ul className="-mx-6 flex w-[calc(100%+3rem)] [scrollbar-width:none] gap-2 overflow-x-auto px-6 sm:mx-0 sm:w-auto sm:justify-center sm:overflow-visible sm:px-0">
+      {SUGGESTIONS.map(({ label, question }) => (
+        <li className="shrink-0" key={label}>
           <button
-            className="border-subtle text-secondary hover:text-primary hover:bg-secondary/60 rounded-sm border px-3 py-2 text-sm transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.97]"
-            onClick={() => onAsk(suggestion)}
+            className="border-subtle text-secondary hover:text-primary hover:bg-secondary/60 rounded-sm border px-3 py-2 text-sm whitespace-nowrap transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.97]"
+            onClick={() => onAsk(question)}
+            title={question}
             type="button"
           >
-            {suggestion}
+            {label}
           </button>
         </li>
       ))}

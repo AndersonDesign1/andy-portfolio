@@ -147,7 +147,7 @@ export const AiChat = () => {
   };
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-1rem)] w-full max-w-screen-md flex-col px-6 pt-28 pb-6 md:px-12 md:pt-36">
+    <section className="mx-auto flex min-h-[calc(100dvh-1rem)] w-full max-w-screen-md flex-col px-6 pt-24 pb-6 md:px-12 md:pt-28">
       {empty ? (
         <EmptyState {...voice} onAsk={(question) => send(question)} />
       ) : (

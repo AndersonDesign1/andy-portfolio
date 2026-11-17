@@ -3,11 +3,37 @@ import { AiChat } from "../components/ai/ai-chat.tsx";
 import BaseLayout from "../layouts/base-layout.astro";
 
 export const prerender = true;
+
+const title = "Andy's AI: Free Coding, Web Dev & AI Tutor";
+
+const description =
+  "Ask Andy's AI about JavaScript, web development and AI. A free tutor that explains things the way Anderson Joseph teaches. Type or dictate your question.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  applicationCategory: "EducationalApplication",
+  author: {
+    "@type": "Person",
+    name: "Anderson Joseph",
+    url: "https://www.andersonjoseph.com",
+  },
+  browserRequirements: "Requires JavaScript",
+  description,
+  isAccessibleForFree: true,
+  name: "Andy's AI",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  operatingSystem: "Any",
+  url: "https://www.andersonjoseph.com/ai",
+};
 ---
 
-<BaseLayout
-  description="Ask Andy's AI about programming, web development and AI. Type a question or dictate it."
-  title="Ask Andy's AI"
->
+<BaseLayout description={description} title={title}>
+  <script
+    is:inline
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData)}
+  />
   <AiChat client:load />
 </BaseLayout>
