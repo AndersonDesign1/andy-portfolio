@@ -32,8 +32,6 @@ const PRUNE_SQL =
 
 const PRUNE_SHARE = 0.02;
 
-const countRows = z.array(z.object({ count: z.number().int() }));
-
 let tableReady: Promise<unknown> | undefined;
 
 /** `secret` is any server-only value (the route passes DATABASE_URL). */
@@ -73,15 +71,42 @@ interface RateLimitResult {
 const RETRY_DELAY_MS = 300;
 
 /**
- * Count this request in every window and report whether any limit is exceeded.
- * One atomic upsert per window, so concurrent requests can't slip past.
+ * Both windows are incremented by ONE statement, so it commits all or
+ * nothing: retrying a failed attempt can't count the same request twice.
  */
-const countRequest = async (
+const INCREMENT_SQL = `INSERT INTO tutor_rate_limit (visitor, window_name, window_start, count)
+SELECT $1, window_name, window_start, 1
+FROM unnest($2::text[], $3::timestamptz[]) AS w(window_name, window_start)
+ON CONFLICT (visitor, window_name, window_start) DO UPDATE
+SET count = tutor_rate_limit.count + 1
+RETURNING window_name, count`;
+
+const windowRows = z.array(
+  z.object({ count: z.number().int(), window_name: z.string() })
+);
+
+/** Runs `operation`, and once more after a short pause if it throws. */
+const withRetry = async <T>(operation: () => Promise<T>): Promise<T> => {
+  try {
+    return await operation();
+  } catch {
+    await sleep(RETRY_DELAY_MS);
+
+    return operation();
+  }
+};
+
+/**
+ * Count this request in every window and report whether any limit is
+ * exceeded. A second failure throws; routes turn that into a 503 rather than
+ * letting it surface as an HTML 500.
+ */
+export const checkRateLimit = async (
   store: PostgresBudgetStore,
   visitor: string
 ): Promise<RateLimitResult> => {
   const { sql } = store;
-  await ensureTable(store);
+  await withRetry(() => ensureTable(store));
 
   const now = Date.now();
 
@@ -94,49 +119,35 @@ const countRequest = async (
     }
   }
 
-  const results = await Promise.all(
-    RATE_LIMITS.map(async (limit) => {
-      const windowMs = limit.seconds * 1000;
-      const start = new Date(Math.floor(now / windowMs) * windowMs);
+  const windows = RATE_LIMITS.map((limit) => {
+    const windowMs = limit.seconds * 1000;
+    const start = Math.floor(now / windowMs) * windowMs;
 
-      const rows = countRows.parse(
-        await sql`
-          INSERT INTO tutor_rate_limit (visitor, window_name, window_start, count)
-          VALUES (${visitor}, ${limit.name}, ${start.toISOString()}, 1)
-          ON CONFLICT (visitor, window_name, window_start) DO UPDATE
-          SET count = tutor_rate_limit.count + 1
-          RETURNING count
-        `
-      );
+    return {
+      ...limit,
+      resetsIn: Math.ceil((start + windowMs - now) / 1000),
+      start,
+    };
+  });
 
-      const count = rows[0]?.count ?? 0;
-      const resetsIn = Math.ceil((start.getTime() + windowMs - now) / 1000);
-
-      return { exceeded: count > limit.max, resetsIn };
-    })
+  const rows = windowRows.parse(
+    await withRetry(() =>
+      sql.query(INCREMENT_SQL, [
+        visitor,
+        windows.map((w) => w.name),
+        windows.map((w) => new Date(w.start).toISOString()),
+      ])
+    )
   );
 
-  const blocked = results.filter((r) => r.exceeded);
+  const blocked = windows.filter((w) => {
+    const count = rows.find((row) => row.window_name === w.name)?.count ?? 0;
+
+    return count > w.max;
+  });
 
   return {
     allowed: blocked.length === 0,
-    retryAfterSeconds: Math.max(0, ...blocked.map((r) => r.resetsIn)),
+    retryAfterSeconds: Math.max(0, ...blocked.map((w) => w.resetsIn)),
   };
-};
-
-/**
- * `countRequest`, retried once after a short pause. A second failure throws;
- * routes turn that into a 503 rather than letting it surface as an HTML 500.
- */
-export const checkRateLimit = async (
-  store: PostgresBudgetStore,
-  visitor: string
-): Promise<RateLimitResult> => {
-  try {
-    return await countRequest(store, visitor);
-  } catch {
-    await sleep(RETRY_DELAY_MS);
-
-    return countRequest(store, visitor);
-  }
 };

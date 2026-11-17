@@ -4,26 +4,17 @@ import { KeyboardIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useEffect, useRef, useState } from "react";
 
-import { failureText, readStream } from "@/components/ai/chat-stream";
-import type { ChatMessage, ChatStatus } from "@/components/ai/chat-stream";
 import { Composer, MAX_CHARS } from "@/components/ai/composer";
 import { ConversationDrawer } from "@/components/ai/conversation-drawer";
 import { EmptyState } from "@/components/ai/empty-state";
 import { LatestExchange } from "@/components/ai/latest-exchange";
 import type { OrbState } from "@/components/ai/orb";
 import { OrbButton } from "@/components/ai/orb-button";
+import { useChatSession } from "@/components/ai/use-chat-session";
 import { useDictation } from "@/components/ai/use-dictation";
 import { VoiceStatus } from "@/components/ai/voice-status";
 import type { VoicePhase } from "@/components/ai/voice-status";
 import { cn } from "@/lib/utils";
-
-/** Recent messages sent with each question; the assistant trims to its own limit. */
-const HISTORY_SENT = 20;
-
-const STOPPED_TEXT = "Stopped before an answer arrived.";
-
-const OFFLINE_TEXT =
-  "Couldn't reach Andy's AI. Check your connection and try again.";
 
 const ORB_STATE: Record<VoicePhase, OrbState> = {
   answering: "answering",
@@ -33,17 +24,14 @@ const ORB_STATE: Record<VoicePhase, OrbState> = {
   thinking: "thinking",
 };
 
-let nextId = 0;
-
 /**
- * The /ai page, voice first: hold the orb to ask, and the spoken question is
- * sent as soon as it's transcribed. Typing is optional, and only the latest
- * answer stays on the page; the full conversation opens in a drawer.
+ * The /ai page, voice first: hold the orb to ask, check the transcript in the
+ * text box, then send. Typing is optional, and only the latest answer stays
+ * on the page; the full conversation opens in a drawer.
  */
 export const AiChat = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const chat = useChatSession();
   const [input, setInput] = useState("");
-  const [status, setStatus] = useState<ChatStatus>("idle");
   const [typing, setTyping] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cancelArmed, setCancelArmed] = useState(false);
@@ -53,75 +41,11 @@ export const AiChat = () => {
   const stageRef = useRef<HTMLDivElement>(null);
   const orbRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const abortRef = useRef<AbortController>(null);
-
-  const busy = status !== "idle";
-
-  const send = async (raw: string) => {
-    const question = raw.trim();
-
-    if (!question || busy) {
-      return;
-    }
-
-    const history = [
-      ...messages.flatMap(({ role, content, failed, stopped }) =>
-        failed || stopped || !content ? [] : [{ content, role }]
-      ),
-      { content: question, role: "user" as const },
-    ].slice(-HISTORY_SENT);
-
-    const replyId = nextId + 1;
-    nextId += 2;
-
-    setMessages((current) => [
-      ...current,
-      { content: question, id: replyId - 1, role: "user" },
-      { content: "", id: replyId, role: "assistant" },
-    ]);
-    setInput("");
-    setStatus("thinking");
-
-    const updateReply = (patch: Partial<ChatMessage>) =>
-      setMessages((current) =>
-        current.map((m) => (m.id === replyId ? { ...m, ...patch } : m))
-      );
-
-    const controller = new AbortController();
-    abortRef.current = controller;
-    let received = false;
-
-    try {
-      const response = await fetch("/api/tutor", {
-        body: JSON.stringify({ messages: history }),
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        signal: controller.signal,
-      });
-
-      if (response.ok && response.body) {
-        await readStream(response.body, (text) => {
-          received = true;
-          setStatus("answering");
-          updateReply({ content: text });
-        });
-      } else {
-        updateReply({ content: await failureText(response), failed: true });
-      }
-    } catch {
-      // A stopped reply keeps any text it got; an empty one says it stopped.
-      if (!controller.signal.aborted) {
-        updateReply({ content: OFFLINE_TEXT, failed: true });
-      } else if (received) {
-        updateReply({ stopped: true });
-      } else {
-        updateReply({ content: STOPPED_TEXT, failed: true });
-      }
-    } finally {
-      abortRef.current = null;
-      setStatus("idle");
-    }
-  };
+  const typeInsteadRef = useRef<HTMLButtonElement>(null);
+  /** True only while a recording the orb started is being held. */
+  const orbHolding = useRef(false);
+  /** Set when the composer is closed, so focus goes back to "Type instead". */
+  const returnFocus = useRef(false);
 
   const dictation = useDictation({
     onLevel: (level) =>
@@ -158,7 +82,7 @@ export const AiChat = () => {
       return "processing";
     }
 
-    return status === "idle" ? "idle" : status;
+    return chat.status === "idle" ? "idle" : chat.status;
   };
 
   const phase = phaseFor();
@@ -167,16 +91,38 @@ export const AiChat = () => {
 
   /** Holding the orb interrupts an answer in progress, like talking over someone. */
   const holdStart = () => {
-    abortRef.current?.abort();
+    // The composer mic is already recording: the orb leaves it alone.
+    if (dictation.listening || dictation.transcribing) {
+      return;
+    }
+
+    orbHolding.current = true;
+    chat.stop();
     dictation.start();
   };
 
   const holdEnd = (cancelled: boolean) => {
+    if (!orbHolding.current) {
+      return;
+    }
+
+    orbHolding.current = false;
+
     if (cancelled) {
       dictation.cancel();
     } else {
       dictation.stop();
     }
+  };
+
+  /** Closing the text box drops any recording it started, and returns focus to its trigger. */
+  const closeComposer = () => {
+    if (dictation.listening || dictation.transcribing) {
+      dictation.cancel();
+    }
+
+    returnFocus.current = true;
+    setTyping(false);
   };
 
   const toggleComposerVoice = () => {
@@ -186,14 +132,16 @@ export const AiChat = () => {
 
   const ask = (question: string) => {
     dictation.cancel();
-    setDraftFromVoice(false);
-    send(question);
+
+    if (chat.send(question)) {
+      setInput("");
+      setDraftFromVoice(false);
+    }
   };
 
   const reset = () => {
-    abortRef.current?.abort();
+    chat.clear();
     dictation.cancel();
-    setMessages([]);
     setInput("");
     setDrawerOpen(false);
   };
@@ -202,13 +150,34 @@ export const AiChat = () => {
   useEffect(() => {
     if (typing) {
       textareaRef.current?.focus();
+    } else if (returnFocus.current) {
+      returnFocus.current = false;
+      typeInsteadRef.current?.focus();
     }
   }, [typing]);
 
-  // Leaving the page stops an in-flight reply.
-  useEffect(() => () => abortRef.current?.abort(), []);
+  // Escape cancels any recording, wherever focus is.
+  const recording = dictation.listening;
+  const cancelVoice = dictation.cancel;
 
-  const empty = messages.length === 0;
+  useEffect(() => {
+    if (!recording) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        orbHolding.current = false;
+        cancelVoice();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [recording, cancelVoice]);
+
+  const empty = chat.messages.length === 0;
 
   return (
     <section className="mx-auto flex min-h-[calc(100dvh-1rem)] w-full max-w-screen-md flex-col items-center gap-6 px-6 pt-24 pb-6 md:px-12 md:pt-28">
@@ -236,7 +205,7 @@ export const AiChat = () => {
             cancelArmed={cancelArmed}
             error={dictation.error}
             onCancelVoice={() => dictation.cancel()}
-            onStopAnswer={() => abortRef.current?.abort()}
+            onStopAnswer={() => chat.stop()}
             phase={phase}
             recordingSince={dictation.recordingSince}
             reviewing={draftFromVoice && input.trim().length > 0}
@@ -248,8 +217,8 @@ export const AiChat = () => {
           <EmptyState onAsk={ask} />
         ) : (
           <LatestExchange
-            busy={busy}
-            messages={messages}
+            busy={chat.busy}
+            messages={chat.messages}
             onOpenConversation={() => setDrawerOpen(true)}
             onReset={reset}
           />
@@ -260,12 +229,12 @@ export const AiChat = () => {
         {showComposer ? (
           <div className="w-full">
             <Composer
-              busy={busy}
+              busy={chat.busy}
               listening={dictation.listening}
               onChange={setInput}
-              onClose={() => setTyping(false)}
+              onClose={closeComposer}
               onSend={() => ask(input)}
-              onStop={() => abortRef.current?.abort()}
+              onStop={() => chat.stop()}
               onToggleVoice={toggleComposerVoice}
               textareaRef={textareaRef}
               transcribing={dictation.transcribing}
@@ -283,6 +252,7 @@ export const AiChat = () => {
           <button
             className="border-subtle text-secondary hover:text-primary hover:bg-secondary/60 bg-background/85 inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm backdrop-blur-md transition-colors"
             onClick={() => setTyping(true)}
+            ref={typeInsteadRef}
             type="button"
           >
             <HugeiconsIcon icon={KeyboardIcon} size={16} />
@@ -295,7 +265,7 @@ export const AiChat = () => {
       </div>
 
       <ConversationDrawer
-        messages={messages}
+        messages={chat.messages}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
       />

@@ -53,8 +53,12 @@ export function buildBasePrompt(course: CourseContext): string {
 - Use the vocabulary from the course notes. Do not jump to topics from later weeks unless asked.
 - When a student is partly right, say what is right before correcting the rest.
 - End with one short check question or next step when it helps them practise, not after every message.
-- Questions outside the course get a one or two sentence answer, then steer back to the course.${course.explainStyle ? `
-${course.explainStyle}` : ""}
+- Questions outside the course get a one or two sentence answer, then steer back to the course.${
+    course.explainStyle
+      ? `
+${course.explainStyle}`
+      : ""
+  }
 
 ## When a student shares assignment code
 - Name the line or concept that is wrong and explain why in one or two sentences.

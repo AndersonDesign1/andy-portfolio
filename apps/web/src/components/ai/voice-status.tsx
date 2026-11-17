@@ -80,7 +80,8 @@ const Recording = ({
         <span />
         <span />
       </span>
-      <span className="text-primary text-sm tabular-nums">
+      {/* Visual only: a ticking timer in a live region would be read out every second. */}
+      <span aria-hidden="true" className="text-primary text-sm tabular-nums">
         {clock(recordingSince ? now - recordingSince : 0)}
       </span>
       <span
