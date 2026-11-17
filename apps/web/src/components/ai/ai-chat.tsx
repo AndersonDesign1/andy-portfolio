@@ -47,13 +47,13 @@ export const AiChat = () => {
   const [typing, setTyping] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cancelArmed, setCancelArmed] = useState(false);
+  /** A voice transcript is waiting in the text box for the visitor to check and send. */
+  const [draftFromVoice, setDraftFromVoice] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const orbRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController>(null);
-  /** Where the next transcript goes: sent at once (orb) or into the text box (composer mic). */
-  const voiceTarget = useRef<"send" | "input">("send");
 
   const busy = status !== "idle";
 
@@ -126,18 +126,25 @@ export const AiChat = () => {
   const dictation = useDictation({
     onLevel: (level) =>
       stageRef.current?.style.setProperty("--orb-level", level.toFixed(3)),
+    // The transcript lands in the text box (opened if hidden) to check, edit
+    // and send; it's appended to whatever is there, including edits made
+    // while it was transcribing.
     onTranscript: (spoken) => {
-      if (voiceTarget.current === "send") {
-        send(spoken);
-
-        return;
-      }
-
-      // Appended to whatever is in the box now, including edits made while it was transcribing.
       setInput((current) => {
         const typed = current.trim();
 
         return (typed ? `${typed} ${spoken}` : spoken).slice(0, MAX_CHARS);
+      });
+      setTyping(true);
+      setDraftFromVoice(true);
+
+      requestAnimationFrame(() => {
+        const box = textareaRef.current;
+
+        if (box) {
+          box.focus();
+          box.setSelectionRange(box.value.length, box.value.length);
+        }
       });
     },
   });
@@ -161,7 +168,6 @@ export const AiChat = () => {
   /** Holding the orb interrupts an answer in progress, like talking over someone. */
   const holdStart = () => {
     abortRef.current?.abort();
-    voiceTarget.current = "send";
     dictation.start();
   };
 
@@ -174,16 +180,13 @@ export const AiChat = () => {
   };
 
   const toggleComposerVoice = () => {
-    if (!dictation.listening) {
-      voiceTarget.current = "input";
-    }
-
     dictation.toggle();
     textareaRef.current?.focus();
   };
 
   const ask = (question: string) => {
     dictation.cancel();
+    setDraftFromVoice(false);
     send(question);
   };
 
@@ -236,6 +239,7 @@ export const AiChat = () => {
             onStopAnswer={() => abortRef.current?.abort()}
             phase={phase}
             recordingSince={dictation.recordingSince}
+            reviewing={draftFromVoice && input.trim().length > 0}
             voiceSupported={voiceSupported}
           />
         </div>

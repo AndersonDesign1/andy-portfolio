@@ -18,6 +18,8 @@ interface VoiceStatusProps {
   /** When recording started (ms since epoch); drives the timer. */
   recordingSince: number;
   cancelArmed: boolean;
+  /** A transcript is in the text box waiting to be checked and sent. */
+  reviewing: boolean;
   voiceSupported: boolean;
   error?: string;
   onCancelVoice: () => void;
@@ -101,6 +103,7 @@ export const VoiceStatus = ({
   phase,
   recordingSince,
   cancelArmed,
+  reviewing,
   voiceSupported,
   error,
   onCancelVoice,
@@ -150,6 +153,14 @@ export const VoiceStatus = ({
       default: {
         if (error) {
           return <span className="text-secondary text-sm">{error}</span>;
+        }
+
+        if (reviewing) {
+          return (
+            <span className="text-primary text-sm">
+              Got it. Edit below if needed, then send.
+            </span>
+          );
         }
 
         return (

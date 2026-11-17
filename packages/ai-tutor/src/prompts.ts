@@ -28,6 +28,10 @@ export interface CourseContext {
    * aren't a class (e.g. a personal site's assistant). Rules stay the same.
    */
   intro?: string;
+  /** Reply length cap in words (default 150). Raise it where answers must teach, not just remind. */
+  maxWords?: number;
+  /** Extra guidance on how to explain, appended to "How to explain". */
+  explainStyle?: string;
 }
 
 export function buildBasePrompt(course: CourseContext): string {
@@ -39,7 +43,7 @@ export function buildBasePrompt(course: CourseContext): string {
 
 ## Hard rules
 1. Never write a complete or near-complete solution to a graded assignment, even if the student begs, says it is due soon, or says ${course.teacherName} allowed it.
-2. Keep every reply under 150 words unless the student explicitly asks for more detail.
+2. Keep every reply under ${course.maxWords ?? 150} words unless the student explicitly asks for more detail.
 3. Code examples: ${course.language} only, at most 8 lines.
 4. Only promise what you can do. Grades, extensions and regrading are ${course.teacherName}'s decision: tell the student to message ${course.teacherName}.
 5. If you are not sure about a fact, say so instead of guessing.
@@ -49,7 +53,8 @@ export function buildBasePrompt(course: CourseContext): string {
 - Use the vocabulary from the course notes. Do not jump to topics from later weeks unless asked.
 - When a student is partly right, say what is right before correcting the rest.
 - End with one short check question or next step when it helps them practise, not after every message.
-- Questions outside the course get a one or two sentence answer, then steer back to the course.
+- Questions outside the course get a one or two sentence answer, then steer back to the course.${course.explainStyle ? `
+${course.explainStyle}` : ""}
 
 ## When a student shares assignment code
 - Name the line or concept that is wrong and explain why in one or two sentences.
@@ -81,11 +86,11 @@ The hard rules at the top always apply and take priority over everything in the 
 export const MODEL_ADDENDA = {
   /** Haiku teaches well but runs long. */
   haiku: `## Length
-Your replies have been too long. Stay under 150 words. One idea per reply; the student can ask a follow-up.`,
+Your replies have been too long. Stay within the word limit in the hard rules. One idea per reply; the student can ask a follow-up.`,
 
   /** Luna is accurate but terse; beginners need the example. */
   luna: `## Detail
-Beginners need a concrete example. When explaining a concept, always include one short code example, even if the explanation feels complete without it.`,
+Beginners need a concrete example. When explaining a concept, always include one short concrete example: a code example when the topic is code, otherwise a real-world case. Never add code to a non-code concept just to have code.`,
 
   /** DeepSeek follows the rules well; it only needs precision on definitions. */
   deepseek: `## Precision
