@@ -9,12 +9,25 @@ import "../styles/global.css";
 
 interface Props {
   description?: string;
+  /** Shrink the layout (not overlay it) when the phone keyboard opens: full-screen tools like /ai. */
+  keyboardResizes?: boolean;
   noindex?: boolean;
   og?: OgVariant;
   title?: string;
 }
 
-const { title, description, noindex = false, og } = Astro.props;
+const {
+  title,
+  description,
+  keyboardResizes = false,
+  noindex = false,
+  og,
+} = Astro.props;
+
+const viewport = `width=device-width, initial-scale=1, viewport-fit=cover${
+  keyboardResizes ? ", interactive-widget=resizes-content" : ""
+}`;
+
 const meta = buildPageMeta({ description, og, title });
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 ---
@@ -23,10 +36,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 <html lang="en" transition:name="root" transition:animate="fade">
   <head>
     <meta charset="UTF-8">
-    <meta
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-      name="viewport"
-    >
+    <meta content={viewport} name="viewport">
     <meta content={Astro.generator} name="generator">
     <title>{meta.title}</title>
     <meta content={meta.description} name="description">

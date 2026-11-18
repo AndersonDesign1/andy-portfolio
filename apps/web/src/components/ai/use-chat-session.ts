@@ -2,6 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  parseSavedChat,
+  saveChat,
+  useSavedChatRaw,
+} from "@/components/ai/chat-storage";
 import { failureText, readStream } from "@/components/ai/chat-stream";
 import type { ChatMessage, ChatStatus } from "@/components/ai/chat-stream";
 
@@ -18,13 +23,37 @@ let nextId = 0;
 /**
  * The conversation with /api/tutor: messages, streaming state, sending,
  * stopping and clearing. Failed and stopped replies stay visible but are
- * never sent back as history.
+ * never sent back as history. The chat is kept on this device for an hour
+ * (see chat-storage), so a reload picks up where the visitor left off.
  */
 export const useChatSession = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<ChatStatus>("idle");
   const abortRef = useRef<AbortController>(null);
+  /** False until the saved chat has been read, so the empty first render doesn't wipe it. */
+  const [restored, setRestored] = useState(false);
   const busy = status !== "idle";
+  const savedRaw = useSavedChatRaw();
+
+  // Once hydrated, load the chat saved on this device. Restored messages get
+  // negative ids so they can never collide with new ones.
+  if (!restored && savedRaw !== null) {
+    setRestored(true);
+    const saved = parseSavedChat(savedRaw);
+
+    if (saved) {
+      setMessages(
+        saved.map((message, index) => ({ ...message, id: -(index + 1) }))
+      );
+    }
+  }
+
+  // Saved once each answer settles (an empty chat clears the saved one).
+  useEffect(() => {
+    if (restored && status === "idle") {
+      saveChat(messages);
+    }
+  }, [messages, restored, status]);
 
   const stream = async (
     history: { content: string; role: ChatMessage["role"] }[],

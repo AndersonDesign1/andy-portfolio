@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import type { ChatMessage } from "@/components/ai/chat-stream";
 import { Message } from "@/components/ai/message-list";
 import { AnchoredScroll } from "@/components/ai/scroll-to-latest";
+import { ShareButton } from "@/components/ai/share-button";
 
 interface LatestExchangeProps {
   messages: ChatMessage[];
@@ -113,17 +114,20 @@ export const LatestExchange = ({
           type="button"
         >
           <HugeiconsIcon icon={MessageMultiple01Icon} size={14} />
-          {earlier > 0 ? `Conversation (${earlier} earlier)` : "Conversation"}
+          {earlier > 0 ? `History (${earlier})` : "History"}
         </button>
-        <button
-          className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors disabled:opacity-40 sm:min-h-8"
-          disabled={busy}
-          onClick={onReset}
-          type="button"
-        >
-          <HugeiconsIcon icon={Refresh01Icon} size={14} />
-          New chat
-        </button>
+        <div className="flex items-center gap-1">
+          <ShareButton busy={busy} messages={messages} />
+          <button
+            className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors disabled:opacity-40 sm:min-h-8"
+            disabled={busy}
+            onClick={onReset}
+            type="button"
+          >
+            <HugeiconsIcon icon={Refresh01Icon} size={14} />
+            New chat
+          </button>
+        </div>
       </div>
 
       {/* Streaming text would be read out chunk by chunk; announce each reply once, when it's done. */}

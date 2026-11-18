@@ -51,6 +51,12 @@ export const getResendEnv = () =>
     RESEND_API_KEY: readEnv("RESEND_API_KEY"),
   });
 
+const databaseEnvSchema = z.object({ DATABASE_URL: z.string().min(1) });
+
+/** Neon Postgres only (shared /ai chats); the tutor route needs getTutorEnv. */
+export const getDatabaseEnv = () =>
+  databaseEnvSchema.parse({ DATABASE_URL: readEnv("DATABASE_URL") });
+
 const tutorEnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
   NEON_AI_GATEWAY_BASE_URL: z.url(),

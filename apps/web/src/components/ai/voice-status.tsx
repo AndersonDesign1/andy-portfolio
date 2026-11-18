@@ -18,8 +18,6 @@ interface VoiceStatusProps {
   /** When recording started (ms since epoch); drives the timer. */
   recordingSince: number;
   cancelArmed: boolean;
-  /** Small orb (a conversation is on screen): the hint always sits to its right. */
-  compact: boolean;
   /** A transcript is in the text box waiting to be checked and sent. */
   reviewing: boolean;
   voiceSupported: boolean;
@@ -99,25 +97,15 @@ const Recording = ({
 };
 
 /**
- * "Hold to talk" with a hand-drawn arrow pointing at the orb: to its right on
- * wide screens and beside the small orb, tucked under it on phones (and under
- * the small orb too on the narrowest phones, below 360px).
+ * "Hold to talk" with a hand-drawn arrow pointing at the orb: under it on
+ * phones (where the orb sits at the bottom, by the thumb), to its right on
+ * wider screens.
  */
-const HoldHint = ({ compact }: { compact: boolean }) => (
-  <span
-    className={cn(
-      "text-secondary absolute flex items-center gap-1 text-xs font-medium whitespace-nowrap sm:text-sm",
-      compact
-        ? "top-1/2 left-full ml-2 -translate-y-1/2 max-[359px]:top-auto max-[359px]:bottom-0 max-[359px]:left-1/2 max-[359px]:ml-0 max-[359px]:-translate-x-1/2 max-[359px]:translate-y-full"
-        : "bottom-0 left-1/2 -translate-x-1/2 translate-y-full sm:top-1/2 sm:bottom-auto sm:left-full sm:ml-2 sm:translate-x-0 sm:-translate-y-1/2"
-    )}
-  >
+const HoldHint = () => (
+  <span className="text-secondary absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-full items-center gap-1 pt-1 text-xs font-medium whitespace-nowrap md:top-1/2 md:bottom-auto md:left-full md:ml-2 md:translate-x-0 md:-translate-y-1/2 md:pt-0 md:text-sm">
     <svg
       aria-hidden="true"
-      className={cn(
-        "size-5 shrink-0 sm:size-7",
-        compact ? "max-[359px]:hidden" : "max-sm:hidden"
-      )}
+      className="hidden size-7 shrink-0 md:block"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
@@ -127,22 +115,6 @@ const HoldHint = ({ compact }: { compact: boolean }) => (
     >
       <path d="M25 18c-5 1-12-1-19-9" />
       <path d="M6 9l1 6M6 9l6 0" />
-    </svg>
-    <svg
-      aria-hidden="true"
-      className={cn(
-        "size-6 shrink-0 sm:hidden",
-        compact && "hidden max-[359px]:block"
-      )}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.5}
-      viewBox="0 0 24 24"
-    >
-      <path d="M8 21c1-6 3-11 8-16" />
-      <path d="M16 5l-5 1M16 5l-1 5" />
     </svg>
     Hold to talk
   </span>
@@ -157,7 +129,6 @@ export const VoiceStatus = ({
   phase,
   recordingSince,
   cancelArmed,
-  compact,
   reviewing,
   voiceSupported,
   error,
@@ -232,7 +203,7 @@ export const VoiceStatus = ({
       className="pointer-events-none absolute inset-0"
       id="ai-voice-status"
     >
-      {showHint && <HoldHint compact={compact} />}
+      {showHint && <HoldHint />}
       {content !== null && (
         <span className="border-subtle bg-background/85 pointer-events-auto absolute bottom-0 left-1/2 flex w-max max-w-[min(88vw,26rem)] -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-2xl border px-3.5 py-1.5 text-center shadow-sm backdrop-blur-md">
           {content}

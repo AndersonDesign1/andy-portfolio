@@ -46,7 +46,14 @@ const menuItems = [
   { label: "Contact", link: "/contact" },
 ];
 
-const Navbar = ({ pathname: initialPathname }: { pathname: string }) => {
+const Navbar = ({
+  pathname: initialPathname,
+  compact = false,
+}: {
+  pathname: string;
+  /** Shorter bar for full-screen pages (/ai), leaving them more height. */
+  compact?: boolean;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname(initialPathname);
@@ -76,9 +83,9 @@ const Navbar = ({ pathname: initialPathname }: { pathname: string }) => {
       <nav
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ease-[var(--ease-out)] ${
           scrolled
-            ? "border-subtle bg-primary/95 border-b py-6 backdrop-blur-sm"
-            : "py-6"
-        }`}
+            ? "border-subtle bg-primary/95 border-b backdrop-blur-sm"
+            : ""
+        } ${compact ? "py-2.5 md:py-6" : "py-6"}`}
       >
         <div className="mx-auto flex max-w-screen-lg items-center justify-between px-6 md:px-12">
           {/* Logo */}
