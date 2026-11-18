@@ -46,7 +46,14 @@ export const AiChat = () => {
   const [tutorialClosed, setTutorialClosed] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const guideSeen = useGuideSeen();
-  const tutorialOpen = helpOpen || (!guideSeen && !tutorialClosed);
+  /** The guide auto-opened on this visit (latched: marking it seen mustn't close it). */
+  const [guideAutoOpened, setGuideAutoOpened] = useState(false);
+
+  if (!guideSeen && !guideAutoOpened) {
+    setGuideAutoOpened(true);
+  }
+
+  const tutorialOpen = helpOpen || (guideAutoOpened && !tutorialClosed);
   /** A voice transcript is waiting in the text box for the visitor to check and send. */
   const [draftFromVoice, setDraftFromVoice] = useState(false);
 
@@ -157,6 +164,14 @@ export const AiChat = () => {
   }, [typing]);
 
   usePreloadReplyRenderer();
+
+  // Seen as soon as it opens by itself, so a reload before closing it
+  // doesn't bring it back in this tab.
+  useEffect(() => {
+    if (guideAutoOpened) {
+      markGuideSeen();
+    }
+  }, [guideAutoOpened]);
 
   const empty = chat.messages.length === 0;
 

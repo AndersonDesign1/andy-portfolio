@@ -131,7 +131,7 @@ export const OrbButton = ({
       aria-label={voiceSupported ? "Hold to talk" : "Andy's AI"}
       aria-pressed={voiceSupported ? listening : undefined}
       className={cn(
-        "focus-visible:ring-foreground/40 touch-none rounded-full select-none [-webkit-touch-callout:none] focus-visible:ring-2 focus-visible:outline-none disabled:cursor-default",
+        "focus-visible:ring-foreground/60 touch-none rounded-full select-none [-webkit-touch-callout:none] focus-visible:ring-2 focus-visible:outline-none disabled:cursor-default",
         className
       )}
       disabled={!voiceSupported}

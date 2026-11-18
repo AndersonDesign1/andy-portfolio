@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 /** "or type instead": a quiet text link on every screen size, so the orb stays the main action. */
 const TYPE_LINK =
-  "text-muted hover:text-primary focus-visible:ring-foreground/30 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2 text-xs font-medium underline-offset-4 transition-colors outline-none hover:underline focus-visible:ring-2";
+  "text-muted hover:text-primary focus-visible:ring-foreground/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2 text-xs font-medium underline-offset-4 transition-colors outline-none hover:underline focus-visible:ring-2";
 
 /** Reopens the how-it-works guide. */
 export const HelpButton = ({
@@ -20,7 +20,7 @@ export const HelpButton = ({
 }) => (
   <button
     aria-label="How it works"
-    className="text-muted hover:text-primary hover:bg-secondary focus-visible:ring-foreground/30 inline-flex size-11 items-center justify-center rounded-full transition-colors outline-none focus-visible:ring-2"
+    className="text-muted hover:text-primary hover:bg-secondary focus-visible:ring-foreground/60 inline-flex size-11 items-center justify-center rounded-full transition-colors outline-none focus-visible:ring-2"
     onClick={onClick}
     title="How it works"
     type="button"

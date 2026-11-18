@@ -133,7 +133,9 @@
   }
 
   button:disabled,
-  select:disabled {
+  select:disabled,
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
     cursor: not-allowed;
   }
 
