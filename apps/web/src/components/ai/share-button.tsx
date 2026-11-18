@@ -14,6 +14,9 @@ import { sharePairs } from "@/components/ai/chat-storage";
 import { failureText } from "@/components/ai/chat-stream";
 import type { ChatMessage } from "@/components/ai/chat-stream";
 
+/** The share endpoint takes up to 20 question/answer pairs; longer chats share the latest 20. */
+const MAX_SHARED_MESSAGES = 40;
+
 type ShareState =
   | { type: "idle" }
   | { type: "creating" }
@@ -55,7 +58,7 @@ export const ShareButton = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   /** The link already made for this exact chat, so sharing twice reuses it. */
   const made = useRef<{ key: string; url: string; hours: number }>(null);
-  const pairs = sharePairs(messages);
+  const pairs = sharePairs(messages).slice(-MAX_SHARED_MESSAGES);
   const key = JSON.stringify(pairs);
   const open = state.type === "ready" || state.type === "error";
 
