@@ -154,7 +154,7 @@ export const AiTutorial = ({
           </p>
           <button
             aria-label="Close the guide"
-            className="text-muted hover:text-primary hover:bg-secondary -mr-2 inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
+            className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
             onClick={close}
             type="button"
           >
@@ -188,10 +188,10 @@ export const AiTutorial = ({
             {steps.map((item, dot) => (
               <span
                 className={cn(
-                  "h-1.5 rounded-full transition-[width,background-color] duration-300",
+                  "size-1.5 rounded-full transition-[transform,background-color] duration-300 motion-reduce:transition-none",
                   dot === current
-                    ? "bg-foreground w-5"
-                    : "bg-foreground/20 w-1.5"
+                    ? "bg-foreground scale-125"
+                    : "bg-foreground/20"
                 )}
                 key={item.title}
               />

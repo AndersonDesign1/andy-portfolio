@@ -131,7 +131,7 @@ const Recording = ({
 const LockHint = () => (
   <span
     aria-hidden="true"
-    className="border-subtle bg-background/90 text-primary absolute bottom-full left-1/2 mb-5 flex -translate-x-1/2 flex-col items-center gap-1.5 rounded-full border px-3 pt-2.5 pb-3 shadow-md backdrop-blur-md"
+    className="border-subtle bg-background/90 text-primary absolute bottom-[calc(100%+1.25rem)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-1.5 rounded-full border px-3 pt-2.5 pb-3 shadow-md backdrop-blur-md"
   >
     <HugeiconsIcon className="ai-lock-nudge" icon={ArrowUp01Icon} size={18} />
     <HugeiconsIcon icon={SquareLock02Icon} size={22} />
@@ -147,7 +147,7 @@ const LockHint = () => (
 const HoldHint = ({ onPhones }: { onPhones: boolean }) => (
   <span
     className={cn(
-      "text-secondary absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-full items-center gap-1 pt-1 text-xs font-medium whitespace-nowrap md:top-1/2 md:bottom-auto md:left-full md:ml-2 md:translate-x-0 md:-translate-y-1/2 md:pt-0 md:text-sm",
+      "text-secondary absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-full items-center gap-1 pt-1 text-xs font-medium whitespace-nowrap md:top-1/2 md:bottom-auto md:left-[calc(100%+0.5rem)] md:translate-x-0 md:-translate-y-1/2 md:pt-0 md:text-sm",
       !onPhones && "max-md:hidden"
     )}
   >

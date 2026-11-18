@@ -107,7 +107,9 @@ export const recordReply = async (
   try {
     await ensureTables(store);
     await store.sql.query(
-      "INSERT INTO tutor_reply (hash) VALUES ($1) ON CONFLICT (hash) DO NOTHING",
+      // The same answer to the same question again restarts its clock, so the
+      // sampled cleanup can't drop a fingerprint that was just delivered.
+      "INSERT INTO tutor_reply (hash) VALUES ($1) ON CONFLICT (hash) DO UPDATE SET created_at = now()",
       [replyHash(question, reply)]
     );
     await maybePrune(store);

@@ -3,6 +3,7 @@
 import {
   Cancel01Icon,
   Copy01Icon,
+  Loading03Icon,
   Share08Icon,
   Tick02Icon,
 } from "@hugeicons/core-free-icons";
@@ -13,6 +14,7 @@ import { number, object, optional, string } from "zod/mini";
 import { sharePairs } from "@/components/ai/chat-storage";
 import { failureText } from "@/components/ai/chat-stream";
 import type { ChatMessage } from "@/components/ai/chat-stream";
+import { cn } from "@/lib/utils";
 
 /** The share endpoint takes up to 20 question/answer pairs; longer chats share the latest 20. */
 const MAX_SHARED_MESSAGES = 40;
@@ -158,12 +160,20 @@ export const ShareButton = ({
     <>
       <button
         className={ROW_BUTTON}
+        aria-busy={state.type === "creating"}
         disabled={busy || pairs.length === 0 || state.type === "creating"}
         onClick={share}
         type="button"
       >
-        <HugeiconsIcon icon={Share08Icon} size={14} />
-        {state.type === "creating" ? "Creating link…" : "Share"}
+        <HugeiconsIcon
+          className={cn(
+            state.type === "creating" &&
+              "animate-spin motion-reduce:animate-none"
+          )}
+          icon={state.type === "creating" ? Loading03Icon : Share08Icon}
+          size={14}
+        />
+        Share
       </button>
 
       <dialog
@@ -179,7 +189,7 @@ export const ShareButton = ({
             </h2>
             <button
               aria-label="Close"
-              className="text-muted hover:text-primary hover:bg-secondary -mr-2 inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
+              className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
               onClick={close}
               type="button"
             >
@@ -199,7 +209,7 @@ export const ShareButton = ({
               </p>
               <input
                 aria-label="Share link"
-                className="border-subtle bg-secondary text-primary w-full rounded-sm border px-3 py-2.5 text-sm"
+                className="border-subtle bg-secondary text-primary w-full rounded-sm border px-3 py-2.5 text-base sm:text-sm"
                 onFocus={(event) => event.currentTarget.select()}
                 readOnly
                 value={state.url}
