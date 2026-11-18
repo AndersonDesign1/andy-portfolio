@@ -7,7 +7,13 @@ import type { ReactNode, Ref } from "react";
 import { cn } from "@/lib/utils";
 
 /** Reopens the how-it-works guide. */
-export const HelpButton = ({ onClick }: { onClick: () => void }) => (
+export const HelpButton = ({
+  onClick,
+  size = 20,
+}: {
+  onClick: () => void;
+  size?: number;
+}) => (
   <button
     aria-label="How it works"
     className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-full transition-colors"
@@ -15,7 +21,7 @@ export const HelpButton = ({ onClick }: { onClick: () => void }) => (
     title="How it works"
     type="button"
   >
-    <HugeiconsIcon icon={HelpCircleIcon} size={20} />
+    <HugeiconsIcon icon={HelpCircleIcon} size={size} />
   </button>
 );
 
@@ -50,7 +56,7 @@ export const WideActions = ({
 
 /**
  * Where the orb lives: at the bottom on phones, under the thumb, with a
- * labelled "Type instead" and help underneath (all hidden while the text box
+ * quiet "or type instead" text link and help underneath (all hidden while the text box
  * is open); at the top on wider screens, where WideActions sit elsewhere.
  */
 export const OrbDock = ({
@@ -83,16 +89,16 @@ export const OrbDock = ({
     <div className="flex items-center gap-1 md:hidden">
       {voiceSupported && (
         <button
-          className="border-foreground/15 bg-secondary/70 text-primary hover:bg-muted inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors active:scale-[0.97]"
+          className="text-muted hover:text-primary inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2 text-xs font-medium underline-offset-4 transition-colors hover:underline"
           onClick={onType}
           ref={typeRef}
           type="button"
         >
-          <HugeiconsIcon icon={KeyboardIcon} size={16} />
-          Type instead
+          <HugeiconsIcon icon={KeyboardIcon} size={14} />
+          or type instead
         </button>
       )}
-      <HelpButton onClick={onHelp} />
+      <HelpButton onClick={onHelp} size={16} />
     </div>
   </div>
 );
