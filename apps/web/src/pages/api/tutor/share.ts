@@ -7,7 +7,7 @@ import {
   createShare,
   SHARE_TTL_HOURS,
   shareRequestSchema,
-  verifyPairs,
+  verifiedPairs,
 } from "@/lib/tutor-share";
 import { getTutorStore } from "@/lib/tutor-store";
 
@@ -31,7 +31,7 @@ const parseBody = (text: string) => {
 
 /**
  * Turns the visitor's chat into a read-only link that lasts 24 hours.
- * Answers must match replies the tutor really sent (see `verifyPairs`).
+ * Only answers the tutor really sent are kept (see `verifiedPairs`).
  */
 export const POST: APIRoute = async ({ clientAddress, request }) => {
   if (request.headers.get("origin") !== new URL(request.url).origin) {
@@ -82,14 +82,16 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
   }
 
   try {
-    if (!(await verifyPairs(store, parsed.data.messages))) {
+    const messages = await verifiedPairs(store, parsed.data.messages);
+
+    if (messages.length === 0) {
       return plain(
         422,
         "Only answers from Andy's AI can be shared. Ask again and share the new answer."
       );
     }
 
-    const id = await createShare(store, parsed.data.messages);
+    const id = await createShare(store, messages);
 
     return Response.json(
       {

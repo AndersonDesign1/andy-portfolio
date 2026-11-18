@@ -177,17 +177,28 @@ export const shareRequestSchema = z.strictObject({
 
 const hashRows = z.array(z.object({ hash: z.string() }));
 
-/** True when every answer in the pairs is one the tutor recorded. */
-export const verifyPairs = async (
+/**
+ * Only the question/answer pairs whose answer the tutor recorded. Anything
+ * else is dropped rather than failing the whole share: a "couldn't answer"
+ * note or an edited answer never verifies, so it can't be shared, but the
+ * real answers around it still can.
+ */
+export const verifiedPairs = async (
   store: PostgresBudgetStore,
   messages: ChatMessageInput[]
-): Promise<boolean> => {
+): Promise<ChatMessageInput[]> => {
   await ensureTables(store);
 
-  const wanted = messages.flatMap((message, index) =>
-    message.role === "assistant"
-      ? [replyHash(messages[index - 1]?.content ?? "", message.content)]
-      : []
+  const pairs = messages.flatMap((message, index) => {
+    const question = messages[index - 1];
+
+    return message.role === "assistant" && question
+      ? [{ answer: message, question }]
+      : [];
+  });
+
+  const hashes = pairs.map(({ answer, question }) =>
+    replyHash(question.content, answer.content)
   );
 
   const found = new Set(
@@ -195,13 +206,15 @@ export const verifyPairs = async (
       .parse(
         await store.sql.query(
           "SELECT hash FROM tutor_reply WHERE hash = ANY($1::text[])",
-          [wanted]
+          [hashes]
         )
       )
       .map((row) => row.hash)
   );
 
-  return wanted.every((hash) => found.has(hash));
+  return pairs.flatMap(({ answer, question }, index) =>
+    found.has(hashes[index] ?? "") ? [question, answer] : []
+  );
 };
 
 /** Saves the snapshot and returns its id. */
