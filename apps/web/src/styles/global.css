@@ -678,6 +678,13 @@
   color: var(--shiki-dark);
 }
 
+/* Same system-dark fallback as the colour tokens, for when no theme class is set. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .blog-code :where(span) {
+    color: var(--shiki-dark);
+  }
+}
+
 /* Line numbers in answer code: full muted grey (AA) rather than Streamdown's 50%. */
 .ai-reply pre code > span::before {
   color: var(--muted-foreground);
