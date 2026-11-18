@@ -82,14 +82,18 @@ export const LatestExchange = ({
   const finished = !busy && reply?.content ? reply.content : "";
 
   return (
-    <div className="flex min-h-0 w-full flex-col gap-3">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-3">
       <AnchoredScroll
         anchorKey={question?.id}
-        className="border-subtle rounded-md border"
+        className="border-subtle flex-1 rounded-md border"
         contentClassName="flex flex-col gap-5 p-4 md:p-5"
         label="Latest answer"
       >
-        {question && <Message message={question} />}
+        {question && (
+          <div className="ai-rise" key={question.id}>
+            <Message message={question} />
+          </div>
+        )}
         {reply && <Message message={reply} streaming={busy} />}
         {finished && (
           <div className="-mt-2 -ml-2 flex items-center gap-0.5">

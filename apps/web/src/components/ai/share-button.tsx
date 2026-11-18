@@ -178,7 +178,7 @@ export const ShareButton = ({
 
       <dialog
         aria-labelledby="ai-share-title"
-        className="bg-background text-primary border-subtle fixed inset-x-0 top-auto bottom-0 m-0 w-full max-w-none rounded-t-lg border p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm sm:inset-x-auto sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:w-[26rem] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg"
+        className="ai-sheet bg-background text-primary border-subtle fixed inset-x-0 top-auto bottom-0 m-0 w-full max-w-none rounded-t-lg border p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm sm:inset-x-auto sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:w-[26rem] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg"
         onClose={close}
         ref={dialogRef}
       >

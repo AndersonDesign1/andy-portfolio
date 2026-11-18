@@ -118,6 +118,25 @@
     border-color: var(--border);
   }
 
+  /*
+   * Tailwind's preflight gives buttons the default arrow; anything clickable
+   * gets the hand, disabled controls say so.
+   */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
@@ -728,4 +747,81 @@
     #000 calc(100% - 2.5rem),
     transparent
   );
+}
+
+/*
+ * /ai motion, kept small: things that appear rise 6px and fade in; sheets
+ * (guide, share, history) fade and slide up as they open and close (sideways
+ * for the desktop history drawer). Off entirely for reduced motion.
+ */
+.ai-rise {
+  animation: ai-rise 220ms var(--ease-out) both;
+}
+
+@keyframes ai-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.ai-sheet {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 240ms var(--ease-out),
+    overlay 240ms allow-discrete,
+    display 240ms allow-discrete;
+}
+
+.ai-sheet[open] {
+  opacity: 1;
+  transform: none;
+}
+
+.ai-sheet::backdrop {
+  opacity: 0;
+  transition:
+    opacity 200ms var(--ease-out),
+    overlay 240ms allow-discrete,
+    display 240ms allow-discrete;
+}
+
+.ai-sheet[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .ai-sheet[open] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .ai-sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 48rem) {
+  .ai-sheet-side {
+    transform: translateX(16px);
+  }
+
+  @starting-style {
+    .ai-sheet-side[open] {
+      transform: translateX(16px);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-rise {
+    animation: none;
+  }
+
+  .ai-sheet,
+  .ai-sheet::backdrop {
+    transition: none;
+  }
 }

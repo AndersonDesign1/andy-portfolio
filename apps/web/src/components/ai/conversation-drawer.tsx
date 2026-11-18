@@ -41,7 +41,7 @@ export const ConversationDrawer = ({
   return (
     <dialog
       aria-labelledby="ai-conversation-title"
-      className="bg-background text-primary border-subtle fixed inset-x-0 top-auto bottom-0 m-0 h-[85dvh] max-h-none w-full max-w-none rounded-t-lg border p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:w-[28rem] md:rounded-none md:border-y-0 md:border-r-0"
+      className="ai-sheet ai-sheet-side bg-background text-primary border-subtle fixed inset-x-0 top-auto bottom-0 m-0 h-[85dvh] max-h-none w-full max-w-none rounded-t-lg border p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:w-[28rem] md:rounded-none md:border-y-0 md:border-r-0"
       onClose={onClose}
       ref={dialogRef}
     >

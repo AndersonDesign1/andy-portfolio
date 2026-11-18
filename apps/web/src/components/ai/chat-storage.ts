@@ -129,3 +129,30 @@ export const sharePairs = (messages: StoredMessage[]) =>
         ]
       : [];
   });
+
+/**
+ * The how-it-works guide opens once per tab: sessionStorage survives reloads
+ * and in-site navigation but is cleared when the tab closes.
+ */
+const GUIDE_KEY = "andy-ai-guide-seen";
+
+const readGuideSeen = () => {
+  try {
+    return sessionStorage.getItem(GUIDE_KEY) === "1";
+  } catch {
+    // Storage blocked: don't nag on every visit.
+    return true;
+  }
+};
+
+/** True once the guide has been closed in this tab (and during prerender/hydration). */
+export const useGuideSeen = () =>
+  useSyncExternalStore(subscribeStorage, readGuideSeen, () => true);
+
+export const markGuideSeen = () => {
+  try {
+    sessionStorage.setItem(GUIDE_KEY, "1");
+  } catch {
+    // Storage blocked: the guide just won't reopen by itself in this tab.
+  }
+};

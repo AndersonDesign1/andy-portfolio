@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { AiTutorial } from "@/components/ai/ai-tutorial";
-import { useHydrated } from "@/components/ai/chat-storage";
+import { markGuideSeen, useGuideSeen } from "@/components/ai/chat-storage";
 import { Composer, MAX_CHARS } from "@/components/ai/composer";
 import { ConversationDrawer } from "@/components/ai/conversation-drawer";
 import { EmptyState } from "@/components/ai/empty-state";
@@ -31,9 +31,10 @@ const ORB_STATE: Record<VoicePhase, OrbState> = {
  * The /ai page, voice first: hold the orb to ask, check the transcript in the
  * text box, then send. The text box takes the orb's place only while there's
  * something to check or type, and sending closes it again. On phones the orb
- * sits at the bottom, under the thumb. Only the latest answer stays on the
- * page; the full conversation opens in a drawer. A short guide opens every
- * time the page does.
+ * sits at the bottom, under the thumb; on desktop it moves there once a
+ * conversation starts. Only the latest answer stays on the
+ * page; the full conversation opens in a drawer. A short guide opens once
+ * per tab.
  */
 export const AiChat = () => {
   const chat = useChatSession();
@@ -41,9 +42,11 @@ export const AiChat = () => {
   const [typing, setTyping] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cancelArmed, setCancelArmed] = useState(false);
-  /** The guide opens every time someone lands on the page (once hydrated), until closed. */
+  /** The guide opens by itself once per tab (see useGuideSeen), and again from the help button. */
   const [tutorialClosed, setTutorialClosed] = useState(false);
-  const tutorialOpen = useHydrated() && !tutorialClosed;
+  const [helpOpen, setHelpOpen] = useState(false);
+  const guideSeen = useGuideSeen();
+  const tutorialOpen = helpOpen || (!guideSeen && !tutorialClosed);
   /** A voice transcript is waiting in the text box for the visitor to check and send. */
   const [draftFromVoice, setDraftFromVoice] = useState(false);
 
@@ -157,13 +160,25 @@ export const AiChat = () => {
 
   const empty = chat.messages.length === 0;
 
-  const openTutorial = () => setTutorialClosed(false);
+  const openTutorial = () => setHelpOpen(true);
+
+  const closeTutorial = () => {
+    markGuideSeen();
+    setTutorialClosed(true);
+    setHelpOpen(false);
+  };
+
   const openComposer = () => setTyping(true);
 
   return (
     <section className="mx-auto flex h-dvh w-full max-w-screen-md flex-col items-center gap-3 px-4 pt-16 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 md:gap-4 md:px-12 md:pt-28 md:pb-4">
-      {/* The orb: at the bottom on phones (hidden while the text box is open), at the top on wider screens. */}
+      {/*
+        The orb: at the bottom on phones; on wider screens at the top until a
+        conversation starts, then at the bottom too. Once there's a
+        conversation the text box takes its place on every screen size.
+      */}
       <OrbDock
+        conversation={!empty}
         hidden={showComposer}
         hintSpace={empty && voiceSupported}
         onHelp={openTutorial}
@@ -180,7 +195,7 @@ export const AiChat = () => {
               "transition-[width] duration-500 ease-[var(--ease-out)] motion-reduce:transition-none",
               empty
                 ? "w-[min(44vw,190px,24dvh)] md:w-[min(30vw,264px,30dvh)]"
-                : "w-[min(24vw,92px,13dvh)] md:w-[min(18vw,150px,18dvh)]"
+                : "w-[min(24vw,92px,13dvh)] md:w-[min(12vw,112px,14dvh)]"
             )}
             listening={dictation.listening}
             onCancelArmedChange={setCancelArmed}
@@ -209,7 +224,8 @@ export const AiChat = () => {
 
       <div
         className={cn(
-          "order-1 flex min-h-0 w-full flex-1 flex-col items-center md:order-2",
+          "order-1 flex min-h-0 w-full flex-1 flex-col items-center",
+          empty && "md:order-2",
           empty && "justify-center gap-6"
         )}
       >
@@ -218,7 +234,6 @@ export const AiChat = () => {
             <EmptyState />
             {!showComposer && (
               <WideActions
-                empty={empty}
                 onHelp={openTutorial}
                 onType={openComposer}
                 typeRef={typeWideRef}
@@ -238,7 +253,7 @@ export const AiChat = () => {
 
       <div className="order-3 flex w-full shrink-0 flex-col items-center gap-2">
         {showComposer ? (
-          <div className="w-full">
+          <div className="ai-rise w-full">
             <Composer
               busy={chat.busy}
               listening={dictation.listening}
@@ -263,7 +278,6 @@ export const AiChat = () => {
         ) : (
           !empty && (
             <WideActions
-              empty={empty}
               onHelp={openTutorial}
               onType={openComposer}
               typeRef={typeWideRef}
@@ -284,7 +298,7 @@ export const AiChat = () => {
         open={drawerOpen}
       />
       <AiTutorial
-        onClose={() => setTutorialClosed(true)}
+        onClose={closeTutorial}
         open={tutorialOpen}
         voiceSupported={voiceSupported}
       />
