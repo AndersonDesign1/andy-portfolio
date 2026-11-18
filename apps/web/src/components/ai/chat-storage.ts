@@ -68,7 +68,9 @@ export const useSavedChatRaw = () =>
   useSyncExternalStore(subscribeStorage, readRaw, () => null);
 
 /** The saved chat if it's under an hour old; an older one is ignored (and overwritten on the next save). */
-export const parseSavedChat = (raw: string): StoredMessage[] | undefined => {
+export const parseSavedChat = (
+  raw: string
+): { messages: StoredMessage[]; savedAt: number } | undefined => {
   try {
     const saved = savedSchema.safeParse(JSON.parse(raw));
 
@@ -76,7 +78,7 @@ export const parseSavedChat = (raw: string): StoredMessage[] | undefined => {
       saved.data.savedAt <= Date.now() &&
       Date.now() - saved.data.savedAt < CHAT_TTL_MS &&
       saved.data.messages.length > 0
-      ? saved.data.messages
+      ? { messages: saved.data.messages, savedAt: saved.data.savedAt }
       : undefined;
   } catch {
     return undefined;
