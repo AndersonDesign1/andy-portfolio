@@ -13,8 +13,11 @@ import { getTutorStore } from "@/lib/tutor-store";
 
 export const prerender = false;
 
-/** 40 maximum-length messages fit comfortably. */
-const MAX_BODY_BYTES = 1024 * 1024;
+/**
+ * 40 maximum-length messages is about 280k UTF-16 units, so up to ~840 KB
+ * as UTF-8 before JSON escaping; 2 MB leaves room for escapes.
+ */
+const MAX_BODY_BYTES = 2 * 1024 * 1024;
 
 const UNAVAILABLE_TEXT = "Couldn't create a link just now. Try again.";
 
