@@ -164,7 +164,11 @@ export const AiTutorial = ({
 
         {step.art}
 
-        <div className="flex flex-col gap-1.5">
+        <div
+          aria-atomic="true"
+          aria-live="polite"
+          className="flex flex-col gap-1.5"
+        >
           <h2
             className="text-xl font-semibold tracking-tight"
             id="ai-tutorial-title"

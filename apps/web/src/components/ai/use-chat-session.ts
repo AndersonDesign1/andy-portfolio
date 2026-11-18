@@ -32,6 +32,8 @@ export const useChatSession = () => {
   const abortRef = useRef<AbortController>(null);
   /** False until the saved chat has been read, so the empty first render doesn't wipe it. */
   const [restored, setRestored] = useState(false);
+  /** The chat as restored; saving it unchanged would renew its hour on every visit. */
+  const [restoredMessages, setRestoredMessages] = useState<ChatMessage[]>();
   const busy = status !== "idle";
   const savedRaw = useSavedChatRaw();
 
@@ -42,18 +44,22 @@ export const useChatSession = () => {
     const saved = parseSavedChat(savedRaw);
 
     if (saved) {
-      setMessages(
-        saved.map((message, index) => ({ ...message, id: -(index + 1) }))
-      );
+      const seeded = saved.map((message, index) => ({
+        ...message,
+        id: -(index + 1),
+      }));
+
+      setMessages(seeded);
+      setRestoredMessages(seeded);
     }
   }
 
   // Saved once each answer settles (an empty chat clears the saved one).
   useEffect(() => {
-    if (restored && status === "idle") {
+    if (restored && status === "idle" && messages !== restoredMessages) {
       saveChat(messages);
     }
-  }, [messages, restored, status]);
+  }, [messages, restored, restoredMessages, status]);
 
   const stream = async (
     history: { content: string; role: ChatMessage["role"] }[],

@@ -73,6 +73,7 @@ export const parseSavedChat = (raw: string): StoredMessage[] | undefined => {
     const saved = savedSchema.safeParse(JSON.parse(raw));
 
     return saved.success &&
+      saved.data.savedAt <= Date.now() &&
       Date.now() - saved.data.savedAt < CHAT_TTL_MS &&
       saved.data.messages.length > 0
       ? saved.data.messages

@@ -84,10 +84,14 @@ const maybePrune = async (store: PostgresBudgetStore) => {
   }
 };
 
-/** Both sides trimmed, as the request schema trims them. */
+/**
+ * Both sides trimmed, as the request schema trims them, and JSON-encoded so
+ * the boundary between question and reply can't be shifted (a delimiter
+ * character could be smuggled into either side).
+ */
 export const replyHash = (question: string, reply: string): string =>
   createHash("sha256")
-    .update(`${question.trim()}\u0000${reply.trim()}`)
+    .update(JSON.stringify([question.trim(), reply.trim()]))
     .digest("hex");
 
 /** Remembers that the tutor sent `reply` to `question`. Never throws. */
@@ -114,14 +118,16 @@ export const recordReply = async (
 
 /**
  * Wraps the tutor's streamed reply: passes every byte through unchanged and,
- * once the stream finishes normally (not cancelled, not errored), records the
+ * once the stream finishes normally (not cancelled, not errored) with a
+ * model's answer (`answered`, not the "couldn't answer" note), records the
  * full text. The record is written before the stream closes, so the page can
  * share the answer as soon as it has it.
  */
 export const recordingReply = (
   response: Response,
   store: PostgresBudgetStore,
-  question: string
+  question: string,
+  answered: () => boolean
 ): Response => {
   if (!response.body) {
     return response;
@@ -133,7 +139,10 @@ export const recordingReply = (
   const recorder = new TransformStream<Uint8Array, Uint8Array>({
     async flush() {
       text += decoder.decode();
-      await recordReply(store, question, text);
+
+      if (answered()) {
+        await recordReply(store, question, text);
+      }
     },
     transform(chunk, controller) {
       text += decoder.decode(chunk, { stream: true });

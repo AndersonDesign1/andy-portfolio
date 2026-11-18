@@ -10,6 +10,9 @@ export const prerender = false;
 
 let share: Shared | undefined;
 
+/** The database couldn't be reached: not the same as an expired link. */
+let unavailable = false;
+
 try {
   share = await getShare(
     getTutorStore(getDatabaseEnv().DATABASE_URL),
@@ -17,9 +20,13 @@ try {
   );
 } catch (error) {
   console.error("[share] couldn't load", error);
+  unavailable = true;
 }
 
-if (!share) {
+if (unavailable) {
+  Astro.response.status = 503;
+  Astro.response.headers.set("Retry-After", "60");
+} else if (!share) {
   Astro.response.status = 404;
 }
 
@@ -60,11 +67,14 @@ const expires = share
       ) : (
         <div class="flex min-h-[50dvh] flex-col items-center justify-center gap-4 text-center">
           <h1 class="text-primary text-3xl font-bold tracking-tighter md:text-4xl">
-            This shared chat has expired
+            {unavailable
+              ? "Couldn't load this chat"
+              : "This shared chat has expired"}
           </h1>
           <p class="text-secondary max-w-md">
-            Shared chats last 24 hours. You can still ask Andy&apos;s AI
-            anything yourself.
+            {unavailable
+              ? "Something went wrong on our side. Try again in a minute."
+              : "Shared chats last 24 hours. You can still ask Andy's AI anything yourself."}
           </p>
           <a
             class="bg-foreground text-background inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium"

@@ -244,6 +244,7 @@ export const AiChat = () => {
               listening={dictation.listening}
               onChange={setInput}
               onClose={closeComposer}
+              onHelp={openTutorial}
               onSend={() => ask(input)}
               onStop={() => chat.stop()}
               onToggleVoice={toggleComposerVoice}

@@ -56,8 +56,15 @@ export const ShareButton = ({
   const [state, setState] = useState<ShareState>({ type: "idle" });
   const [copied, setCopied] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+
   /** The link already made for this exact chat, so sharing twice reuses it. */
-  const made = useRef<{ key: string; url: string; hours: number }>(null);
+  const made = useRef<{
+    key: string;
+    url: string;
+    hours: number;
+    expiresAt: number;
+  }>(null);
+
   const pairs = sharePairs(messages).slice(-MAX_SHARED_MESSAGES);
   const key = JSON.stringify(pairs);
   const open = state.type === "ready" || state.type === "error";
@@ -87,7 +94,11 @@ export const ShareButton = ({
   }, [copied]);
 
   const share = async () => {
-    if (made.current?.key === key) {
+    // Reused only while it has more than an hour left.
+    if (
+      made.current?.key === key &&
+      made.current.expiresAt - Date.now() > 60 * 60 * 1000
+    ) {
       setState({ ...made.current, type: "ready" });
 
       return;
@@ -109,7 +120,11 @@ export const ShareButton = ({
       }
 
       const link = await readLink(response);
-      made.current = { key, ...link };
+      made.current = {
+        key,
+        ...link,
+        expiresAt: Date.now() + link.hours * 60 * 60 * 1000,
+      };
       setState({ ...link, type: "ready" });
     } catch {
       setState({

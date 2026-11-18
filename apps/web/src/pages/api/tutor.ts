@@ -91,17 +91,25 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
 
   try {
     const { messages } = parsed.data;
+    /** Set when a model finishes; the "couldn't answer" note never sets it. */
+    let answered = false;
 
     // The finished reply is fingerprinted so the visitor can share it later.
     return recordingReply(
-      tutorTextResponse({
-        budget,
-        course: SITE_COURSE,
-        messages,
-        signal: request.signal,
-      }),
+      tutorTextResponse(
+        {
+          budget,
+          course: SITE_COURSE,
+          messages,
+          signal: request.signal,
+        },
+        () => {
+          answered = true;
+        }
+      ),
       budget,
-      messages.at(-1)?.content ?? ""
+      messages.at(-1)?.content ?? "",
+      () => answered
     );
   } catch (error) {
     console.error("[tutor] failed before streaming", error);
