@@ -1,6 +1,6 @@
 "use client";
 
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
 
@@ -28,8 +28,28 @@ const loadReplyText = async () => {
 const ReplyText = lazy(loadReplyText);
 
 /** Starts fetching the renderer early (on idle) so the first reply is formatted. */
-export const preloadReplyRenderer = () => {
+const preloadReplyRenderer = () => {
   loadReplyText();
+};
+
+/**
+ * Fetches the reply renderer once the page is idle, before the first answer.
+ * (Older Safari has no requestIdleCallback; a short timeout stands in.)
+ */
+export const usePreloadReplyRenderer = () => {
+  useEffect(() => {
+    if ("requestIdleCallback" in window) {
+      const handle = requestIdleCallback(preloadReplyRenderer, {
+        timeout: 4000,
+      });
+
+      return () => cancelIdleCallback(handle);
+    }
+
+    const timer = setTimeout(preloadReplyRenderer, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 };
 
 /** One message: the visitor's question as a bubble, the reply as prose. */

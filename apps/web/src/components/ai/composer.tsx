@@ -3,6 +3,7 @@
 import {
   ArrowUp02Icon,
   Cancel01Icon,
+  HelpCircleIcon,
   Mic01Icon,
   StopIcon,
 } from "@hugeicons/core-free-icons";
@@ -28,6 +29,8 @@ interface ComposerProps {
   onToggleVoice: () => void;
   /** Collapses the composer back to voice-only. */
   onClose: () => void;
+  /** Opens the guide; shown when there's no voice (the orb and its help button are hidden then). */
+  onHelp: () => void;
 }
 
 /** Status line under the text box: a dictation error, a listening hint, or the length near the limit. */
@@ -78,6 +81,7 @@ export const Composer = ({
   onStop,
   onToggleVoice,
   onClose,
+  onHelp,
 }: ComposerProps) => {
   const onSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -134,6 +138,16 @@ export const Composer = ({
           })}
         </p>
         <div className="flex shrink-0 items-center gap-1.5">
+          {!voiceSupported && (
+            <button
+              aria-label="How it works"
+              className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
+              onClick={onHelp}
+              type="button"
+            >
+              <HugeiconsIcon icon={HelpCircleIcon} size={16} />
+            </button>
+          )}
           {voiceSupported && (
             <button
               aria-label="Close the text box"

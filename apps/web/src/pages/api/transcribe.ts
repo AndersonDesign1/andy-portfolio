@@ -1,12 +1,14 @@
 import { currentPeriod, DEFAULT_CAPS } from "@andy-portfolio/ai-tutor/budget";
 import type { Provider } from "@andy-portfolio/ai-tutor/models";
-import { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
+import type { PostgresBudgetStore } from "@andy-portfolio/ai-tutor/postgres-budget";
 import type { APIRoute } from "astro";
 import { z } from "zod";
 
 import { audioSeconds } from "@/lib/audio-duration";
 import { getTutorEnv } from "@/lib/env";
+import { plain, readCappedBytes } from "@/lib/read-capped";
 import { checkRateLimit, visitorId } from "@/lib/tutor-rate-limit";
+import { getTutorStore } from "@/lib/tutor-store";
 
 export const prerender = false;
 
@@ -161,52 +163,6 @@ interface Clip {
 
 const UNAVAILABLE_TEXT =
   "Andy's AI couldn't connect just now. Try again in a moment.";
-
-let budget: PostgresBudgetStore | undefined;
-
-const plain = (status: number, message: string, headers: HeadersInit = {}) =>
-  new Response(message, {
-    headers: { "Content-Type": "text/plain; charset=utf-8", ...headers },
-    status,
-  });
-
-/** The audio bytes, or undefined once they pass MAX_AUDIO_BYTES. */
-const readAudio = async (request: Request): Promise<Buffer | undefined> => {
-  const declared = Number(request.headers.get("content-length") ?? 0);
-
-  if (declared > MAX_AUDIO_BYTES || !request.body) {
-    return declared > MAX_AUDIO_BYTES ? undefined : Buffer.alloc(0);
-  }
-
-  const reader = request.body.getReader();
-  const chunks: Uint8Array[] = [];
-
-  const pump = async (bytes: number): Promise<Buffer | undefined> => {
-    const chunk = await reader.read();
-
-    if (chunk.done) {
-      return Buffer.concat(chunks);
-    }
-
-    const total = bytes + chunk.value.byteLength;
-
-    if (total > MAX_AUDIO_BYTES) {
-      await reader.cancel();
-
-      return undefined;
-    }
-
-    chunks.push(chunk.value);
-
-    return pump(total);
-  };
-
-  try {
-    return await pump(0);
-  } catch {
-    return Buffer.alloc(0);
-  }
-};
 
 /** POSTs JSON; says whether it succeeded, was rejected (unbilled) or ended unknown. */
 const postJson = async <T>({
@@ -458,7 +414,7 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
   }
 
   const env = getTutorEnv();
-  budget ??= new PostgresBudgetStore(env.DATABASE_URL);
+  const budget = getTutorStore(env.DATABASE_URL);
 
   // Counted separately from questions, with the same per-visitor limits.
   let limit: Awaited<ReturnType<typeof checkRateLimit>>;
@@ -493,7 +449,7 @@ export const POST: APIRoute = async ({ clientAddress, request }) => {
     return plain(415, "That audio format isn't supported.");
   }
 
-  const audio = await readAudio(request);
+  const audio = await readCappedBytes(request, MAX_AUDIO_BYTES);
 
   if (audio === undefined) {
     return plain(413, "That recording is too long. Keep it under a minute.");

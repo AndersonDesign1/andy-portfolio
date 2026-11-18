@@ -6,6 +6,8 @@ import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
+import { codeThemeDark, codeThemeLight } from "./src/lib/code-themes.ts";
+
 export default defineConfig({
   adapter: vercel(),
   image: {
@@ -18,6 +20,15 @@ export default defineConfig({
     ],
   },
   integrations: [react(), mdx(), sitemap()],
+  // Blog code blocks: the same WCAG AA grayscale pair as /ai answers. No
+  // default colour: tokens carry --shiki-light / --shiki-dark and global.css
+  // picks one per theme (the blog's <pre> supplies its own background).
+  markdown: {
+    shikiConfig: {
+      defaultColor: false,
+      themes: { dark: codeThemeDark, light: codeThemeLight },
+    },
+  },
   output: "static",
   // Prefetch + ClientRouter: near-instant in-site navigations.
   // ClientRouter also defaults prefetchAll; keep this explicit for non-VT pages.

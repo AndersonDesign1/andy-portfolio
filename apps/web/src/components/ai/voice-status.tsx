@@ -1,6 +1,10 @@
 "use client";
 
-import { StopIcon } from "@hugeicons/core-free-icons";
+import {
+  ArrowUp01Icon,
+  SquareLock02Icon,
+  StopIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useEffect, useState } from "react";
 
@@ -18,8 +22,12 @@ interface VoiceStatusProps {
   /** When recording started (ms since epoch); drives the timer. */
   recordingSince: number;
   cancelArmed: boolean;
-  /** Small orb (a conversation is on screen): the hint always sits to its right. */
-  compact: boolean;
+  /** Held with a finger or mouse, so sliding up can lock it. */
+  lockable: boolean;
+  /** Locked by sliding up: recording hands-free until the orb is tapped. */
+  locked: boolean;
+  /** Show "Hold to talk" under the orb on phones too (only on the first screen there). */
+  hintOnPhones: boolean;
   /** A transcript is in the text box waiting to be checked and sent. */
   reviewing: boolean;
   voiceSupported: boolean;
@@ -70,11 +78,31 @@ const TextAction = ({
 const Recording = ({
   recordingSince,
   cancelArmed,
-}: Pick<VoiceStatusProps, "recordingSince" | "cancelArmed">) => {
+  locked,
+  onCancelVoice,
+}: Pick<
+  VoiceStatusProps,
+  "recordingSince" | "cancelArmed" | "locked" | "onCancelVoice"
+>) => {
   const now = useNow(true);
+
+  const hint = (() => {
+    if (locked) {
+      return "Tap the orb to finish";
+    }
+
+    return cancelArmed ? "Release to cancel" : "Release to send";
+  })();
 
   return (
     <span className="flex items-center gap-3">
+      {locked && (
+        <HugeiconsIcon
+          className="text-primary shrink-0"
+          icon={SquareLock02Icon}
+          size={14}
+        />
+      )}
       <span aria-hidden="true" className="ai-bars">
         <span />
         <span />
@@ -89,35 +117,43 @@ const Recording = ({
       <span
         className={cn(
           "text-sm transition-colors",
-          cancelArmed ? "text-primary font-medium" : "text-muted"
+          cancelArmed || locked ? "text-primary font-medium" : "text-muted"
         )}
       >
-        {cancelArmed ? "Release to cancel" : "Release to send"}
+        {hint}
       </span>
+      {locked && <TextAction label="Cancel" onClick={onCancelVoice} />}
     </span>
   );
 };
 
+/** Above the orb while it's held: slide up to keep recording hands-free. */
+const LockHint = () => (
+  <span
+    aria-hidden="true"
+    className="border-subtle bg-background/90 text-primary absolute bottom-[calc(100%+1.25rem)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-1.5 rounded-full border px-3 pt-2.5 pb-3 shadow-md backdrop-blur-md"
+  >
+    <HugeiconsIcon className="ai-lock-nudge" icon={ArrowUp01Icon} size={18} />
+    <HugeiconsIcon icon={SquareLock02Icon} size={22} />
+    <span className="text-[11px] leading-none font-medium">Lock</span>
+  </span>
+);
+
 /**
- * "Hold to talk" with a hand-drawn arrow pointing at the orb: to its right on
- * wide screens and beside the small orb, tucked under it on phones (and under
- * the small orb too on the narrowest phones, below 360px).
+ * "Hold to talk" with a hand-drawn arrow pointing at the orb: under it on
+ * phones (where the orb sits at the bottom, by the thumb), to its right on
+ * wider screens.
  */
-const HoldHint = ({ compact }: { compact: boolean }) => (
+const HoldHint = ({ onPhones }: { onPhones: boolean }) => (
   <span
     className={cn(
-      "text-secondary absolute flex items-center gap-1 text-xs font-medium whitespace-nowrap sm:text-sm",
-      compact
-        ? "top-1/2 left-full ml-2 -translate-y-1/2 max-[359px]:top-auto max-[359px]:bottom-0 max-[359px]:left-1/2 max-[359px]:ml-0 max-[359px]:-translate-x-1/2 max-[359px]:translate-y-full"
-        : "bottom-0 left-1/2 -translate-x-1/2 translate-y-full sm:top-1/2 sm:bottom-auto sm:left-full sm:ml-2 sm:translate-x-0 sm:-translate-y-1/2"
+      "text-secondary absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-full items-center gap-1 pt-1 text-xs font-medium whitespace-nowrap md:top-1/2 md:bottom-auto md:left-[calc(100%+0.5rem)] md:translate-x-0 md:-translate-y-1/2 md:pt-0 md:text-sm",
+      !onPhones && "max-md:hidden"
     )}
   >
     <svg
       aria-hidden="true"
-      className={cn(
-        "size-5 shrink-0 sm:size-7",
-        compact ? "max-[359px]:hidden" : "max-sm:hidden"
-      )}
+      className="hidden size-7 shrink-0 md:block"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
@@ -127,22 +163,6 @@ const HoldHint = ({ compact }: { compact: boolean }) => (
     >
       <path d="M25 18c-5 1-12-1-19-9" />
       <path d="M6 9l1 6M6 9l6 0" />
-    </svg>
-    <svg
-      aria-hidden="true"
-      className={cn(
-        "size-6 shrink-0 sm:hidden",
-        compact && "hidden max-[359px]:block"
-      )}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.5}
-      viewBox="0 0 24 24"
-    >
-      <path d="M8 21c1-6 3-11 8-16" />
-      <path d="M16 5l-5 1M16 5l-1 5" />
     </svg>
     Hold to talk
   </span>
@@ -157,7 +177,9 @@ export const VoiceStatus = ({
   phase,
   recordingSince,
   cancelArmed,
-  compact,
+  lockable,
+  locked,
+  hintOnPhones,
   reviewing,
   voiceSupported,
   error,
@@ -170,6 +192,8 @@ export const VoiceStatus = ({
         return (
           <Recording
             cancelArmed={cancelArmed}
+            locked={locked}
+            onCancelVoice={onCancelVoice}
             recordingSince={recordingSince}
           />
         );
@@ -232,7 +256,8 @@ export const VoiceStatus = ({
       className="pointer-events-none absolute inset-0"
       id="ai-voice-status"
     >
-      {showHint && <HoldHint compact={compact} />}
+      {showHint && <HoldHint onPhones={hintOnPhones} />}
+      {phase === "recording" && lockable && !cancelArmed && <LockHint />}
       {content !== null && (
         <span className="border-subtle bg-background/85 pointer-events-auto absolute bottom-0 left-1/2 flex w-max max-w-[min(88vw,26rem)] -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-2xl border px-3.5 py-1.5 text-center shadow-sm backdrop-blur-md">
           {content}

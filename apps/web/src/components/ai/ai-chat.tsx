@@ -1,18 +1,20 @@
 "use client";
 
-import { KeyboardIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { useEffect, useRef, useState } from "react";
 
+import { AiTutorial } from "@/components/ai/ai-tutorial";
+import { markGuideSeen, useGuideSeen } from "@/components/ai/chat-storage";
 import { Composer, MAX_CHARS } from "@/components/ai/composer";
 import { ConversationDrawer } from "@/components/ai/conversation-drawer";
 import { EmptyState } from "@/components/ai/empty-state";
 import { LatestExchange } from "@/components/ai/latest-exchange";
-import { preloadReplyRenderer } from "@/components/ai/message-list";
+import { usePreloadReplyRenderer } from "@/components/ai/message-list";
 import type { OrbState } from "@/components/ai/orb";
 import { OrbButton } from "@/components/ai/orb-button";
+import { OrbDock, WideActions } from "@/components/ai/orb-dock";
 import { useChatSession } from "@/components/ai/use-chat-session";
 import { useDictation } from "@/components/ai/use-dictation";
+import { useOrbPress } from "@/components/ai/use-orb-press";
 import { VoiceStatus } from "@/components/ai/voice-status";
 import type { VoicePhase } from "@/components/ai/voice-status";
 import { cn } from "@/lib/utils";
@@ -27,8 +29,12 @@ const ORB_STATE: Record<VoicePhase, OrbState> = {
 
 /**
  * The /ai page, voice first: hold the orb to ask, check the transcript in the
- * text box, then send. Typing is optional, and only the latest answer stays
- * on the page; the full conversation opens in a drawer.
+ * text box, then send. The text box takes the orb's place only while there's
+ * something to check or type, and sending closes it again. On phones the orb
+ * sits at the bottom, under the thumb; on desktop it moves there once a
+ * conversation starts. Only the latest answer stays on the
+ * page; the full conversation opens in a drawer. A short guide opens once
+ * per tab.
  */
 export const AiChat = () => {
   const chat = useChatSession();
@@ -36,15 +42,27 @@ export const AiChat = () => {
   const [typing, setTyping] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cancelArmed, setCancelArmed] = useState(false);
+  /** The guide opens by itself once per tab (see useGuideSeen), and again from the help button. */
+  const [tutorialClosed, setTutorialClosed] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const guideSeen = useGuideSeen();
+  /** The guide auto-opened on this visit (latched: marking it seen mustn't close it). */
+  const [guideAutoOpened, setGuideAutoOpened] = useState(false);
+
+  if (!guideSeen && !guideAutoOpened) {
+    setGuideAutoOpened(true);
+  }
+
+  const tutorialOpen = helpOpen || (guideAutoOpened && !tutorialClosed);
   /** A voice transcript is waiting in the text box for the visitor to check and send. */
   const [draftFromVoice, setDraftFromVoice] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const orbRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const typeInsteadRef = useRef<HTMLButtonElement>(null);
-  /** True only while a recording the orb started is being held. */
-  const orbHolding = useRef(false);
+  /** "Type" beside the orb on phones, and the text button on wider screens. */
+  const typeDockRef = useRef<HTMLButtonElement>(null);
+  const typeWideRef = useRef<HTMLButtonElement>(null);
   /** Set when the composer is closed, so focus goes back to "Type instead". */
   const returnFocus = useRef(false);
 
@@ -87,34 +105,9 @@ export const AiChat = () => {
   };
 
   const phase = phaseFor();
+  const orb = useOrbPress(dictation, chat.stop);
   const voiceSupported = dictation.supported;
   const showComposer = typing || !voiceSupported;
-
-  /** Holding the orb interrupts an answer in progress, like talking over someone. */
-  const holdStart = () => {
-    // The composer mic is already recording: the orb leaves it alone.
-    if (dictation.listening || dictation.transcribing) {
-      return;
-    }
-
-    orbHolding.current = true;
-    chat.stop();
-    dictation.start();
-  };
-
-  const holdEnd = (cancelled: boolean) => {
-    if (!orbHolding.current) {
-      return;
-    }
-
-    orbHolding.current = false;
-
-    if (cancelled) {
-      dictation.cancel();
-    } else {
-      dictation.stop();
-    }
-  };
 
   /** Closing the text box drops any recording it started, and returns focus to its trigger. */
   const closeComposer = () => {
@@ -137,6 +130,12 @@ export const AiChat = () => {
     if (chat.send(question)) {
       setInput("");
       setDraftFromVoice(false);
+
+      // Sent: the text box closes and the orb is back for the next question.
+      if (voiceSupported) {
+        returnFocus.current = true;
+        setTyping(false);
+      }
     }
   };
 
@@ -154,70 +153,53 @@ export const AiChat = () => {
       textareaRef.current?.focus();
     } else if (returnFocus.current) {
       returnFocus.current = false;
-      typeInsteadRef.current?.focus();
+
+      // Whichever "Type" button this screen size shows (the other is display: none).
+      const visible = [typeDockRef.current, typeWideRef.current].find(
+        (button) => button?.offsetParent
+      );
+
+      visible?.focus();
     }
   }, [typing]);
 
-  // Fetch the reply renderer once the page is idle, before the first answer.
-  // (Older Safari has no requestIdleCallback; a short timeout stands in.)
+  usePreloadReplyRenderer();
+
+  // Seen as soon as it opens by itself, so a reload before closing it
+  // doesn't bring it back in this tab.
   useEffect(() => {
-    if ("requestIdleCallback" in window) {
-      const handle = requestIdleCallback(preloadReplyRenderer, {
-        timeout: 4000,
-      });
-
-      return () => cancelIdleCallback(handle);
+    if (guideAutoOpened) {
+      markGuideSeen();
     }
-
-    const timer = setTimeout(preloadReplyRenderer, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Escape cancels any recording, wherever focus is.
-  const recording = dictation.listening;
-  const cancelVoice = dictation.cancel;
-
-  useEffect(() => {
-    if (!recording) {
-      return;
-    }
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        orbHolding.current = false;
-        cancelVoice();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [recording, cancelVoice]);
+  }, [guideAutoOpened]);
 
   const empty = chat.messages.length === 0;
 
-  // Under the intro on the first screen (where eyes already are), docked at
-  // the bottom once a conversation is showing.
-  const typeButton = (
-    <button
-      className="border-foreground/20 bg-secondary text-primary hover:bg-muted hover:border-foreground/30 inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-sm font-medium shadow-sm transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.97]"
-      onClick={() => setTyping(true)}
-      ref={typeInsteadRef}
-      type="button"
-    >
-      <HugeiconsIcon icon={KeyboardIcon} size={16} />
-      {empty ? "Or type your question" : "Type instead"}
-    </button>
-  );
+  const openTutorial = () => setHelpOpen(true);
+
+  const closeTutorial = () => {
+    markGuideSeen();
+    setTutorialClosed(true);
+    setHelpOpen(false);
+  };
+
+  const openComposer = () => setTyping(true);
 
   return (
-    <section className="mx-auto flex h-dvh w-full max-w-screen-md flex-col items-center gap-4 px-6 pt-24 pb-4 md:px-12 md:pt-28">
-      <div
-        className={cn(
-          "flex w-full flex-col items-center",
-          empty ? "flex-1 justify-center gap-10" : "min-h-0 flex-1 gap-8"
-        )}
+    <section className="mx-auto flex h-dvh w-full max-w-screen-md flex-col items-center gap-3 px-4 pt-16 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 md:gap-4 md:px-12 md:pt-28 md:pb-4">
+      {/*
+        The orb: at the bottom on phones; on wider screens at the top until a
+        conversation starts, then at the bottom too. Once there's a
+        conversation the text box takes its place on every screen size.
+      */}
+      <OrbDock
+        conversation={!empty}
+        hidden={showComposer}
+        hintSpace={empty && voiceSupported}
+        onHelp={openTutorial}
+        onType={openComposer}
+        typeRef={typeDockRef}
+        voiceSupported={voiceSupported}
       >
         <div
           className="relative flex shrink-0 flex-col items-center"
@@ -226,21 +208,26 @@ export const AiChat = () => {
           <OrbButton
             className={cn(
               "transition-[width] duration-500 ease-[var(--ease-out)] motion-reduce:transition-none",
-              empty ? "w-[min(58vw,264px,30dvh)]" : "w-[min(36vw,150px,18dvh)]"
+              empty
+                ? "w-[min(44vw,190px,24dvh)] md:w-[min(30vw,264px,30dvh)]"
+                : "w-[min(24vw,92px,13dvh)] md:w-[min(12vw,112px,14dvh)]"
             )}
             listening={dictation.listening}
             onCancelArmedChange={setCancelArmed}
-            onHoldEnd={holdEnd}
-            onHoldStart={holdStart}
+            onHoldEnd={orb.handleHoldEnd}
+            onHoldStart={orb.handleHoldStart}
+            onLock={orb.handleLock}
             orbRef={orbRef}
             orbState={ORB_STATE[phase]}
             voiceSupported={voiceSupported}
           />
           <VoiceStatus
             cancelArmed={cancelArmed}
-            compact={!empty}
             error={dictation.error}
-            onCancelVoice={() => dictation.cancel()}
+            hintOnPhones={empty}
+            lockable={orb.lockable}
+            locked={orb.locked}
+            onCancelVoice={orb.handleCancel}
             onStopAnswer={() => chat.stop()}
             phase={phase}
             recordingSince={dictation.recordingSince}
@@ -248,12 +235,26 @@ export const AiChat = () => {
             voiceSupported={voiceSupported}
           />
         </div>
+      </OrbDock>
 
+      <div
+        className={cn(
+          "order-1 flex min-h-0 w-full flex-1 flex-col items-center",
+          empty && "md:order-2",
+          empty && "justify-center gap-6"
+        )}
+      >
         {empty ? (
-          <div className="flex w-full flex-col items-center gap-6">
+          <>
             <EmptyState />
-            {!showComposer && typeButton}
-          </div>
+            {!showComposer && (
+              <WideActions
+                onHelp={openTutorial}
+                onType={openComposer}
+                typeRef={typeWideRef}
+              />
+            )}
+          </>
         ) : (
           <LatestExchange
             busy={chat.busy}
@@ -265,14 +266,15 @@ export const AiChat = () => {
         )}
       </div>
 
-      <div className="flex w-full shrink-0 flex-col items-center gap-3">
+      <div className="order-3 flex w-full shrink-0 flex-col items-center gap-2">
         {showComposer ? (
-          <div className="w-full">
+          <div className="ai-rise w-full">
             <Composer
               busy={chat.busy}
               listening={dictation.listening}
               onChange={setInput}
               onClose={closeComposer}
+              onHelp={openTutorial}
               onSend={() => ask(input)}
               onStop={() => chat.stop()}
               onToggleVoice={toggleComposerVoice}
@@ -289,11 +291,19 @@ export const AiChat = () => {
             />
           </div>
         ) : (
-          !empty && typeButton
+          !empty && (
+            <WideActions
+              onHelp={openTutorial}
+              onType={openComposer}
+              typeRef={typeWideRef}
+            />
+          )
         )}
-        <p className="text-muted text-center text-xs">
-          AI can get things wrong. Double-check anything important.
-        </p>
+        {empty && (
+          <p className="text-muted text-center text-[11px] whitespace-nowrap md:text-xs">
+            AI can make mistakes. Check important info.
+          </p>
+        )}
       </div>
 
       <ConversationDrawer
@@ -301,6 +311,11 @@ export const AiChat = () => {
         messages={chat.messages}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
+      />
+      <AiTutorial
+        onClose={closeTutorial}
+        open={tutorialOpen}
+        voiceSupported={voiceSupported}
       />
     </section>
   );

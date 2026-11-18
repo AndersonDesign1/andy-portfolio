@@ -11,33 +11,40 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/ui/footer";
 import Navbar from "@/components/ui/navbar";
 
+/** Full-screen tool pages: no footer or floating Spotify card, and a compact navbar. */
+const isFocusPage = (pathname: string) => /^\/ai\/?$/u.test(pathname);
+
 const AppShell = ({
   children,
   pathname,
 }: {
   children: ReactNode;
   pathname: string;
-}) => (
-  <ThemeProvider
-    attribute="class"
-    defaultTheme="system"
-    disableTransitionOnChange
-    enableSystem
-    storageKey="andy-theme"
-  >
-    <LazyMotion features={domAnimation} strict>
-      <MotionConfig reducedMotion="user">
-        <ScrollProvider>
-          <Navbar pathname={pathname} />
-          <main>{children}</main>
-          <Footer />
-          <SpotifyLazy />
-          <Analytics />
-          <SpeedInsights />
-        </ScrollProvider>
-      </MotionConfig>
-    </LazyMotion>
-  </ThemeProvider>
-);
+}) => {
+  const focus = isFocusPage(pathname);
+
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      disableTransitionOnChange
+      enableSystem
+      storageKey="andy-theme"
+    >
+      <LazyMotion features={domAnimation} strict>
+        <MotionConfig reducedMotion="user">
+          <ScrollProvider>
+            <Navbar compact={focus} pathname={pathname} />
+            <main>{children}</main>
+            {!focus && <Footer />}
+            {!focus && <SpotifyLazy />}
+            <Analytics />
+            <SpeedInsights />
+          </ScrollProvider>
+        </MotionConfig>
+      </LazyMotion>
+    </ThemeProvider>
+  );
+};
 
 export default AppShell;

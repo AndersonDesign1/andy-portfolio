@@ -2,6 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  CHAT_TTL_MS,
+  parseSavedChat,
+  saveChat,
+  useSavedChatRaw,
+} from "@/components/ai/chat-storage";
 import { failureText, readStream } from "@/components/ai/chat-stream";
 import type { ChatMessage, ChatStatus } from "@/components/ai/chat-stream";
 
@@ -18,13 +24,57 @@ let nextId = 0;
 /**
  * The conversation with /api/tutor: messages, streaming state, sending,
  * stopping and clearing. Failed and stopped replies stay visible but are
- * never sent back as history.
+ * never sent back as history. The chat is kept on this device for an hour
+ * (see chat-storage), so a reload picks up where the visitor left off.
  */
 export const useChatSession = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<ChatStatus>("idle");
   const abortRef = useRef<AbortController>(null);
+  /** False until the saved chat has been read, so the empty first render doesn't wipe it. */
+  const [restored, setRestored] = useState(false);
+  /** The chat as restored; saving it unchanged would renew its hour on every visit. */
+  const [restoredMessages, setRestoredMessages] = useState<ChatMessage[]>();
+  /** When the restored chat was last saved, so the hour keeps counting from then. */
+  const [restoredAt, setRestoredAt] = useState(0);
+  /** When the chat last changed; a question after an hour idle starts a new chat. */
+  const lastActivity = useRef(0);
   const busy = status !== "idle";
+  const savedRaw = useSavedChatRaw();
+
+  // Once hydrated, load the chat saved on this device. Restored messages get
+  // negative ids so they can never collide with new ones.
+  if (!restored && savedRaw !== null) {
+    setRestored(true);
+    const saved = parseSavedChat(savedRaw);
+
+    if (saved) {
+      const seeded = saved.messages.map((message, index) => ({
+        ...message,
+        id: -(index + 1),
+      }));
+
+      setMessages(seeded);
+      setRestoredMessages(seeded);
+      setRestoredAt(saved.savedAt);
+    }
+  }
+
+  // Saved once each answer settles (an empty chat clears the saved one).
+  useEffect(() => {
+    if (!restored || status !== "idle") {
+      return;
+    }
+
+    if (messages === restoredMessages) {
+      lastActivity.current = restoredAt;
+
+      return;
+    }
+
+    saveChat(messages);
+    lastActivity.current = Date.now();
+  }, [messages, restored, restoredAt, restoredMessages, status]);
 
   const stream = async (
     history: { content: string; role: ChatMessage["role"] }[],
@@ -82,7 +132,22 @@ export const useChatSession = () => {
       return false;
     }
 
-    const kept = replaceLast ? messages.slice(0, -2) : messages;
+    // An hour after the last message the chat has expired, even if this tab
+    // stayed open: the new question starts a fresh chat instead of saving the
+    // old one again with a new hour.
+    const expired =
+      messages.length > 0 && Date.now() - lastActivity.current >= CHAT_TTL_MS;
+
+    /** What stays before the new question: nothing once expired, minus the last exchange on retry. */
+    const keep = (list: ChatMessage[]) => {
+      if (expired) {
+        return [];
+      }
+
+      return replaceLast ? list.slice(0, -2) : list;
+    };
+
+    const kept = keep(messages);
 
     const history = [
       ...kept.flatMap(({ role, content, failed, stopped }) =>
@@ -95,7 +160,7 @@ export const useChatSession = () => {
     nextId += 2;
 
     setMessages((current) => [
-      ...(replaceLast ? current.slice(0, -2) : current),
+      ...keep(current),
       { content: question, id: replyId - 1, role: "user" },
       { content: "", id: replyId, role: "assistant" },
     ]);

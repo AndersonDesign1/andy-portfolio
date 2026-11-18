@@ -71,7 +71,9 @@
   --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
 
   --muted: oklch(20.46% 0 0); /* #171717 */
-  --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+  --muted-foreground: oklch(
+    61.67% 0 0
+  ); /* #858585: WCAG AA, 5.5:1 on background, 4.9:1 on muted */
 
   --border: oklch(100% 0 0 / 8%);
   --input: oklch(100% 0 0 / 8%);
@@ -94,7 +96,9 @@
     --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
 
     --muted: oklch(20.46% 0 0); /* #171717 */
-    --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+    --muted-foreground: oklch(
+      61.67% 0 0
+    ); /* #858585: WCAG AA, 5.5:1 on background, 4.9:1 on muted */
 
     --border: oklch(100% 0 0 / 8%);
     --input: oklch(100% 0 0 / 8%);
@@ -112,6 +116,27 @@
 @layer base {
   * {
     border-color: var(--border);
+  }
+
+  /*
+   * Tailwind's preflight gives buttons the default arrow; anything clickable
+   * gets the hand, disabled controls say so.
+   */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled,
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    cursor: not-allowed;
   }
 
   html {
@@ -592,9 +617,31 @@
   }
 }
 
+/* The arrow over the lock nudges upward: "slide up to lock". */
+.ai-lock-nudge {
+  animation: ai-lock-nudge 1.2s var(--ease-out) infinite;
+}
+
+@keyframes ai-lock-nudge {
+  0%,
+  100% {
+    transform: translateY(2px);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ai-bars > span {
     transition: none;
+  }
+
+  .ai-lock-nudge {
+    animation: none;
   }
 
   .ai-shimmer {
@@ -640,6 +687,30 @@
   list-style: decimal;
 }
 
+/*
+ * Blog code blocks (Astro's Shiki, see astro.config.mjs): each token carries
+ * both theme colours as variables; use the one for the current theme.
+ */
+.blog-code :where(span) {
+  color: var(--shiki-light);
+}
+
+.dark .blog-code :where(span) {
+  color: var(--shiki-dark);
+}
+
+/* Same system-dark fallback as the colour tokens, for when no theme class is set. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .blog-code :where(span) {
+    color: var(--shiki-dark);
+  }
+}
+
+/* Line numbers in answer code: full muted grey (AA) rather than Streamdown's 50%. */
+.ai-reply pre code > span::before {
+  color: var(--muted-foreground);
+}
+
 .ai-reply :where(:not(pre) > code) {
   border-radius: var(--radius-sm, 0.25rem);
   background: var(--secondary);
@@ -678,4 +749,81 @@
     #000 calc(100% - 2.5rem),
     transparent
   );
+}
+
+/*
+ * /ai motion, kept small: things that appear rise 6px and fade in; sheets
+ * (guide, share, history) fade and slide up as they open and close (sideways
+ * for the desktop history drawer). Off entirely for reduced motion.
+ */
+.ai-rise {
+  animation: ai-rise 220ms var(--ease-out) both;
+}
+
+@keyframes ai-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.ai-sheet {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 240ms var(--ease-out),
+    overlay 240ms allow-discrete,
+    display 240ms allow-discrete;
+}
+
+.ai-sheet[open] {
+  opacity: 1;
+  transform: none;
+}
+
+.ai-sheet::backdrop {
+  opacity: 0;
+  transition:
+    opacity 200ms var(--ease-out),
+    overlay 240ms allow-discrete,
+    display 240ms allow-discrete;
+}
+
+.ai-sheet[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .ai-sheet[open] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .ai-sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 48rem) {
+  .ai-sheet-side {
+    transform: translateX(16px);
+  }
+
+  @starting-style {
+    .ai-sheet-side[open] {
+      transform: translateX(16px);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-rise {
+    animation: none;
+  }
+
+  .ai-sheet,
+  .ai-sheet::backdrop {
+    transition: none;
+  }
 }

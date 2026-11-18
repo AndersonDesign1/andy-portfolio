@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import type { ChatMessage } from "@/components/ai/chat-stream";
 import { Message } from "@/components/ai/message-list";
 import { AnchoredScroll } from "@/components/ai/scroll-to-latest";
+import { ShareButton } from "@/components/ai/share-button";
 
 interface LatestExchangeProps {
   messages: ChatMessage[];
@@ -81,14 +82,18 @@ export const LatestExchange = ({
   const finished = !busy && reply?.content ? reply.content : "";
 
   return (
-    <div className="flex min-h-0 w-full flex-col gap-3">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-3">
       <AnchoredScroll
         anchorKey={question?.id}
-        className="border-subtle rounded-md border"
+        className="border-subtle flex-1 rounded-md border"
         contentClassName="flex flex-col gap-5 p-4 md:p-5"
         label="Latest answer"
       >
-        {question && <Message message={question} />}
+        {question && (
+          <div className="ai-rise" key={question.id}>
+            <Message message={question} />
+          </div>
+        )}
         {reply && <Message message={reply} streaming={busy} />}
         {finished && (
           <div className="-mt-2 -ml-2 flex items-center gap-0.5">
@@ -113,17 +118,20 @@ export const LatestExchange = ({
           type="button"
         >
           <HugeiconsIcon icon={MessageMultiple01Icon} size={14} />
-          {earlier > 0 ? `Conversation (${earlier} earlier)` : "Conversation"}
+          {earlier > 0 ? `History (${earlier})` : "History"}
         </button>
-        <button
-          className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors disabled:opacity-40 sm:min-h-8"
-          disabled={busy}
-          onClick={onReset}
-          type="button"
-        >
-          <HugeiconsIcon icon={Refresh01Icon} size={14} />
-          New chat
-        </button>
+        <div className="flex items-center gap-1">
+          <ShareButton busy={busy} messages={messages} />
+          <button
+            className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors disabled:opacity-40 sm:min-h-8"
+            disabled={busy}
+            onClick={onReset}
+            type="button"
+          >
+            <HugeiconsIcon icon={Refresh01Icon} size={14} />
+            New chat
+          </button>
+        </div>
       </div>
 
       {/* Streaming text would be read out chunk by chunk; announce each reply once, when it's done. */}
