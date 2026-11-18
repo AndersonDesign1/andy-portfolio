@@ -49,13 +49,14 @@ export const WideActions = ({
 );
 
 /**
- * Where the orb lives: at the bottom on phones, under the thumb, flanked by
- * "type" and "help" (and hidden while the text box is open); at the top on
- * wider screens.
+ * Where the orb lives: at the bottom on phones, under the thumb, with a
+ * labelled "Type instead" and help underneath (all hidden while the text box
+ * is open); at the top on wider screens, where WideActions sit elsewhere.
  */
 export const OrbDock = ({
   children,
   hidden,
+  hintSpace,
   voiceSupported,
   onType,
   onHelp,
@@ -65,6 +66,8 @@ export const OrbDock = ({
   children: ReactNode;
   /** The text box is open: it takes the orb's place on phones. */
   hidden: boolean;
+  /** "Hold to talk" shows under the orb on phones; leave it room. */
+  hintSpace: boolean;
   voiceSupported: boolean;
   onType: () => void;
   onHelp: () => void;
@@ -72,25 +75,23 @@ export const OrbDock = ({
 }) => (
   <div
     className={cn(
-      "order-2 flex w-full shrink-0 items-center justify-center gap-6 pb-5 md:order-1 md:pb-0",
+      "order-2 flex w-full shrink-0 flex-col items-center gap-2 md:order-1",
       hidden && "max-md:hidden"
     )}
   >
-    <div className="flex size-12 shrink-0 items-center justify-center md:hidden">
+    <div className={cn(hintSpace && "max-md:pb-5")}>{children}</div>
+    <div className="flex items-center gap-1 md:hidden">
       {voiceSupported && (
         <button
-          aria-label="Type instead"
-          className="text-muted hover:text-primary hover:bg-secondary border-subtle inline-flex size-12 items-center justify-center rounded-full border transition-colors"
+          className="border-foreground/15 bg-secondary/70 text-primary hover:bg-muted inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors active:scale-[0.97]"
           onClick={onType}
           ref={typeRef}
           type="button"
         >
-          <HugeiconsIcon icon={KeyboardIcon} size={20} />
+          <HugeiconsIcon icon={KeyboardIcon} size={16} />
+          Type instead
         </button>
       )}
-    </div>
-    {children}
-    <div className="flex size-12 shrink-0 items-center justify-center md:hidden">
       <HelpButton onClick={onHelp} />
     </div>
   </div>

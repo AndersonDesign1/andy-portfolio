@@ -14,6 +14,7 @@ import { OrbButton } from "@/components/ai/orb-button";
 import { OrbDock, WideActions } from "@/components/ai/orb-dock";
 import { useChatSession } from "@/components/ai/use-chat-session";
 import { useDictation } from "@/components/ai/use-dictation";
+import { useOrbPress } from "@/components/ai/use-orb-press";
 import { VoiceStatus } from "@/components/ai/voice-status";
 import type { VoicePhase } from "@/components/ai/voice-status";
 import { cn } from "@/lib/utils";
@@ -52,8 +53,6 @@ export const AiChat = () => {
   /** "Type" beside the orb on phones, and the text button on wider screens. */
   const typeDockRef = useRef<HTMLButtonElement>(null);
   const typeWideRef = useRef<HTMLButtonElement>(null);
-  /** True only while a recording the orb started is being held. */
-  const orbHolding = useRef(false);
   /** Set when the composer is closed, so focus goes back to "Type instead". */
   const returnFocus = useRef(false);
 
@@ -96,34 +95,9 @@ export const AiChat = () => {
   };
 
   const phase = phaseFor();
+  const orb = useOrbPress(dictation, chat.stop);
   const voiceSupported = dictation.supported;
   const showComposer = typing || !voiceSupported;
-
-  /** Holding the orb interrupts an answer in progress, like talking over someone. */
-  const holdStart = () => {
-    // The composer mic is already recording: the orb leaves it alone.
-    if (dictation.listening || dictation.transcribing) {
-      return;
-    }
-
-    orbHolding.current = true;
-    chat.stop();
-    dictation.start();
-  };
-
-  const holdEnd = (cancelled: boolean) => {
-    if (!orbHolding.current) {
-      return;
-    }
-
-    orbHolding.current = false;
-
-    if (cancelled) {
-      dictation.cancel();
-    } else {
-      dictation.stop();
-    }
-  };
 
   /** Closing the text box drops any recording it started, and returns focus to its trigger. */
   const closeComposer = () => {
@@ -181,27 +155,6 @@ export const AiChat = () => {
 
   usePreloadReplyRenderer();
 
-  // Escape cancels any recording, wherever focus is.
-  const recording = dictation.listening;
-  const cancelVoice = dictation.cancel;
-
-  useEffect(() => {
-    if (!recording) {
-      return;
-    }
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        orbHolding.current = false;
-        cancelVoice();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [recording, cancelVoice]);
-
   const empty = chat.messages.length === 0;
 
   const openTutorial = () => setTutorialClosed(false);
@@ -212,6 +165,7 @@ export const AiChat = () => {
       {/* The orb: at the bottom on phones (hidden while the text box is open), at the top on wider screens. */}
       <OrbDock
         hidden={showComposer}
+        hintSpace={empty && voiceSupported}
         onHelp={openTutorial}
         onType={openComposer}
         typeRef={typeDockRef}
@@ -226,12 +180,13 @@ export const AiChat = () => {
               "transition-[width] duration-500 ease-[var(--ease-out)] motion-reduce:transition-none",
               empty
                 ? "w-[min(44vw,190px,24dvh)] md:w-[min(30vw,264px,30dvh)]"
-                : "w-[min(26vw,104px,14dvh)] md:w-[min(18vw,150px,18dvh)]"
+                : "w-[min(24vw,92px,13dvh)] md:w-[min(18vw,150px,18dvh)]"
             )}
             listening={dictation.listening}
             onCancelArmedChange={setCancelArmed}
-            onHoldEnd={holdEnd}
-            onHoldStart={holdStart}
+            onHoldEnd={orb.handleHoldEnd}
+            onHoldStart={orb.handleHoldStart}
+            onLock={orb.handleLock}
             orbRef={orbRef}
             orbState={ORB_STATE[phase]}
             voiceSupported={voiceSupported}
@@ -239,7 +194,10 @@ export const AiChat = () => {
           <VoiceStatus
             cancelArmed={cancelArmed}
             error={dictation.error}
-            onCancelVoice={() => dictation.cancel()}
+            hintOnPhones={empty}
+            lockable={orb.lockable}
+            locked={orb.locked}
+            onCancelVoice={orb.handleCancel}
             onStopAnswer={() => chat.stop()}
             phase={phase}
             recordingSince={dictation.recordingSince}
@@ -312,8 +270,8 @@ export const AiChat = () => {
           )
         )}
         {empty && (
-          <p className="text-muted text-center text-[11px] md:text-xs">
-            AI can get things wrong. Double-check anything important.
+          <p className="text-muted text-center text-[11px] whitespace-nowrap md:text-xs">
+            AI can make mistakes. Check important info.
           </p>
         )}
       </div>

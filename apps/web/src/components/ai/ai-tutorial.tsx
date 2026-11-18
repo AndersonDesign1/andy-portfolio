@@ -32,12 +32,12 @@ const voiceSteps: Step[] = [
         <div className="flex flex-col items-center gap-2">
           <Orb className="w-20" state="listening" />
           <span className="text-secondary text-xs font-medium">
-            Hold · talk · let go
+            Hold · talk · let go (or slide up to lock)
           </span>
         </div>
       </ArtFrame>
     ),
-    body: "Press and hold the orb, ask your question out loud, then let go. Slide your finger away before letting go to cancel.",
+    body: "Press and hold the orb, ask your question out loud, then let go. Slide up to lock it and keep talking hands-free; slide sideways to cancel.",
     title: "Hold the orb and talk",
   },
   {
@@ -74,7 +74,7 @@ const voiceSteps: Step[] = [
         </div>
       </ArtFrame>
     ),
-    body: "Can't talk right now? Tap the keyboard to type. Share sends someone a link to your chat that works for 24 hours, and your chat stays on this device for an hour.",
+    body: "Can't talk right now? Tap Type instead. Share sends someone a link to your chat that works for 24 hours, and your chat stays on this device for an hour.",
     title: "Type or share",
   },
 ];

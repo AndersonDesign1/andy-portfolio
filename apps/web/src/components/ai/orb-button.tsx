@@ -10,15 +10,22 @@ import { cn } from "@/lib/utils";
 /** Dragging this far from where the press began arms "release to cancel". */
 const CANCEL_DISTANCE_PX = 90;
 
+/** Sliding up this far (mostly upward) locks the recording, as in WhatsApp. */
+const LOCK_DISTANCE_PX = 70;
+
+export type HoldSource = "pointer" | "key";
+
 interface OrbButtonProps {
   orbRef: Ref<HTMLDivElement>;
   orbState: OrbState;
   listening: boolean;
   voiceSupported: boolean;
-  onHoldStart: () => void;
+  onHoldStart: (source: HoldSource) => void;
   /** `cancelled` is true when the press ended dragged away (or with Escape). */
   onHoldEnd: (cancelled: boolean) => void;
   onCancelArmedChange: (armed: boolean) => void;
+  /** Slid up while holding: keep recording after the finger lifts. */
+  onLock: () => void;
   className?: string;
 }
 
@@ -27,8 +34,9 @@ const isHoldKey = (event: KeyboardEvent) =>
 
 /**
  * Push-to-talk: recording runs while the orb is pressed (mouse, touch or
- * Space/Enter) and is sent the moment it's released. Dragging away before
- * letting go, or pressing Escape, cancels instead.
+ * Space/Enter) and is sent the moment it's released. Sliding up locks it so
+ * the visitor can let go and keep talking (the next press finishes it).
+ * Dragging away any other way before letting go, or pressing Escape, cancels.
  */
 export const OrbButton = ({
   orbRef,
@@ -38,6 +46,7 @@ export const OrbButton = ({
   onHoldStart,
   onHoldEnd,
   onCancelArmedChange,
+  onLock,
   className,
 }: OrbButtonProps) => {
   const press = useRef({ active: false, armed: false, x: 0, y: 0 });
@@ -49,9 +58,9 @@ export const OrbButton = ({
     }
   };
 
-  const begin = (x: number, y: number) => {
+  const begin = (x: number, y: number, source: HoldSource) => {
     press.current = { active: true, armed: false, x, y };
-    onHoldStart();
+    onHoldStart(source);
   };
 
   const end = (forceCancel = false) => {
@@ -73,18 +82,27 @@ export const OrbButton = ({
     event.preventDefault();
     // Keep receiving pointer events even if the finger slides off the orb.
     event.currentTarget.setPointerCapture(event.pointerId);
-    begin(event.clientX, event.clientY);
+    begin(event.clientX, event.clientY, "pointer");
   };
 
   const onPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
-    if (press.current.active) {
-      const distance = Math.hypot(
-        event.clientX - press.current.x,
-        event.clientY - press.current.y
-      );
-
-      setArmed(distance > CANCEL_DISTANCE_PX);
+    if (!press.current.active) {
+      return;
     }
+
+    const dx = event.clientX - press.current.x;
+    const dy = event.clientY - press.current.y;
+
+    if (dy < -LOCK_DISTANCE_PX && -dy > Math.abs(dx)) {
+      // Locked: this press is over, but the recording carries on.
+      press.current.active = false;
+      setArmed(false);
+      onLock();
+
+      return;
+    }
+
+    setArmed(Math.hypot(dx, dy) > CANCEL_DISTANCE_PX);
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
@@ -96,7 +114,7 @@ export const OrbButton = ({
 
     if (isHoldKey(event) && !event.repeat) {
       event.preventDefault();
-      begin(0, 0);
+      begin(0, 0, "key");
     }
   };
 

@@ -592,9 +592,31 @@
   }
 }
 
+/* The arrow over the lock nudges upward: "slide up to lock". */
+.ai-lock-nudge {
+  animation: ai-lock-nudge 1.2s var(--ease-out) infinite;
+}
+
+@keyframes ai-lock-nudge {
+  0%,
+  100% {
+    transform: translateY(2px);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ai-bars > span {
     transition: none;
+  }
+
+  .ai-lock-nudge {
+    animation: none;
   }
 
   .ai-shimmer {
