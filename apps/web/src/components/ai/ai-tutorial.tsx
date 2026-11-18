@@ -74,7 +74,7 @@ const voiceSteps: Step[] = [
         </div>
       </ArtFrame>
     ),
-    body: "Can't talk right now? Tap “or type instead” under the orb. Share sends someone a link to your chat that works for 24 hours, and your chat stays on this device for an hour.",
+    body: "Can't talk right now? Use the type option to write your question instead. Share sends someone a link to your chat that works for 24 hours, and your chat stays on this device for an hour.",
     title: "Type or share",
   },
 ];
