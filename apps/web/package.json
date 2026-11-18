@@ -27,6 +27,7 @@
     "@hugeicons/react": "^1.1.10",
     "@radix-ui/react-select": "^2.4.1",
     "@radix-ui/react-slot": "^1.5.0",
+    "@shikijs/themes": "^4.6.0",
     "@streamdown/code": "2.0.0",
     "@tailwindcss/vite": "^4.3.5",
     "@types/react": "^19.3.0",

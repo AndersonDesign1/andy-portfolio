@@ -84,7 +84,7 @@ export const blogMdxComponents = {
     <p className="text-secondary text-lg leading-relaxed">{children}</p>
   ),
   pre: ({ children }: JSX.IntrinsicElements["pre"]): JSX.Element => (
-    <pre className="border-subtle bg-secondary/10 overflow-x-auto rounded-sm border p-4">
+    <pre className="blog-code border-subtle bg-secondary/10 overflow-x-auto rounded-sm border p-4">
       {children}
     </pre>
   ),

@@ -3,6 +3,8 @@
 import { code } from "@streamdown/code";
 import { Streamdown } from "streamdown";
 
+import { codeThemeDark, codeThemeLight } from "@/lib/code-themes";
+
 const plugins = { code };
 
 /** Copy on code blocks and tables; no download buttons, which are noise in a chat answer. */
@@ -11,8 +13,11 @@ const controls = {
   table: { copy: true, download: false, fullscreen: false },
 };
 
-/** Grayscale Shiki themes, to match the monochrome site (light, dark). */
-const SHIKI_THEMES: ["min-light", "min-dark"] = ["min-light", "min-dark"];
+/** Grayscale code themes adjusted to pass WCAG AA (light, dark); see lib/code-themes. */
+const SHIKI_THEMES: [typeof codeThemeLight, typeof codeThemeDark] = [
+  codeThemeLight,
+  codeThemeDark,
+];
 
 /**
  * A reply as Markdown, via Streamdown (the renderer behind AI Elements'

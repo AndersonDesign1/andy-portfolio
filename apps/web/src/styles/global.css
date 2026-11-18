@@ -71,7 +71,9 @@
   --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
 
   --muted: oklch(20.46% 0 0); /* #171717 */
-  --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+  --muted-foreground: oklch(
+    61.67% 0 0
+  ); /* #858585: WCAG AA, 5.5:1 on background, 4.9:1 on muted */
 
   --border: oklch(100% 0 0 / 8%);
   --input: oklch(100% 0 0 / 8%);
@@ -94,7 +96,9 @@
     --secondary-foreground: oklch(71.55% 0 0); /* #a3a3a3 */
 
     --muted: oklch(20.46% 0 0); /* #171717 */
-    --muted-foreground: oklch(43.86% 0 0); /* #525252 */
+    --muted-foreground: oklch(
+      61.67% 0 0
+    ); /* #858585: WCAG AA, 5.5:1 on background, 4.9:1 on muted */
 
     --border: oklch(100% 0 0 / 8%);
     --input: oklch(100% 0 0 / 8%);
@@ -660,6 +664,23 @@
 
 .ai-reply :where(ol) {
   list-style: decimal;
+}
+
+/*
+ * Blog code blocks (Astro's Shiki, see astro.config.mjs): each token carries
+ * both theme colours as variables; use the one for the current theme.
+ */
+.blog-code :where(span) {
+  color: var(--shiki-light);
+}
+
+.dark .blog-code :where(span) {
+  color: var(--shiki-dark);
+}
+
+/* Line numbers in answer code: full muted grey (AA) rather than Streamdown's 50%. */
+.ai-reply pre code > span::before {
+  color: var(--muted-foreground);
 }
 
 .ai-reply :where(:not(pre) > code) {
