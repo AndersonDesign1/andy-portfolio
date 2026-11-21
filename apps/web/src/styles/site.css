@@ -1846,8 +1846,15 @@
     padding: 0;
     font-size: inherit;
   }
-  .prose figure {
+  .prose figure,
+  .prose p:has(> img) {
     margin-block: 2em;
+  }
+  .prose p:empty {
+    display: none;
+  }
+  .prose p:has(> img) img {
+    display: block;
   }
   .prose img {
     width: 100%;

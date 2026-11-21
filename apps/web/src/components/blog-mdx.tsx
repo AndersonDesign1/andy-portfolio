@@ -17,16 +17,14 @@ export const blogMdxComponents = {
       </a>
     ),
   img: ({ alt, src }: JSX.IntrinsicElements["img"]): JSX.Element => (
-    <figure>
-      <img
-        alt={alt ?? ""}
-        decoding="async"
-        height={500}
-        loading="lazy"
-        src={src}
-        width={800}
-      />
-    </figure>
+    <img
+      alt={alt ?? ""}
+      decoding="async"
+      height={500}
+      loading="lazy"
+      src={src}
+      width={800}
+    />
   ),
   pre: ({ children, ...props }: JSX.IntrinsicElements["pre"]): JSX.Element => (
     <pre {...props} className="blog-code">
