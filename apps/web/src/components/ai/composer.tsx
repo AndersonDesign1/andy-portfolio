@@ -10,9 +10,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { KeyboardEvent, Ref, SubmitEvent } from "react";
 
+import { MAX_CHARS } from "@/components/ai/chat-limits";
 import { cn } from "@/lib/utils";
-
-export const MAX_CHARS = 2000;
 
 interface ComposerProps {
   value: string;

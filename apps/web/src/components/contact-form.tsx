@@ -1,261 +1,200 @@
 "use client";
 
 import { actions } from "astro:actions";
-import type React from "react";
-import { useRef, useState, useTransition } from "react";
-import { toast } from "sonner";
+import { useId, useState, useTransition } from "react";
+import type { SubmitEvent } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Toaster } from "@/components/ui/sonner";
-import { Textarea } from "@/components/ui/textarea";
 import { EMAIL_REGEX } from "@/lib/constants";
 
-const initialForm = { email: "", message: "", name: "", subject: "" };
+const NEEDS = [
+  "A new product or site",
+  "A redesign",
+  "SEO and performance",
+  "Something else",
+] as const;
 
+const MIN_MESSAGE = 10;
+
+type Field = "email" | "message" | "name";
+
+const check = (data: FormData): Partial<Record<Field, string>> => {
+  const errors: Partial<Record<Field, string>> = {};
+  const read = (key: Field) => String(data.get(key) ?? "").trim();
+
+  if (!read("name")) {
+    errors.name = "Tell me your name.";
+  }
+
+  if (!EMAIL_REGEX.test(read("email"))) {
+    errors.email = "I need an email address I can reply to.";
+  }
+
+  if (read("message").length < MIN_MESSAGE) {
+    errors.message = "A sentence or two about it, please.";
+  }
+
+  return errors;
+};
+
+/**
+ * The contact form: sends through the `sendEmail` Astro Action (BotID and a
+ * honeypot keep bots out) and says what happened in one line under the
+ * button, instead of a toast.
+ */
 const ContactForm = () => {
-  const [form, setForm] = useState(initialForm);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
+  const id = useId();
+  const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
 
-  const validate = () => {
-    const e: Record<string, string> = {};
+  const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(
+    null
+  );
 
-    if (!form.name.trim()) {
-      e.name = "Name is required";
+  const [pending, startTransition] = useTransition();
+
+  const onSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (pending) {
+      return;
     }
 
-    if (!form.email.trim()) {
-      e.email = "Email is required";
-    } else if (!EMAIL_REGEX.test(form.email)) {
-      e.email = "Please enter a valid email address";
-    }
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const found = check(data);
+    setErrors(found);
 
-    if (!form.message.trim()) {
-      e.message = "Message is required";
-    } else if (form.message.trim().length < 10) {
-      e.message = "Message must be at least 10 characters";
-    }
-
-    setErrors(e);
-
-    return Object.keys(e).length === 0;
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm((currentForm) => ({
-      ...currentForm,
-      [e.target.name]: e.target.value,
-    }));
-
-    if (errors[e.target.name]) {
-      setErrors((currentErrors) => ({
-        ...currentErrors,
-        [e.target.name]: "",
-      }));
-    }
-  };
-
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!validate()) {
-      toast.error("Please fix the errors in the form");
+    if (Object.keys(found).length > 0) {
+      setStatus(null);
+      form.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
 
       return;
     }
 
-    const formData = new FormData(e.currentTarget);
+    setStatus(null);
     startTransition(async () => {
       try {
-        const result = await actions.sendEmail(formData);
+        const result = await actions.sendEmail(data);
 
         if (result.error) {
-          toast.error(result.error.message || "Failed to send message.");
+          setStatus({
+            ok: false,
+            text: result.error.message || "That didn't send. Please try again.",
+          });
 
           return;
         }
 
-        toast.success(result.data?.message || "Message sent!");
-        setErrors({});
-        setForm(initialForm);
-        formRef.current?.reset();
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : "Failed to send message. Please try again."
-        );
+        form.reset();
+        setStatus({
+          ok: true,
+          text: "Sent. I'll get back to you by email soon.",
+        });
+      } catch {
+        setStatus({
+          ok: false,
+          text: "That didn't send. Please try again, or email me instead.",
+        });
       }
     });
   };
 
+  const described = (field: Field) =>
+    errors[field] ? `${id}-${field}-error` : undefined;
+
   return (
-    <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
-      {/* Mounted here rather than in AppShell: this is the only view that
-          raises toasts, so other routes skip Sonner's runtime entirely. */}
-      <Toaster
-        offset="80px"
-        position="top-right"
-        style={{ zIndex: 9998 }}
-        toastOptions={{
-          style: {
-            background: "var(--muted)",
-            border: "1px solid var(--border)",
-            boxShadow:
-              "0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2)",
-            color: "var(--foreground)",
-          },
+    <form className="cf" method="POST" noValidate onSubmit={onSubmit}>
+      <div
+        aria-hidden="true"
+        style={{
+          height: 1,
+          left: -9999,
+          overflow: "hidden",
+          position: "absolute",
+          width: 1,
         }}
-      />
-      <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
-          <div>
-            <h1 className="text-primary text-6xl leading-[0.9] font-bold tracking-tighter md:text-8xl">
-              Let&apos;s
-              <br />
-              talk.
-            </h1>
-            <div className="flex flex-col gap-12 pt-8">
-              <p className="text-secondary max-w-sm text-lg leading-relaxed md:text-xl">
-                Have a project in mind or want to collaborate? I&apos;m
-                currently open to new opportunities.
-              </p>
-              <div className="flex flex-col gap-4">
-                <span className="text-muted font-mono text-sm tracking-widest uppercase">
-                  Email
-                </span>
-                <a
-                  className="text-primary hover:text-accent text-xl"
-                  href="mailto:contact@andersonjoseph.com"
-                >
-                  contact@andersonjoseph.com
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <form
-            className="relative flex flex-col gap-8"
-            method="POST"
-            noValidate
-            onSubmit={handleSubmit}
-            ref={formRef}
-          >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute top-auto -left-[9999px] size-px overflow-hidden opacity-0"
-            >
-              <label htmlFor="projectMilestone">Project milestone</label>
-              <input
-                autoComplete="off"
-                defaultValue=""
-                id="projectMilestone"
-                name="projectMilestone"
-                tabIndex={-1}
-                type="text"
-              />
-            </div>
-            {[
-              {
-                error: errors.name,
-                label: "Name",
-                name: "name",
-                placeholder: "John Doe…",
-                type: "text",
-                value: form.name,
-              },
-              {
-                error: errors.email,
-                label: "Email",
-                name: "email",
-                placeholder: "john@example.com…",
-                type: "email",
-                value: form.email,
-              },
-              {
-                error: undefined,
-                label: "Subject",
-                name: "subject",
-                placeholder: "Project Inquiry…",
-                type: "text",
-                value: form.subject,
-              },
-            ].map((field) => (
-              <div className="flex flex-col gap-2" key={field.name}>
-                <label
-                  className="text-muted font-mono text-xs tracking-widest uppercase"
-                  htmlFor={field.name}
-                >
-                  {field.label} {field.label !== "Subject" && "*"}
-                </label>
-                <Input
-                  className={`border-subtle text-primary focus-visible:border-foreground rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
-                    field.error ? "border-red-500" : ""
-                  }`}
-                  id={field.name}
-                  name={field.name}
-                  onChange={handleChange}
-                  placeholder={field.placeholder}
-                  type={field.type}
-                  value={field.value}
-                />
-                {field.error && (
-                  <p className="font-mono text-xs text-red-500">
-                    {field.error}
-                  </p>
-                )}
-              </div>
-            ))}
-
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-muted font-mono text-xs tracking-widest uppercase"
-                htmlFor="message"
-              >
-                Message *
-              </label>
-              <Textarea
-                className={`border-subtle text-primary focus-visible:border-foreground min-h-[150px] resize-none rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
-                  errors.message ? "border-red-500" : ""
-                }`}
-                id="message"
-                name="message"
-                onChange={handleChange}
-                placeholder="Tell me about your project…"
-                rows={4}
-                value={form.message}
-              />
-              {errors.message && (
-                <p className="font-mono text-xs text-red-500">
-                  {errors.message}
-                </p>
-              )}
-            </div>
-
-            <div className="pt-8">
-              <Button
-                className="border-subtle text-primary hover:border-primary hover:bg-secondary/50 w-full border bg-transparent px-8 py-6 transition-transform duration-150 ease-[var(--ease-out)] hover:backdrop-blur-sm md:w-auto"
-                disabled={isPending}
-                type="submit"
-              >
-                {isPending ? (
-                  <span className="flex items-center gap-2">
-                    <span className="border-primary size-4 animate-spin rounded-full border-2 border-t-transparent" />
-                    Sending…
-                  </span>
-                ) : (
-                  "Send Message"
-                )}
-              </Button>
-            </div>
-          </form>
+      >
+        <label htmlFor={`${id}-milestone`}>Project milestone</label>
+        <input
+          autoComplete="off"
+          defaultValue=""
+          id={`${id}-milestone`}
+          name="projectMilestone"
+          tabIndex={-1}
+          type="text"
+        />
+      </div>
+      <div className="two">
+        <div className="fld">
+          <label htmlFor={`${id}-name`}>Your name</label>
+          <input
+            aria-describedby={described("name")}
+            aria-invalid={Boolean(errors.name)}
+            autoComplete="name"
+            id={`${id}-name`}
+            maxLength={100}
+            name="name"
+            type="text"
+          />
+          {errors.name && (
+            <span className="err" id={`${id}-name-error`}>
+              {errors.name}
+            </span>
+          )}
+        </div>
+        <div className="fld">
+          <label htmlFor={`${id}-email`}>Your email</label>
+          <input
+            aria-describedby={described("email")}
+            aria-invalid={Boolean(errors.email)}
+            autoComplete="email"
+            id={`${id}-email`}
+            inputMode="email"
+            name="email"
+            type="email"
+          />
+          {errors.email && (
+            <span className="err" id={`${id}-email-error`}>
+              {errors.email}
+            </span>
+          )}
         </div>
       </div>
-    </section>
+      <div className="fld">
+        <label htmlFor={`${id}-need`}>What do you need?</label>
+        <select defaultValue={NEEDS[0]} id={`${id}-need`} name="subject">
+          {NEEDS.map((need) => (
+            <option key={need} value={need}>
+              {need}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="fld">
+        <label htmlFor={`${id}-message`}>Tell me about it</label>
+        <textarea
+          aria-describedby={described("message")}
+          aria-invalid={Boolean(errors.message)}
+          id={`${id}-message`}
+          maxLength={5000}
+          name="message"
+          placeholder="What you're building, who it's for, and when you'd like it live"
+          rows={5}
+        />
+        {errors.message && (
+          <span className="err" id={`${id}-message-error`}>
+            {errors.message}
+          </span>
+        )}
+      </div>
+      <div className="actions">
+        <button className="btn solid" disabled={pending} type="submit">
+          {pending ? "Sending…" : "Send"} <span className="arr">→</span>
+        </button>
+        <output aria-live="polite" className="sent">
+          {status?.text}
+        </output>
+      </div>
+    </form>
   );
 };
 

@@ -1,0 +1,43 @@
+---
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+
+const links = [
+  { href: "/projects", label: "Work", match: /^\/(?:projects|case-studies)(?:\/|$)/u },
+  { href: "/about", label: "About", match: /^\/about\/?$/u },
+  { className: "ext", href: "/blog", label: "Blog", match: /^\/blog(?:\/|$)/u },
+  { href: "/ai", label: "AI", match: /^\/ai\/?$/u },
+  { href: "/contact", label: "Contact", match: /^\/contact\/?$/u },
+];
+---
+
+<header class="site-top">
+  <div class="wrap">
+    <a aria-current={pathname === "/" ? "page" : undefined} class="mark" href="/">
+      Anderson Joseph
+    </a>
+    <nav aria-label="Main" class="site-nav">
+      {
+        links.map((link) => (
+          <a
+            aria-current={link.match.test(pathname) ? "page" : undefined}
+            class={link.className}
+            href={link.href}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <button aria-label="Switch theme" class="theme" data-theme-toggle type="button">
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 16 16"
+          ><circle cx="8" cy="8" r="5.5"></circle><path
+            d="M8 2.5v11A5.5 5.5 0 0 0 8 2.5z"
+            fill="currentColor"></path></svg
+        >
+      </button>
+    </nav>
+  </div>
+</header>

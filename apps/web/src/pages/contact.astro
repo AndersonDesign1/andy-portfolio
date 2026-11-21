@@ -1,8 +1,45 @@
 ---
 import ContactForm from "../components/contact-form.tsx";
+import CopyEmail from "../components/site/copy-email.astro";
 import BaseLayout from "../layouts/base-layout.astro";
+import { CONTACT_EMAIL } from "../lib/site";
 ---
 
-<BaseLayout description="Get in touch with Anderson Joseph." title="Contact">
-  <ContactForm client:load />
+<BaseLayout
+  description="Got a project? Anderson Joseph is taking on new work. Tell him what you're building and where it needs to go."
+  title="Contact"
+>
+  <div class="wrap">
+    <div class="head field12">
+      <h1>Got a project?</h1>
+      <p>
+        I'm taking on new work. Tell me what you're building and where it needs
+        to go, and I'll get back to you by email.
+      </p>
+    </div>
+    <div class="contact field12">
+      <div class="c-side">
+        <p>The quickest way is email.</p>
+        <a class="big" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        <div class="actions">
+          <CopyEmail />
+        </div>
+        <p>
+          I work from Nigeria. You can also find me on <a
+            class="u"
+            href="https://www.linkedin.com/in/anderson-josh/"
+            rel="noopener"
+            target="_blank">LinkedIn</a
+          >, <a class="u" href="https://x.com/_Andersonjosh" rel="noopener" target="_blank">X</a
+          > and <a
+            class="u"
+            href="https://github.com/AndersonDesign1"
+            rel="noopener"
+            target="_blank">GitHub</a
+          >.
+        </p>
+      </div>
+      <ContactForm client:visible />
+    </div>
+  </div>
 </BaseLayout>

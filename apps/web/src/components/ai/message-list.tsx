@@ -1,56 +1,12 @@
 "use client";
 
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 
 import type { ChatMessage } from "@/components/ai/chat-stream";
-
-/** A reply as plain text: shown while the renderer loads, or if it can't. */
-const PlainReply = ({ text }: { text: string; streaming?: boolean }) => (
-  <p className="whitespace-pre-wrap">{text}</p>
-);
-
-/**
- * The Markdown renderer (Streamdown + Shiki) is ~140 KB gzipped, so it loads
- * after the page (see `preloadReplyRenderer`) instead of with it. If its
- * chunk fails to load (offline, blocked), replies stay plain text instead of
- * the error taking down the page.
- */
-const loadReplyText = async () => {
-  try {
-    const module = await import("@/components/ai/reply-text");
-
-    return { default: module.ReplyText };
-  } catch {
-    return { default: PlainReply };
-  }
-};
+import { PlainReply } from "@/components/ai/plain-reply";
+import { loadReplyText } from "@/components/ai/reply-renderer";
 
 const ReplyText = lazy(loadReplyText);
-
-/** Starts fetching the renderer early (on idle) so the first reply is formatted. */
-const preloadReplyRenderer = () => {
-  loadReplyText();
-};
-
-/**
- * Fetches the reply renderer once the page is idle, before the first answer.
- * (Older Safari has no requestIdleCallback; a short timeout stands in.)
- */
-export const usePreloadReplyRenderer = () => {
-  useEffect(() => {
-    if ("requestIdleCallback" in window) {
-      const handle = requestIdleCallback(preloadReplyRenderer, {
-        timeout: 4000,
-      });
-
-      return () => cancelIdleCallback(handle);
-    }
-
-    const timer = setTimeout(preloadReplyRenderer, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
-};
 
 /** One message: the visitor's question as a bubble, the reply as prose. */
 export const Message = ({

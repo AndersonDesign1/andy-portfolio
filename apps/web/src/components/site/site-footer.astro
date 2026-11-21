@@ -1,0 +1,56 @@
+---
+import { SOCIAL_LINKS } from "../../lib/site";
+import CopyEmail from "./copy-email.astro";
+
+interface Props {
+  /** Leave out the "Got a project?" block (the contact page already is one). */
+  hideCta?: boolean;
+}
+
+const { hideCta = false } = Astro.props;
+
+// Build time: the site is static, so this is when it was last published.
+const builtAt = () => new Date();
+const built = builtAt();
+const year = built.getFullYear();
+const updated = built.toLocaleDateString("en-GB", { month: "short", timeZone: "Africa/Lagos", year: "numeric" });
+---
+
+<footer class:list={["site-foot", { "no-cta": hideCta }]}>
+  <div class="wrap">
+    {
+      !hideCta && (
+        <div class="cta field12">
+          <h2>Got a project?</h2>
+          <p>
+            I'm taking on new work. Let's build something people enjoy using, and
+            that actually gets found.
+          </p>
+          <div class="actions">
+            <a class="btn solid" href="/contact">
+              Get in touch <span class="arr">→</span>
+            </a>
+            <CopyEmail look="go" />
+          </div>
+        </div>
+      )
+    }
+    <div class="foot-row">
+      <div class="soc">
+        {
+          SOCIAL_LINKS.map((link) => (
+            <a href={link.href} rel="noopener" target="_blank">
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+      <div class="fine small">
+        <span>© {year} Anderson Joseph</span>
+        <span>Nigeria <time class="clock" data-lagos-clock>--:--</time></span>
+        <span>Updated {updated}</span>
+        <span>Built with Astro and Graft</span>
+      </div>
+    </div>
+  </div>
+</footer>

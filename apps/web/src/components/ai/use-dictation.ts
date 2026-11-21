@@ -124,11 +124,12 @@ export const useDictation = (callbacks: DictationCallbacks) => {
     latest.current.onLevel?.(0);
   };
 
-  const transcribe = async (clip: Blob, id: number) => {
-    const controller = new AbortController();
-    upload.current = controller;
-    setTranscribing(true);
-
+  /** Uploads one clip and hands back its words; never throws. */
+  const sendClip = async (
+    clip: Blob,
+    id: number,
+    controller: AbortController
+  ) => {
     try {
       const response = await fetch("/api/transcribe", {
         body: clip,
@@ -164,11 +165,19 @@ export const useDictation = (callbacks: DictationCallbacks) => {
       if (!controller.signal.aborted && id === session.current) {
         setErrorMessage("Couldn't reach the server. Check your connection.");
       }
-    } finally {
-      if (upload.current === controller) {
-        upload.current = null;
-        setTranscribing(false);
-      }
+    }
+  };
+
+  const transcribe = async (clip: Blob, id: number) => {
+    const controller = new AbortController();
+    upload.current = controller;
+    setTranscribing(true);
+
+    await sendClip(clip, id, controller);
+
+    if (upload.current === controller) {
+      upload.current = null;
+      setTranscribing(false);
     }
   };
 

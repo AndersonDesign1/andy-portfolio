@@ -290,6 +290,140 @@ export const caseStudies = defineCollection({
       max: 1000,
       min: 1,
     }),
+    story: field.object({
+      description:
+        "The case study as told on the page, in Anderson's own voice. Optional: studies without it fall back to hero, challenge and results.",
+      fields: {
+        compare: field.string({
+          description: "One line above the before/after switch.",
+          maxLength: MAX_LINE_LENGTH,
+        }),
+        decisions: field.array({
+          description:
+            "Why I chose what I chose: a short heading and one line.",
+          maxItems: 6,
+          of: field.object({
+            fields: {
+              body: field.string({
+                description: "One line on why.",
+                maxLength: MAX_LINE_LENGTH,
+              }),
+              heading: field.string({
+                description: "The choice.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+            },
+          }),
+        }),
+        extra: field.string({
+          description: "Optional line under the numbers.",
+          maxLength: MAX_LINE_LENGTH,
+          optional: true,
+        }),
+        media: field.array({
+          description:
+            "Short looping videos for the page. Slot `hero` sits under the title; `steps` sits beside the timeline. Leave src empty for a placeholder frame.",
+          maxItems: 4,
+          of: field.object({
+            fields: {
+              frame: field.select({
+                description: "The device the clip sits in.",
+                options: ["browser", "phone"],
+              }),
+              label: field.string({
+                description: "What the clip shows; used as alt text.",
+                maxLength: MAX_LINE_LENGTH,
+              }),
+              poster: optionalPath("Still frame shown before the clip plays."),
+              slot: field.select({
+                description:
+                  "Where the clip sits: under the title, or beside the timeline.",
+                options: ["hero", "steps"],
+              }),
+              src: optionalPath(
+                "MP4 path under public/, e.g. /media/welup-hero.mp4."
+              ),
+              webm: optionalPath("Optional WebM version of the same clip."),
+            },
+          }),
+          optional: true,
+        }),
+        overview: prose("Opening paragraph under the title."),
+        stats: field.array({
+          description:
+            "Before and after numbers. Values that start with a number count up when the switch flips.",
+          maxItems: 4,
+          of: field.object({
+            fields: {
+              after: field.string({
+                description: "Value after the work, e.g. 35k or Top 5.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+              before: field.string({
+                description: "Value before the work, e.g. 10k or Unranked.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+              label: field.string({
+                description: "What was measured.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+              note: field.string({
+                description: "Shown under the after value.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+            },
+          }),
+        }),
+        steps: field.array({
+          description:
+            "How it went, in order. Weeks draw the bar above the steps.",
+          maxItems: 8,
+          of: field.object({
+            fields: {
+              body: field.string({
+                description: "What happened in this step.",
+                maxLength: MAX_LINE_LENGTH * 2,
+              }),
+              heading: field.string({
+                description: "Step headline.",
+                maxLength: MAX_HEADING_LENGTH,
+              }),
+              name: field.string({
+                description: "Short name for the rail, e.g. Audit.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+              weeks: field.number({
+                description: "Optional length in weeks, for the bar.",
+                int: true,
+                max: 52,
+                min: 1,
+                optional: true,
+              }),
+              when: field.string({
+                description: "How long it took, e.g. 2 weeks.",
+                maxLength: MAX_LABEL_LENGTH,
+              }),
+            },
+          }),
+        }),
+        title: field.string({
+          description: "Page headline, e.g. Rebuilding Welup Digital.",
+          maxLength: MAX_HEADING_LENGTH,
+        }),
+        tools: field.string({
+          description: "One sentence naming the tools.",
+          maxLength: MAX_LINE_LENGTH * 2,
+        }),
+        when: field.string({
+          description: "When it ran, for the meta line.",
+          maxLength: MAX_LABEL_LENGTH,
+        }),
+        why: prose(
+          "Why the work was needed. The first sentence is set in bold."
+        ),
+      },
+      optional: true,
+    }),
     results: field.object({
       description: "Measured outcomes.",
       fields: {

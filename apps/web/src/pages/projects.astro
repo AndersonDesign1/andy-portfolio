@@ -1,5 +1,6 @@
 ---
-import ProjectsShowcase from "../components/projects-showcase.tsx";
+import WorkFigure from "../components/site/work-figure.astro";
+import { archiveLineFor, FEATURED_WORK } from "../data/work";
 import BaseLayout from "../layouts/base-layout.astro";
 import { getGraft } from "../lib/graft";
 import { compareOrder, toProject } from "../lib/portfolio";
@@ -8,8 +9,69 @@ export const prerender = true;
 
 const documents = await getGraft().listContent("projects");
 const projects = documents.map(toProject).toSorted(compareOrder);
+
+// Everything that isn't one of the four up top, with a line from data/work.ts.
+const archive = projects.flatMap((project) => {
+  const line = archiveLineFor(project.slug);
+
+  if (!line) {
+    return [];
+  }
+
+  const href = project.links.caseStudy ?? project.links.live;
+
+  return href ? [{ ...line, external: !project.links.caseStudy, href }] : [];
+});
+
+const external = (href: string) => href.startsWith("http");
+const plain = (html: string) => html.replaceAll(/<\/?b>/gu, "");
 ---
 
-<BaseLayout description="Selected work by Anderson Joseph." title="Projects">
-  <ProjectsShowcase client:load projects={projects} />
+<BaseLayout description="Things Anderson Joseph has designed, built and grown, with what he did and what came of it." title="Work">
+  <div class="wrap">
+    <div class="head field12">
+      <h1>Things I've designed, built and grown</h1>
+      <p>
+        The four I'd show you first, with what I did and what came of it.
+        Everything else is further down.
+      </p>
+    </div>
+    <div class="cards field12">
+      {
+        FEATURED_WORK.map((work, index) => (
+          <a
+            class="card"
+            href={work.href}
+            rel={external(work.href) ? "noopener" : undefined}
+            target={external(work.href) ? "_blank" : undefined}
+          >
+            <WorkFigure eager={index < 2} work={work} />
+            <span class="small">{work.year}</span>
+            <h2>{work.title}</h2>
+            <p>{plain(work.outcome)}</p>
+          </a>
+        ))
+      }
+    </div>
+    <section aria-label="More work" class="rest">
+      <p class="lead">And the rest, newest first.</p>
+      <div>
+        {
+          archive.map((item) => (
+            <a
+              class="arow"
+              href={item.href}
+              rel={item.external ? "noopener" : undefined}
+              target={item.external ? "_blank" : undefined}
+            >
+              <b>{item.name}</b>
+              <span class="k">{item.kind}</span>
+              <span class="r tnum">{item.result}</span>
+              <span aria-hidden="true" class="arr">{item.external ? "↗" : "→"}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
 </BaseLayout>

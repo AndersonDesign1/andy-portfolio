@@ -1,34 +1,155 @@
 ---
-import CtaSection from "../components/cta-section.tsx";
-import Hero from "../components/hero.tsx";
-import ProjectsGrid from "../components/projects-grid.tsx";
-import SkillsSection from "../components/skills-section.tsx";
-import WorkHistory from "../components/work-history.tsx";
+import CopyEmail from "../components/site/copy-email.astro";
+import NowPlaying from "../components/site/now-playing.astro";
+import WorkFigure from "../components/site/work-figure.astro";
+import { EDUCATION, FEATURED_WORK, WORK_HISTORY } from "../data/work";
 import BaseLayout from "../layouts/base-layout.astro";
-import { getGraft } from "../lib/graft";
-import { compareOrder, toProject } from "../lib/portfolio";
-import type { Project } from "../types/project";
+import { RESUME_URL } from "../lib/site";
 
 export const prerender = true;
 
-const documents = await getGraft().listContent("projects");
-const featured: Project[] = [];
-
-for (const document of documents) {
-  const project = toProject(document);
-
-  if (project.featured) {
-    featured.push(project);
-  }
-}
-
-const featuredProjects = featured.toSorted(compareOrder);
+const external = (href: string) => href.startsWith("http");
 ---
 
 <BaseLayout og={{ kind: "home" }}>
-  <Hero client:visible />
-  <ProjectsGrid client:visible projects={featuredProjects} />
-  <WorkHistory client:visible />
-  <SkillsSection client:visible />
-  <CtaSection client:visible />
+  <div class="wrap">
+    <div class="hero field12">
+      <h1>I design and build interfaces and products people enjoy.</h1>
+      <p class="lede">
+        I'm Anderson, and I work from Nigeria. I care how it feels to use, how
+        it's built, and whether people can find it. I'm taking on new work.
+      </p>
+      <div class="actions">
+        <CopyEmail showAddress />
+        <a class="go" href={RESUME_URL} rel="noopener" target="_blank"
+          ><span class="u">My résumé</span> <span class="arr">↗</span></a
+        >
+      </div>
+      <NowPlaying />
+    </div>
+  </div>
+
+  <section aria-label="Selected work" class="sec">
+    <div class="wrap">
+      <div class="idx">
+        <div class="rows" data-work-rows>
+          {
+            FEATURED_WORK.map((work) => (
+              <a
+                class="row-p"
+                data-go={work.go}
+                data-stack={work.stack}
+                href={work.href}
+                rel={external(work.href) ? "noopener" : undefined}
+                target={external(work.href) ? "_blank" : undefined}
+              >
+                <div class="top">
+                  <h2>{work.title}</h2>
+                  <span class="y">{work.year}</span>
+                </div>
+                <p set:html={work.outcome} />
+                <WorkFigure work={work} />
+                <span class="go">
+                  <span class="u">{work.go}</span>{" "}
+                  <span class="arr">{external(work.href) ? "↗" : "→"}</span>
+                </span>
+              </a>
+            ))
+          }
+        </div>
+        <div aria-hidden="true" class="stage" data-work-stage>
+          <div class="slot">
+            {FEATURED_WORK.map((work, index) => <WorkFigure eager={index === 0} work={work} />)}
+          </div>
+          <div class="more">
+            <span class="small" data-stage-stack>{FEATURED_WORK[0]?.stack}</span>
+            <a class="go" data-stage-go href={FEATURED_WORK[0]?.href} tabindex="-1"
+              ><span class="u">See it</span> <span class="arr">→</span></a
+            >
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 40px">
+        <a class="go" href="/projects"
+          ><span class="u">Everything I've worked on</span> <span class="arr">→</span></a
+        >
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="What I do" class="sec">
+    <div class="wrap">
+      <div class="says field12">
+        <p class="big">Most of my work sits in three places.</p>
+        <div class="prs">
+          <div class="pr">
+            <h3>How it feels</h3>
+            <p>
+              Interfaces that feel right in the hand, with the layout, type and
+              motion built in code, not handed off.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>What's underneath</h3>
+            <p>
+              The product behind the screen, from the data model to the checkout,
+              built with the same care at both ends.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>Getting found</h3>
+            <p>
+              Speed and search go in from the first commit, so people can actually
+              find what I build.
+            </p>
+          </div>
+        </div>
+        <p class="small">
+          Mostly React, Next.js, Astro, TypeScript, Tailwind and Motion, with
+          Sanity, Convex or Postgres behind them, and Search Console open in
+          another tab.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Experience and education" class="sec">
+    <div class="wrap">
+      <div class="lists field12">
+        <div class="list exp">
+          <p class="lead">Where I've worked</p>
+          <ul>
+            {
+              WORK_HISTORY.map((item) => (
+                <li>
+                  <b>{item.name}</b>
+                  <span class="d">{item.when}</span>
+                  <span class="r">{item.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="after">
+            <a class="go" href={RESUME_URL} rel="noopener" target="_blank"
+              ><span class="u">The full résumé</span> <span class="arr">↗</span></a
+            >
+          </div>
+        </div>
+        <div class="list edu">
+          <p class="lead">What I've studied</p>
+          <ul>
+            {
+              EDUCATION.map((item) => (
+                <li>
+                  <b>{item.name}</b>
+                  <span class="d">{item.when}</span>
+                  <span class="r">{item.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

@@ -1,0 +1,46 @@
+---
+/**
+ * "Ask my AI": a small pill that opens a box for one question, then sends it
+ * to /ai?q=…, where the real chat answers it. Without JavaScript the form
+ * still posts to /ai with the question.
+ */
+import { ASK_SUGGESTIONS } from "../../lib/site";
+---
+
+<div class="ask" data-ask>
+  <button aria-controls="ask-panel" aria-expanded="false" class="ask-closed" data-ask-open type="button">
+    <span aria-hidden="true" class="mini-orb"></span>
+    <span class="ask-label"
+      ><span class="base">Ask my AI</span><span aria-hidden="true" class="hint" data-ask-hint
+        >{ASK_SUGGESTIONS[1]}</span
+      ></span
+    >
+    <span aria-hidden="true" class="kbd">/</span>
+  </button>
+  <form action="/ai" class="ask-open" data-ask-form id="ask-panel" method="get">
+    <div class="ask-top">
+      <span aria-hidden="true" class="mini-orb"></span>Ask Andy's AI
+      <button aria-label="Close" class="x" data-ask-close type="button">
+        <svg fill="none" height="12" stroke="currentColor" stroke-width="1.5" viewBox="0 0 12 12" width="12"
+          ><path d="M2 2l8 8M10 2l-8 8"></path></svg
+        >
+      </button>
+    </div>
+    <textarea
+      aria-label="Your question"
+      maxlength="2000"
+      name="q"
+      placeholder="Ask about my work, SEO, code or the web"
+      rows="3"></textarea>
+    <div class="ask-foot">
+      <div class="sugg">
+        {ASK_SUGGESTIONS.map((suggestion) => <button type="button">{suggestion}</button>)}
+      </div>
+      <button aria-label="Ask" class="ask-send" disabled type="submit">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 16 16"
+          ><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5"></path></svg
+        >
+      </button>
+    </div>
+  </form>
+</div>

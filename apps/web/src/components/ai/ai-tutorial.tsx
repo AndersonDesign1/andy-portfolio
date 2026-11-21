@@ -52,7 +52,7 @@ const voiceSteps: Step[] = [
           <span className="text-primary min-w-0 flex-1 truncate">
             How do I speed up my site?
           </span>
-          <span className="bg-foreground text-background rounded-sm px-2 py-1 text-[10px] font-medium">
+          <span className="bg-foreground text-background rounded-sm px-2 py-1 text-xs font-medium">
             Send
           </span>
         </div>

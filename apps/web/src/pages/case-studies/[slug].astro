@@ -1,8 +1,8 @@
 ---
-import CaseStudyPage from "../../components/case-study-page.tsx";
+import MediaSlot from "../../components/site/media-slot.astro";
 import BaseLayout from "../../layouts/base-layout.astro";
 import { getGraft } from "../../lib/graft";
-import { toCaseStudy } from "../../lib/portfolio";
+import { storyOf, toCaseStudy } from "../../lib/portfolio";
 
 export const prerender = true;
 
@@ -24,35 +24,197 @@ if (!(document && slug)) {
   );
 }
 
-const caseStudy = toCaseStudy(document);
-const studies = await graft.listContent("case-studies");
+const study = toCaseStudy(document);
+const story = storyOf(study);
 
-const ordered = studies.toSorted(
+
+const allStudies = await graft.listContent("case-studies");
+
+const studies = allStudies.toSorted(
   (left, right) => left.data.order - right.data.order
 );
 
-const currentIndex = ordered.findIndex((entry) => entry.slug === slug);
-const prev = currentIndex > 0 ? ordered[currentIndex - 1] : undefined;
+// The next study, wrapping round to the first.
+const index = studies.findIndex((entry) => entry.slug === slug);
+const nextEntry = studies.length > 1 ? studies[(index + 1) % studies.length] : null;
 
-const next =
-  currentIndex !== -1 && currentIndex < ordered.length - 1
-    ? ordered[currentIndex + 1]
-    : undefined;
+const next = nextEntry
+  ? { slug: nextEntry.slug, title: storyOf(toCaseStudy(nextEntry)).title }
+  : null;
 
-const navigation = {
-  next: next
-    ? { slug: next.slug, title: next.data.hero.title }
-    : undefined,
-  prev: prev
-    ? { slug: prev.slug, title: prev.data.hero.title }
-    : undefined,
-};
+// The first sentence of "why" is set in bold.
+const whyBreak = story.why.search(/[.!?]\s/u);
+const whyLead = whyBreak === -1 ? story.why : story.why.slice(0, whyBreak + 1);
+const whyRest = whyBreak === -1 ? "" : story.why.slice(whyBreak + 1);
+
+const heroMedia = story.media?.find((entry) => entry.slot === "hero");
+const stepsMedia = story.media?.find((entry) => entry.slot === "steps");
+const heroFallback = { alt: study.gallery.images[0]?.alt ?? story.title, src: study.hero.heroImage };
+const weeks = story.steps.every((step) => step.weeks) ? story.steps : null;
+const textual = (value: string) => !/^\d/u.test(value.trim());
+const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
 ---
 
 <BaseLayout
-  description={caseStudy.hero.overview || "Anderson Joseph Case Study"}
-  og={{ client: caseStudy.hero.client, kind: "case-study", title: caseStudy.hero.title }}
-  title={`${caseStudy.hero.title} - Case Study`}
+  description={story.overview}
+  og={{ client: study.hero.client, kind: "case-study", title: story.title }}
+  title={`${story.title}: a case study`}
 >
-  <CaseStudyPage caseStudy={caseStudy} client:visible navigation={navigation} />
+  <article class="wrap">
+    <a class="cs-back" href="/projects"><span class="arr">←</span> All my work</a>
+    <header class="cs-head field12">
+      <h1>{story.title}</h1>
+      <p class="ov">{story.overview}</p>
+      <div class="cs-meta">
+        <span>{study.hero.client}</span>
+        <span>{story.when}</span>
+        {
+          live && (
+            <a class="u" href={live.href} rel="noopener" target="_blank">
+              {live.hostname.replace(/^www\./u, "")} ↗
+            </a>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      heroMedia ? (
+        <MediaSlot fallback={heroFallback} media={heroMedia} />
+      ) : (
+        <div class="fig" style="--ar: 16 / 9">
+          <img alt={heroFallback.alt} decoding="async" fetchpriority="high" src={heroFallback.src} />
+        </div>
+      )
+    }
+
+    <div class="sec">
+      <div class="cs-why field12">
+        <p><b>{whyLead}</b>{whyRest}</p>
+      </div>
+    </div>
+
+    <section aria-label="Before and after" class="ba" data-ba data-v="before">
+      <div class="ba-top">
+        <p>{story.compare}</p>
+        <div aria-label="Show numbers from" class="seg" role="group">
+          <span aria-hidden="true" class="thumb"></span>
+          <button aria-pressed="true" data-v="before" type="button">Before</button>
+          <button aria-pressed="false" data-v="after" type="button">After</button>
+        </div>
+      </div>
+      <div class="stats">
+        {
+          story.stats.map((stat) => (
+            <div class="stat">
+              <span class="k">{stat.label}</span>
+              <div
+                class:list={["v", { txt: textual(stat.before) || textual(stat.after) }]}
+                data-after={stat.after}
+                data-before={stat.before}
+              >
+                <span>{stat.before}</span>
+              </div>
+              <span class="d">{stat.note}</span>
+            </div>
+          ))
+        }
+      </div>
+      {story.extra && <p class="extra">{story.extra}</p>}
+    </section>
+
+    <section aria-label="How it went" class="sec">
+      {
+        weeks && (
+          <div aria-hidden="true" class="weeks" data-weeks>
+            {weeks.map((step) => (
+              <div style={`flex: ${step.weeks}`}>
+                <i />
+                <span>
+                  {step.name}, {step.weeks} wk
+                </span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+      <div class="steps">
+        <nav aria-label="Steps" class="rail" data-line="0.5" data-rail=".step">
+          {
+            story.steps.map((step, stepIndex) => (
+              <button class:list={["rail-btn", { on: stepIndex === 0 }]} type="button">
+                <i />
+                {step.name}
+              </button>
+            ))
+          }
+        </nav>
+        <div>
+          {
+            story.steps.map((step) => (
+              <div class="step">
+                <span class="when">{step.when}</span>
+                <h2>{step.heading}</h2>
+                <p>{step.body}</p>
+              </div>
+            ))
+          }
+          {
+            stepsMedia && (
+              <div class="steps-media">
+                <MediaSlot fallback={study.gallery.images[1]} media={stepsMedia} />
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    {
+      story.decisions.length > 0 && (
+        <section aria-label="Decisions" class="says field12">
+          <p class="big">Why I chose what I chose.</p>
+          <div class="prs">
+            {story.decisions.map((decision) => (
+              <div class="pr">
+                <h3>{decision.heading}</h3>
+                <p>{decision.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <section aria-label="Pictures" class="sec">
+      <div class="gal-nav" data-gal-nav="#gallery">
+        <button aria-label="Previous pictures" data-g="-1" type="button">←</button>
+        <button aria-label="Next pictures" data-g="1" type="button">→</button>
+      </div>
+      <div class="gal" id="gallery">
+        {
+          study.gallery.images.map((image) => (
+            <figure>
+              <div class="fig">
+                <img alt={image.alt} decoding="async" loading="lazy" src={image.src} />
+              </div>
+              <figcaption>{image.title}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      <p class="cs-tools">{story.tools}</p>
+    </section>
+
+    {
+      next && (
+        <a class="cs-next" href={`/case-studies/${next.slug}`}>
+          <span class="small">Next</span>
+          <b>
+            {next.title} <span class="arr">→</span>
+          </b>
+        </a>
+      )
+    }
+  </article>
 </BaseLayout>

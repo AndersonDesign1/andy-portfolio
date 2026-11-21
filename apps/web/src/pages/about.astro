@@ -1,11 +1,133 @@
 ---
-import AboutPage from "../components/about-page.tsx";
 import BaseLayout from "../layouts/base-layout.astro";
+
+export const prerender = true;
+
+const chapters = [
+  {
+    body: "I won a scholarship to learn one tech skill for a year. I picked development because I'd always been curious about how computers actually work, and that curiosity is still why I do this.",
+    facts: [],
+    heading: "A scholarship, and a choice",
+    label: "A scholarship",
+    year: "Start",
+  },
+  {
+    body: "Welup hired me as their <b>first developer</b>. I built client sites from scratch, first in plain HTML, CSS and JavaScript, then in React and Next.js, and I taught web development at the Welup Academy.",
+    facts: ["Since Sept 2021", "Welup Academy"],
+    heading: "My first job, at Welup Digital",
+    label: "Welup Digital",
+    year: "2021",
+  },
+  {
+    body: "The first Welup platform taught me the hard way. The endpoint kept getting DDoSed, the CSS slowed everything down, and nothing ranked. I rebuilt it in Next.js with a CMS and started doing <b>SEO for Welup and its clients</b>.",
+    facts: ["Traffic up 300% after the relaunch", "50% faster"],
+    heading: "A site nobody finds doesn't exist",
+    label: "Getting found",
+    year: "2023",
+  },
+  {
+    body: "I spent six months at PromptEarn on SEO and growth. Google traffic went up <b>250%</b>, PageSpeed went from <b>45 to 80</b>, and the affiliate network grew from <b>40,000 to 93,000</b>.",
+    facts: ["May to Oct 2024", "Bounce rate halved"],
+    heading: "Growth, with numbers",
+    label: "PromptEarn",
+    year: "2024",
+  },
+  {
+    body: "Flik's creator-commerce platform, and Tare Gems' storefront with live stock for every size and colour. From the database to the checkout, with the same care at both ends.",
+    facts: ["Flik", "Tare Gems", "Zumera"],
+    heading: "Products, end to end",
+    label: "Products",
+    year: "2025",
+  },
+  {
+    body: "Today I design and build product interfaces, and I'm building <b>Graft</b>, an open source CMS for agents and the people who run them. This site runs on it.",
+    facts: ["Open source", "MIT licensed"],
+    heading: "Interfaces, and the tools behind them",
+    label: "Now",
+    year: "Now",
+  },
+];
 ---
 
 <BaseLayout
-  description="About Anderson Joseph — full stack developer and SEO expert."
+  description="How Anderson Joseph got here: a scholarship, Welup Digital, SEO and growth, and products built end to end. He lives and works in Nigeria."
   title="About"
 >
-  <AboutPage client:visible />
+  <div class="wrap">
+    <div class="head field12">
+      <h1>How I got here</h1>
+      <p>
+        I'm Anderson. I live and work in Nigeria, and I work with teams anywhere.
+        It started with a scholarship and a question about how computers work.
+      </p>
+    </div>
+    <div class="story">
+      <aside aria-label="Chapters" class="year" data-line="0.45" data-rail=".chapter">
+        <div aria-hidden="true" class="num" data-year-num><span>{chapters[0]?.year}</span></div>
+        <div class="track">
+          {
+            chapters.map((chapter, index) => (
+              <button class:list={["rail-btn", { on: index === 0 }]} type="button">
+                <i />
+                {chapter.label}
+              </button>
+            ))
+          }
+        </div>
+      </aside>
+      <div class="chapters">
+        {
+          chapters.map((chapter) => (
+            <section class="chapter" data-year={chapter.year}>
+              <h2>{chapter.heading}</h2>
+              <p set:html={chapter.body} />
+              {chapter.facts.length > 0 && (
+                <div class="facts">
+                  {chapter.facts.map((fact) => (
+                    <span>{fact}</span>
+                  ))}
+                </div>
+              )}
+            </section>
+          ))
+        }
+      </div>
+    </div>
+    <div class="sec">
+      <div class="belief field12">
+        <blockquote>
+          I like figuring out how things work, and then making them work better.
+        </blockquote>
+        <div class="prs">
+          <div class="pr">
+            <h3>Feel comes first</h3>
+            <p>
+              An interface earns trust in the first second, so timing, spacing and
+              motion get the same care as the logic underneath.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>Get found</h3>
+            <p>
+              Speed, structure and search go in from the first commit, not as a
+              patch the week after launch.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>Ship the whole product</h3>
+            <p>
+              How it's sold matters as much as how it's built: the landing page,
+              the funnel, and the numbers after launch.
+            </p>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn solid" href="/projects">See my work</a>
+          <a class="go" href="/contact"
+            ><span class="u">Or say hello</span> <span class="arr">→</span></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </BaseLayout>

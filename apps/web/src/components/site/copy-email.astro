@@ -1,0 +1,32 @@
+---
+/** Copies the email address, with a check that swaps in for a moment. Wired up in site-scripts.ts. */
+import { CONTACT_EMAIL } from "../../lib/site";
+
+interface Props {
+  /** "solid" is the filled pill; "go" is the quiet text link. */
+  look?: "go" | "solid";
+  /** Show the address beside the label (hidden on narrow phones). */
+  showAddress?: boolean;
+}
+
+const { look = "solid", showAddress = false } = Astro.props;
+---
+
+<button
+  aria-label="Copy email address"
+  class:list={[look === "solid" ? "btn solid" : "go", "copy"]}
+  data-copy={CONTACT_EMAIL}
+  type="button"
+>
+  <span aria-hidden="true" class="ic">
+    <svg class="cp" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 16 16"
+      ><rect height="8.5" rx="2" width="8.5" x="5" y="5"></rect><path
+        d="M3 10.5V4a1.5 1.5 0 0 1 1.5-1.5H11"></path></svg
+    >
+    <svg class="ok" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 16 16"
+      ><path d="M3.5 8.5l3 3 6-7"></path></svg
+    >
+  </span>
+  <span class="lbl">Copy email</span>
+  {showAddress && <span class="addr">{CONTACT_EMAIL}</span>}
+</button>

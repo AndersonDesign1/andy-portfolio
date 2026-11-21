@@ -53,10 +53,10 @@ export const WideActions = ({
 );
 
 /**
- * Where the orb lives: at the bottom on phones, under the thumb, with a
- * quiet "or type instead" text link and help underneath (all hidden while the
- * text box is open). On wider screens it's at the top until a conversation
- * starts, then at the bottom too; WideActions carry type and help there.
+ * Where the orb lives: at the bottom on every screen, under the thumb on
+ * phones, with a quiet "or type instead" text link and help underneath (all
+ * hidden while the text box is open). On wider screens WideActions carry
+ * type and help under the intro instead.
  */
 export const OrbDock = ({
   children,
@@ -70,7 +70,7 @@ export const OrbDock = ({
 }: {
   /** The orb and its status. */
   children: ReactNode;
-  /** A conversation is showing: the orb sits at the bottom on wider screens too. */
+  /** A conversation is showing: the text box replaces the orb on every screen. */
   conversation: boolean;
   /** The text box is open: it takes the orb's place on phones. */
   hidden: boolean;
@@ -84,9 +84,8 @@ export const OrbDock = ({
   <div
     className={cn(
       "ai-rise order-2 flex w-full shrink-0 flex-col items-center gap-2",
-      !conversation && "md:order-1",
       // The text box takes the orb's place: always on phones, and on wider
-      // screens once the orb has joined it at the bottom.
+      // screens once a conversation has started.
       hidden && (conversation ? "hidden" : "max-md:hidden")
     )}
   >
