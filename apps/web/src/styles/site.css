@@ -1417,6 +1417,13 @@
   .cs-next:hover {
     background: var(--surface);
   }
+  @media (max-width: 767px) {
+    /* the page gutter is 20px here, so a wider bleed would scroll sideways */
+    .cs-next {
+      padding: 24px 16px;
+      margin-inline: -16px;
+    }
+  }
   .cs-next .small {
     font-size: 14px;
   }
