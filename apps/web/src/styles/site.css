@@ -1411,7 +1411,7 @@
     align-content: start;
   }
   .c-side .big {
-    font-size: clamp(20px, 2.4vw, 26px);
+    font-size: clamp(18px, 1.6vw, 20px);
     font-weight: 560;
     letter-spacing: -0.025em;
     overflow-wrap: anywhere;

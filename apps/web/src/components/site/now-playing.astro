@@ -1,19 +1,17 @@
 ---
 /**
  * One quiet line under the hero: what Anderson is playing on Spotify, or
- * played last. Filled in by site-scripts.ts from /api/spotify/now-playing;
+ * played last. Filled in by scripts/site.ts from /api/spotify/now-playing;
  * stays hidden if Spotify has nothing or fails.
  */
 ---
 
 <p class="np" data-now-playing data-state="loading" hidden>
   <img alt="" class="art" decoding="async" height="26" loading="lazy" width="26" />
-  <span
-    ><span data-np-label>Last played</span>:
-    <a data-np-link href="https://open.spotify.com" rel="noopener" target="_blank"
-      ><b data-np-track></b></a
-    >
-    by <span data-np-artist></span></span
-  >
+  <span>
+    <span data-np-label>Last played</span>:{" "}
+    <a data-np-link href="https://open.spotify.com" rel="noopener" target="_blank"><b data-np-track></b></a>
+    {" "}by <span data-np-artist></span>
+  </span>
   <span aria-hidden="true" class="bars"><i></i><i></i><i></i></span>
 </p>
