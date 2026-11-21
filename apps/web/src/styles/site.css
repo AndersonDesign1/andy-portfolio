@@ -628,75 +628,75 @@
    * the page keeps scrolling, and each stretch of scroll brings in the next
    * project's words and picture in the same place.
    */
-  .story-pin {
+  .tale-pin {
     display: grid;
     gap: 64px;
   }
-  .story-item {
+  .tale-item {
     display: grid;
     gap: 20px;
   }
-  .story-text {
+  .tale-text {
     display: grid;
     gap: 8px;
     align-content: start;
   }
-  .story-text .top {
+  .tale-text .top {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
   }
-  .story-text h2 {
+  .tale-text h2 {
     font-size: clamp(26px, 3.2vw, 40px);
     line-height: 1.1;
     letter-spacing: -0.035em;
   }
-  .story-text .y {
+  .tale-text .y {
     font-size: 13.5px;
     color: var(--mute);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
-  .story-text p {
+  .tale-text p {
     font-size: 16px;
     color: var(--fg-2);
     max-width: 32em;
   }
-  .story-text p b {
+  .tale-text p b {
     color: var(--fg);
     font-weight: 560;
   }
-  .story-text .small {
+  .tale-text .small {
     max-width: 28em;
   }
-  .story-text .go {
+  .tale-text .go {
     margin-top: 6px;
   }
-  .story-item:hover .go .u {
+  .tale-item:hover .go .u {
     text-decoration: underline;
     text-underline-offset: 4px;
   }
-  .story-after {
+  .tale-after {
     margin-top: 48px;
   }
   @media (min-width: 900px) {
-    .story-item {
+    .tale-item {
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
       gap: 56px;
       align-items: center;
     }
-    .story-text {
+    .tale-text {
       align-content: center;
     }
-    .story-text p {
+    .tale-text p {
       font-size: 17px;
     }
     /* site.ts adds `live`; without it the list simply stays a list */
-    .story.live {
+    .tale.live {
       height: calc(100dvh + (var(--n) - 1) * 70dvh);
     }
-    .story.live .story-pin {
+    .tale.live .tale-pin {
       position: sticky;
       top: 0;
       height: 100dvh;
@@ -705,36 +705,36 @@
       gap: 0;
       align-items: center;
     }
-    .story.live .story-item {
+    .tale.live .tale-item {
       grid-area: 1 / 1;
       pointer-events: none;
     }
-    .story.live .story-item.on {
+    .tale.live .tale-item.on {
       z-index: 1;
       pointer-events: auto;
     }
-    .story.live .story-item .fig {
+    .tale.live .tale-item .fig {
       max-height: calc(100dvh - 160px);
     }
-    .story.live .story-text > *,
-    .story.live .story-item .fig {
+    .tale.live .tale-text > *,
+    .tale.live .tale-item .fig {
       opacity: 0;
       transform: translate3d(0, 18px, 0);
       transition:
         opacity 380ms var(--ease),
         transform 560ms var(--ease);
     }
-    .story.live .story-item .fig {
+    .tale.live .tale-item .fig {
       transform: translate3d(0, 36px, 0) scale(0.98);
     }
-    .story.live .story-item.past .story-text > * {
+    .tale.live .tale-item.past .tale-text > * {
       transform: translate3d(0, -18px, 0);
     }
-    .story.live .story-item.past .fig {
+    .tale.live .tale-item.past .fig {
       transform: translate3d(0, -36px, 0) scale(0.98);
     }
-    .story.live .story-item.on .story-text > *,
-    .story.live .story-item.on .fig {
+    .tale.live .tale-item.on .tale-text > *,
+    .tale.live .tale-item.on .fig {
       opacity: 1;
       transform: none;
       transition:
@@ -742,13 +742,13 @@
         transform 760ms var(--ease) 80ms;
     }
     /* the words arrive one after another */
-    .story.live .story-item.on .story-text > :nth-child(2) {
+    .tale.live .tale-item.on .tale-text > :nth-child(2) {
       transition-delay: 170ms;
     }
-    .story.live .story-item.on .story-text > :nth-child(3) {
+    .tale.live .tale-item.on .tale-text > :nth-child(3) {
       transition-delay: 220ms;
     }
-    .story.live .story-item.on .story-text > :nth-child(4) {
+    .tale.live .tale-item.on .tale-text > :nth-child(4) {
       transition-delay: 270ms;
     }
   }
@@ -2201,7 +2201,7 @@
   :is(
     .hero > *,
     .head,
-    .story-item,
+    .tale-item,
     .pr,
     .lists > *,
     .says,
@@ -2226,7 +2226,7 @@
   :is(
     .hero > *,
     .head,
-    .story-item,
+    .tale-item,
     .pr,
     .lists > *,
     .says,

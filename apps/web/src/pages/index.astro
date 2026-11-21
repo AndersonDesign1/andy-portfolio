@@ -33,17 +33,17 @@ const external = (href: string) => href.startsWith("http");
 
   <section aria-label="Selected work" class="sec">
     <div class="wrap">
-      <div class="story" data-story style={`--n: ${FEATURED_WORK.length}`}>
-        <div class="story-pin">
+      <div class="tale" data-tale style={`--n: ${FEATURED_WORK.length}`}>
+        <div class="tale-pin">
           {
             FEATURED_WORK.map((work, index) => (
               <a
-                class="story-item"
+                class="tale-item"
                 href={work.href}
                 rel={external(work.href) ? "noopener" : undefined}
                 target={external(work.href) ? "_blank" : undefined}
               >
-                <div class="story-text">
+                <div class="tale-text">
                   <div class="top">
                     <h2>{work.title}</h2>
                     <span class="y">{work.year}</span>
@@ -61,7 +61,7 @@ const external = (href: string) => href.startsWith("http");
           }
         </div>
       </div>
-      <div class="story-after">
+      <div class="tale-after">
         <a class="go" href="/projects"
           ><span class="u">Everything I've worked on</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
         >

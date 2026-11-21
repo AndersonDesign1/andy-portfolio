@@ -293,13 +293,13 @@ const initNowPlaying = () => {
 const STORY_WIDE = "(min-width: 900px)";
 
 const initWorkStory = () => {
-  const story = $("[data-story]");
+  const story = $("[data-tale]");
 
   if (!story) {
     return;
   }
 
-  const items = $$<HTMLAnchorElement>(".story-item", story);
+  const items = $$<HTMLAnchorElement>(".tale-item", story);
   const wide = window.matchMedia(STORY_WIDE);
   let active = -1;
 
@@ -870,7 +870,7 @@ const initSmoothScroll = () => {
 const REVEAL = [
   ".hero > *",
   ".head",
-  ".story-item",
+  ".tale-item",
   ".pr",
   ".lists > *",
   ".says",
