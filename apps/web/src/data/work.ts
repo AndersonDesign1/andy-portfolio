@@ -71,7 +71,7 @@ export const FEATURED_WORK: FeaturedWork[] = [
       src: "/mykrogrid.webp",
     },
     outcome:
-      "The site for a clean energy company that builds and runs solar grids for <b>hospitals</b>, <b>universities</b>, homes and markets across Nigeria.",
+      "I built the frontend for a clean energy company that runs solar grids for <b>hospitals</b>, <b>universities</b>, homes and markets across Nigeria.",
     stack: "Clean energy, Nigeria",
     title: "MykroGrid",
     year: "2026",
