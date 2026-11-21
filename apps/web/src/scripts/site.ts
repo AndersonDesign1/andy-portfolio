@@ -252,7 +252,7 @@ const initNowPlaying = () => {
       }
 
       if (label) {
-        label.textContent = track.isPlaying ? "On repeat" : "Last played";
+        label.textContent = track.isPlaying ? "Now playing" : "Last played";
       }
 
       if (title) {
@@ -815,6 +815,8 @@ const REVEAL = [
   ".ba",
   ".gal figure",
   ".cs-next",
+  ".prow",
+  ".post-fig",
   ".contact > *",
   ".site-foot .cta > *",
 ].join(",");

@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { actions } from "astro:actions";
 import { useId, useState, useTransition } from "react";
 import type { SubmitEvent } from "react";
@@ -188,7 +190,15 @@ const ContactForm = () => {
       </div>
       <div className="actions">
         <button className="btn solid" disabled={pending} type="submit">
-          {pending ? "Sending…" : "Send"} <span className="arr">→</span>
+          {pending ? "Sending…" : "Send"}{" "}
+          <span aria-hidden="true" className="arr">
+            <HugeiconsIcon
+              color="currentColor"
+              icon={ArrowRight01Icon}
+              size={16}
+              strokeWidth={1.5}
+            />
+          </span>
         </button>
         <output aria-live="polite" className="sent">
           {status?.text}

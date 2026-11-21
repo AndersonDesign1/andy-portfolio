@@ -381,17 +381,74 @@
     }
   }
 
-  /* the quiet "last played" line */
+  /* now playing, or last played: a small record with the song beside it */
   .np {
     justify-self: start;
     margin-top: 12px;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 14px;
     color: var(--mute);
-    min-height: 34px;
+    min-height: 42px;
     transition: opacity 400ms var(--ease);
+  }
+  .np-text {
+    display: grid;
+    gap: 3px;
+    line-height: 1.3;
+  }
+  .np-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--mute);
+  }
+  .np[data-playing] .np-state {
+    color: var(--fg);
+  }
+  .np-song {
+    color: var(--fg-2);
+  }
+  /* three little bars: they move while a song plays and sit still after */
+  .eq {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 10px;
+  }
+  .eq i {
+    width: 2px;
+    height: 3px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .eq i:nth-child(2) {
+    height: 6px;
+  }
+  .eq i:nth-child(3) {
+    height: 4px;
+  }
+  .np[data-playing] .eq i {
+    opacity: 1;
+    animation: eq 900ms ease-in-out infinite alternate;
+  }
+  .np[data-playing] .eq i:nth-child(2) {
+    animation-delay: -300ms;
+  }
+  .np[data-playing] .eq i:nth-child(3) {
+    animation-delay: -600ms;
+  }
+  @keyframes eq {
+    from {
+      height: 3px;
+    }
+    to {
+      height: 10px;
+    }
   }
   .np[data-state="loading"] {
     opacity: 0;
@@ -403,8 +460,8 @@
   .vinyl {
     position: relative;
     flex: none;
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     margin-right: 4px;
   }
   .disc {
@@ -451,18 +508,23 @@
     pointer-events: none;
   }
   .np .art {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     object-fit: cover;
     background: var(--surface);
+    filter: grayscale(1);
+    transition: filter 600ms var(--ease);
+  }
+  .np[data-playing] .art {
+    filter: none;
   }
   .arm {
     position: absolute;
     top: -3px;
     right: -4px;
     width: 2px;
-    height: 21px;
+    height: 24px;
     border-radius: 1px;
     background: var(--fg-2);
     transform-origin: 50% 2px;
@@ -1558,6 +1620,9 @@
   .cf {
     display: grid;
     gap: 18px;
+    /* the form sits in a display: contents island, so `.field12 > *` misses it */
+    grid-column: 1 / -1;
+    min-width: 0;
   }
   .fld {
     display: grid;
@@ -1632,6 +1697,163 @@
     .two {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
+
+  /* ---------- blog ---------- */
+  .posts {
+    display: grid;
+    padding-bottom: 72px;
+  }
+  .prow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 32px;
+    align-items: baseline;
+    padding: 22px 16px;
+    margin-inline: -16px;
+    border-radius: 16px;
+    transition: background 200ms var(--ease);
+  }
+  .prow h2 {
+    font-size: clamp(20px, 2.4vw, 24px);
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+  }
+  .prow p {
+    grid-column: 1;
+    color: var(--fg-2);
+    font-size: 15.5px;
+    max-width: 38em;
+  }
+  .prow .d {
+    grid-row: 1;
+    grid-column: 2;
+    font-size: 14px;
+    color: var(--mute);
+  }
+  .prow:hover {
+    background: var(--surface);
+  }
+  @media (max-width: 600px) {
+    .prow {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .prow .d {
+      grid-row: auto;
+      grid-column: 1;
+      order: -1;
+    }
+  }
+  .post-fig {
+    margin: 0 0 48px;
+    display: grid;
+    gap: 12px;
+  }
+  .post-fig img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    background: var(--surface);
+  }
+  .post-fig figcaption {
+    font-size: 14px;
+    color: var(--mute);
+  }
+  .prose {
+    max-width: 42rem;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--fg-2);
+    padding-bottom: 32px;
+  }
+  .prose > * + * {
+    margin-top: 1.15em;
+  }
+  .prose h2,
+  .prose h3 {
+    color: var(--fg);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    scroll-margin-top: 96px;
+  }
+  .prose h2 {
+    font-size: clamp(24px, 3vw, 28px);
+    margin-top: 2em;
+  }
+  .prose h3 {
+    font-size: 21px;
+    margin-top: 1.6em;
+  }
+  .prose a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--faint);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 200ms var(--ease);
+  }
+  .prose a:hover {
+    text-decoration-color: currentColor;
+  }
+  .prose strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.2em;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li + li {
+    margin-top: 0.4em;
+  }
+  .prose li::marker {
+    color: var(--mute);
+  }
+  .prose blockquote {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px 24px;
+    color: var(--fg);
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  .prose code {
+    font:
+      0.86em/1.5 ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      monospace;
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 0.12em 0.4em;
+  }
+  .prose pre {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .prose pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+  .prose figure {
+    margin-block: 2em;
+  }
+  .prose img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    background: var(--surface);
   }
 
   /* ---------- Ask pill ---------- */
@@ -1884,6 +2106,8 @@
     .ba,
     .gal figure,
     .cs-next,
+    .prow,
+    .post-fig,
     .contact > *,
     .site-foot .cta > *
   ):not(.in) {
@@ -1907,6 +2131,8 @@
     .ba,
     .gal figure,
     .cs-next,
+    .prow,
+    .post-fig,
     .contact > *,
     .site-foot .cta > *
   ).in {

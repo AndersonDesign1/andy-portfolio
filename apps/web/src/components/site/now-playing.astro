@@ -1,20 +1,26 @@
 ---
 /**
- * One quiet line under the hero: what Anderson is playing on Spotify, or
+ * One quiet piece under the hero: what Anderson is playing on Spotify, or
  * played last. Filled in by scripts/site.ts from /api/spotify/now-playing;
  * stays hidden if Spotify has nothing or fails. The cover sits on a little
- * record that spins while a song is playing and rests when it isn't.
+ * record that spins while a song is playing and rests, in grey, when it
+ * isn't. The label above the song says which of the two it is.
  */
 ---
 
 <p class="np" data-now-playing data-state="loading" hidden>
   <span aria-hidden="true" class="vinyl">
-    <span class="disc"><img alt="" class="art" decoding="async" height="16" loading="lazy" width="16" /></span>
+    <span class="disc"><img alt="" class="art" decoding="async" height="18" loading="lazy" width="18" /></span>
     <i class="arm"></i>
   </span>
-  <span>
-    <span data-np-label>Last played</span>:{" "}
-    <a data-np-link href="https://open.spotify.com" rel="noopener" target="_blank"><b data-np-track></b></a>
-    {" "}by <span data-np-artist></span>
+  <span class="np-text">
+    <span class="np-state">
+      <span data-np-label>Last played</span>
+      <span aria-hidden="true" class="eq"><i></i><i></i><i></i></span>
+    </span>
+    <span class="np-song">
+      <a data-np-link href="https://open.spotify.com" rel="noopener" target="_blank"><b data-np-track></b></a>
+      {" "}by <span data-np-artist></span>
+    </span>
   </span>
 </p>

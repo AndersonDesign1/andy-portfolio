@@ -12,7 +12,7 @@ export const prerender = true;
 const documents = await getGraft().listContent("projects");
 const projects = documents.map(toProject).toSorted(compareOrder);
 
-// Everything that isn't one of the four up top, with a line from data/work.ts.
+// Everything that isn't featured up top, with a line from data/work.ts.
 const archive = projects.flatMap((project) => {
   const line = archiveLineFor(project.slug);
 
@@ -34,7 +34,7 @@ const plain = (html: string) => html.replaceAll(/<\/?b>/gu, "");
     <div class="head field12">
       <h1>Things I've designed, built and grown</h1>
       <p>
-        The four I'd show you first, with what I did and what came of it.
+        The ones I'd show you first, with what I did and what came of it.
         Everything else is further down.
       </p>
     </div>
