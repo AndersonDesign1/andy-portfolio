@@ -1,0 +1,19 @@
+---
+/**
+ * The full-size view behind click-to-zoom pictures in blog posts and case
+ * studies. site.ts fills it in and opens it; a native dialog gives us focus
+ * handling and Escape for free.
+ */
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import Icon from "./icon.astro";
+---
+
+<dialog aria-label="Full size picture" class="zoom" data-zoom>
+  <button aria-label="Close picture" class="theme zoom-x" data-zoom-close type="button">
+    <Icon icon={Cancel01Icon} />
+  </button>
+  <figure>
+    <img alt="" data-zoom-img decoding="async" />
+    <figcaption data-zoom-cap></figcaption>
+  </figure>
+</dialog>

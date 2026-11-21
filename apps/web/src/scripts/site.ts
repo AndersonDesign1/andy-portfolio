@@ -568,6 +568,85 @@ const initGalleries = () => {
   }
 };
 
+/* ---------- click to zoom: pictures in blog posts and case studies ---------- */
+
+const ZOOMABLE =
+  ".prose img, .post-fig img, article > .fig > img, .gal .fig > img";
+
+/** A picture's caption: its figure's, or the italic line right under it in a post. */
+const captionFor = (image: HTMLImageElement) => {
+  const figure = image.closest("figure")?.querySelector("figcaption");
+
+  if (figure) {
+    return figure.textContent ?? "";
+  }
+
+  const next = image.closest("p")?.nextElementSibling;
+
+  return next?.matches("p:has(> em:only-child)")
+    ? (next.textContent ?? "")
+    : "";
+};
+
+const initZoom = () => {
+  const view = $<HTMLDialogElement>("[data-zoom]");
+  const big = $<HTMLImageElement>("[data-zoom-img]");
+  const caption = $("[data-zoom-cap]");
+  const closer = $<HTMLButtonElement>("[data-zoom-close]");
+
+  if (!(view && big && caption && closer)) {
+    return;
+  }
+
+  const { signal } = page;
+
+  const open = (image: HTMLImageElement) => {
+    big.src = image.currentSrc || image.src;
+    big.alt = image.alt;
+    caption.textContent = captionFor(image);
+    view.showModal();
+    lenis?.stop();
+    document.body.style.overflow = "hidden";
+  };
+
+  for (const image of $$<HTMLImageElement>(ZOOMABLE)) {
+    image.classList.add("zoomable");
+    image.tabIndex = 0;
+    image.setAttribute("role", "button");
+    image.setAttribute("aria-haspopup", "dialog");
+    image.addEventListener("click", () => open(image), { signal });
+    image.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open(image);
+        }
+      },
+      { signal }
+    );
+  }
+
+  // Anywhere outside the button closes it: the picture, its caption, the dim.
+  view.addEventListener("click", () => view.close(), { signal });
+
+  view.addEventListener(
+    "close",
+    () => {
+      lenis?.start();
+      document.body.style.overflow = "";
+      big.removeAttribute("src");
+    },
+    { signal }
+  );
+
+  signal.addEventListener("abort", () => {
+    if (view.open) {
+      view.close();
+    }
+  });
+};
+
 /* ---------- looping clips: play only on screen, never with reduced motion ---------- */
 
 const initClips = () => {
@@ -949,6 +1028,7 @@ const init = () => {
   initRails();
   initBeforeAfter();
   initGalleries();
+  initZoom();
   initClips();
   initAsk();
 };
