@@ -33,45 +33,35 @@ const external = (href: string) => href.startsWith("http");
 
   <section aria-label="Selected work" class="sec">
     <div class="wrap">
-      <div class="idx">
-        <div class="rows" data-work-rows>
+      <div class="story" data-story style={`--n: ${FEATURED_WORK.length}`}>
+        <div class="story-pin">
           {
-            FEATURED_WORK.map((work) => (
+            FEATURED_WORK.map((work, index) => (
               <a
-                class="row-p"
-                data-go={work.go}
-                data-stack={work.stack}
+                class="story-item"
                 href={work.href}
                 rel={external(work.href) ? "noopener" : undefined}
                 target={external(work.href) ? "_blank" : undefined}
               >
-                <div class="top">
-                  <h2>{work.title}</h2>
-                  <span class="y">{work.year}</span>
+                <div class="story-text">
+                  <div class="top">
+                    <h2>{work.title}</h2>
+                    <span class="y">{work.year}</span>
+                  </div>
+                  <p set:html={work.outcome} />
+                  <span class="small">{work.stack}</span>
+                  <span class="go">
+                    <span class="u">{work.go}</span>{" "}
+                    <span class="arr">{external(work.href) ? <Icon icon={ArrowUpRight01Icon} /> : <Icon icon={ArrowRight01Icon} />}</span>
+                  </span>
                 </div>
-                <p set:html={work.outcome} />
-                <WorkFigure work={work} />
-                <span class="go">
-                  <span class="u">{work.go}</span>{" "}
-                  <span class="arr">{external(work.href) ? <Icon icon={ArrowUpRight01Icon} /> : <Icon icon={ArrowRight01Icon} />}</span>
-                </span>
+                <WorkFigure eager={index === 0} work={work} />
               </a>
             ))
           }
         </div>
-        <div aria-hidden="true" class="stage" data-work-stage>
-          <div class="slot">
-            {FEATURED_WORK.map((work, index) => <WorkFigure eager={index === 0} work={work} />)}
-          </div>
-          <div class="more">
-            <span class="small" data-stage-stack>{FEATURED_WORK[0]?.stack}</span>
-            <a class="go" data-stage-go href={FEATURED_WORK[0]?.href} tabindex="-1"
-              ><span class="u">See it</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
-            >
-          </div>
-        </div>
       </div>
-      <div style="margin-top: 40px">
+      <div class="story-after">
         <a class="go" href="/projects"
           ><span class="u">Everything I've worked on</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
         >

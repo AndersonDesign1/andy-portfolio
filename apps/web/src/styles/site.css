@@ -561,13 +561,6 @@
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  /* work: names on the left, one picture on the right that follows the row you're on */
-  .idx {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 48px;
-    align-items: start;
-  }
   .fig {
     position: relative;
     aspect-ratio: var(--ar, 4 / 3);
@@ -630,113 +623,133 @@
   .frag.term .dim {
     color: var(--mute);
   }
-  .rows {
+  /*
+   * Selected work. On a phone it's a plain list. On a wide screen it pins:
+   * the page keeps scrolling, and each stretch of scroll brings in the next
+   * project's words and picture in the same place.
+   */
+  .story-pin {
     display: grid;
-    gap: 4px;
-    margin-inline: -16px;
+    gap: 64px;
   }
-  .row-p {
+  .story-item {
+    display: grid;
+    gap: 20px;
+  }
+  .story-text {
     display: grid;
     gap: 8px;
-    padding: 20px 16px;
-    border-radius: 16px;
-    transition: background 300ms var(--ease);
+    align-content: start;
   }
-  .row-p .top {
+  .story-text .top {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
   }
-  .row-p h2 {
-    font-size: clamp(24px, 3vw, 34px);
+  .story-text h2 {
+    font-size: clamp(26px, 3.2vw, 40px);
     line-height: 1.1;
     letter-spacing: -0.035em;
-    transition: color 300ms var(--ease);
   }
-  .row-p .y {
+  .story-text .y {
     font-size: 13.5px;
     color: var(--mute);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
-  .row-p p {
+  .story-text p {
     font-size: 16px;
     color: var(--fg-2);
     max-width: 32em;
   }
-  .row-p p b {
+  .story-text p b {
     color: var(--fg);
     font-weight: 560;
   }
-  .row-p .go {
-    margin-top: 4px;
+  .story-text .small {
+    max-width: 28em;
   }
-  .row-p .fig {
-    margin-top: 8px;
+  .story-text .go {
+    margin-top: 6px;
   }
-  .stage {
-    display: none;
+  .story-item:hover .go .u {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .story-after {
+    margin-top: 48px;
   }
   @media (min-width: 900px) {
-    .idx {
+    .story-item {
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
       gap: 56px;
+      align-items: center;
     }
-    .row-p .fig,
-    .row-p .go {
-      display: none;
+    .story-text {
+      align-content: center;
     }
-    .rows.live .row-p h2 {
-      color: var(--faint);
+    .story-text p {
+      font-size: 17px;
     }
-    .rows.live .row-p p {
-      opacity: 0.55;
+    /* site.ts adds `live`; without it the list simply stays a list */
+    .story.live {
+      height: calc(100dvh + (var(--n) - 1) * 70dvh);
     }
-    .rows.live .row-p.on {
-      background: var(--surface);
-    }
-    .rows.live .row-p.on h2 {
-      color: var(--fg);
-    }
-    .rows.live .row-p.on p {
-      opacity: 1;
-    }
-    .row-p p {
-      transition: opacity 300ms var(--ease);
-    }
-    .stage {
-      display: block;
+    .story.live .story-pin {
       position: sticky;
-      top: calc(env(safe-area-inset-top, 0px) + 96px);
+      top: 0;
+      height: 100dvh;
+      padding-top: calc(env(safe-area-inset-top, 0px) + 88px);
+      padding-bottom: 32px;
+      gap: 0;
+      align-items: center;
     }
-    .stage .slot {
-      position: relative;
-      aspect-ratio: 4 / 3;
+    .story.live .story-item {
+      grid-area: 1 / 1;
+      pointer-events: none;
     }
-    .stage .fig {
-      position: absolute;
-      inset: 0;
-      aspect-ratio: auto;
+    .story.live .story-item.on {
+      z-index: 1;
+      pointer-events: auto;
+    }
+    .story.live .story-item .fig {
+      max-height: calc(100dvh - 160px);
+    }
+    .story.live .story-text > *,
+    .story.live .story-item .fig {
       opacity: 0;
-      transform: scale(0.985);
+      transform: translate3d(0, 18px, 0);
       transition:
-        opacity 420ms var(--ease),
-        transform 520ms var(--ease);
+        opacity 380ms var(--ease),
+        transform 560ms var(--ease);
     }
-    .stage .fig.on {
+    .story.live .story-item .fig {
+      transform: translate3d(0, 36px, 0) scale(0.98);
+    }
+    .story.live .story-item.past .story-text > * {
+      transform: translate3d(0, -18px, 0);
+    }
+    .story.live .story-item.past .fig {
+      transform: translate3d(0, -36px, 0) scale(0.98);
+    }
+    .story.live .story-item.on .story-text > *,
+    .story.live .story-item.on .fig {
       opacity: 1;
       transform: none;
+      transition:
+        opacity 520ms var(--ease) 120ms,
+        transform 760ms var(--ease) 80ms;
     }
-    .stage .more {
-      margin-top: 18px;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: baseline;
+    /* the words arrive one after another */
+    .story.live .story-item.on .story-text > :nth-child(2) {
+      transition-delay: 170ms;
     }
-    .stage .more .small {
-      max-width: 24em;
+    .story.live .story-item.on .story-text > :nth-child(3) {
+      transition-delay: 220ms;
+    }
+    .story.live .story-item.on .story-text > :nth-child(4) {
+      transition-delay: 270ms;
     }
   }
 
@@ -2188,7 +2201,7 @@
   :is(
     .hero > *,
     .head,
-    .row-p,
+    .story-item,
     .pr,
     .lists > *,
     .says,
@@ -2213,7 +2226,7 @@
   :is(
     .hero > *,
     .head,
-    .row-p,
+    .story-item,
     .pr,
     .lists > *,
     .says,

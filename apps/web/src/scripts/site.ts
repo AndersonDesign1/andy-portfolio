@@ -288,22 +288,20 @@ const initNowPlaying = () => {
   page.signal.addEventListener("abort", () => window.clearInterval(timer));
 };
 
-/* ---------- home: the work index ---------- */
+/* ---------- home: selected work, told as you scroll ---------- */
 
-const initWorkIndex = () => {
-  const rows = $("[data-work-rows]");
-  const stage = $("[data-work-stage]");
+const STORY_WIDE = "(min-width: 900px)";
 
-  if (!(rows && stage)) {
+const initWorkStory = () => {
+  const story = $("[data-story]");
+
+  if (!story) {
     return;
   }
 
-  const rowEls = $$<HTMLAnchorElement>(".row-p", rows);
-  const figs = $$(".fig", stage);
-  const stack = $("[data-stage-stack]", stage);
-  const go = $<HTMLAnchorElement>("[data-stage-go]", stage);
+  const items = $$<HTMLAnchorElement>(".story-item", story);
+  const wide = window.matchMedia(STORY_WIDE);
   let active = -1;
-  let hovering = false;
 
   const setActive = (index: number) => {
     if (index === active) {
@@ -312,76 +310,68 @@ const initWorkIndex = () => {
 
     active = index;
 
-    for (const [i, row] of rowEls.entries()) {
-      row.classList.toggle("on", i === index);
+    for (const [i, item] of items.entries()) {
+      item.classList.toggle("on", i === index);
+      item.classList.toggle("past", i < index);
     }
+  };
 
-    for (const [i, fig] of figs.entries()) {
-      fig.classList.toggle("on", i === index);
-    }
+  /** How far through the pinned stretch the page is, from 0 to 1. */
+  const progress = () => {
+    const box = story.getBoundingClientRect();
+    const run = box.height - window.innerHeight;
 
-    const row = rowEls[index];
+    return run > 0 ? Math.min(1, Math.max(0, -box.top / run)) : 0;
+  };
 
-    if (stack && row) {
-      stack.textContent = row.dataset.stack ?? "";
-    }
+  /** The page position that shows project `index` in the middle of its stretch. */
+  const scrollFor = (index: number) => {
+    const top = story.getBoundingClientRect().top + window.scrollY;
+    const run = story.offsetHeight - window.innerHeight;
 
-    if (go && row) {
-      go.href = row.href;
-      go.target = row.target;
-      go.rel = row.rel;
-      const label = $(".u", go);
+    return top + ((index + 0.5) / items.length) * run;
+  };
 
-      if (label) {
-        label.textContent = row.dataset.go ?? "See it";
+  const update = () => {
+    const live = wide.matches;
+    story.classList.toggle("live", live);
+
+    if (!live) {
+      active = -1;
+
+      for (const item of items) {
+        item.classList.remove("on", "past");
       }
-    }
-  };
 
-  rows.classList.add("live");
-  setActive(0);
-
-  const enter = (index: number) => {
-    hovering = true;
-    setActive(index);
-  };
-
-  for (const [i, row] of rowEls.entries()) {
-    row.addEventListener("mouseenter", () => enter(i), {
-      signal: page.signal,
-    });
-    row.addEventListener("focus", () => setActive(i), { signal: page.signal });
-  }
-
-  rows.addEventListener(
-    "mouseleave",
-    () => {
-      hovering = false;
-    },
-    { signal: page.signal }
-  );
-
-  onScroll(() => {
-    if (hovering) {
       return;
     }
 
-    const middle = window.innerHeight / 2;
-    let best = 0;
-    let bestDistance = Number.POSITIVE_INFINITY;
+    setActive(
+      Math.min(items.length - 1, Math.floor(progress() * items.length))
+    );
+  };
 
-    for (const [i, row] of rowEls.entries()) {
-      const box = row.getBoundingClientRect();
-      const distance = Math.abs(box.top + box.height / 2 - middle);
-
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        best = i;
-      }
+  /* Tabbing to a project that's out of view scrolls to it. */
+  const bringIn = (index: number) => {
+    if (!wide.matches || index === active) {
+      return;
     }
 
-    setActive(best);
-  });
+    const y = scrollFor(index);
+
+    if (lenis && !reduceMotion()) {
+      lenis.scrollTo(y);
+    } else {
+      window.scrollTo({ top: y });
+    }
+  };
+
+  for (const [i, item] of items.entries()) {
+    item.addEventListener("focus", () => bringIn(i), { signal: page.signal });
+  }
+
+  wide.addEventListener("change", update, { signal: page.signal });
+  onScroll(update);
 };
 
 /* ---------- a rail of buttons that follows the scroll (About, case studies) ---------- */
@@ -570,8 +560,8 @@ const initGalleries = () => {
 
 /* ---------- click to zoom: pictures in blog posts and case studies ---------- */
 
-const ZOOMABLE =
-  ".prose img, .post-fig img, article > .fig > img, .gal .fig > img";
+/** Pictures inside the writing and the galleries. Header pictures stay put. */
+const ZOOMABLE = ".prose img, .gal .fig > img";
 
 /** A picture's caption: its figure's, or the italic line right under it in a post. */
 const captionFor = (image: HTMLImageElement) => {
@@ -880,7 +870,7 @@ const initSmoothScroll = () => {
 const REVEAL = [
   ".hero > *",
   ".head",
-  ".row-p",
+  ".story-item",
   ".pr",
   ".lists > *",
   ".says",
@@ -1024,7 +1014,7 @@ const init = () => {
   initCopy();
   initClock();
   initNowPlaying();
-  initWorkIndex();
+  initWorkStory();
   initRails();
   initBeforeAfter();
   initGalleries();
