@@ -36,6 +36,7 @@
       },
       "suspicious": {
         "noLeakedRender": "off",
+        "useBaseline": "off",
         "noReactForwardRef": "off"
       }
     }

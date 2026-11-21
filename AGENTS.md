@@ -4,12 +4,12 @@
 
 Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 
-| App | Path | Dev port | Role |
-| --- | --- | --- | --- |
-| Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` — live on Vercel |
-| Web (archive) | `apps/web-next` | `3001` | Next.js 16.4 — workspace, local only, same Graft CMS |
-| Shared CMS | `packages/content` | — | Graft schema + MDX for both apps |
-| Student tutor AI | `packages/ai-tutor` | — | Prompts, Neon AI Gateway → OpenRouter fallback, Postgres spend caps. See its README |
+| App              | Path                | Dev port | Role                                                                                |
+| ---------------- | ------------------- | -------- | ----------------------------------------------------------------------------------- |
+| Web (primary)    | `apps/web`          | `3000`   | Astro 7 + React islands + `@astrojs/vercel` — live on Vercel                        |
+| Web (archive)    | `apps/web-next`     | `3001`   | Next.js 16.4 — workspace, local only, same Graft CMS                                |
+| Shared CMS       | `packages/content`  | —        | Graft schema + MDX for both apps                                                    |
+| Student tutor AI | `packages/ai-tutor` | —        | Prompts, Neon AI Gateway → OpenRouter fallback, Postgres spend caps. See its README |
 
 ### Package manager
 
@@ -66,11 +66,11 @@ Next is a **workspace** so `bun dev` / `bun lint` / `bun build` include it. It i
 
 All 18 upstream rules are enabled at `error`. The list lives in one place, `tools/oxlint/anti-slop.shared.mts`, and every workspace below imports it. All are wired into `bun run lint` (turbo):
 
-| Workspace | Config | Rules |
-| --- | --- | --- |
-| `apps/web` | `oxlint.config.ts` | Full Ultracite Oxlint stack + `antiSlopRules` |
+| Workspace           | Config              | Rules                                                |
+| ------------------- | ------------------- | ---------------------------------------------------- |
+| `apps/web`          | `oxlint.config.ts`  | Full Ultracite Oxlint stack + `antiSlopRules`        |
 | `packages/ai-tutor` | `oxlint.config.mts` | `antiSlopOnlyConfig` (anti-slop only; Biome formats) |
-| `packages/content` | `oxlint.config.mts` | `antiSlopOnlyConfig` |
+| `packages/content`  | `oxlint.config.mts` | `antiSlopOnlyConfig`                                 |
 
 `apps/web-next` is **not** covered (Biome only). A dry run found 179 findings there, 161 of them autofixable spacing.
 

@@ -32,7 +32,7 @@ const websiteTypes = [
   { label: "Other", value: "other" },
 ];
 
-const WORD_COUNT_REGEX = /\s+/;
+const WORD_COUNT_REGEX = /\s+/u;
 
 // Zod schema for form validation
 const entrySchema = z.object({
@@ -75,13 +75,13 @@ function GiveawayEntrySidebar({
 }) {
   return (
     <div>
-      <h1 className="font-bold text-5xl text-primary leading-[0.95] tracking-tighter md:text-7xl">
+      <h1 className="text-primary text-5xl leading-[0.95] font-bold tracking-tighter md:text-7xl">
         Enter the
         <br />
         Giveaway
       </h1>
       <div className="flex flex-col gap-8 pt-8">
-        <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
+        <p className="text-secondary max-w-sm text-lg leading-relaxed md:text-xl">
           Fill out the form below to enter. Don&apos;t forget to read the{" "}
           <Link
             className="text-primary transition-opacity hover:opacity-70"
@@ -94,7 +94,7 @@ function GiveawayEntrySidebar({
 
         {timeLeft && (
           <div>
-            <p className="pb-3 font-mono text-muted text-sm uppercase tracking-widest">
+            <p className="text-muted pb-3 font-mono text-sm tracking-widest uppercase">
               {status === "pending"
                 ? "Giveaway starts in"
                 : "Time remaining — Hurry!"}
@@ -106,11 +106,11 @@ function GiveawayEntrySidebar({
 
       <div className="mt-12 flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-muted text-sm uppercase tracking-widest">
+          <span className="text-muted font-mono text-sm tracking-widest uppercase">
             Questions?
           </span>
           <a
-            className="text-lg text-primary transition-opacity hover:opacity-70"
+            className="text-primary text-lg transition-opacity hover:opacity-70"
             href="mailto:contact@andersonjoseph.com"
           >
             contact@andersonjoseph.com
@@ -118,8 +118,8 @@ function GiveawayEntrySidebar({
         </div>
       </div>
 
-      <div className="mt-12 rounded-sm border border-subtle bg-secondary/30 p-6">
-        <p className="mb-3 font-mono text-muted text-xs uppercase tracking-widest">
+      <div className="border-subtle bg-secondary/30 mt-12 rounded-sm border p-6">
+        <p className="text-muted mb-3 font-mono text-xs tracking-widest uppercase">
           Important
         </p>
         <p className="text-secondary text-sm leading-relaxed">
@@ -151,13 +151,13 @@ function GiveawayEntryFields({
     <>
       <div className="flex flex-col gap-2">
         <label
-          className="font-mono text-muted text-xs uppercase tracking-widest"
+          className="text-muted font-mono text-xs tracking-widest uppercase"
           htmlFor="name"
         >
           Name *
         </label>
         <Input
-          className={`rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
+          className={`border-subtle text-primary focus-visible:border-foreground rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
             errors.name ? "border-red-500" : ""
           }`}
           id="name"
@@ -168,19 +168,19 @@ function GiveawayEntryFields({
           value={form.name}
         />
         {errors.name && (
-          <p className="mt-1 font-mono text-red-500 text-xs">{errors.name}</p>
+          <p className="mt-1 font-mono text-xs text-red-500">{errors.name}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-2">
         <label
-          className="font-mono text-muted text-xs uppercase tracking-widest"
+          className="text-muted font-mono text-xs tracking-widest uppercase"
           htmlFor="email"
         >
           Email *
         </label>
         <Input
-          className={`rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
+          className={`border-subtle text-primary focus-visible:border-foreground rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
             errors.email ? "border-red-500" : ""
           }`}
           id="email"
@@ -191,20 +191,20 @@ function GiveawayEntryFields({
           value={form.email}
         />
         {errors.email && (
-          <p className="mt-1 font-mono text-red-500 text-xs">{errors.email}</p>
+          <p className="mt-1 font-mono text-xs text-red-500">{errors.email}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-2">
         <label
-          className="font-mono text-muted text-xs uppercase tracking-widest"
+          className="text-muted font-mono text-xs tracking-widest uppercase"
           htmlFor="websiteType"
         >
           Website Type *
         </label>
         <Select onValueChange={onSelectChange} value={form.websiteType}>
           <SelectTrigger
-            className={`w-full border-subtle bg-transparent text-primary ${
+            className={`border-subtle text-primary w-full bg-transparent ${
               errors.websiteType ? "border-red-500" : ""
             }`}
           >
@@ -220,7 +220,7 @@ function GiveawayEntryFields({
         </Select>
         <input name="websiteType" type="hidden" value={form.websiteType} />
         {errors.websiteType && (
-          <p className="mt-1 font-mono text-red-500 text-xs">
+          <p className="mt-1 font-mono text-xs text-red-500">
             {errors.websiteType}
           </p>
         )}
@@ -228,13 +228,13 @@ function GiveawayEntryFields({
 
       <div className="flex flex-col gap-2">
         <label
-          className="font-mono text-muted text-xs uppercase tracking-widest"
+          className="text-muted font-mono text-xs tracking-widest uppercase"
           htmlFor="projectName"
         >
           Project / Business Name
         </label>
         <Input
-          className="rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60"
+          className="border-subtle text-primary focus-visible:border-foreground rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60"
           id="projectName"
           name="projectName"
           onChange={onChange}
@@ -246,13 +246,13 @@ function GiveawayEntryFields({
 
       <div className="flex flex-col gap-2">
         <label
-          className="font-mono text-muted text-xs uppercase tracking-widest"
+          className="text-muted font-mono text-xs tracking-widest uppercase"
           htmlFor="description"
         >
           Tell me about your project *
         </label>
         <Textarea
-          className={`min-h-[120px] resize-none rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
+          className={`border-subtle text-primary focus-visible:border-foreground min-h-[120px] resize-none rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
             errors.description ? "border-red-500" : ""
           }`}
           id="description"
@@ -263,7 +263,7 @@ function GiveawayEntryFields({
           value={form.description}
         />
         {errors.description && (
-          <p className="mt-1 font-mono text-red-500 text-xs">
+          <p className="mt-1 font-mono text-xs text-red-500">
             {errors.description}
           </p>
         )}
@@ -271,13 +271,13 @@ function GiveawayEntryFields({
 
       <div className="pt-4">
         <Button
-          className="w-full border border-subtle bg-transparent px-8 py-6 text-primary transition-opacity duration-300 hover:opacity-70 md:w-auto"
+          className="border-subtle text-primary w-full border bg-transparent px-8 py-6 transition-opacity duration-300 hover:opacity-70 md:w-auto"
           disabled={isPending}
           type="submit"
         >
           {isPending ? (
             <span className="flex items-center gap-2">
-              <span className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <span className="border-primary size-4 animate-spin rounded-full border-2 border-t-transparent" />
               Submitting…
             </span>
           ) : (
@@ -357,7 +357,7 @@ export default function GiveawayEntryForm() {
   }
 
   return (
-    <section className="min-h-screen bg-primary pt-48 pb-24 md:pt-64">
+    <section className="bg-primary min-h-screen pt-48 pb-24 md:pt-64">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         {/* Back Navigation */}
         <m.div
@@ -366,7 +366,7 @@ export default function GiveawayEntryForm() {
           transition={{ duration: 0.4 }}
         >
           <Link
-            className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
+            className="text-secondary inline-flex items-center gap-2 text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
             <HugeiconsIcon

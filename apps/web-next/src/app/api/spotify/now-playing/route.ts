@@ -1,4 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getSpotifyEnv } from "@/lib/env";
 
 const HTTP_STATUS_NO_CONTENT = 204;

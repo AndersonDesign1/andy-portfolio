@@ -35,7 +35,7 @@ export function ThemeToggle() {
     <Select onValueChange={setTheme} value={theme || "system"}>
       <SelectTrigger
         aria-label="Select theme"
-        className="size-8 rounded-full border-none bg-transparent p-0 text-muted shadow-none ring-offset-0 transition-colors hover:text-primary focus:ring-0 focus:ring-offset-0 [&>span]:hidden"
+        className="text-muted hover:text-primary size-8 rounded-full border-none bg-transparent p-0 shadow-none ring-offset-0 transition-colors focus:ring-0 focus:ring-offset-0 [&>span]:hidden"
         suppressHydrationWarning
       >
         {theme === "light" && (

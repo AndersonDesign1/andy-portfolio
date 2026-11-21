@@ -36,21 +36,21 @@ export async function POST(request: Request) {
 
 Imports come from the module that owns them (there's no barrel file):
 
-| Import path | Exports |
-|---|---|
-| `@andy-portfolio/ai-tutor` | `streamTutorReply`, `generateTutorReply`, `tutorTextResponse`, `TutorUnavailableError`, request/event types |
-| `@andy-portfolio/ai-tutor/postgres-budget` | `PostgresBudgetStore`, `ensureBudgetTable`, `BUDGET_TABLE_SQL` |
-| `@andy-portfolio/ai-tutor/budget` | `BudgetStore`, `MemoryBudgetStore`, `DEFAULT_CAPS`, `currentPeriod` |
-| `@andy-portfolio/ai-tutor/prompts` | `CourseContext`, `buildSystemPrompt`, `MODEL_ADDENDA` |
-| `@andy-portfolio/ai-tutor/models` | `MODELS`, `ROUTES`, `ModelKey`, `ModelProfile` |
-| `@andy-portfolio/ai-tutor/route` | `classifyRequest`, `looksLikeCode` |
+| Import path                                | Exports                                                                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `@andy-portfolio/ai-tutor`                 | `streamTutorReply`, `generateTutorReply`, `tutorTextResponse`, `TutorUnavailableError`, request/event types |
+| `@andy-portfolio/ai-tutor/postgres-budget` | `PostgresBudgetStore`, `ensureBudgetTable`, `BUDGET_TABLE_SQL`                                              |
+| `@andy-portfolio/ai-tutor/budget`          | `BudgetStore`, `MemoryBudgetStore`, `DEFAULT_CAPS`, `currentPeriod`                                         |
+| `@andy-portfolio/ai-tutor/prompts`         | `CourseContext`, `buildSystemPrompt`, `MODEL_ADDENDA`                                                       |
+| `@andy-portfolio/ai-tutor/models`          | `MODELS`, `ROUTES`, `ModelKey`, `ModelProfile`                                                              |
+| `@andy-portfolio/ai-tutor/route`           | `classifyRequest`, `looksLikeCode`                                                                          |
 
 ## How a message is routed
 
-| Message | Order tried |
-|---|---|
-| General question | GPT-6 Luna (Neon) → Claude Haiku 5.5 (Neon) → DeepSeek V4.1 Flash (OpenRouter) → GLM 5.3 Flash (OpenRouter) |
-| Pasted code or mentions an assignment | Claude Haiku 5.5 (Neon) → GPT-6 Luna (Neon) → DeepSeek → GLM |
+| Message                               | Order tried                                                                                                 |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| General question                      | GPT-6 Luna (Neon) → Claude Haiku 5.5 (Neon) → DeepSeek V4.1 Flash (OpenRouter) → GLM 5.3 Flash (OpenRouter) |
+| Pasted code or mentions an assignment | Claude Haiku 5.5 (Neon) → GPT-6 Luna (Neon) → DeepSeek → GLM                                                |
 
 "Pasted code" means a fenced code block or at least two lines with code-only syntax (`x = 1`, `print(x)`, `if (`, `for i in range(3):`, a line ending in `;` or `{`). Prose that merely uses words like "if" or "return" stays on the general route.
 
@@ -73,11 +73,11 @@ Caps are enforced only when the caller passes a `budget` store. Without one, not
 
 Before each provider call the tutor **reserves** that attempt's worst-case cost (full prompt uncached plus the whole output budget). The reservation is a single atomic statement that only succeeds if the total stays under the cap, so simultaneous replies can't overshoot it. Afterwards it **settles** to the real cost:
 
-| Outcome | Settled to |
-|---|---|
+| Outcome                                   | Settled to                                                            |
+| ----------------------------------------- | --------------------------------------------------------------------- |
 | Answered, or finished with an empty reply | real cost (OpenRouter's billed figure, otherwise list price × tokens) |
-| Error or rate limit before any output | 0 (reservation released) |
-| Timeout, or failure after text was sent | the full reservation (tokens were probably billed) |
+| Error or rate limit before any output     | 0 (reservation released)                                              |
+| Timeout, or failure after text was sent   | the full reservation (tokens were probably billed)                    |
 
 If the store can't be reached when reserving, that model is skipped (fail closed), so a database outage can't turn into unbounded spend. If settling fails after the student already has the reply, the error is logged and the reply still completes; the leftover reservation keeps the cap conservative.
 
@@ -111,11 +111,11 @@ The base prompt comes first and stays identical between requests, so providers b
 
 The importing app (or its deployment) must provide these. The package doesn't load any `.env` file itself; only its own test scripts read `packages/ai-tutor/.env.local` and the root `.env.local`.
 
-| Variable | Needed for | Local source for the tests |
-|---|---|---|
-| `NEON_AI_GATEWAY_BASE_URL`, `NEON_AI_GATEWAY_TOKEN` | Luna and Haiku | `packages/ai-tutor/.env.local`, from `neon link` / `neon deploy` (project `student-submissions`, branch `main`) |
-| `DATABASE_URL` | `PostgresBudgetStore` | same file, from `neon link` / `neon env pull` |
-| `OPENROUTER_API_KEY` | DeepSeek and GLM | repo root `.env.local` |
+| Variable                                            | Needed for            | Local source for the tests                                                                                      |
+| --------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `NEON_AI_GATEWAY_BASE_URL`, `NEON_AI_GATEWAY_TOKEN` | Luna and Haiku        | `packages/ai-tutor/.env.local`, from `neon link` / `neon deploy` (project `student-submissions`, branch `main`) |
+| `DATABASE_URL`                                      | `PostgresBudgetStore` | same file, from `neon link` / `neon env pull`                                                                   |
+| `OPENROUTER_API_KEY`                                | DeepSeek and GLM      | repo root `.env.local`                                                                                          |
 
 ## Tests
 

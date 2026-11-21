@@ -36,20 +36,20 @@ export default function WorkHistory() {
         <div className="grid grid-cols-1 gap-20 md:grid-cols-2 md:gap-32">
           {/* Experience Column */}
           <div>
-            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <h2 className="border-subtle text-secondary border-b pb-4 font-mono text-sm tracking-widest uppercase">
               Experience
             </h2>
             <div className="flex flex-col gap-12 pt-12">
               {filteredExperience.map((job) => (
                 <div key={job.id}>
                   <div className="flex flex-col gap-1">
-                    <h3 className="font-medium text-lg text-primary leading-tight">
+                    <h3 className="text-primary text-lg leading-tight font-medium">
                       {job.company}
                     </h3>
-                    <p className="pb-2 text-secondary text-sm">
+                    <p className="text-secondary pb-2 text-sm">
                       {job.position}
                     </p>
-                    <p className="pb-4 font-mono text-muted text-xs">
+                    <p className="text-muted pb-4 font-mono text-xs">
                       {formatDate(job.startDate)} —{" "}
                       {job.endDate ? formatDate(job.endDate) : "Present"}
                     </p>
@@ -61,14 +61,14 @@ export default function WorkHistory() {
             {/* Resume Button */}
             <div className="pt-12">
               <Link
-                className="group inline-flex items-center gap-2 rounded-sm border border-subtle px-6 py-3 font-medium text-primary text-sm transition-all duration-300 ease-out hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm"
+                className="group border-subtle text-primary hover:border-primary hover:bg-secondary/50 inline-flex items-center gap-2 rounded-sm border px-6 py-3 text-sm font-medium transition-all duration-300 ease-out hover:backdrop-blur-sm"
                 href="/Anderson Joseph Resume.pdf"
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 View Resume
                 <HugeiconsIcon
-                  className="text-muted transition-colors duration-200 ease-out group-hover:text-primary"
+                  className="text-muted group-hover:text-primary transition-colors duration-200 ease-out"
                   color="currentColor"
                   icon={ArrowUpRight01Icon}
                   size={16}
@@ -80,18 +80,18 @@ export default function WorkHistory() {
 
           {/* Education Column */}
           <div>
-            <h2 className="border-subtle border-b pb-4 font-mono text-secondary text-sm uppercase tracking-widest">
+            <h2 className="border-subtle text-secondary border-b pb-4 font-mono text-sm tracking-widest uppercase">
               Education
             </h2>
             <div className="flex flex-col gap-12 pt-12">
               {education.map((edu) => (
                 <div key={edu.id}>
                   <div className="flex flex-col gap-1">
-                    <h3 className="font-medium text-lg text-primary leading-tight">
+                    <h3 className="text-primary text-lg leading-tight font-medium">
                       {edu.institution}
                     </h3>
-                    <p className="pb-2 text-secondary text-sm">{edu.degree}</p>
-                    <p className="font-mono text-muted text-xs">
+                    <p className="text-secondary pb-2 text-sm">{edu.degree}</p>
+                    <p className="text-muted font-mono text-xs">
                       {formatDate(edu.startDate)} —{" "}
                       {edu.endDate ? formatDate(edu.endDate) : "Present"}
                     </p>

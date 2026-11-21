@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, m, type Variants } from "motion/react";
+import type { Variants } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -75,9 +76,9 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
   const otherProjects = filteredProjects.slice(4);
 
   return (
-    <div className="min-h-screen bg-primary pt-40 md:pt-48">
+    <div className="bg-primary min-h-screen pt-40 md:pt-48">
       <div className="mx-auto max-w-screen-xl px-6 md:px-12">
-        <h1 className="font-bold text-6xl text-primary tracking-tighter md:text-8xl">
+        <h1 className="text-primary text-6xl font-bold tracking-tighter md:text-8xl">
           Selected Work
         </h1>
 
@@ -85,7 +86,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
         <div className="flex flex-col gap-20 pt-16">
           <div>
             <Select onValueChange={setActiveCategory} value={activeCategory}>
-              <SelectTrigger className="w-full border-subtle bg-transparent text-primary md:w-[200px]">
+              <SelectTrigger className="border-subtle text-primary w-full bg-transparent md:w-[200px]">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
@@ -124,7 +125,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Project Image */}
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-sm bg-secondary/5">
+                  <div className="bg-secondary/5 relative aspect-[16/10] overflow-hidden rounded-sm">
                     {project.links.caseStudy ? (
                       <Link
                         className="block h-full w-full"
@@ -159,35 +160,35 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                           className="group/title"
                           href={project.links.caseStudy}
                         >
-                          <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70">
+                          <h3 className="text-primary text-xl font-medium transition-opacity duration-300 group-hover:opacity-70">
                             {project.title}
                           </h3>
                         </Link>
                       ) : (
-                        <h3 className="font-medium text-primary text-xl transition-opacity duration-300 group-hover:opacity-70">
+                        <h3 className="text-primary text-xl font-medium transition-opacity duration-300 group-hover:opacity-70">
                           {project.title}
                         </h3>
                       )}
 
-                      <span className="font-mono text-muted text-xs uppercase tracking-widest">
+                      <span className="text-muted font-mono text-xs tracking-widest uppercase">
                         {project.type === "case-study"
                           ? "Case Study"
                           : "Project"}
                       </span>
                     </div>
 
-                    <p className="line-clamp-3 text-base text-secondary leading-relaxed">
+                    <p className="text-secondary line-clamp-3 text-base leading-relaxed">
                       {project.description}
                     </p>
 
-                    <div className="mt-auto flex items-center justify-between border-subtle border-t pt-4">
-                      <p className="max-w-[60%] truncate font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary">
+                    <div className="border-subtle mt-auto flex items-center justify-between border-t pt-4">
+                      <p className="text-muted group-hover:text-primary max-w-[60%] truncate font-mono text-xs tracking-wider uppercase transition-colors duration-300">
                         {project.techStack.slice(0, 3).join(" / ")}
                       </p>
                       <div className="flex gap-6">
                         {project.links.caseStudy && (
                           <Link
-                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            className="text-primary text-sm font-medium transition-opacity hover:opacity-70"
                             href={project.links.caseStudy}
                           >
                             Read Case Study
@@ -195,7 +196,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                         )}
                         {project.links.live && (
                           <Link
-                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            className="text-primary text-sm font-medium transition-opacity hover:opacity-70"
                             href={project.links.live}
                             rel="noopener noreferrer"
                             target="_blank"
@@ -205,7 +206,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                         )}
                         {project.links.github && (
                           <Link
-                            className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                            className="text-primary text-sm font-medium transition-opacity hover:opacity-70"
                             href={project.links.github}
                             rel="noopener noreferrer"
                             target="_blank"
@@ -229,20 +230,20 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
               initial={{ opacity: 0, y: 30 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <h2 className="pb-12 font-mono text-muted text-xs uppercase tracking-widest">
+              <h2 className="text-muted pb-12 font-mono text-xs tracking-widest uppercase">
                 Freelance & Individual Projects
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 {otherProjects.map((project, index) => (
                   <m.div
-                    className="group grid grid-cols-1 items-start gap-4 border-subtle border-t py-6 transition-colors hover:bg-secondary/5 md:grid-cols-12 md:items-center"
+                    className="group border-subtle hover:bg-secondary/5 grid grid-cols-1 items-start gap-4 border-t py-6 transition-colors md:grid-cols-12 md:items-center"
                     initial={{ opacity: 0, y: 10 }}
                     key={project.slug}
                     transition={{ delay: index * 0.05 }}
                     whileInView={{ opacity: 1, y: 0 }}
                   >
                     {/* Title - 3 columns */}
-                    <h3 className="font-medium text-lg text-primary transition-opacity duration-300 group-hover:opacity-70 md:col-span-3">
+                    <h3 className="text-primary text-lg font-medium transition-opacity duration-300 group-hover:opacity-70 md:col-span-3">
                       {project.title}
                     </h3>
 
@@ -252,7 +253,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                     </p>
 
                     {/* Tech Stack - 2 columns */}
-                    <p className="font-mono text-muted text-xs uppercase tracking-wider transition-colors duration-300 group-hover:text-primary md:col-span-2">
+                    <p className="text-muted group-hover:text-primary font-mono text-xs tracking-wider uppercase transition-colors duration-300 md:col-span-2">
                       {project.techStack.slice(0, 3).join(" / ")}
                     </p>
 
@@ -260,7 +261,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                     <div className="flex items-center justify-start gap-6 md:col-span-2 md:justify-end">
                       {project.links.live && (
                         <Link
-                          className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                          className="text-primary text-sm font-medium transition-opacity hover:opacity-70"
                           href={project.links.live}
                           rel="noopener noreferrer"
                           target="_blank"
@@ -270,7 +271,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
                       )}
                       {project.links.github && (
                         <Link
-                          className="font-medium text-primary text-sm transition-opacity hover:opacity-70"
+                          className="text-primary text-sm font-medium transition-opacity hover:opacity-70"
                           href={project.links.github}
                           rel="noopener noreferrer"
                           target="_blank"
@@ -287,7 +288,7 @@ const ProjectsShowcase = ({ projects }: { projects: Project[] }) => {
 
           {filteredProjects.length === 0 && (
             <div className="py-24 text-center">
-              <p className="text-lg text-secondary">
+              <p className="text-secondary text-lg">
                 No projects found in this category.
               </p>
             </div>

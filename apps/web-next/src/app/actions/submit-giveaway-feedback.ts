@@ -14,10 +14,10 @@ function escapeHtml(text: string): string {
     "<": "&lt;",
     ">": "&gt;",
   };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+  return text.replace(/[&<>"']/gu, (m) => map[m]);
 }
 
-const WORD_COUNT_REGEX = /\s+/;
+const WORD_COUNT_REGEX = /\s+/u;
 
 const feedbackSchema = z.object({
   benefits: z
@@ -71,12 +71,12 @@ export async function submitGiveawayFeedback(formData: FormData) {
   const safeName = name ? escapeHtml(name) : "N/A";
   const safeEmail = escapeHtml(email);
   const safeBrandDescription = escapeHtml(brandDescription).replace(
-    /\n/g,
+    /\n/gu,
     "<br/>"
   );
-  const safeFeatures = escapeHtml(features).replace(/\n/g, "<br/>");
+  const safeFeatures = escapeHtml(features).replace(/\n/gu, "<br/>");
   const safeDomainStatus = escapeHtml(domainStatus ?? "");
-  const safeBenefits = escapeHtml(benefits).replace(/\n/g, "<br/>");
+  const safeBenefits = escapeHtml(benefits).replace(/\n/gu, "<br/>");
 
   try {
     const resend = getResend();

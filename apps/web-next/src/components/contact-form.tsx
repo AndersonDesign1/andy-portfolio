@@ -76,28 +76,28 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
+    <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-32">
           {/* Header */}
           <div>
-            <h1 className="font-bold text-6xl text-primary leading-[0.9] tracking-tighter md:text-8xl">
+            <h1 className="text-primary text-6xl leading-[0.9] font-bold tracking-tighter md:text-8xl">
               Let&apos;s
               <br />
               talk.
             </h1>
             <div className="flex flex-col gap-12 pt-8">
-              <p className="max-w-sm text-lg text-secondary leading-relaxed md:text-xl">
+              <p className="text-secondary max-w-sm text-lg leading-relaxed md:text-xl">
                 Have a project in mind or want to collaborate? I&apos;m
                 currently open to new opportunities.
               </p>
 
               <div className="flex flex-col gap-4">
-                <span className="font-mono text-muted text-sm uppercase tracking-widest">
+                <span className="text-muted font-mono text-sm tracking-widest uppercase">
                   Email
                 </span>
                 <a
-                  className="text-primary text-xl transition-colors hover:text-accent"
+                  className="text-primary hover:text-accent text-xl transition-colors"
                   href="mailto:contact@andersonjoseph.com"
                 >
                   contact@andersonjoseph.com
@@ -156,13 +156,13 @@ export default function ContactForm() {
             ].map((field) => (
               <div className="flex flex-col gap-2" key={field.name}>
                 <label
-                  className="font-mono text-muted text-xs uppercase tracking-widest"
+                  className="text-muted font-mono text-xs tracking-widest uppercase"
                   htmlFor={field.name}
                 >
                   {field.label} {field.label !== "Subject" && "*"}
                 </label>
                 <Input
-                  className={`rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
+                  className={`border-subtle text-primary focus-visible:border-foreground rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
                     field.error ? "border-red-500" : ""
                   }`}
                   id={field.name}
@@ -173,7 +173,7 @@ export default function ContactForm() {
                   value={field.value}
                 />
                 {field.error && (
-                  <p className="mt-1 font-mono text-red-500 text-xs">
+                  <p className="mt-1 font-mono text-xs text-red-500">
                     {field.error}
                   </p>
                 )}
@@ -182,13 +182,13 @@ export default function ContactForm() {
 
             <div className="flex flex-col gap-2">
               <label
-                className="font-mono text-muted text-xs uppercase tracking-widest"
+                className="text-muted font-mono text-xs tracking-widest uppercase"
                 htmlFor="message"
               >
                 Message *
               </label>
               <Textarea
-                className={`min-h-[150px] resize-none rounded-none border-subtle border-x-0 border-t-0 border-b bg-transparent px-0 py-2 text-primary placeholder:text-neutral-500/60 focus-visible:border-foreground focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
+                className={`border-subtle text-primary focus-visible:border-foreground min-h-[150px] resize-none rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 py-2 placeholder:text-neutral-500/60 focus-visible:ring-0 dark:placeholder:text-neutral-400/60 ${
                   errors.message ? "border-red-500" : ""
                 }`}
                 id="message"
@@ -199,7 +199,7 @@ export default function ContactForm() {
                 value={form.message}
               />
               {errors.message && (
-                <p className="mt-1 font-mono text-red-500 text-xs">
+                <p className="mt-1 font-mono text-xs text-red-500">
                   {errors.message}
                 </p>
               )}
@@ -207,13 +207,13 @@ export default function ContactForm() {
 
             <div className="pt-8">
               <Button
-                className="w-full border border-subtle bg-transparent px-8 py-6 text-primary transition-all duration-300 hover:border-primary hover:bg-secondary/50 hover:backdrop-blur-sm md:w-auto"
+                className="border-subtle text-primary hover:border-primary hover:bg-secondary/50 w-full border bg-transparent px-8 py-6 transition-all duration-300 hover:backdrop-blur-sm md:w-auto"
                 disabled={isPending}
                 type="submit"
               >
                 {isPending ? (
                   <span className="flex items-center gap-2">
-                    <span className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <span className="border-primary size-4 animate-spin rounded-full border-2 border-t-transparent" />
                     Sending…
                   </span>
                 ) : (

@@ -41,11 +41,11 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative border-subtle border-t bg-primary py-12 md:py-24">
+    <footer className="border-subtle bg-primary relative border-t py-12 md:py-24">
       <div className="mx-auto flex max-w-screen-lg flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
         {/* Copyright - Left aligned on desktop */}
         <p
-          className="order-2 font-mono text-muted text-sm tracking-tight md:order-1"
+          className="text-muted order-2 font-mono text-sm tracking-tight md:order-1"
           suppressHydrationWarning
         >
           © {CURRENT_YEAR} Anderson Joseph
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
           {socialLinks.map((link) => (
             <a
               aria-label={link.label}
-              className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
+              className="text-muted hover:text-accent transition-all duration-200 ease-out hover:-translate-y-[3px]"
               href={link.href}
               key={link.href}
               rel="noopener noreferrer"
@@ -74,10 +74,8 @@ const Footer: React.FC = () => {
                     />
                   );
                 }
-                if (CustomIcon) {
-                  return <CustomIcon className="size-4" />;
-                }
-                return null;
+                // biome-ignore lint/suspicious/noUnnecessaryConditions: socialLinks is a union, so customIcon can be undefined for the GitHub and LinkedIn entries
+                return CustomIcon ? <CustomIcon className="size-4" /> : null;
               })()}
             </a>
           ))}
