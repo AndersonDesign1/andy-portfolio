@@ -1856,6 +1856,12 @@
   .prose p:has(> img) img {
     display: block;
   }
+  /* An italic line right under a picture is its caption. */
+  .prose p:has(> img) + p:has(> em:only-child) {
+    margin-top: -1.25em;
+    font-size: 15px;
+    color: var(--mute);
+  }
   .prose img {
     width: 100%;
     height: auto;
