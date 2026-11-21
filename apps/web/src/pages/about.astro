@@ -1,4 +1,6 @@
 ---
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "../components/site/icon.astro";
 import BaseLayout from "../layouts/base-layout.astro";
 
 export const prerender = true;
@@ -124,7 +126,7 @@ const chapters = [
         <div class="actions">
           <a class="btn solid" href="/projects">See my work</a>
           <a class="go" href="/contact"
-            ><span class="u">Or say hello</span> <span class="arr">→</span></a
+            ><span class="u">Or say hello</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
           >
         </div>
       </div>

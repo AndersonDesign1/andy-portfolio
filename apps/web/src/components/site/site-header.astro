@@ -1,4 +1,7 @@
 ---
+import { Cancel01Icon, Menu01Icon, Moon02Icon, Sun01Icon } from "@hugeicons/core-free-icons";
+import Icon from "./icon.astro";
+
 interface Props {
   pathname: string;
 }
@@ -8,10 +11,12 @@ const { pathname } = Astro.props;
 const links = [
   { href: "/projects", label: "Work", match: /^\/(?:projects|case-studies)(?:\/|$)/u },
   { href: "/about", label: "About", match: /^\/about\/?$/u },
-  { className: "ext", href: "/blog", label: "Blog", match: /^\/blog(?:\/|$)/u },
+  { href: "/blog", label: "Blog", match: /^\/blog(?:\/|$)/u },
   { href: "/ai", label: "AI", match: /^\/ai\/?$/u },
   { href: "/contact", label: "Contact", match: /^\/contact\/?$/u },
 ];
+
+const menuLinks = [{ href: "/", label: "Home", match: /^\/$/u }, ...links];
 ---
 
 <header class="site-top">
@@ -22,22 +27,48 @@ const links = [
     <nav aria-label="Main" class="site-nav">
       {
         links.map((link) => (
-          <a
-            aria-current={link.match.test(pathname) ? "page" : undefined}
-            class={link.className}
-            href={link.href}
-          >
+          <a aria-current={link.match.test(pathname) ? "page" : undefined} href={link.href}>
             {link.label}
           </a>
         ))
       }
-      <button aria-label="Switch theme" class="theme" data-theme-toggle type="button">
-        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 16 16"
-          ><circle cx="8" cy="8" r="5.5"></circle><path
-            d="M8 2.5v11A5.5 5.5 0 0 0 8 2.5z"
-            fill="currentColor"></path></svg
-        >
-      </button>
     </nav>
+    <div class="top-tools">
+      <button aria-label="Switch theme" class="theme" data-theme-toggle type="button">
+        <Icon class="to-dark" icon={Moon02Icon} />
+        <Icon class="to-light" icon={Sun01Icon} />
+      </button>
+      <button
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        aria-label="Open menu"
+        class="theme menu-btn"
+        data-menu-open
+        type="button"
+      >
+        <Icon icon={Menu01Icon} />
+      </button>
+    </div>
   </div>
 </header>
+
+<div aria-label="Menu" aria-modal="true" class="m-menu" data-menu hidden id="mobile-menu" role="dialog">
+  <div class="m-menu-top">
+    <button aria-label="Close menu" class="theme" data-menu-close type="button">
+      <Icon icon={Cancel01Icon} />
+    </button>
+  </div>
+  <nav aria-label="Mobile" class="m-menu-links">
+    {
+      menuLinks.map((link, index) => (
+        <a
+          aria-current={link.match.test(pathname) ? "page" : undefined}
+          href={link.href}
+          style={`--i: ${index}`}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</div>

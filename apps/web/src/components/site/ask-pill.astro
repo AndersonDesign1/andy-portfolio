@@ -4,7 +4,9 @@
  * to /ai?q=…, where the real chat answers it. Without JavaScript the form
  * still posts to /ai with the question.
  */
+import { ArrowUp02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { ASK_SUGGESTIONS } from "../../lib/site";
+import Icon from "./icon.astro";
 ---
 
 <div class="ask" data-ask>
@@ -21,9 +23,7 @@ import { ASK_SUGGESTIONS } from "../../lib/site";
     <div class="ask-top">
       <span aria-hidden="true" class="mini-orb"></span>Ask Andy's AI
       <button aria-label="Close" class="x" data-ask-close type="button">
-        <svg fill="none" height="12" stroke="currentColor" stroke-width="1.5" viewBox="0 0 12 12" width="12"
-          ><path d="M2 2l8 8M10 2l-8 8"></path></svg
-        >
+        <Icon icon={Cancel01Icon} size={14} />
       </button>
     </div>
     <textarea
@@ -37,9 +37,7 @@ import { ASK_SUGGESTIONS } from "../../lib/site";
         {ASK_SUGGESTIONS.map((suggestion) => <button type="button">{suggestion}</button>)}
       </div>
       <button aria-label="Ask" class="ask-send" disabled type="submit">
-        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 16 16"
-          ><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5"></path></svg
-        >
+        <Icon icon={ArrowUp02Icon} strokeWidth={1.8} />
       </button>
     </div>
   </form>

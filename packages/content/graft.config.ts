@@ -298,23 +298,6 @@ export const caseStudies = defineCollection({
           description: "One line above the before/after switch.",
           maxLength: MAX_LINE_LENGTH,
         }),
-        decisions: field.array({
-          description:
-            "Why I chose what I chose: a short heading and one line.",
-          maxItems: 6,
-          of: field.object({
-            fields: {
-              body: field.string({
-                description: "One line on why.",
-                maxLength: MAX_LINE_LENGTH,
-              }),
-              heading: field.string({
-                description: "The choice.",
-                maxLength: MAX_LABEL_LENGTH,
-              }),
-            },
-          }),
-        }),
         extra: field.string({
           description: "Optional line under the numbers.",
           maxLength: MAX_LINE_LENGTH,
@@ -400,8 +383,10 @@ export const caseStudies = defineCollection({
                 optional: true,
               }),
               when: field.string({
-                description: "How long it took, e.g. 2 weeks.",
+                description:
+                  "How long it took, e.g. 2 weeks. Leave it out when the step simply kept going.",
                 maxLength: MAX_LABEL_LENGTH,
+                optional: true,
               }),
             },
           }),

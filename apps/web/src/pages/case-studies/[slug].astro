@@ -1,4 +1,6 @@
 ---
+import { ArrowLeft01Icon, ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "../../components/site/icon.astro";
 import MediaSlot from "../../components/site/media-slot.astro";
 import BaseLayout from "../../layouts/base-layout.astro";
 import { getGraft } from "../../lib/graft";
@@ -61,7 +63,7 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
   title={`${story.title}: a case study`}
 >
   <article class="wrap">
-    <a class="cs-back" href="/projects"><span class="arr">←</span> All my work</a>
+    <a class="cs-back" href="/projects"><span class="arr"><Icon icon={ArrowLeft01Icon} /></span> All my work</a>
     <header class="cs-head field12">
       <h1>{story.title}</h1>
       <p class="ov">{story.overview}</p>
@@ -71,7 +73,7 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
         {
           live && (
             <a class="u" href={live.href} rel="noopener" target="_blank">
-              {live.hostname.replace(/^www\./u, "")} ↗
+              {live.hostname.replace(/^www\./u, "")} <span class="arr"><Icon icon={ArrowUpRight01Icon} /></span>
             </a>
           )
         }
@@ -153,7 +155,7 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
           {
             story.steps.map((step) => (
               <div class="step">
-                <span class="when">{step.when}</span>
+                {step.when && <span class="when">{step.when}</span>}
                 <h2>{step.heading}</h2>
                 <p>{step.body}</p>
               </div>
@@ -170,26 +172,10 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
       </div>
     </section>
 
-    {
-      story.decisions.length > 0 && (
-        <section aria-label="Decisions" class="says field12">
-          <p class="big">Why I chose what I chose.</p>
-          <div class="prs">
-            {story.decisions.map((decision) => (
-              <div class="pr">
-                <h3>{decision.heading}</h3>
-                <p>{decision.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )
-    }
-
     <section aria-label="Pictures" class="sec">
       <div class="gal-nav" data-gal-nav="#gallery">
-        <button aria-label="Previous pictures" data-g="-1" type="button">←</button>
-        <button aria-label="Next pictures" data-g="1" type="button">→</button>
+        <button aria-label="Previous pictures" data-g="-1" type="button"><Icon icon={ArrowLeft01Icon} /></button>
+        <button aria-label="Next pictures" data-g="1" type="button"><Icon icon={ArrowRight01Icon} /></button>
       </div>
       <div class="gal" id="gallery">
         {
@@ -211,7 +197,7 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
         <a class="cs-next" href={`/case-studies/${next.slug}`}>
           <span class="small">Next</span>
           <b>
-            {next.title} <span class="arr">→</span>
+            {next.title} <span class="arr"><Icon icon={ArrowRight01Icon} /></span>
           </b>
         </a>
       )

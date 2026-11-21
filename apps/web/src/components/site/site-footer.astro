@@ -1,4 +1,6 @@
 ---
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "./icon.astro";
 import { SOCIAL_LINKS } from "../../lib/site";
 import CopyEmail from "./copy-email.astro";
 
@@ -9,11 +11,9 @@ interface Props {
 
 const { hideCta = false } = Astro.props;
 
-// Build time: the site is static, so this is when it was last published.
+// Build time: the site is static, so this is the year it was last published.
 const builtAt = () => new Date();
-const built = builtAt();
-const year = built.getFullYear();
-const updated = built.toLocaleDateString("en-GB", { month: "short", timeZone: "Africa/Lagos", year: "numeric" });
+const year = builtAt().getFullYear();
 ---
 
 <footer class:list={["site-foot", { "no-cta": hideCta }]}>
@@ -28,7 +28,7 @@ const updated = built.toLocaleDateString("en-GB", { month: "short", timeZone: "A
           </p>
           <div class="actions">
             <a class="btn solid" href="/contact">
-              Get in touch <span class="arr">→</span>
+              Get in touch <span class="arr"><Icon icon={ArrowRight01Icon} /></span>
             </a>
             <CopyEmail look="go" />
           </div>
@@ -48,7 +48,6 @@ const updated = built.toLocaleDateString("en-GB", { month: "short", timeZone: "A
       <div class="fine small">
         <span>© {year} Anderson Joseph</span>
         <span>Nigeria <time class="clock" data-lagos-clock>--:--</time></span>
-        <span>Updated {updated}</span>
         <span>Built with Astro and Graft</span>
       </div>
     </div>

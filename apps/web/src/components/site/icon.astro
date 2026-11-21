@@ -1,0 +1,46 @@
+---
+/**
+ * A Hugeicons icon, drawn at build time so the static pages ship plain SVG
+ * and no React. The same library the AI page uses through @hugeicons/react.
+ */
+import type { IconSvgElement } from "@hugeicons/react";
+
+interface Props {
+  class?: string;
+  icon: IconSvgElement;
+  /** Defaults to 1em, so the icon follows the text around it. */
+  size?: number | string;
+  strokeWidth?: number;
+}
+
+const { class: className, icon, size = "1em", strokeWidth = 1.5 } = Astro.props;
+
+const kebab = (name: string) => name.replaceAll(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
+
+const toSvgAttrs = (attrs: IconSvgElement[number][1]) => {
+  const out: Record<string, number | string> = {};
+
+  for (const [name, value] of Object.entries(attrs)) {
+    if (name !== "key") {
+      out[kebab(name)] = name === "strokeWidth" ? strokeWidth : value;
+    }
+  }
+
+  return out;
+};
+
+const paths = icon.map(([tag, attrs]) => ({ attrs: toSvgAttrs(attrs), tag }));
+---
+
+<svg
+  aria-hidden="true"
+  class:list={["hi", className]}
+  fill="none"
+  focusable="false"
+  height={size}
+  viewBox="0 0 24 24"
+  width={size}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {paths.map(({ attrs, tag: Tag }) => <Tag {...attrs} />)}
+</svg>

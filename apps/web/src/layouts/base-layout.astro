@@ -73,7 +73,11 @@ const hideCta = /^\/contact\/?$/u.test(pathname);
       (() => {
         const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
+        const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+
         const apply = (root) => {
+          root.classList.toggle("motion", !calm.matches);
+
           try {
             const t = localStorage.getItem("andy-theme");
             const d = t === "dark" || ((!t || t === "system") && darkScheme.matches);

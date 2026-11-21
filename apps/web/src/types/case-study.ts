@@ -10,7 +10,6 @@ export interface CaseStoryMedia {
 /** The case study as told on the page, in Anderson's own voice. */
 export interface CaseStory {
   compare: string;
-  decisions: { body: string; heading: string }[];
   extra?: string;
   media?: CaseStoryMedia[];
   overview: string;
@@ -20,7 +19,8 @@ export interface CaseStory {
     heading: string;
     name: string;
     weeks?: number;
-    when: string;
+    /** How long the step took. Left out when it simply kept going. */
+    when?: string;
   }[];
   title: string;
   tools: string;

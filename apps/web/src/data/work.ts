@@ -63,6 +63,19 @@ export const FEATURED_WORK: FeaturedWork[] = [
     title: "Flik",
     year: "Dec 2025 – now",
   },
+  {
+    go: "Visit MykroGrid",
+    href: "https://mykrogrid.com",
+    image: {
+      alt: "The MykroGrid homepage: solar panels over a rooftop, under the line Powering Nigeria's Growth",
+      src: "/mykrogrid.webp",
+    },
+    outcome:
+      "The site for a clean energy company that builds and runs solar grids for <b>hospitals</b>, <b>universities</b>, homes and markets across Nigeria.",
+    stack: "Clean energy, Nigeria",
+    title: "MykroGrid",
+    year: "2026",
+  },
 ];
 
 interface ArchiveLine {

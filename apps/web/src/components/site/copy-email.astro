@@ -1,6 +1,8 @@
 ---
 /** Copies the email address, with a check that swaps in for a moment. Wired up in site-scripts.ts. */
+import { Copy01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { CONTACT_EMAIL } from "../../lib/site";
+import Icon from "./icon.astro";
 
 interface Props {
   /** "solid" is the filled pill; "go" is the quiet text link. */
@@ -19,13 +21,8 @@ const { look = "solid", showAddress = false } = Astro.props;
   type="button"
 >
   <span aria-hidden="true" class="ic">
-    <svg class="cp" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 16 16"
-      ><rect height="8.5" rx="2" width="8.5" x="5" y="5"></rect><path
-        d="M3 10.5V4a1.5 1.5 0 0 1 1.5-1.5H11"></path></svg
-    >
-    <svg class="ok" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 16 16"
-      ><path d="M3.5 8.5l3 3 6-7"></path></svg
-    >
+    <Icon class="cp" icon={Copy01Icon} />
+    <Icon class="ok" icon={Tick02Icon} />
   </span>
   <span class="lbl">Copy email</span>
   {showAddress && <span class="addr">{CONTACT_EMAIL}</span>}

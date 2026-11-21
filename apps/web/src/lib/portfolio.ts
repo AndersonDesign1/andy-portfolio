@@ -58,10 +58,6 @@ const listSentence = (items: string[]) =>
 export const storyOf = (study: CaseStudy): CaseStory =>
   study.story ?? {
     compare: "Where things stood before, and after.",
-    decisions: study.approach.keyDecisions.map((entry) => ({
-      body: entry.rationale,
-      heading: entry.decision,
-    })),
     overview: study.hero.overview,
     stats: study.results.beforeAfter.slice(0, 4).map((entry) => ({
       after: entry.after,

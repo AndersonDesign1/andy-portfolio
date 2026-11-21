@@ -1,4 +1,6 @@
 ---
+import { ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "../components/site/icon.astro";
 import CopyEmail from "../components/site/copy-email.astro";
 import NowPlaying from "../components/site/now-playing.astro";
 import WorkFigure from "../components/site/work-figure.astro";
@@ -22,7 +24,7 @@ const external = (href: string) => href.startsWith("http");
       <div class="actions">
         <CopyEmail showAddress />
         <a class="go" href={RESUME_URL} rel="noopener" target="_blank"
-          ><span class="u">My résumé</span> <span class="arr">↗</span></a
+          ><span class="u">My resume</span> <span class="arr"><Icon icon={ArrowUpRight01Icon} /></span></a
         >
       </div>
       <NowPlaying />
@@ -51,7 +53,7 @@ const external = (href: string) => href.startsWith("http");
                 <WorkFigure work={work} />
                 <span class="go">
                   <span class="u">{work.go}</span>{" "}
-                  <span class="arr">{external(work.href) ? "↗" : "→"}</span>
+                  <span class="arr">{external(work.href) ? <Icon icon={ArrowUpRight01Icon} /> : <Icon icon={ArrowRight01Icon} />}</span>
                 </span>
               </a>
             ))
@@ -64,14 +66,14 @@ const external = (href: string) => href.startsWith("http");
           <div class="more">
             <span class="small" data-stage-stack>{FEATURED_WORK[0]?.stack}</span>
             <a class="go" data-stage-go href={FEATURED_WORK[0]?.href} tabindex="-1"
-              ><span class="u">See it</span> <span class="arr">→</span></a
+              ><span class="u">See it</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
             >
           </div>
         </div>
       </div>
       <div style="margin-top: 40px">
         <a class="go" href="/projects"
-          ><span class="u">Everything I've worked on</span> <span class="arr">→</span></a
+          ><span class="u">Everything I've worked on</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
         >
       </div>
     </div>
@@ -131,7 +133,7 @@ const external = (href: string) => href.startsWith("http");
           </ul>
           <div class="after">
             <a class="go" href={RESUME_URL} rel="noopener" target="_blank"
-              ><span class="u">The full résumé</span> <span class="arr">↗</span></a
+              ><span class="u">The full resume</span> <span class="arr"><Icon icon={ArrowUpRight01Icon} /></span></a
             >
           </div>
         </div>

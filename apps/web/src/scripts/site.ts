@@ -5,6 +5,10 @@
  * swap.
  */
 
+import Lenis from "lenis";
+
+import "lenis/dist/lenis.css";
+
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -749,11 +753,192 @@ const initAsk = () => {
   }
 };
 
+/* ---------- smooth scroll: Lenis, tuned as on the old site ---------- */
+
+const SCROLL_DURATION = 1.2;
+let lenis: Lenis | null = null;
+let lenisFrame = 0;
+
+const scrollTick = (time: number) => {
+  lenis?.raf(time);
+  lenisFrame = requestAnimationFrame(scrollTick);
+};
+
+const stopSmoothScroll = () => {
+  cancelAnimationFrame(lenisFrame);
+  lenis?.destroy();
+  lenis = null;
+};
+
+/** The AI page scrolls its own conversation, so it keeps native scrolling. */
+const initSmoothScroll = () => {
+  const wanted = !reduceMotion() && !location.pathname.startsWith("/ai");
+
+  if (!wanted) {
+    stopSmoothScroll();
+
+    return;
+  }
+
+  if (lenis) {
+    lenis.resize();
+
+    return;
+  }
+
+  lenis = new Lenis({
+    duration: SCROLL_DURATION,
+    easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+    smoothWheel: true,
+    touchMultiplier: 1.6,
+  });
+  lenisFrame = requestAnimationFrame(scrollTick);
+};
+
+/* ---------- scroll reveals: things rise in as they arrive ---------- */
+
+/** What rises in. Pages keep their markup; the list lives here. */
+const REVEAL = [
+  ".hero > *",
+  ".head",
+  ".row-p",
+  ".pr",
+  ".lists > *",
+  ".says",
+  ".belief",
+  ".chapter",
+  ".card",
+  ".arow",
+  ".cs-head > *",
+  ".cs-why",
+  ".step",
+  ".ba",
+  ".gal figure",
+  ".cs-next",
+  ".contact > *",
+  ".site-foot .cta > *",
+].join(",");
+
+const REVEAL_STAGGER = 6;
+
+const initReveal = () => {
+  const items = $$(REVEAL);
+
+  if (!document.documentElement.classList.contains("motion")) {
+    for (const item of items) {
+      item.classList.add("in");
+    }
+
+    return;
+  }
+
+  const watcher = new IntersectionObserver(
+    (entries) => {
+      const arriving = entries.filter((entry) => entry.isIntersecting);
+
+      for (const [order, entry] of arriving.entries()) {
+        const item = entry.target;
+
+        if (item instanceof HTMLElement) {
+          item.style.setProperty(
+            "--rv",
+            String(Math.min(order, REVEAL_STAGGER))
+          );
+          item.classList.add("in");
+        }
+
+        watcher.unobserve(item);
+      }
+    },
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.1 }
+  );
+
+  for (const item of items) {
+    watcher.observe(item);
+  }
+
+  page.signal.addEventListener("abort", () => watcher.disconnect());
+};
+
+/* ---------- phone menu: the full-screen one from the old site ---------- */
+
+const MENU_MS = 200;
+
+const initMenu = () => {
+  const menu = $("[data-menu]");
+  const opener = $<HTMLButtonElement>("[data-menu-open]");
+  const closer = $<HTMLButtonElement>("[data-menu-close]");
+
+  if (!(menu && opener && closer)) {
+    return;
+  }
+
+  const { signal } = page;
+  let timer = 0;
+
+  const open = () => {
+    window.clearTimeout(timer);
+    menu.hidden = false;
+    opener.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+    lenis?.stop();
+    nextFrame(() => menu.classList.add("open"));
+    closer.focus();
+  };
+
+  const close = () => {
+    menu.classList.remove("open");
+    opener.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+    lenis?.start();
+    timer = window.setTimeout(
+      () => {
+        menu.hidden = true;
+      },
+      reduceMotion() ? 0 : MENU_MS
+    );
+  };
+
+  opener.addEventListener("click", open, { signal });
+  closer.addEventListener(
+    "click",
+    () => {
+      close();
+      opener.focus();
+    },
+    { signal }
+  );
+
+  for (const link of $$("a", menu)) {
+    link.addEventListener("click", close, { signal });
+  }
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape" && !menu.hidden) {
+        close();
+        opener.focus();
+      }
+    },
+    { signal }
+  );
+
+  signal.addEventListener("abort", () => {
+    window.clearTimeout(timer);
+    document.body.style.overflow = "";
+    lenis?.start();
+  });
+};
+
 /* ---------- wiring ---------- */
 
 const init = () => {
   page.abort();
   page = new AbortController();
+  initSmoothScroll();
+  initReveal();
+  initMenu();
   initTheme();
   initCopy();
   initClock();

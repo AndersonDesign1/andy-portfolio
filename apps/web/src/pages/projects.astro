@@ -1,4 +1,6 @@
 ---
+import { ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "../components/site/icon.astro";
 import WorkFigure from "../components/site/work-figure.astro";
 import { archiveLineFor, FEATURED_WORK } from "../data/work";
 import BaseLayout from "../layouts/base-layout.astro";
@@ -67,7 +69,7 @@ const plain = (html: string) => html.replaceAll(/<\/?b>/gu, "");
               <b>{item.name}</b>
               <span class="k">{item.kind}</span>
               <span class="r tnum">{item.result}</span>
-              <span aria-hidden="true" class="arr">{item.external ? "↗" : "→"}</span>
+              <span aria-hidden="true" class="arr">{item.external ? <Icon icon={ArrowUpRight01Icon} /> : <Icon icon={ArrowRight01Icon} />}</span>
             </a>
           ))
         }
