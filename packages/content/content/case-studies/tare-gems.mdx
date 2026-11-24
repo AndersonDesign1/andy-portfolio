@@ -1,0 +1,151 @@
+---
+hero:
+  title: "Automating Orders for Tare Gems"
+  client: "Tare Gems"
+  duration: "2025"
+  overview: "Moved Tare Gems from taking anime fashion orders manually on WhatsApp to an automated online store with live stock and Paystack checkout."
+  heroImage: ""
+  technologies:
+    - "Next.js"
+    - "Convex"
+    - "Sanity"
+    - "Paystack"
+    - "TypeScript"
+    - "Tailwind CSS"
+  liveUrl: "https://www.taregems.store/"
+challenge:
+  problem: "Tare Gems ran every sale manually through WhatsApp messages, checking stock by hand and verifying bank transfers one by one."
+  constraints:
+    - "Hundreds of products with size and colour variants that sell out fast"
+    - "Buyers mostly discover drops on WhatsApp status"
+    - "Payments and delivery details needed to work smoothly across Nigeria"
+  context: "Social selling works well for discovery, but manually answering every DM and confirming transfers caps how many orders a store can handle."
+  metrics:
+    - "100% manual WhatsApp orders"
+    - "Manual stock checks per size and colour"
+    - "Manual payment transfer verification"
+goals:
+  primary:
+    - "Automate the full buying flow from product link to payment"
+    - "Track live stock for every size and colour"
+    - "Send clean order and delivery confirmations automatically"
+  stakeholder:
+    - "Post a link on WhatsApp status and let buyers self-serve"
+    - "Manage catalog updates easily in a CMS"
+  success:
+    - "Hundreds of products synced from Sanity to Convex"
+    - "Automatic Paystack payment verification"
+    - "Live low-stock and sold-out states"
+approach:
+  methodology: "Designed the store around Tare Gems' existing WhatsApp status workflow, removing every manual step after a buyer taps the link."
+  phases:
+    - name: "Catalog"
+      duration: "Phase 1"
+      activities:
+        - "Set up Sanity CMS for hundreds of products across categories"
+        - "Synced catalog entries automatically into Convex"
+    - name: "Inventory"
+      duration: "Phase 2"
+      activities:
+        - "Built real-time stock tracking per size and colour"
+        - "Added automatic low-stock and sold-out states after checkout"
+    - name: "Checkout"
+      duration: "Phase 3"
+      activities:
+        - "Integrated Paystack for automatic payment confirmation"
+        - "Added zone-based shipping and delivery address capture across Nigeria"
+    - name: "Alerts"
+      duration: "Phase 4"
+      activities:
+        - "Set up automatic order confirmations with item, buyer name, and delivery address"
+  keyDecisions:
+    - decision: "Pair Sanity CMS with Convex"
+      rationale: "Tare Gems edits products easily in Sanity while Convex handles live stock updates in real time."
+    - decision: "Integrate Paystack with zone-based shipping"
+      rationale: "Buyers pay instantly and Tare Gems never has to verify transfer screenshots."
+  research:
+    - "Mapped every step of Tare Gems' WhatsApp DM ordering flow"
+    - "Reviewed mobile checkout speed for shoppers arriving from WhatsApp status links"
+  collaboration: "Worked directly with Tare Gems from planning through launch."
+  iterations:
+    - "Tightened mobile product pages for quick taps from WhatsApp status"
+    - "Refined low-stock labels so buyers see what is left immediately"
+  userFeedback: "Tare Gems moved away from manual DM replies and transfer checks to receiving ready-to-ship order alerts."
+results:
+  beforeAfter:
+    - metric: "Taking orders"
+      before: "WhatsApp DMs"
+      after: "Self-serve link"
+      improvement: "Automated"
+    - metric: "Stock tracking"
+      before: "Checked by hand"
+      after: "Live per variant"
+      improvement: "100s of items"
+    - metric: "Payments"
+      before: "Manual transfers"
+      after: "Paystack"
+      improvement: "Auto verified"
+    - metric: "Fulfillment"
+      before: "Chasing addresses"
+      after: "Instant alert"
+      improvement: "Ready to ship"
+  metrics:
+    - "Hundreds of products across categories"
+    - "Live stock per size and colour"
+    - "Automated Paystack checkout across Nigeria"
+  deliverables:
+    - "Next.js storefront"
+    - "Convex live inventory backend"
+    - "Sanity product catalog"
+    - "Paystack checkout and delivery notifications"
+  achievements:
+    - "Replaced manual WhatsApp order handling with a full store"
+    - "Eliminated overselling with real-time variant stock"
+gallery:
+  images: []
+story:
+  title: "Automating Tare Gems"
+  overview: "Tare Gems used to sell anime fashion solely over WhatsApp. I built an automated store so Tare Gems can drop a link on WhatsApp status and just receive confirmed orders ready for delivery."
+  when: "2025"
+  why: "Every sale at Tare Gems meant answering WhatsApp DMs, checking if a size was left, and verifying bank transfers by hand. The goal was simple: keep WhatsApp status for discovery, and automate everything after the tap."
+  compare: "How Tare Gems handled orders before, and after."
+  stats:
+    - label: "Orders"
+      before: "WhatsApp DMs"
+      after: "Status link"
+      note: "Self-serve store"
+    - label: "Catalog"
+      before: "Manual list"
+      after: "100s"
+      note: "Live stock per size"
+    - label: "Payments"
+      before: "Manual checks"
+      after: "Paystack"
+      note: "Auto confirmed"
+    - label: "Delivery info"
+      before: "Asked in chat"
+      after: "Order alert"
+      note: "Name and address"
+  steps:
+    - name: "Catalog"
+      heading: "Syncing Sanity into Convex"
+      body: "I set up Sanity so Tare Gems can add and edit products without touching code. Hundreds of products sync into Convex automatically as soon as they are published."
+    - name: "Live stock"
+      heading: "No more checking sizes by hand"
+      body: "I built live inventory tracking for every size and colour. As soon as an item sells, stock updates right away and marks low-stock or sold-out items automatically."
+    - name: "Checkout"
+      heading: "Paystack and shipping across Nigeria"
+      body: "Buyers tap a link from WhatsApp status, pick their variant, choose their shipping zone, and pay through Paystack. Tare Gems never has to verify transfer screenshots."
+    - name: "Confirmation"
+      heading: "Ready to deliver"
+      body: "Once payment clears, Tare Gems gets a single confirmation with what was bought plus the buyer's name and delivery address."
+  tools: "Next.js, TypeScript, Convex, Sanity, Tailwind CSS, and Paystack."
+  media:
+    - slot: "hero"
+      frame: "browser"
+      label: "Browsing products and live stock on Tare Gems"
+    - slot: "steps"
+      frame: "phone"
+      label: "Checking out on mobile from a WhatsApp status link"
+order: 4
+---

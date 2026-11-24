@@ -1,5 +1,11 @@
 ---
-import { Cancel01Icon, Menu01Icon, Moon02Icon, Sun01Icon } from "@hugeicons/core-free-icons";
+import {
+  Cancel01Icon,
+  ComputerIcon,
+  Menu01Icon,
+  Moon02Icon,
+  Sun01Icon,
+} from "@hugeicons/core-free-icons";
 import Icon from "./icon.astro";
 
 interface Props {
@@ -34,9 +40,10 @@ const menuLinks = [{ href: "/", label: "Home", match: /^\/$/u }, ...links];
       }
     </nav>
     <div class="top-tools">
-      <button aria-label="Switch theme" class="theme" data-theme-toggle type="button">
-        <Icon class="to-dark" icon={Moon02Icon} />
-        <Icon class="to-light" icon={Sun01Icon} />
+      <button aria-label="Switch theme" class="theme" data-theme-toggle title="Theme" type="button">
+        <Icon class="ic-system" icon={ComputerIcon} />
+        <Icon class="ic-light" icon={Sun01Icon} />
+        <Icon class="ic-dark" icon={Moon02Icon} />
       </button>
       <button
         aria-controls="mobile-menu"

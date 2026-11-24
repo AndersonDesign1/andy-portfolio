@@ -8,6 +8,10 @@
 import Lenis from "lenis";
 
 import "lenis/dist/lenis.css";
+import {
+  SPOTIFY_POLLING_INTERVAL_PAUSED,
+  SPOTIFY_POLLING_INTERVAL_PLAYING,
+} from "../lib/constants";
 
 const reduceMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -15,7 +19,6 @@ const reduceMotion = () =>
 const COPIED_MS = 1800;
 const CLOCK_MS = 20_000;
 const HINT_MS = 2600;
-const SPOTIFY_MS = 60_000;
 const COUNT_MS = 900;
 const SWAP_MS = 600;
 const BA_DELAY_MS = 450;
@@ -100,27 +103,86 @@ const swapText = (box: HTMLElement, text: string, direction: 1 | -1) => {
   window.setTimeout(() => old.remove(), SWAP_MS);
 };
 
-/* ---------- theme ---------- */
+/* ---------- theme: system -> light -> dark ---------- */
+
+type ThemeMode = "dark" | "light" | "system";
+
+const THEME_CYCLE: readonly ThemeMode[] = ["system", "light", "dark"];
+
+const THEME_LABEL: Record<ThemeMode, string> = {
+  dark: "Theme: Dark (click for System)",
+  light: "Theme: Light (click for Dark)",
+  system: "Theme: System (click for Light)",
+};
+
+const readThemeMode = (): ThemeMode => {
+  try {
+    const saved = localStorage.getItem("andy-theme");
+
+    if (saved === "light" || saved === "dark" || saved === "system") {
+      return saved;
+    }
+  } catch {
+    // Private mode: fall back to system.
+  }
+
+  return "system";
+};
 
 const initTheme = () => {
-  for (const button of $$("[data-theme-toggle]")) {
-    button.addEventListener(
-      "click",
-      () => {
-        const root = document.documentElement;
-        const dark = !root.classList.contains("dark");
-        root.classList.toggle("dark", dark);
-        root.classList.toggle("light", !dark);
+  const buttons = $$<HTMLButtonElement>("[data-theme-toggle]");
 
-        try {
-          localStorage.setItem("andy-theme", dark ? "dark" : "light");
-        } catch {
-          // Private mode: the choice lasts for this page only.
-        }
-      },
-      { signal: page.signal }
-    );
+  if (buttons.length === 0) {
+    return;
   }
+
+  const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const apply = (mode: ThemeMode) => {
+    const root = document.documentElement;
+
+    const isDark = mode === "dark" || (mode === "system" && darkScheme.matches);
+
+    root.dataset.themeMode = mode;
+    root.classList.toggle("dark", isDark);
+    root.classList.toggle("light", !isDark);
+
+    const label = THEME_LABEL[mode];
+
+    for (const button of buttons) {
+      button.setAttribute("aria-label", label);
+      button.title = label;
+    }
+  };
+
+  let current = readThemeMode();
+  apply(current);
+
+  const cycle = () => {
+    const nextIndex = (THEME_CYCLE.indexOf(current) + 1) % THEME_CYCLE.length;
+    current = THEME_CYCLE[nextIndex] ?? "system";
+    apply(current);
+
+    try {
+      localStorage.setItem("andy-theme", current);
+    } catch {
+      // Private mode: the choice lasts for this page only.
+    }
+  };
+
+  for (const button of buttons) {
+    button.addEventListener("click", cycle, { signal: page.signal });
+  }
+
+  darkScheme.addEventListener(
+    "change",
+    () => {
+      if (current === "system") {
+        apply("system");
+      }
+    },
+    { signal: page.signal }
+  );
 };
 
 /* ---------- copy email ---------- */
@@ -218,7 +280,25 @@ const initNowPlaying = () => {
     return;
   }
 
+  let timer = 0;
+
+  const schedule = (playing: boolean) => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(
+      () => {
+        if (document.visibilityState === "visible") {
+          void draw();
+        }
+      },
+      playing
+        ? SPOTIFY_POLLING_INTERVAL_PLAYING
+        : SPOTIFY_POLLING_INTERVAL_PAUSED
+    );
+  };
+
   const draw = async () => {
+    let playing = false;
+
     try {
       const response = await fetch("/api/spotify/now-playing", {
         cache: "no-store",
@@ -229,30 +309,34 @@ const initNowPlaying = () => {
 
       if (!(response.ok && track.name)) {
         line.hidden = true;
+        schedule(false);
 
         return;
       }
 
-      const art = $<HTMLImageElement>("img", line);
-      const link = $<HTMLAnchorElement>("[data-np-link]", line);
+      playing = Boolean(track.isPlaying);
+
+      const arts = $$<HTMLImageElement>("[data-np-art]", line);
+      const links = $$<HTMLAnchorElement>("[data-np-link]", line);
       const label = $("[data-np-label]", line);
       const title = $("[data-np-track]", line);
       const artist = $("[data-np-artist]", line);
 
-      if (art) {
+      for (const art of arts) {
         art.hidden = !track.albumArtUrl;
         art.src = track.albumArtUrl ?? "";
       }
 
       if (
-        link &&
         track.external_urls?.spotify?.startsWith("https://open.spotify.com/")
       ) {
-        link.href = track.external_urls.spotify;
+        for (const link of links) {
+          link.href = track.external_urls.spotify;
+        }
       }
 
       if (label) {
-        label.textContent = track.isPlaying ? "Now playing" : "Last played";
+        label.textContent = playing ? "Now playing" : "Last played";
       }
 
       if (title) {
@@ -267,108 +351,102 @@ const initNowPlaying = () => {
         artist.textContent = names.join(", ") || "someone";
       }
 
-      line.toggleAttribute("data-playing", Boolean(track.isPlaying));
+      line.toggleAttribute("data-playing", playing);
       line.hidden = false;
+      line.classList.add("in");
       requestAnimationFrame(() => {
         delete line.dataset.state;
       });
     } catch {
       line.hidden = true;
     }
+
+    schedule(playing);
   };
 
   void draw();
 
-  const timer = window.setInterval(() => {
+  const onVisible = () => {
     if (document.visibilityState === "visible") {
       void draw();
     }
-  }, SPOTIFY_MS);
+  };
 
-  page.signal.addEventListener("abort", () => window.clearInterval(timer));
+  document.addEventListener("visibilitychange", onVisible, {
+    signal: page.signal,
+  });
+  window.addEventListener("focus", onVisible, { signal: page.signal });
+  page.signal.addEventListener("abort", () => window.clearTimeout(timer));
 };
 
-/* ---------- home: selected work, told as you scroll ---------- */
+/* ---------- home & projects: sticky stacking cards (transform + opacity only) ---------- */
 
 const STORY_WIDE = "(min-width: 900px)";
+const STACK_OFFSET_PX = 16;
+const STACK_SCALE_STEP = 0.042;
+const STACK_MIN_SCALE = 0.84;
+const STACK_Y_STEP = 6;
+const STACK_MAX_Y = 24;
+const STACK_DIM_STEP = 0.15;
+const STACK_MIN_DIM = 0.45;
 
-const initWorkStory = () => {
-  const story = $("[data-tale]");
+const initProjectStack = () => {
+  const stack = $("[data-proj-stack]");
 
-  if (!story) {
+  if (!stack) {
     return;
   }
 
-  const items = $$<HTMLAnchorElement>(".tale-item", story);
+  const cards = $$<HTMLElement>(".proj-card", stack);
+
+  if (cards.length <= 1) {
+    return;
+  }
+
   const wide = window.matchMedia(STORY_WIDE);
-  let active = -1;
 
-  const setActive = (index: number) => {
-    if (index === active) {
-      return;
+  const reset = () => {
+    for (const card of cards) {
+      card.style.removeProperty("--stack-scale");
+      card.style.removeProperty("--stack-y");
+      card.style.removeProperty("--stack-dim");
     }
-
-    active = index;
-
-    for (const [i, item] of items.entries()) {
-      item.classList.toggle("on", i === index);
-      item.classList.toggle("past", i < index);
-    }
-  };
-
-  /** How far through the pinned stretch the page is, from 0 to 1. */
-  const progress = () => {
-    const box = story.getBoundingClientRect();
-    const run = box.height - window.innerHeight;
-
-    return run > 0 ? Math.min(1, Math.max(0, -box.top / run)) : 0;
-  };
-
-  /** The page position that shows project `index` in the middle of its stretch. */
-  const scrollFor = (index: number) => {
-    const top = story.getBoundingClientRect().top + window.scrollY;
-    const run = story.offsetHeight - window.innerHeight;
-
-    return top + ((index + 0.5) / items.length) * run;
   };
 
   const update = () => {
-    const live = wide.matches;
-    story.classList.toggle("live", live);
+    if (!wide.matches || reduceMotion()) {
+      reset();
 
-    if (!live) {
-      active = -1;
+      return;
+    }
 
-      for (const item of items) {
-        item.classList.remove("on", "past");
+    const tops = cards.map((card) => card.getBoundingClientRect().top);
+
+    for (const [i, card] of cards.entries()) {
+      const cardTop = tops[i] ?? 0;
+      const span = Math.max(1, card.offsetHeight - STACK_OFFSET_PX);
+      let depth = 0;
+
+      for (let j = i + 1; j < cards.length; j += 1) {
+        const distance = (tops[j] ?? cardTop) - cardTop;
+
+        if (distance < span + STACK_OFFSET_PX) {
+          depth += Math.min(
+            1,
+            Math.max(0, 1 - (distance - STACK_OFFSET_PX) / span)
+          );
+        }
       }
 
-      return;
-    }
+      const scale = Math.max(STACK_MIN_SCALE, 1 - depth * STACK_SCALE_STEP);
+      const lift = -Math.min(STACK_MAX_Y, depth * STACK_Y_STEP);
+      const dim = Math.max(STACK_MIN_DIM, 1 - depth * STACK_DIM_STEP);
 
-    setActive(
-      Math.min(items.length - 1, Math.floor(progress() * items.length))
-    );
-  };
-
-  /* Tabbing to a project that's out of view scrolls to it. */
-  const bringIn = (index: number) => {
-    if (!wide.matches || index === active) {
-      return;
-    }
-
-    const y = scrollFor(index);
-
-    if (lenis && !reduceMotion()) {
-      lenis.scrollTo(y);
-    } else {
-      window.scrollTo({ top: y });
+      card.style.setProperty("--stack-scale", scale.toFixed(4));
+      card.style.setProperty("--stack-y", `${lift.toFixed(2)}px`);
+      card.style.setProperty("--stack-dim", dim.toFixed(3));
     }
   };
-
-  for (const [i, item] of items.entries()) {
-    item.addEventListener("focus", () => bringIn(i), { signal: page.signal });
-  }
 
   wide.addEventListener("change", update, { signal: page.signal });
   onScroll(update);
@@ -534,34 +612,93 @@ const initBeforeAfter = () => {
   });
 };
 
-/* ---------- galleries: swipe, or use the arrows ---------- */
+/* ---------- galleries: click next/prev, pick a thumbnail, or use arrow keys ---------- */
+
+const initGallery = (viewer: HTMLElement) => {
+  const slides = $$<HTMLElement>("[data-gal-slide]", viewer);
+  const thumbs = $$<HTMLButtonElement>("[data-gal-pick]", viewer);
+  const caption = $("[data-gal-cap]", viewer);
+  const counter = $("[data-gal-count]", viewer);
+
+  if (slides.length <= 1) {
+    return;
+  }
+
+  let current = 0;
+
+  const show = (nextIndex: number) => {
+    const total = slides.length;
+    const index = ((nextIndex % total) + total) % total;
+    current = index;
+
+    for (const [i, slide] of slides.entries()) {
+      slide.hidden = i !== index;
+    }
+
+    for (const [i, thumb] of thumbs.entries()) {
+      const active = i === index;
+      thumb.classList.toggle("on", active);
+      thumb.setAttribute("aria-selected", String(active));
+    }
+
+    const activeCaption =
+      slides[index]?.querySelector("figcaption")?.textContent ?? "";
+
+    if (caption) {
+      caption.textContent = activeCaption;
+    }
+
+    if (counter) {
+      counter.textContent = `${index + 1} / ${total}`;
+    }
+  };
+
+  const stepBy = (delta: number) => show(current + delta);
+
+  for (const button of $$<HTMLButtonElement>("[data-gal-step]", viewer)) {
+    const delta = Number(button.dataset.galStep);
+    button.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+        stepBy(delta);
+      },
+      { signal: page.signal }
+    );
+  }
+
+  for (const thumb of thumbs) {
+    const targetIndex = Number(thumb.dataset.galPick);
+    thumb.addEventListener("click", () => show(targetIndex), {
+      signal: page.signal,
+    });
+  }
+
+  viewer.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stepBy(1);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepBy(-1);
+      }
+    },
+    { signal: page.signal }
+  );
+};
 
 const initGalleries = () => {
-  for (const nav of $$("[data-gal-nav]")) {
-    const strip = $(nav.dataset.galNav ?? "");
-
-    if (!strip) {
-      continue;
-    }
-
-    for (const button of $$<HTMLButtonElement>("button", nav)) {
-      button.addEventListener(
-        "click",
-        () =>
-          strip.scrollBy({
-            behavior: reduceMotion() ? "auto" : "smooth",
-            left: Number(button.dataset.g) * strip.clientWidth * 0.8,
-          }),
-        { signal: page.signal }
-      );
-    }
+  for (const viewer of $$("[data-gallery]")) {
+    initGallery(viewer);
   }
 };
 
 /* ---------- click to zoom: pictures in blog posts and case studies ---------- */
 
 /** Pictures inside the writing and the galleries. Header pictures stay put. */
-const ZOOMABLE = ".prose img, .gal .fig > img";
+const ZOOMABLE = ".prose img, .gal-stage .fig > img";
 
 /** A picture's caption: its figure's, or the italic line right under it in a post. */
 const captionFor = (image: HTMLImageElement) => {
@@ -870,23 +1007,20 @@ const initSmoothScroll = () => {
 const REVEAL = [
   ".hero > *",
   ".head",
-  ".tale-item",
   ".pr",
   ".lists > *",
   ".says",
   ".belief",
   ".chapter",
-  ".card",
   ".arow",
   ".cs-head > *",
   ".cs-why",
   ".step",
   ".ba",
-  ".gal figure",
+  ".gal-viewer",
   ".cs-next",
   ".prow",
   ".post-fig",
-  ".contact > *",
   ".site-foot .cta > *",
 ].join(",");
 
@@ -1014,7 +1148,7 @@ const init = () => {
   initCopy();
   initClock();
   initNowPlaying();
-  initWorkStory();
+  initProjectStack();
   initRails();
   initBeforeAfter();
   initGalleries();

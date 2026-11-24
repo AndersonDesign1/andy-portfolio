@@ -12,8 +12,8 @@ export const SOCIAL_LINKS = [
 
 /** What the Ask pill cycles through on hover, and offers as one-tap questions. */
 export const ASK_SUGGESTIONS = [
-  "What does Anderson do?",
-  "How fast is your site?",
-  "Tell me about Graft",
-  "Can you help with SEO?",
+  "What does Anderson build?",
+  "Why did he build Graft?",
+  "How does he build for AI agents?",
+  "Can he work with my team?",
 ] as const;

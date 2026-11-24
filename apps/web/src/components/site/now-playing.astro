@@ -2,17 +2,30 @@
 /**
  * One quiet piece under the hero: what Anderson is playing on Spotify, or
  * played last. Filled in by scripts/site.ts from /api/spotify/now-playing;
- * stays hidden if Spotify has nothing or fails. The cover sits on a little
- * record that spins while a song is playing and rests, in grey, when it
- * isn't. The label above the song says which of the two it is.
+ * stays hidden if Spotify has nothing or fails. Shows the album sleeve with a
+ * vinyl record peeking out—tucked in when idle, sliding out and spinning while
+ * a song is playing.
  */
 ---
 
 <p class="np" data-now-playing data-state="loading" hidden>
-  <span aria-hidden="true" class="vinyl">
-    <span class="disc"><img alt="" class="art" decoding="async" height="18" loading="lazy" width="18" /></span>
-    <i class="arm"></i>
-  </span>
+  <a
+    aria-label="Open track on Spotify"
+    class="np-record"
+    data-np-link
+    href="https://open.spotify.com"
+    rel="noopener"
+    target="_blank"
+  >
+    <span aria-hidden="true" class="sleeve">
+      <img alt="" class="art" data-np-art decoding="async" height="60" loading="lazy" width="60" />
+    </span>
+    <span aria-hidden="true" class="disc-slide">
+      <span class="disc">
+        <img alt="" class="label" data-np-art decoding="async" height="22" loading="lazy" width="22" />
+      </span>
+    </span>
+  </a>
   <span class="np-text">
     <span class="np-state">
       <span data-np-label>Last played</span>

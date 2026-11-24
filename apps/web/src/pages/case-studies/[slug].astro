@@ -51,7 +51,12 @@ const whyRest = whyBreak === -1 ? "" : story.why.slice(whyBreak + 1);
 
 const heroMedia = story.media?.find((entry) => entry.slot === "hero");
 const stepsMedia = story.media?.find((entry) => entry.slot === "steps");
-const heroFallback = { alt: study.gallery.images[0]?.alt ?? story.title, src: study.hero.heroImage };
+
+const heroFallback = study.hero.heroImage
+  ? { alt: study.gallery.images[0]?.alt ?? story.title, src: study.hero.heroImage }
+  : undefined;
+
+const galleryImages = study.gallery.images.filter((image) => Boolean(image.src));
 const weeks = story.steps.every((step) => step.weeks) ? story.steps : null;
 const textual = (value: string) => !/^\d/u.test(value.trim());
 const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
@@ -83,11 +88,11 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
     {
       heroMedia ? (
         <MediaSlot fallback={heroFallback} media={heroMedia} />
-      ) : (
+      ) : heroFallback ? (
         <div class="fig" style="--ar: 16 / 9">
           <img alt={heroFallback.alt} decoding="async" fetchpriority="high" src={heroFallback.src} />
         </div>
-      )
+      ) : null
     }
 
     <div class="sec">
@@ -172,25 +177,84 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
       </div>
     </section>
 
-    <section aria-label="Pictures" class="sec">
-      <div class="gal-nav" data-gal-nav="#gallery">
-        <button aria-label="Previous pictures" data-g="-1" type="button"><Icon icon={ArrowLeft01Icon} /></button>
-        <button aria-label="Next pictures" data-g="1" type="button"><Icon icon={ArrowRight01Icon} /></button>
-      </div>
-      <div class="gal" id="gallery">
-        {
-          study.gallery.images.map((image) => (
-            <figure>
-              <div class="fig">
-                <img alt={image.alt} decoding="async" loading="lazy" src={image.src} />
+    {
+      galleryImages.length > 0 && (
+        <section aria-label="Pictures" class="sec">
+          <div class="gal-viewer" data-gallery tabindex="-1">
+            <div class="gal-bar">
+              <div class="gal-meta">
+                <p class="gal-cap" data-gal-cap>{galleryImages[0]?.title}</p>
+                {galleryImages.length > 1 && (
+                  <span class="small tnum" data-gal-count>
+                    1 / {galleryImages.length}
+                  </span>
+                )}
               </div>
-              <figcaption>{image.title}</figcaption>
-            </figure>
-          ))
-        }
-      </div>
-      <p class="cs-tools">{story.tools}</p>
-    </section>
+              {galleryImages.length > 1 && (
+                <div class="gal-nav">
+                  <button aria-label="Previous image" data-gal-step="-1" type="button">
+                    <Icon icon={ArrowLeft01Icon} />
+                  </button>
+                  <button aria-label="Next image" data-gal-step="1" type="button">
+                    <Icon icon={ArrowRight01Icon} />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div class="gal-stage">
+              {
+                galleryImages.map((image, imageIndex) => (
+                  <figure class="gal-slide" data-gal-slide hidden={imageIndex !== 0}>
+                    <div class="fig" style="--ar: 16 / 10">
+                      <img alt={image.alt} decoding="async" loading="lazy" src={image.src} />
+                    </div>
+                    <figcaption class="sr-only">{image.title}</figcaption>
+                  </figure>
+                ))
+              }
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    aria-label="Previous image"
+                    class="gal-arrow prev"
+                    data-gal-step="-1"
+                    type="button"
+                  >
+                    <Icon icon={ArrowLeft01Icon} size={18} />
+                  </button>
+                  <button
+                    aria-label="Next image"
+                    class="gal-arrow next"
+                    data-gal-step="1"
+                    type="button"
+                  >
+                    <Icon icon={ArrowRight01Icon} size={18} />
+                  </button>
+                </>
+              )}
+            </div>
+            {galleryImages.length > 1 && (
+              <div aria-label="Choose image" class="gal-thumbs" role="tablist">
+                {
+                  galleryImages.map((image, imageIndex) => (
+                    <button
+                      aria-label={image.title}
+                      aria-selected={imageIndex === 0 ? "true" : "false"}
+                      class:list={["gal-thumb", { on: imageIndex === 0 }]}
+                      data-gal-pick={imageIndex}
+                      role="tab"
+                      type="button"
+                    >
+                      <img alt="" decoding="async" loading="lazy" src={image.src} />
+                    </button>
+                  ))
+                }
+              </div>
+            )}
+          </div>
+        </section>
+      )
+    }
 
     {
       next && (

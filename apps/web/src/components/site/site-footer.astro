@@ -1,5 +1,5 @@
 ---
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, GithubIcon, Linkedin02Icon } from "@hugeicons/core-free-icons";
 import Icon from "./icon.astro";
 import { SOCIAL_LINKS } from "../../lib/site";
 import CopyEmail from "./copy-email.astro";
@@ -14,6 +14,11 @@ const { hideCta = false } = Astro.props;
 // Build time: the site is static, so this is the year it was last published.
 const builtAt = () => new Date();
 const year = builtAt().getFullYear();
+
+const iconFor = {
+  GitHub: GithubIcon,
+  LinkedIn: Linkedin02Icon,
+} as const;
 ---
 
 <footer class:list={["site-foot", { "no-cta": hideCta }]}>
@@ -21,10 +26,10 @@ const year = builtAt().getFullYear();
     {
       !hideCta && (
         <div class="cta field12">
-          <h2>Got a project?</h2>
+          <h2>Want to work together?</h2>
           <p>
-            I'm taking on new work. Let's build something people enjoy using, and
-            that actually gets found.
+            If you're building a new product, turning a design into code, or
+            wiring AI agents into your workflow, send me a message.
           </p>
           <div class="actions">
             <a class="btn solid" href="/contact">
@@ -39,8 +44,27 @@ const year = builtAt().getFullYear();
       <div class="soc">
         {
           SOCIAL_LINKS.map((link) => (
-            <a href={link.href} rel="noopener" target="_blank">
-              {link.label}
+            <a
+              aria-label={link.label}
+              class="soc-link"
+              href={link.href}
+              rel="noopener"
+              target="_blank"
+              title={link.label}
+            >
+              {link.label === "X" ? (
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  width="17"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              ) : (
+                <Icon icon={iconFor[link.label]} size={18} />
+              )}
             </a>
           ))
         }
@@ -48,7 +72,29 @@ const year = builtAt().getFullYear();
       <div class="fine small">
         <span>© {year} Anderson Joseph</span>
         <span>Nigeria <time class="clock" data-lagos-clock>--:--</time></span>
-        <span>Built with Astro and Graft</span>
+        <a
+          class="graft-badge"
+          href="https://graft.page?utm_source=powered-by-graft"
+          rel="noopener"
+          target="_blank"
+        >
+          <img
+            alt="Powered by Graft"
+            class="graft-for-light"
+            decoding="async"
+            height="22"
+            loading="lazy"
+            src="https://graft.page/badges/powered-by-graft.svg"
+          />
+          <img
+            alt="Powered by Graft"
+            class="graft-for-dark"
+            decoding="async"
+            height="22"
+            loading="lazy"
+            src="https://graft.page/badges/powered-by-graft-light.svg"
+          />
+        </a>
       </div>
     </div>
   </div>

@@ -41,18 +41,18 @@ export const ConversationDrawer = ({
   return (
     <dialog
       aria-labelledby="ai-conversation-title"
-      className="ai-sheet ai-sheet-side bg-background text-primary border-subtle fixed inset-x-0 top-auto bottom-0 m-0 h-[85dvh] max-h-none w-full max-w-none rounded-t-lg border p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:w-[28rem] md:rounded-none md:border-y-0 md:border-r-0"
+      className="ai-sheet ai-sheet-side fixed inset-x-0 top-auto bottom-0 m-0 h-[85dvh] max-h-none w-full max-w-none rounded-t-[24px] bg-[var(--raised)] p-0 text-[var(--fg)] shadow-[0_-24px_60px_-24px_var(--shadow)] backdrop:bg-black/45 backdrop:backdrop-blur-sm md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:w-[28rem] md:rounded-none"
       onClose={onClose}
       ref={dialogRef}
     >
       <div className="flex h-full flex-col">
-        <header className="border-subtle flex items-center justify-between gap-3 border-b px-5 py-3">
-          <h2 className="text-sm font-semibold" id="ai-conversation-title">
+        <header className="flex items-center justify-between gap-3 border-b border-[rgb(128_128_128/0.14)] px-5 py-3.5">
+          <h2 className="text-sm font-medium" id="ai-conversation-title">
             Conversation
           </h2>
           <button
             aria-label="Close conversation"
-            className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
+            className="inline-flex size-11 items-center justify-center rounded-full text-[var(--mute)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--fg)] sm:size-9"
             onClick={onClose}
             type="button"
           >

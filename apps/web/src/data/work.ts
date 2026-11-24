@@ -14,7 +14,6 @@ export interface FeaturedWork {
   image?: { alt: string; src: string };
   /** One line on what I did and what came of it. Wrap figures in <b>. */
   outcome: string;
-  stack: string;
   title: string;
   year: string;
 }
@@ -28,51 +27,46 @@ export const FEATURED_WORK: FeaturedWork[] = [
       src: "/welup-main.png",
     },
     outcome:
-      "I built their first platform, watched it buckle, then rebuilt it in Next.js with Sanity. Traffic went up <b>300%</b> and the site got <b>50% faster</b>.",
-    stack: "Next.js, Sanity, Vercel",
+      "I built Welup Digital's first site from scratch, watched it get DDoSed, then rebuilt it with a CMS the team could edit. Traffic went up <b>300%</b> and pages loaded <b>50% faster</b>.",
     title: "Rebuilding Welup Digital",
     year: "2021 – now",
   },
   {
     fragment: "terminal",
-    go: "See graft.page",
-    href: "https://graft.page",
+    go: "Read the case study",
+    href: "/case-studies/graft",
     outcome:
-      "A CMS made for agents and the people who run them. Content lives as MDX in git, it's MIT licensed, and <b>this site runs on it</b>.",
-    stack: "TypeScript, Zod, MCP",
+      "Other CMS tools bolt AI on later, while non-technical teams still need a dashboard. Graft keeps content in code for agents, gives editors a dashboard, and <b>this site runs on it</b>.",
     title: "Graft, my open source CMS",
     year: "2026",
   },
   {
-    go: "Visit the store",
-    href: "https://www.taregems.store/",
+    go: "Read the case study",
+    href: "/case-studies/tare-gems",
     image: { alt: "A Tare Gems product page", src: "/tare-gems.webp" },
     outcome:
-      "An anime fashion store that knows its stock: <b>98 products</b>, live stock for every size and colour, and Paystack checkout across Nigeria.",
-    stack: "Next.js, Convex, Sanity, Paystack",
+      "Tare Gems used to take every anime fashion order manually over WhatsApp. Now buyers pick from <b>hundreds of products</b> with live stock, pay online, and Tare Gems just gets a delivery alert.",
     title: "Tare Gems",
     year: "2025",
   },
   {
-    go: "Visit Flik",
-    href: "https://flik.store",
+    go: "Read the case study",
+    href: "/case-studies/flik",
     image: { alt: "A Flik storefront", src: "/flik-img.webp" },
     outcome:
-      "A creator-commerce platform for digital products and services. I built the <b>storefronts</b>, the <b>builder</b> and the <b>analytics</b> dashboard.",
-    stack: "Next.js, Convex, Better Auth",
+      "Built like Gumroad for African creators, with custom storefronts like Shopify. I built Flik's <b>storefronts</b>, <b>site builder</b>, and <b>analytics</b>.",
     title: "Flik",
     year: "Dec 2025 – now",
   },
   {
-    go: "Visit MykroGrid",
-    href: "https://mykrogrid.com",
+    go: "Read the case study",
+    href: "/case-studies/mykrogrid",
     image: {
       alt: "The MykroGrid homepage: solar panels over a rooftop, under the line Powering Nigeria's Growth",
       src: "/mykrogrid.webp",
     },
     outcome:
-      "I built the frontend for a clean energy company that runs solar grids for <b>hospitals</b>, <b>universities</b>, homes and markets across Nigeria.",
-    stack: "Clean energy, Nigeria",
+      "I joined MykroGrid to build the frontend with their in-house designer, bringing the custom brand system online for solar grids powering <b>hospitals</b>, <b>universities</b>, homes, and markets across Nigeria.",
     title: "MykroGrid",
     year: "2026",
   },
@@ -87,12 +81,12 @@ interface ArchiveLine {
 /** The plain list under the featured work, keyed by Graft project slug. */
 export const ARCHIVE_LINES = {
   "aristeia-properties": {
-    kind: "Next.js site",
+    kind: "Real estate site",
     name: "Aristeia Properties",
     result: "Listings and estates",
   },
   "craigwal-petroshore": {
-    kind: "WordPress custom theme",
+    kind: "Custom company site",
     name: "Craigwal Petroshore",
     result: "Services and projects",
   },
@@ -107,7 +101,7 @@ export const ARCHIVE_LINES = {
     result: "MVP in 3 months",
   },
   "new-hampshire-capital": {
-    kind: "Next.js site",
+    kind: "Finance website",
     name: "New Hampshire Capital",
     result: "Sectors and newsletter",
   },
@@ -117,12 +111,12 @@ export const ARCHIVE_LINES = {
     result: "Google traffic +250%, PageSpeed 45 → 80",
   },
   "the-wealthy-post": {
-    kind: "WordPress and SEO",
+    kind: "Performance and SEO",
     name: "The Wealthy Post",
     result: "Load time 15s → 3s, Google traffic doubled",
   },
   "urabus-renewable-energies": {
-    kind: "Next.js site",
+    kind: "Clean energy site",
     name: "Urabus Renewable Energies",
     result: "Solar, EV and payment plans",
   },
@@ -139,27 +133,27 @@ export const archiveLineFor = (slug: string): ArchiveLine | undefined =>
 export const WORK_HISTORY = [
   {
     name: "Welup Digital",
-    note: "Built, then rebuilt, the platform and client sites. I look after SEO for the business and its clients too.",
+    note: "First developer hire. Built and rebuilt the platform, handled SEO, and taught at Welup Academy.",
     when: "2021 – now",
   },
   {
     name: "Flik",
-    note: "Storefronts, the builder and analytics for a creator-commerce platform.",
+    note: "Built the storefronts, site builder, and analytics dashboard.",
     when: "Dec 2025 – now",
   },
   {
     name: "Zumera",
-    note: "Web apps for clients, front to back.",
+    note: "Built client web apps, front to back.",
     when: "2025 – 2026",
   },
   {
     name: "PromptEarn",
-    note: "SEO and growth. Google traffic up 250%, affiliates from 40k to 93k.",
+    note: "SEO and affiliate growth. Organic traffic up 250%, affiliates from 40k to 93k.",
     when: "2024",
   },
   {
     name: "On my own",
-    note: "Sites and stores for energy, finance, property and retail.",
+    note: "Stores and sites for clients across energy, finance, property, and retail.",
     when: "2020 – now",
   },
 ];

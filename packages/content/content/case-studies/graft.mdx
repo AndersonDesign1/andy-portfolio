@@ -1,0 +1,149 @@
+---
+hero:
+  title: "Building Graft, an Open Source CMS"
+  client: "Graft"
+  duration: "2026, ongoing"
+  overview: "Built an open-source CMS where content stays in code as MDX for AI agents, while non-technical editors still get a dashboard."
+  heroImage: ""
+  technologies:
+    - "TypeScript"
+    - "Zod"
+    - "MDX"
+    - "SQLite"
+    - "MCP"
+  liveUrl: "https://graft.page"
+challenge:
+  problem: "Traditional CMS platforms were built before AI agents and bolt AI support on later via an MCP or CLI, while code-only setups lock out non-technical editors."
+  constraints:
+    - "Content must live in git so coding agents can read and edit it directly"
+    - "Non-technical editors still need a clean dashboard"
+    - "Must work cleanly for static sites with no external database required"
+  context: "After using WordPress, Wix, Webflow, Framer, and Sanity across real projects, the gap between agent-friendly code and editor-friendly dashboards became obvious."
+  metrics:
+    - "Legacy CMS tools require dashboards for setup and changes"
+    - "Pure git markdown locks out non-technical teams"
+goals:
+  primary:
+    - "Keep schemas and content directly in code as MDX"
+    - "Give non-technical editors a dashboard without touching git"
+    - "Run this portfolio on Graft in production"
+  stakeholder:
+    - "Fast local builds with zero external services"
+    - "Strict schema validation for every document"
+  success:
+    - "MIT-licensed open-source release"
+    - "Static SQLite index compiled from MDX"
+    - "Powering andersonjoseph.com in production"
+approach:
+  methodology: "Designed the schema and compiler around how coding agents and editors both work, then dogfooded it on my own site."
+  phases:
+    - name: "Schema"
+      duration: "Phase 1"
+      activities:
+        - "Defined typed collections directly in TypeScript"
+        - "Added strict validation for frontmatter and MDX"
+    - name: "Compiler"
+      duration: "Phase 2"
+      activities:
+        - "Built static SQLite compilation with full-text search"
+        - "Removed the need for hosted databases on static sites"
+    - name: "Bridge"
+      duration: "Phase 3"
+      activities:
+        - "Built a dashboard layer for non-technical editors"
+        - "Kept agents working straight in the repo without a dashboard"
+    - name: "Dogfooding"
+      duration: "Ongoing"
+      activities:
+        - "Migrated this portfolio off Sanity onto Graft"
+        - "Published packages for Astro and Next.js"
+  keyDecisions:
+    - decision: "Store content as MDX in git"
+      rationale: "Agents can read, validate, and edit content without leaving the codebase."
+    - decision: "Keep a dashboard for editors"
+      rationale: "Non-technical teammates still write and update copy without touching code."
+  research:
+    - "Compared WordPress, Wix, Webflow, Framer, and Sanity workflows"
+    - "Tested how coding agents interact with external CMS APIs vs local files"
+  collaboration: "Solo open-source build, tested on real portfolio and client workflows."
+  iterations:
+    - "Refined CLI compilation speed and error messages"
+    - "Added Astro and Next.js SDK support"
+  userFeedback: "Running this portfolio on Graft caught rough edges early and proved the workflow end to end."
+results:
+  beforeAfter:
+    - metric: "Where content lives"
+      before: "External dashboard"
+      after: "MDX in git"
+      improvement: "Agent-native"
+    - metric: "For editors"
+      before: "Code or lock-in"
+      after: "Clean dashboard"
+      improvement: "No code needed"
+    - metric: "Static setup"
+      before: "Hosted API + keys"
+      after: "Local index.db"
+      improvement: "Zero env vars"
+    - metric: "License"
+      before: "Proprietary SaaS"
+      after: "MIT open source"
+      improvement: "Own your stack"
+  metrics:
+    - "MIT licensed open source"
+    - "Zero external services for static sites"
+    - "Powers andersonjoseph.com"
+  deliverables:
+    - "Core schema and compiler"
+    - "Astro and Next.js SDKs"
+    - "Editor dashboard bridge"
+  achievements:
+    - "Replaced hosted CMS on this portfolio with zero downtime"
+    - "Built native agent and editor workflows in one tool"
+gallery:
+  images: []
+story:
+  title: "Building Graft"
+  overview: "I built Graft after years of using WordPress, Wix, Webflow, Framer, and Sanity. It keeps content in code as MDX so AI agents never need a dashboard, while non-technical editors still get one."
+  when: "2026, ongoing"
+  why: "Old CMS tools bolt AI on later through an MCP or CLI, and half of social media claims CMS tools are dead. Non-technical people still write and edit content, though, and they are not opening a code editor. Graft bridges both sides."
+  compare: "The usual CMS tradeoffs, and how Graft works."
+  stats:
+    - label: "For agents"
+      before: "External dashboard"
+      after: "MDX in code"
+      note: "Native in git"
+    - label: "For editors"
+      before: "Touch code or wait"
+      after: "Dashboard"
+      note: "No code needed"
+    - label: "Static sites"
+      before: "API keys"
+      after: "0 env vars"
+      note: "Local SQLite index"
+    - label: "License"
+      before: "SaaS lock-in"
+      after: "MIT"
+      note: "Open source"
+  steps:
+    - name: "The gap"
+      heading: "Why existing CMS tools fell short"
+      body: "Most CMS platforms still make you jump into a dashboard for routine setup, even after adding an MCP or CLI. At the same time, putting everything in plain markdown leaves non-technical editors stuck."
+    - name: "Content in code"
+      heading: "Typed schemas and MDX in git"
+      body: "I designed Graft so schemas live in TypeScript and content lives as MDX right in the repo. Agents read and edit files directly, and every build validates against the schema."
+    - name: "The bridge"
+      heading: "Keeping a dashboard for editors"
+      body: "Non-technical teammates should not have to care about git branches or markdown syntax. Graft gives them a clean editing surface that still syncs back to code."
+    - name: "Production"
+      heading: "Running this site on Graft"
+      body: "I moved this entire portfolio onto Graft so every blog post, project, and case study runs through it. Using it myself exposed edge cases fast."
+  tools: "TypeScript, Zod, MDX, SQLite, MCP, and SDKs for Astro and Next.js."
+  media:
+    - slot: "hero"
+      frame: "browser"
+      label: "Editing content in Graft and compiling to MDX"
+    - slot: "steps"
+      frame: "browser"
+      label: "Graft CLI compiling schemas into a local index"
+order: 3
+---

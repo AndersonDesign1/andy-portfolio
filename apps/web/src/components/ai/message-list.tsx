@@ -20,7 +20,7 @@ export const Message = ({
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
-        <p className="bg-secondary text-primary max-w-[85%] rounded-sm px-4 py-2.5 leading-relaxed whitespace-pre-wrap">
+        <p className="max-w-[85%] rounded-2xl rounded-br-[5px] bg-[var(--surface)] px-4 py-2.5 leading-relaxed whitespace-pre-wrap text-[var(--fg)]">
           {message.content}
         </p>
       </div>

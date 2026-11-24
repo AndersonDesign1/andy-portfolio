@@ -101,31 +101,33 @@ export const Composer = ({
 
   return (
     <form
-      className="border-subtle bg-background/85 focus-within:border-foreground/40 sticky bottom-4 rounded-md border p-2 shadow-[0_10px_40px_-18px_color-mix(in_oklch,var(--foreground)_35%,transparent)] backdrop-blur-md"
+      className="sticky bottom-4 rounded-[22px] bg-[var(--raised)] p-2.5 shadow-[0_24px_60px_-30px_var(--shadow),inset_0_0_0_1px_rgb(128_128_128/0.14)] backdrop-blur-md transition-shadow focus-within:shadow-[0_24px_60px_-28px_var(--shadow),inset_0_0_0_1.5px_var(--fg)]"
       onSubmit={onSubmit}
     >
       <label className="sr-only" htmlFor="ai-question">
         Your question
       </label>
       <textarea
-        className="placeholder:text-muted-foreground text-primary [field-sizing:content] max-h-48 min-h-11 w-full resize-none bg-transparent px-3 py-2.5 text-base leading-relaxed outline-none"
+        className="[field-sizing:content] max-h-48 min-h-11 w-full resize-none bg-transparent px-3 py-2.5 text-base leading-relaxed text-[var(--fg)] outline-none placeholder:text-[var(--mute)]"
         id="ai-question"
         maxLength={MAX_CHARS}
         onChange={(event) => onChange(event.target.value)}
         onKeyDown={onKeyDown}
         placeholder={
-          listening ? "Listening…" : "Ask about SEO, code, the web or AI…"
+          listening
+            ? "Listening…"
+            : "Ask about my work, products, code, or AI agents…"
         }
         ref={textareaRef}
         rows={1}
         value={value}
       />
-      <div className="flex items-center justify-between gap-3 px-1 pt-1">
+      <div className="flex items-center justify-between gap-3 px-1.5 pt-1">
         <p
           aria-live="polite"
           className={cn(
-            "text-muted min-w-0 truncate text-xs",
-            voiceError && "text-secondary"
+            "min-w-0 truncate text-xs text-[var(--mute)]",
+            voiceError && "text-[var(--fg-2)]"
           )}
         >
           {hintFor({
@@ -140,7 +142,7 @@ export const Composer = ({
           {!voiceSupported && (
             <button
               aria-label="How it works"
-              className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
+              className="inline-flex size-11 items-center justify-center rounded-full text-[var(--mute)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--fg)] sm:size-9"
               onClick={onHelp}
               type="button"
             >
@@ -150,7 +152,7 @@ export const Composer = ({
           {voiceSupported && (
             <button
               aria-label="Close the text box"
-              className="text-muted hover:text-primary hover:bg-secondary inline-flex size-11 items-center justify-center rounded-sm transition-colors sm:size-9"
+              className="inline-flex size-11 items-center justify-center rounded-full text-[var(--mute)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--fg)] sm:size-9"
               onClick={onClose}
               type="button"
             >
@@ -162,10 +164,10 @@ export const Composer = ({
               aria-label={voiceLabel}
               aria-pressed={listening}
               className={cn(
-                "inline-flex size-11 items-center justify-center rounded-sm transition-colors duration-200 ease-[var(--ease-out)] active:scale-[0.94] sm:size-9",
+                "inline-flex size-11 items-center justify-center rounded-full transition-colors duration-200 ease-[var(--ease)] active:scale-[0.94] sm:size-9",
                 listening
-                  ? "bg-foreground text-background"
-                  : "text-secondary hover:text-primary hover:bg-secondary"
+                  ? "bg-[var(--fg)] text-[var(--bg)]"
+                  : "text-[var(--fg-2)] hover:bg-[var(--surface)] hover:text-[var(--fg)]"
               )}
               onClick={onToggleVoice}
               type="button"
@@ -176,7 +178,7 @@ export const Composer = ({
           {busy ? (
             <button
               aria-label="Stop the answer"
-              className="bg-foreground text-background inline-flex size-11 items-center justify-center rounded-sm active:scale-[0.94] sm:size-9"
+              className="inline-flex size-11 items-center justify-center rounded-full bg-[var(--fg)] text-[var(--bg)] active:scale-[0.94] sm:size-9"
               onClick={onStop}
               type="button"
             >
@@ -185,7 +187,7 @@ export const Composer = ({
           ) : (
             <button
               aria-label="Send"
-              className="bg-foreground text-background inline-flex size-11 items-center justify-center rounded-sm transition-opacity duration-200 active:scale-[0.94] disabled:opacity-30 sm:size-9"
+              className="inline-flex size-11 items-center justify-center rounded-full bg-[var(--fg)] text-[var(--bg)] transition-opacity duration-200 active:scale-[0.94] disabled:opacity-30 sm:size-9"
               disabled={!value.trim()}
               type="submit"
             >

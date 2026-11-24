@@ -277,11 +277,18 @@
     height: 18px;
     grid-area: 1 / 1;
   }
-  .theme .to-light,
-  .dark .theme .to-dark {
+  .theme .ic-light,
+  .theme .ic-dark {
     display: none;
   }
-  .dark .theme .to-light {
+  :root[data-theme-mode="light"] .theme .ic-system,
+  :root[data-theme-mode="dark"] .theme .ic-system {
+    display: none;
+  }
+  :root[data-theme-mode="light"] .theme .ic-light {
+    display: block;
+  }
+  :root[data-theme-mode="dark"] .theme .ic-dark {
     display: block;
   }
   .menu-btn {
@@ -381,22 +388,22 @@
     }
   }
 
-  /* now playing, or last played: a small record with the song beside it */
+  /* now playing, or last played: an album sleeve with a vinyl record peeking out */
   .np {
     justify-self: start;
-    margin-top: 12px;
+    margin-top: 16px;
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    font-size: 14px;
+    gap: 16px;
+    font-size: 14.5px;
     color: var(--mute);
-    min-height: 42px;
+    min-height: 60px;
     transition: opacity 400ms var(--ease);
   }
   .np-text {
     display: grid;
-    gap: 3px;
-    line-height: 1.3;
+    gap: 4px;
+    line-height: 1.35;
   }
   .np-state {
     display: inline-flex;
@@ -456,97 +463,131 @@
   .np[hidden] {
     display: none;
   }
-  /* a little record: the cover is its label, and it spins while a song plays */
-  .vinyl {
+  /* album sleeve + peeking grooved vinyl that slides out and spins when playing */
+  .np-record {
     position: relative;
     flex: none;
-    width: 40px;
-    height: 40px;
-    margin-right: 4px;
+    width: 86px;
+    height: 60px;
+    display: block;
+    transition: width 500ms var(--ease);
   }
-  .disc {
+  .np[data-playing] .np-record {
+    width: 96px;
+  }
+  .sleeve {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 60px;
+    height: 60px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow:
+      0 6px 18px -10px var(--shadow),
+      inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+  .sleeve::after {
+    content: "";
     position: absolute;
     inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.14) 0,
+      transparent 4px,
+      transparent 94%,
+      rgb(0 0 0 / 0.25) 100%
+    );
+    pointer-events: none;
+  }
+  .sleeve .art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.82);
+    transition:
+      filter 500ms var(--ease),
+      transform 500ms var(--ease);
+  }
+  .np[data-playing] .sleeve .art,
+  .np-record:hover .sleeve .art {
+    filter: none;
+  }
+  .disc-slide {
+    position: absolute;
+    z-index: 1;
+    top: 3px;
+    left: 28px;
+    width: 54px;
+    height: 54px;
+    transform: translateX(0);
+    transition: transform 500ms var(--ease);
+  }
+  .np-record:hover .disc-slide {
+    transform: translateX(6px);
+  }
+  .np[data-playing] .disc-slide {
+    transform: translateX(12px);
+  }
+  .np[data-playing] .np-record:hover .disc-slide {
+    transform: translateX(15px);
+  }
+  .disc {
+    position: relative;
     display: grid;
     place-items: center;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     background:
       radial-gradient(
         circle,
         transparent 0 34%,
-        rgb(255 255 255 / 0.05) 35% 36%,
+        rgb(255 255 255 / 0.14) 35% 36%,
         transparent 37%
       ),
-      repeating-radial-gradient(circle, #141414 0 1px, #1d1d1d 1px 2px);
+      repeating-radial-gradient(circle, #171717 0 1.5px, #2d2d2d 1.5px 3px);
     box-shadow:
-      inset 0 0 0 1px rgb(255 255 255 / 0.06),
-      0 1px 3px rgb(0 0 0 / 0.25);
-    animation: spin 2.6s linear infinite;
+      inset 0 0 0 1px rgb(255 255 255 / 0.24),
+      0 6px 16px -6px var(--shadow);
+    animation: spin 3.2s linear infinite;
     animation-play-state: paused;
   }
-  .disc::after {
-    content: "";
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: var(--bg);
-  }
-  .vinyl::after {
+  .disc::before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: 50%;
     background: conic-gradient(
-      from 20deg,
-      transparent 0 18%,
-      rgb(255 255 255 / 0.14) 24%,
-      transparent 31% 68%,
-      rgb(255 255 255 / 0.09) 74%,
-      transparent 81%
+      from 25deg,
+      transparent 0 14%,
+      rgb(255 255 255 / 0.24) 22%,
+      transparent 31% 64%,
+      rgb(255 255 255 / 0.14) 72%,
+      transparent 82%
     );
     pointer-events: none;
   }
-  .np .art {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: var(--surface);
-    filter: grayscale(1);
-    transition: filter 600ms var(--ease);
-  }
-  .np[data-playing] .art {
-    filter: none;
-  }
-  .arm {
-    position: absolute;
-    top: -3px;
-    right: -4px;
-    width: 2px;
-    height: 24px;
-    border-radius: 1px;
-    background: var(--fg-2);
-    transform-origin: 50% 2px;
-    transform: rotate(-10deg);
-    transition: transform 600ms var(--ease);
-    z-index: 1;
-  }
-  .arm::before {
+  .disc::after {
     content: "";
     position: absolute;
-    top: 0;
-    left: -1.5px;
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: var(--fg-2);
+    background: var(--bg);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35);
+  }
+  .disc .label {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--surface);
   }
   .np[data-playing] .disc {
     animation-play-state: running;
-  }
-  .np[data-playing] .arm {
-    transform: rotate(24deg);
   }
   @keyframes spin {
     to {
@@ -623,134 +664,8 @@
   .frag.term .dim {
     color: var(--mute);
   }
-  /*
-   * Selected work. On a phone it's a plain list. On a wide screen it pins:
-   * the page keeps scrolling, and each stretch of scroll brings in the next
-   * project's words and picture in the same place.
-   */
-  .tale-pin {
-    display: grid;
-    gap: 64px;
-  }
-  .tale-item {
-    display: grid;
-    gap: 20px;
-  }
-  .tale-text {
-    display: grid;
-    gap: 8px;
-    align-content: start;
-  }
-  .tale-text .top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .tale-text h2 {
-    font-size: clamp(26px, 3.2vw, 40px);
-    line-height: 1.1;
-    letter-spacing: -0.035em;
-  }
-  .tale-text .y {
-    font-size: 13.5px;
-    color: var(--mute);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-  .tale-text p {
-    font-size: 16px;
-    color: var(--fg-2);
-    max-width: 32em;
-  }
-  .tale-text p b {
-    color: var(--fg);
-    font-weight: 560;
-  }
-  .tale-text .small {
-    max-width: 28em;
-  }
-  .tale-text .go {
-    margin-top: 6px;
-  }
-  .tale-item:hover .go .u {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .tale-after {
-    margin-top: 48px;
-  }
-  @media (min-width: 900px) {
-    .tale-item {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-      gap: 56px;
-      align-items: center;
-    }
-    .tale-text {
-      align-content: center;
-    }
-    .tale-text p {
-      font-size: 17px;
-    }
-    /* site.ts adds `live`; without it the list simply stays a list */
-    .tale.live {
-      height: calc(100dvh + (var(--n) - 1) * 70dvh);
-    }
-    .tale.live .tale-pin {
-      position: sticky;
-      top: 0;
-      height: 100dvh;
-      padding-top: calc(env(safe-area-inset-top, 0px) + 88px);
-      padding-bottom: 32px;
-      gap: 0;
-      align-items: center;
-    }
-    .tale.live .tale-item {
-      grid-area: 1 / 1;
-      pointer-events: none;
-    }
-    .tale.live .tale-item.on {
-      z-index: 1;
-      pointer-events: auto;
-    }
-    .tale.live .tale-item .fig {
-      max-height: calc(100dvh - 160px);
-    }
-    .tale.live .tale-text > *,
-    .tale.live .tale-item .fig {
-      opacity: 0;
-      transform: translate3d(0, 18px, 0);
-      transition:
-        opacity 380ms var(--ease),
-        transform 560ms var(--ease);
-    }
-    .tale.live .tale-item .fig {
-      transform: translate3d(0, 36px, 0) scale(0.98);
-    }
-    .tale.live .tale-item.past .tale-text > * {
-      transform: translate3d(0, -18px, 0);
-    }
-    .tale.live .tale-item.past .fig {
-      transform: translate3d(0, -36px, 0) scale(0.98);
-    }
-    .tale.live .tale-item.on .tale-text > *,
-    .tale.live .tale-item.on .fig {
-      opacity: 1;
-      transform: none;
-      transition:
-        opacity 520ms var(--ease) 120ms,
-        transform 760ms var(--ease) 80ms;
-    }
-    /* the words arrive one after another */
-    .tale.live .tale-item.on .tale-text > :nth-child(2) {
-      transition-delay: 170ms;
-    }
-    .tale.live .tale-item.on .tale-text > :nth-child(3) {
-      transition-delay: 220ms;
-    }
-    .tale.live .tale-item.on .tale-text > :nth-child(4) {
-      transition-delay: 270ms;
-    }
+  .stack-after {
+    margin-top: 24px;
   }
 
   /* what I do: one line set large, three points under it */
@@ -892,17 +807,64 @@
   }
   .soc {
     display: flex;
-    gap: 20px;
-    font-size: 14px;
+    align-items: center;
+    gap: 8px;
     color: var(--fg-2);
   }
-  .soc a:hover {
+  .soc-link {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: var(--mute);
+    transition:
+      color 160ms var(--ease),
+      background 160ms var(--ease),
+      transform 160ms var(--ease);
+  }
+  .soc-link:hover {
     color: var(--fg);
+    background: var(--surface);
+    transform: translateY(-1px);
+  }
+  .soc-link svg {
+    display: block;
   }
   .fine {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 20px;
+    align-items: center;
+    gap: 8px 20px;
+  }
+  .graft-badge {
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.85;
+    transition: opacity 160ms var(--ease);
+  }
+  .graft-badge:hover {
+    opacity: 1;
+  }
+  .graft-badge img {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+  .graft-for-dark,
+  .dark .graft-for-light {
+    display: none;
+  }
+  .dark .graft-for-dark {
+    display: block;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) .graft-for-light {
+      display: none;
+    }
+    :root:not(.light) .graft-for-dark {
+      display: block;
+    }
   }
 
   /* ---------- page heads ---------- */
@@ -929,41 +891,87 @@
     }
   }
 
-  /* ---------- work page: two staggered columns, then a plain list ---------- */
-  .cards {
-    row-gap: 64px;
-  }
-  .card {
+  /* ---------- work page: sticky stacking project cards, then a plain list ---------- */
+  .proj-stack {
     display: grid;
-    gap: 12px;
-    align-content: start;
+    gap: 28px;
+    padding-bottom: 24px;
   }
-  .card .fig {
-    transition: transform 500ms var(--ease);
+  .proj-card {
+    display: block;
+    border-radius: 22px;
+    background: var(--raised);
+    padding: 20px;
+    box-shadow:
+      0 24px 60px -30px var(--shadow),
+      inset 0 0 0 1px rgb(128 128 128 / 0.14);
+    transform-origin: center top;
+    transform: translate3d(0, var(--stack-y, 0px), 0)
+      scale(var(--stack-scale, 1));
+    will-change: transform;
   }
-  .card:hover .fig {
-    transform: scale(0.99);
+  .proj-card-inner {
+    align-items: center;
+    row-gap: 22px;
+    opacity: var(--stack-dim, 1);
   }
-  .card h2 {
-    font-size: 22px;
-    line-height: 1.2;
+  .proj-media .fig {
+    --ar: 16 / 10;
+  }
+  .proj-media .fig > img {
+    transition: transform 280ms var(--ease);
+  }
+  .proj-card:hover .proj-media .fig > img {
+    transform: scale(1.02);
+  }
+  .proj-info {
+    display: grid;
+    gap: 10px;
+    align-content: center;
+  }
+  .proj-info h2 {
+    font-size: clamp(24px, 2.8vw, 32px);
+    line-height: 1.15;
     letter-spacing: -0.03em;
   }
-  .card p {
+  .proj-info p {
     color: var(--fg-2);
-    font-size: 15.5px;
-    max-width: 32em;
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 34em;
+  }
+  .proj-info p b {
+    color: var(--fg);
+    font-weight: 560;
+  }
+  .proj-info .go {
+    margin-top: 6px;
+  }
+  .proj-card:hover .go .arr {
+    transform: translateX(4px);
+  }
+  .proj-card:hover .go .u {
+    background-size: 100% 1px;
   }
   @media (min-width: 900px) {
-    .cards {
+    .proj-stack {
+      gap: 44px;
+      padding-bottom: 48px;
+    }
+    .proj-card {
+      position: sticky;
+      top: calc(var(--header) + 28px + var(--i, 0) * 16px);
+      z-index: calc(var(--i, 0) + 1);
+      padding: 28px;
+    }
+    .proj-card-inner {
       column-gap: 32px;
     }
-    .card:nth-child(odd) {
-      grid-column: 1 / 7;
+    .proj-media {
+      grid-column: 1 / 8;
     }
-    .card:nth-child(even) {
-      grid-column: 7 / 13;
-      margin-top: 96px;
+    .proj-info {
+      grid-column: 8 / 13;
     }
   }
   .rest {
@@ -1432,47 +1440,156 @@
     }
   }
 
-  /* pictures: a strip you swipe */
-  .gal {
+  /* pictures: interactive single-stage gallery with instant switching and thumbnails */
+  .gal-viewer {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: min(78%, 420px);
+    gap: 14px;
+    outline: none;
+  }
+  .gal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 8px;
-    scrollbar-width: none;
   }
-  .gal::-webkit-scrollbar {
-    display: none;
+  .gal-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-width: 0;
   }
-  .gal figure {
-    margin: 0;
-    display: grid;
-    gap: 10px;
-    scroll-snap-align: start;
-  }
-  .gal figcaption {
-    font-size: 14px;
-    color: var(--fg-2);
+  .gal-cap {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--fg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .gal-nav {
     display: flex;
-    gap: 6px;
-    justify-content: flex-end;
-    margin-bottom: 14px;
+    gap: 8px;
+    flex: none;
   }
   .gal-nav button {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: var(--surface);
     color: var(--fg-2);
     display: grid;
     place-items: center;
+    transition:
+      background 160ms var(--ease),
+      color 160ms var(--ease),
+      transform 140ms var(--ease);
   }
   .gal-nav button:hover {
     color: var(--fg);
+    background: var(--raised);
+  }
+  .gal-nav button:active {
+    transform: scale(0.94);
+  }
+  .gal-stage {
+    position: relative;
+  }
+  .gal-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgb(16 16 16 / 0.72);
+    color: #f5f5f5;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.45);
+    transition:
+      background 160ms var(--ease),
+      transform 160ms var(--ease);
+  }
+  .gal-arrow.prev {
+    left: 14px;
+  }
+  .gal-arrow.next {
+    right: 14px;
+  }
+  .gal-arrow:hover {
+    background: rgb(16 16 16 / 0.92);
+    transform: translateY(-50%) scale(1.06);
+  }
+  .gal-arrow:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+  @media (max-width: 640px) {
+    .gal-arrow {
+      width: 36px;
+      height: 36px;
+    }
+    .gal-arrow.prev {
+      left: 8px;
+    }
+    .gal-arrow.next {
+      right: 8px;
+    }
+  }
+  .gal-slide {
+    margin: 0;
+  }
+  .gal-slide[hidden] {
+    display: none;
+  }
+  .gal-thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 10px;
+  }
+  .gal-thumb {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+    padding: 0;
+    opacity: 0.5;
+    transition:
+      opacity 180ms var(--ease),
+      transform 180ms var(--ease),
+      box-shadow 180ms var(--ease);
+  }
+  .gal-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .gal-thumb:hover {
+    opacity: 0.85;
+  }
+  .gal-thumb.on {
+    opacity: 1;
+    box-shadow: 0 0 0 2px var(--fg);
+  }
+  @media (max-width: 640px) {
+    .gal-thumbs {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px;
+    }
+    .gal-thumbs::-webkit-scrollbar {
+      display: none;
+    }
+    .gal-thumb {
+      flex: none;
+      width: 72px;
+    }
   }
   .cs-tools {
     font-size: 15px;
@@ -1606,111 +1723,6 @@
   }
   .media.phone figcaption {
     text-align: center;
-  }
-
-  /* ---------- contact ---------- */
-  .contact {
-    row-gap: 48px;
-    padding-bottom: 96px;
-  }
-  .c-side {
-    display: grid;
-    gap: 18px;
-    align-content: start;
-  }
-  .c-side .big {
-    font-size: clamp(18px, 1.6vw, 20px);
-    font-weight: 560;
-    letter-spacing: -0.025em;
-    overflow-wrap: anywhere;
-  }
-  .c-side p {
-    font-size: 16px;
-    color: var(--fg-2);
-  }
-  .c-side p a {
-    color: var(--fg);
-  }
-  .cf {
-    display: grid;
-    gap: 18px;
-    /* the form sits in a display: contents island, so `.field12 > *` misses it */
-    grid-column: 1 / -1;
-    min-width: 0;
-  }
-  .fld {
-    display: grid;
-    gap: 8px;
-  }
-  .fld label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--fg-2);
-  }
-  .fld input,
-  .fld textarea,
-  .fld select {
-    width: 100%;
-    border: 0;
-    background: var(--surface);
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 16px;
-    color: var(--fg);
-    outline: none;
-    box-shadow: inset 0 0 0 1.5px transparent;
-    transition: box-shadow 160ms var(--ease);
-  }
-  .fld select {
-    appearance: none;
-    background-image:
-      linear-gradient(45deg, transparent 50%, var(--mute) 50%),
-      linear-gradient(135deg, var(--mute) 50%, transparent 50%);
-    background-position:
-      calc(100% - 20px) 52%,
-      calc(100% - 15px) 52%;
-    background-size: 5px 5px;
-    background-repeat: no-repeat;
-    padding-right: 40px;
-  }
-  .fld textarea {
-    resize: vertical;
-    min-height: 130px;
-  }
-  .fld input::placeholder,
-  .fld textarea::placeholder {
-    color: var(--mute);
-  }
-  .fld input:focus,
-  .fld textarea:focus,
-  .fld select:focus {
-    box-shadow: inset 0 0 0 1.5px var(--fg);
-  }
-  .fld .err {
-    font-size: 13.5px;
-    color: var(--fg);
-  }
-  .two {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 18px;
-  }
-  .cf .sent {
-    font-size: 14px;
-    color: var(--fg-2);
-  }
-  @media (min-width: 900px) {
-    .contact .c-side {
-      grid-column: 1 / 5;
-    }
-    .contact .cf {
-      grid-column: 6 / 13;
-    }
-  }
-  @media (max-width: 560px) {
-    .two {
-      grid-template-columns: minmax(0, 1fr);
-    }
   }
 
   /* ---------- blog ---------- */
@@ -2201,23 +2213,20 @@
   :is(
     .hero > *,
     .head,
-    .tale-item,
     .pr,
     .lists > *,
     .says,
     .belief,
     .chapter,
-    .card,
     .arow,
     .cs-head > *,
     .cs-why,
     .step,
     .ba,
-    .gal figure,
+    .gal-viewer,
     .cs-next,
     .prow,
     .post-fig,
-    .contact > *,
     .site-foot .cta > *
   ):not(.in) {
   opacity: 0;
@@ -2226,23 +2235,20 @@
   :is(
     .hero > *,
     .head,
-    .tale-item,
     .pr,
     .lists > *,
     .says,
     .belief,
     .chapter,
-    .card,
     .arow,
     .cs-head > *,
     .cs-why,
     .step,
     .ba,
-    .gal figure,
+    .gal-viewer,
     .cs-next,
     .prow,
     .post-fig,
-    .contact > *,
     .site-foot .cta > *
   ).in {
   animation: rise 560ms cubic-bezier(0.25, 0.25, 0, 1) backwards;

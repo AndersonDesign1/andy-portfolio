@@ -81,8 +81,10 @@ const hideCta = /^\/contact\/?$/u.test(pathname);
 
           try {
             const t = localStorage.getItem("andy-theme");
-            const d = t === "dark" || ((!t || t === "system") && darkScheme.matches);
+            const mode = t === "dark" || t === "light" ? t : "system";
+            const d = mode === "dark" || (mode === "system" && darkScheme.matches);
 
+            root.dataset.themeMode = mode;
             root.classList.remove("light", "dark");
             root.classList.add(d ? "dark" : "light");
           } catch {
