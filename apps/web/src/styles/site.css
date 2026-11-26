@@ -688,6 +688,20 @@
     }
   }
 
+  /* Touch screens get roomier icon buttons (44px, as Apple and Rams advise). */
+  @media (pointer: coarse) {
+    .theme,
+    .soc-link {
+      width: 44px;
+      height: 44px;
+    }
+    .ask-top .x {
+      width: 40px;
+      height: 40px;
+      margin-right: -8px;
+    }
+  }
+
   /* what I do: one line set large, three points under it */
   .says {
     row-gap: 36px;
@@ -1039,7 +1053,7 @@
     color: var(--mute);
   }
   .arow .arr {
-    color: var(--faint);
+    color: var(--mute);
     justify-self: end;
   }
   .arow:hover {
