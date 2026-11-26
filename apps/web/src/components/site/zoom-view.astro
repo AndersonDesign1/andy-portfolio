@@ -4,7 +4,11 @@
  * studies. site.ts fills it in and opens it; a native dialog gives us focus
  * handling and Escape for free.
  */
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  Cancel01Icon,
+} from "@hugeicons/core-free-icons";
 import Icon from "./icon.astro";
 ---
 
@@ -16,4 +20,10 @@ import Icon from "./icon.astro";
     <img alt="" data-zoom-img decoding="async" />
     <figcaption data-zoom-cap></figcaption>
   </figure>
+  <button aria-label="Previous picture" class="theme zoom-step prev" data-zoom-step="-1" hidden type="button">
+    <Icon icon={ArrowLeft01Icon} />
+  </button>
+  <button aria-label="Next picture" class="theme zoom-step next" data-zoom-step="1" hidden type="button">
+    <Icon icon={ArrowRight01Icon} />
+  </button>
 </dialog>

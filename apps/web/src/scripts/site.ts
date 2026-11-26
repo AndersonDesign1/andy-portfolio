@@ -19,9 +19,7 @@ const reduceMotion = () =>
 const COPIED_MS = 1800;
 const CLOCK_MS = 20_000;
 const HINT_MS = 2600;
-const COUNT_MS = 900;
 const SWAP_MS = 600;
-const BA_DELAY_MS = 450;
 const ASK_SEND_MS = 220;
 
 let page = new AbortController();
@@ -381,7 +379,7 @@ const initNowPlaying = () => {
 
 /* ---------- home & projects: sticky stacking cards (transform + opacity only) ---------- */
 
-const STORY_WIDE = "(min-width: 900px)";
+const STACK_SCREENS = "(min-width: 900px), (min-height: 640px)";
 const STACK_OFFSET_PX = 16;
 const STACK_SCALE_STEP = 0.042;
 const STACK_MIN_SCALE = 0.84;
@@ -403,7 +401,8 @@ const initProjectStack = () => {
     return;
   }
 
-  const wide = window.matchMedia(STORY_WIDE);
+  // The same widths and heights at which site.css makes the cards sticky.
+  const wide = window.matchMedia(STACK_SCREENS);
 
   const reset = () => {
     for (const card of cards) {
@@ -508,110 +507,6 @@ const initRails = () => {
   }
 };
 
-/* ---------- case study: before and after ---------- */
-
-const NUMBER = /^(?<num>\d[\d,.]*)(?<suffix>.*)$/u;
-
-const parseNumber = (value: string) => {
-  const groups = NUMBER.exec(value.trim())?.groups;
-
-  if (!groups?.num) {
-    return null;
-  }
-
-  return {
-    suffix: groups.suffix ?? "",
-    value: Number(groups.num.replaceAll(",", "")),
-  };
-};
-
-const initBeforeAfter = () => {
-  const box = $("[data-ba]");
-
-  if (!box) {
-    return;
-  }
-
-  const buttons = $$<HTMLButtonElement>(".seg button", box);
-  const values = $$("[data-before]", box);
-  let flipped = false;
-
-  const show = (side: "after" | "before") => {
-    if (box.dataset.v === side) {
-      return;
-    }
-
-    box.dataset.v = side;
-
-    for (const button of buttons) {
-      button.setAttribute("aria-pressed", String(button.dataset.v === side));
-    }
-
-    const direction = side === "after" ? 1 : -1;
-
-    for (const value of values) {
-      const from = value.dataset[side === "after" ? "before" : "after"] ?? "";
-      const to = value.dataset[side] ?? "";
-      const start = parseNumber(from);
-      const end = parseNumber(to);
-      const span = value.querySelector<HTMLElement>("span:last-child");
-
-      // Two numbers with the same unit count up or down; anything else slides.
-      if (
-        start &&
-        end &&
-        start.suffix === end.suffix &&
-        span &&
-        !reduceMotion()
-      ) {
-        const began = performance.now();
-
-        const step = (now: number) => {
-          const t = Math.min(1, (now - began) / COUNT_MS);
-          const eased = 1 - (1 - t) ** 3;
-          span.textContent = `${Math.round(start.value + (end.value - start.value) * eased)}${end.suffix}`;
-
-          if (t < 1) {
-            requestAnimationFrame(step);
-          } else {
-            span.textContent = to;
-          }
-        };
-
-        requestAnimationFrame(step);
-        continue;
-      }
-
-      swapText(value, to, direction);
-    }
-  };
-
-  const pick = (button: HTMLElement) => {
-    flipped = true;
-    show(button.dataset.v === "after" ? "after" : "before");
-  };
-
-  for (const button of buttons) {
-    button.addEventListener("click", () => pick(button), {
-      signal: page.signal,
-    });
-  }
-
-  // The first time the numbers scroll into view, they flip to "after" by themselves.
-  onScroll(() => {
-    if (flipped) {
-      return;
-    }
-
-    const rect = box.getBoundingClientRect();
-
-    if (rect.top < window.innerHeight * 0.7 && rect.bottom > 0) {
-      flipped = true;
-      window.setTimeout(() => show("after"), reduceMotion() ? 0 : BA_DELAY_MS);
-    }
-  });
-};
-
 /* ---------- galleries: click next/prev, pick a thumbnail, or use arrow keys ---------- */
 
 const initGallery = (viewer: HTMLElement) => {
@@ -638,7 +533,7 @@ const initGallery = (viewer: HTMLElement) => {
     for (const [i, thumb] of thumbs.entries()) {
       const active = i === index;
       thumb.classList.toggle("on", active);
-      thumb.setAttribute("aria-selected", String(active));
+      thumb.toggleAttribute("aria-current", active);
     }
 
     const activeCaption =
@@ -674,6 +569,38 @@ const initGallery = (viewer: HTMLElement) => {
     });
   }
 
+  // Phones swipe the strip; the caption and count follow the picture in view.
+  const stage = $("[data-gal-stage]", viewer);
+
+  if (stage) {
+    let queued = false;
+
+    stage.addEventListener(
+      "scroll",
+      () => {
+        if (queued) {
+          return;
+        }
+
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+
+          const step = slides[1]
+            ? slides[1].offsetLeft - (slides[0]?.offsetLeft ?? 0)
+            : 1;
+
+          const index = Math.round(stage.scrollLeft / Math.max(1, step));
+
+          if (index !== current) {
+            show(index);
+          }
+        });
+      },
+      { passive: true, signal: page.signal }
+    );
+  }
+
   viewer.addEventListener(
     "keydown",
     (event) => {
@@ -696,6 +623,8 @@ const initGalleries = () => {
 };
 
 /* ---------- click to zoom: pictures in blog posts and case studies ---------- */
+
+const SWIPE_PX = 40;
 
 /** Pictures inside the writing and the galleries. Header pictures stay put. */
 const ZOOMABLE = ".prose img, .gal-stage .fig > img";
@@ -727,14 +656,101 @@ const initZoom = () => {
 
   const { signal } = page;
 
-  const open = (image: HTMLImageElement) => {
+  const steppers = $$<HTMLButtonElement>("[data-zoom-step]", view);
+  let group: HTMLImageElement[] = [];
+  let at = 0;
+
+  const fill = (image: HTMLImageElement) => {
     big.src = image.currentSrc || image.src;
     big.alt = image.alt;
     caption.textContent = captionFor(image);
+  };
+
+  /** Back and forward through the gallery the picture came from. */
+  const step = (delta: number) => {
+    if (group.length <= 1) {
+      return;
+    }
+
+    at = (at + delta + group.length) % group.length;
+    const image = group[at];
+
+    if (image) {
+      fill(image);
+    }
+  };
+
+  const open = (image: HTMLImageElement) => {
+    const gallery = image.closest("[data-gallery]");
+    group = gallery
+      ? $$<HTMLImageElement>("[data-gal-slide] .fig > img", gallery)
+      : [image];
+    at = Math.max(0, group.indexOf(image));
+
+    for (const button of steppers) {
+      button.hidden = group.length <= 1;
+    }
+
+    fill(image);
     view.showModal();
     lenis?.stop();
     document.body.style.overflow = "hidden";
   };
+
+  for (const button of steppers) {
+    const delta = Number(button.dataset.zoomStep);
+    button.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+        step(delta);
+      },
+      { signal }
+    );
+  }
+
+  view.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "ArrowRight") {
+        step(1);
+      } else if (event.key === "ArrowLeft") {
+        step(-1);
+      }
+    },
+    { signal }
+  );
+
+  // A sideways swipe on the open picture moves through the gallery too.
+  let touchX: number | null = null;
+  let swiped = false;
+
+  view.addEventListener(
+    "touchstart",
+    (event) => {
+      touchX = event.touches[0]?.clientX ?? null;
+      swiped = false;
+    },
+    { passive: true, signal }
+  );
+  view.addEventListener(
+    "touchend",
+    (event) => {
+      const endX = event.changedTouches[0]?.clientX;
+
+      if (touchX !== null && endX !== undefined && group.length > 1) {
+        const dx = endX - touchX;
+
+        if (Math.abs(dx) > SWIPE_PX) {
+          swiped = true;
+          step(dx < 0 ? 1 : -1);
+        }
+      }
+
+      touchX = null;
+    },
+    { passive: true, signal }
+  );
 
   for (const image of $$<HTMLImageElement>(ZOOMABLE)) {
     image.classList.add("zoomable");
@@ -754,8 +770,20 @@ const initZoom = () => {
     );
   }
 
-  // Anywhere outside the button closes it: the picture, its caption, the dim.
-  view.addEventListener("click", () => view.close(), { signal });
+  // Anywhere outside the buttons closes it: the picture, its caption, the dim.
+  view.addEventListener(
+    "click",
+    () => {
+      if (swiped) {
+        swiped = false;
+
+        return;
+      }
+
+      view.close();
+    },
+    { signal }
+  );
 
   view.addEventListener(
     "close",
@@ -1175,7 +1203,6 @@ const init = () => {
   initNowPlaying();
   initProjectStack();
   initRails();
-  initBeforeAfter();
   initGalleries();
   initZoom();
   initClips();

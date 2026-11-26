@@ -668,6 +668,24 @@
     margin-top: 24px;
   }
 
+  /* On phones, screenshots keep their own shape instead of being cropped. */
+  @media (max-width: 899px) {
+    .fig:has(> img) {
+      aspect-ratio: auto;
+    }
+    .fig > img {
+      position: static;
+      height: auto;
+    }
+    .media.browser .screen:has(> img) {
+      aspect-ratio: auto;
+    }
+    .media .screen > img {
+      position: static;
+      height: auto;
+    }
+  }
+
   /* what I do: one line set large, three points under it */
   .says {
     row-gap: 36px;
@@ -952,6 +970,21 @@
   }
   .proj-card:hover .go .u {
     background-size: 100% 1px;
+  }
+  /* Phones stack too, once the screen is tall enough to hold a whole card. */
+  @media (max-width: 899px) and (min-height: 640px) {
+    .proj-card {
+      position: sticky;
+      top: calc(var(--header) + 12px + var(--i, 0) * 10px);
+      z-index: calc(var(--i, 0) + 1);
+      padding: 16px;
+    }
+    .proj-card-inner {
+      row-gap: 16px;
+    }
+    .proj-info {
+      gap: 8px;
+    }
   }
   @media (min-width: 900px) {
     .proj-stack {
@@ -1349,11 +1382,6 @@
   .stat .d {
     font-size: 13.5px;
     color: var(--fg-2);
-    opacity: 0;
-    transition: opacity 400ms var(--ease);
-  }
-  .ba[data-v="after"] .stat .d {
-    opacity: 1;
   }
   .ba .extra {
     font-size: 16px;
@@ -1543,6 +1571,33 @@
   }
   .gal-slide[hidden] {
     display: none;
+  }
+  /* Phones: every picture in one strip you swipe through. Tap one to open it. */
+  @media (max-width: 899px) {
+    .gal-stage {
+      display: flex;
+      gap: 12px;
+      margin-inline: -20px;
+      padding-inline: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 20px;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+    }
+    .gal-stage::-webkit-scrollbar {
+      display: none;
+    }
+    .gal-stage .gal-slide,
+    .gal-stage .gal-slide[hidden] {
+      display: block;
+      flex: 0 0 86%;
+      scroll-snap-align: start;
+    }
+    .gal-arrow,
+    .gal-thumbs {
+      display: none;
+    }
   }
   .gal-thumbs {
     display: grid;
@@ -1958,6 +2013,33 @@
     position: absolute;
     top: 16px;
     right: 16px;
+  }
+  .zoom-step {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .zoom-step.prev {
+    left: 16px;
+  }
+  .zoom-step.next {
+    right: 16px;
+  }
+  @media (max-width: 899px) {
+    .zoom-step {
+      top: auto;
+      bottom: 20px;
+      transform: none;
+    }
+    .zoom-step.prev {
+      left: calc(50% - 52px);
+    }
+    .zoom-step.next {
+      right: calc(50% - 52px);
+    }
+    .zoom {
+      padding-bottom: 84px;
+    }
   }
   @keyframes zoom-fade {
     from {

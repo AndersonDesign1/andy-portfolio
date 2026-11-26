@@ -104,26 +104,14 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
       </div>
     </div>
 
-    <section aria-label="Before and after" class="ba" data-ba data-v="before">
-      <div class="ba-top">
-        <p>{story.compare}</p>
-        <div aria-label="Show numbers from" class="seg" role="group">
-          <span aria-hidden="true" class="thumb"></span>
-          <button aria-pressed="true" data-v="before" type="button">Before</button>
-          <button aria-pressed="false" data-v="after" type="button">After</button>
-        </div>
-      </div>
+    <section aria-label="What came of it" class="ba">
       <div class="stats">
         {
           story.stats.map((stat) => (
             <div class="stat">
               <span class="k">{stat.label}</span>
-              <div
-                class:list={["v", { txt: textual(stat.before) || textual(stat.after) }]}
-                data-after={stat.after}
-                data-before={stat.before}
-              >
-                <span>{stat.before}</span>
+              <div class:list={["v", { txt: textual(stat.after) }]}>
+                <span>{stat.after}</span>
               </div>
               <span class="d">{stat.note}</span>
             </div>
@@ -186,25 +174,15 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
           <div class="gal-viewer" data-gallery tabindex="-1">
             <div class="gal-bar">
               <div class="gal-meta">
-                <p class="gal-cap" data-gal-cap>{galleryImages[0]?.title}</p>
+                <p aria-live="polite" class="gal-cap" data-gal-cap>{galleryImages[0]?.title}</p>
                 {galleryImages.length > 1 && (
                   <span class="small tnum" data-gal-count>
                     1 / {galleryImages.length}
                   </span>
                 )}
               </div>
-              {galleryImages.length > 1 && (
-                <div class="gal-nav">
-                  <button aria-label="Previous image" data-gal-step="-1" type="button">
-                    <Icon icon={ArrowLeft01Icon} />
-                  </button>
-                  <button aria-label="Next image" data-gal-step="1" type="button">
-                    <Icon icon={ArrowRight01Icon} />
-                  </button>
-                </div>
-              )}
             </div>
-            <div class="gal-stage">
+            <div class="gal-stage" data-gal-stage>
               {
                 galleryImages.map((image, imageIndex) => (
                   <figure class="gal-slide" data-gal-slide hidden={imageIndex !== 0}>
@@ -237,15 +215,14 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
               )}
             </div>
             {galleryImages.length > 1 && (
-              <div aria-label="Choose image" class="gal-thumbs" role="tablist">
+              <div aria-label="Choose image" class="gal-thumbs">
                 {
                   galleryImages.map((image, imageIndex) => (
                     <button
+                      aria-current={imageIndex === 0 ? "true" : undefined}
                       aria-label={image.title}
-                      aria-selected={imageIndex === 0 ? "true" : "false"}
                       class:list={["gal-thumb", { on: imageIndex === 0 }]}
                       data-gal-pick={imageIndex}
-                      role="tab"
                       type="button"
                     >
                       <img alt="" decoding="async" loading="lazy" src={image.src} />

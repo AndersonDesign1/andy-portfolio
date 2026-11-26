@@ -15,11 +15,14 @@ interface Props {
 const { fallback, media } = Astro.props;
 const still = media.src ? undefined : fallback;
 const show = Boolean(media.src || still);
+
+// A still is a desktop screenshot, so it never goes in a phone frame.
+const frame = still ? "browser" : media.frame;
 ---
 
 {
   show && (
-    <figure class:list={["media", media.frame]}>
+    <figure class:list={["media", frame]}>
       <div class="frame">
         <div class="screen">
           {media.src ? (
