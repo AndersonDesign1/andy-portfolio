@@ -526,8 +526,9 @@ const initGallery = (viewer: HTMLElement) => {
     const index = ((nextIndex % total) + total) % total;
     current = index;
 
+    // A class, not `hidden`: phones show every slide in the swipe strip.
     for (const [i, slide] of slides.entries()) {
-      slide.hidden = i !== index;
+      slide.classList.toggle("on", i === index);
     }
 
     for (const [i, thumb] of thumbs.entries()) {

@@ -1471,6 +1471,10 @@
   .steps-media {
     margin-top: 24px;
   }
+  /* A still in a clip's place: the picture alone, no window or phone around it. */
+  .media-still {
+    --ar: 16 / 10;
+  }
   @media (max-width: 760px) {
     .steps {
       grid-template-columns: minmax(0, 1fr);
@@ -1585,7 +1589,7 @@
   .gal-slide {
     margin: 0;
   }
-  .gal-slide[hidden] {
+  .gal-slide:not(.on) {
     display: none;
   }
   /* Phones: every picture in one strip you swipe through. Tap one to open it. */
@@ -1605,7 +1609,7 @@
       display: none;
     }
     .gal-stage .gal-slide,
-    .gal-stage .gal-slide[hidden] {
+    .gal-stage .gal-slide:not(.on) {
       display: block;
       flex: 0 0 86%;
       scroll-snap-align: start;

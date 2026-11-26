@@ -185,7 +185,7 @@ const live = study.hero.liveUrl ? new URL(study.hero.liveUrl) : null;
             <div class="gal-stage" data-gal-stage>
               {
                 galleryImages.map((image, imageIndex) => (
-                  <figure class="gal-slide" data-gal-slide hidden={imageIndex !== 0}>
+                  <figure class:list={["gal-slide", { on: imageIndex === 0 }]} data-gal-slide>
                     <div class="fig" style="--ar: 16 / 10">
                       <img alt={image.alt} decoding="async" loading="lazy" src={image.src} />
                     </div>

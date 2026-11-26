@@ -14,18 +14,20 @@ interface Props {
 
 const { fallback, media } = Astro.props;
 const still = media.src ? undefined : fallback;
-const show = Boolean(media.src || still);
 
-// A still is a desktop screenshot, so it never goes in a phone frame.
-const frame = still ? "browser" : media.frame;
+
 ---
 
 {
-  show && (
-    <figure class:list={["media", frame]}>
-      <div class="frame">
-        <div class="screen">
-          {media.src ? (
+  still ? (
+    <div class="fig media-still">
+      <img alt={still.alt} decoding="async" loading="lazy" src={still.src} />
+    </div>
+  ) : (
+    media.src && (
+      <figure class:list={["media", media.frame]}>
+        <div class="frame">
+          <div class="screen">
             <video
               aria-label={media.label}
               autoplay
@@ -39,11 +41,9 @@ const frame = still ? "browser" : media.frame;
               {media.webm && <source src={media.webm} type="video/webm" />}
               <source src={media.src} type="video/mp4" />
             </video>
-          ) : (
-            still && <img alt={still.alt} decoding="async" loading="lazy" src={still.src} />
-          )}
+          </div>
         </div>
-      </div>
-    </figure>
+      </figure>
+    )
   )
 }
