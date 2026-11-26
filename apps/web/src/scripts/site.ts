@@ -1069,6 +1069,25 @@ const initReveal = () => {
 
 const MENU_MS = 200;
 
+/** Tab and Shift+Tab wrap around inside `box` instead of leaving it. */
+const keepFocusIn = (box: HTMLElement, event: KeyboardEvent) => {
+  const stops = $$<HTMLElement>("a[href], button:not([disabled])", box);
+  const [first] = stops;
+  const last = stops.at(-1);
+
+  if (!(first && last)) {
+    return;
+  }
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+};
+
 const initMenu = () => {
   const menu = $("[data-menu]");
   const opener = $<HTMLButtonElement>("[data-menu-open]");
@@ -1121,9 +1140,15 @@ const initMenu = () => {
   document.addEventListener(
     "keydown",
     (event) => {
-      if (event.key === "Escape" && !menu.hidden) {
+      if (menu.hidden) {
+        return;
+      }
+
+      if (event.key === "Escape") {
         close();
         opener.focus();
+      } else if (event.key === "Tab") {
+        keepFocusIn(menu, event);
       }
     },
     { signal }

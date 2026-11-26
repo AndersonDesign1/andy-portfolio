@@ -2,6 +2,7 @@
 import { ArrowLeft01Icon, ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import Icon from "../../components/site/icon.astro";
 import MediaSlot from "../../components/site/media-slot.astro";
+import { FEATURED_WORK } from "../../data/work";
 import BaseLayout from "../../layouts/base-layout.astro";
 import { getGraft } from "../../lib/graft";
 import { storyOf, toCaseStudy } from "../../lib/portfolio";
@@ -52,9 +53,11 @@ const whyRest = whyBreak === -1 ? "" : story.why.slice(whyBreak + 1);
 const heroMedia = story.media?.find((entry) => entry.slot === "hero");
 const stepsMedia = story.media?.find((entry) => entry.slot === "steps");
 
+const cardImage = FEATURED_WORK.find((work) => work.href === `/case-studies/${slug}`)?.image;
+
 const heroFallback = study.hero.heroImage
   ? { alt: study.gallery.images[0]?.alt ?? story.title, src: study.hero.heroImage }
-  : undefined;
+  : cardImage;
 
 const galleryImages = study.gallery.images.filter((image) => Boolean(image.src));
 const weeks = story.steps.every((step) => step.weeks) ? story.steps : null;

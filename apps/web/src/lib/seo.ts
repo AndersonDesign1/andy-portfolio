@@ -7,7 +7,7 @@ const baseUrl = "https://www.andersonjoseph.com";
 
 export const buildPageMeta = ({
   title = "Anderson Joseph | Product Engineer",
-  description = "Anderson Joseph is a product engineer in Nigeria building fast web interfaces, full-stack products, and tools for people and AI agents.",
+  description = "Anderson Joseph builds fast web interfaces, full-stack products, and tools for people and AI agents.",
   og,
 }: {
   title?: string;
@@ -37,6 +37,8 @@ export const buildPageMeta = ({
     canonical: baseUrl,
     description,
     ogImage: ogUrl.toString(),
-    title,
+    title: title.includes("Anderson Joseph")
+      ? title
+      : `${title} | Anderson Joseph`,
   };
 };

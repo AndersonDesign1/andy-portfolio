@@ -19,7 +19,11 @@ export default defineConfig({
       { hostname: "wrapped-images.spotifycdn.com", protocol: "https" },
     ],
   },
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [
+    react(),
+    mdx(),
+    sitemap({ filter: (page) => !page.includes("/giveaway") }),
+  ],
   // Blog code blocks: the same WCAG AA grayscale pair as /ai answers. No
   // default colour: tokens carry --shiki-light / --shiki-dark and global.css
   // picks one per theme (the blog's <pre> supplies its own background).

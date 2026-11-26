@@ -1,56 +1,46 @@
 ---
 /**
  * A slot for a short looping clip in a plain browser window or a phone.
- * With no src it shows a hatched placeholder with the size the clip should
- * be, so the page reads right before the videos exist. See MEDIA.md.
+ * With no clip yet it shows the fallback still, and with neither it renders
+ * nothing, so visitors never see an empty frame. See MEDIA.md.
  */
 import type { CaseStoryMedia } from "../../types/case-study";
 
 interface Props {
-  /** Still shown on production while the clip doesn't exist yet. */
+  /** Still shown while the clip doesn't exist yet. */
   fallback?: { alt: string; src: string };
   media: CaseStoryMedia;
 }
 
 const { fallback, media } = Astro.props;
-
-// Placeholders (with the clip's size) show everywhere but production.
-const showSpec = process.env.VERCEL_ENV !== "production" || !fallback;
-const phone = media.frame === "phone";
-const size = phone ? "1080 × 2340" : "1600 × 1000";
-const ratio = phone ? "9:19.5" : "16:10";
+const still = media.src ? undefined : fallback;
+const show = Boolean(media.src || still);
 ---
 
-<figure class:list={["media", media.frame]}>
-  <div class="frame">
-    <div class="screen">
-      {
-        media.src ? (
-          <video
-            aria-label={media.label}
-            autoplay
-            data-autoplay
-            loop
-            muted
-            playsinline
-            poster={media.poster}
-            preload="metadata"
-          >
-            {media.webm && <source src={media.webm} type="video/webm" />}
-            <source src={media.src} type="video/mp4" />
-          </video>
-        ) : !showSpec && fallback ? (
-          <img alt={fallback.alt} decoding="async" loading="lazy" src={fallback.src} />
-        ) : (
-          <>
-            <div aria-hidden="true" class="hatch" />
-            <p class="spec">
-              <b>{media.label}</b>
-              Clip to come: {size} ({ratio}), 6 to 12 seconds, looping MP4 and WebM
-            </p>
-          </>
-        )
-      }
-    </div>
-  </div>
-</figure>
+{
+  show && (
+    <figure class:list={["media", media.frame]}>
+      <div class="frame">
+        <div class="screen">
+          {media.src ? (
+            <video
+              aria-label={media.label}
+              autoplay
+              data-autoplay
+              loop
+              muted
+              playsinline
+              poster={media.poster}
+              preload="metadata"
+            >
+              {media.webm && <source src={media.webm} type="video/webm" />}
+              <source src={media.src} type="video/mp4" />
+            </video>
+          ) : (
+            still && <img alt={still.alt} decoding="async" loading="lazy" src={still.src} />
+          )}
+        </div>
+      </div>
+    </figure>
+  )
+}
