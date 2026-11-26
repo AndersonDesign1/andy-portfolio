@@ -1,0 +1,44 @@
+---
+import type { FeaturedWork } from "../../data/work";
+
+interface Props {
+  eager?: boolean;
+  work: FeaturedWork;
+}
+
+const { eager = false, work } = Astro.props;
+---
+
+<div class="fig">
+  {
+    work.image ? (
+      <img
+        alt={work.image.alt}
+        decoding="async"
+        fetchpriority={eager ? "high" : undefined}
+        height="900"
+        loading={eager ? "eager" : "lazy"}
+        src={work.image.src}
+        width="1200"
+      />
+    ) : (
+      <>
+        <div aria-hidden="true" class="hatch" />
+        <div aria-hidden="true" class="frag term">
+          <div class="bar">
+            <i />
+            <i />
+            <i />
+          </div>
+          <div>
+            <b>$</b> npx @usegraft/cli init
+          </div>
+          <div>
+            <b>$</b> graft compile
+          </div>
+          <div class="dim">→ .graft/index.db, no services needed</div>
+        </div>
+      </>
+    )
+  }
+</div>

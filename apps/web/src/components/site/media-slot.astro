@@ -1,0 +1,49 @@
+---
+/**
+ * A slot for a short looping clip in a plain browser window or a phone.
+ * With no clip yet it shows the fallback still, and with neither it renders
+ * nothing, so visitors never see an empty frame. See MEDIA.md.
+ */
+import type { CaseStoryMedia } from "../../types/case-study";
+
+interface Props {
+  /** Still shown while the clip doesn't exist yet. */
+  fallback?: { alt: string; src: string };
+  media: CaseStoryMedia;
+}
+
+const { fallback, media } = Astro.props;
+const still = media.src ? undefined : fallback;
+
+
+---
+
+{
+  still ? (
+    <div class="fig media-still">
+      <img alt={still.alt} decoding="async" loading="lazy" src={still.src} />
+    </div>
+  ) : (
+    media.src && (
+      <figure class:list={["media", media.frame]}>
+        <div class="frame">
+          <div class="screen">
+            <video
+              aria-label={media.label}
+              autoplay
+              data-autoplay
+              loop
+              muted
+              playsinline
+              poster={media.poster}
+              preload="metadata"
+            >
+              {media.webm && <source src={media.webm} type="video/webm" />}
+              <source src={media.src} type="video/mp4" />
+            </video>
+          </div>
+        </div>
+      </figure>
+    )
+  )
+}

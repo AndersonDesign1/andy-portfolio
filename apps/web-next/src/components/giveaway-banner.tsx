@@ -75,10 +75,10 @@ export function useGiveawayStatus() {
 function TimeUnit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="font-bold font-mono text-base text-primary md:text-lg">
+      <span className="text-primary font-mono text-base font-bold md:text-lg">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="font-mono text-[9px] text-muted uppercase tracking-wider">
+      <span className="text-muted font-mono text-[9px] tracking-wider uppercase">
         {label}
       </span>
     </div>
@@ -95,19 +95,19 @@ export function CountdownDisplay({
   if (compact) {
     return (
       <div className="flex items-center gap-1">
-        <span className="font-bold font-mono text-primary text-sm">
+        <span className="text-primary font-mono text-sm font-bold">
           {String(timeLeft.days).padStart(2, "0")}d
         </span>
         <span className="text-muted">:</span>
-        <span className="font-bold font-mono text-primary text-sm">
+        <span className="text-primary font-mono text-sm font-bold">
           {String(timeLeft.hours).padStart(2, "0")}h
         </span>
         <span className="text-muted">:</span>
-        <span className="font-bold font-mono text-primary text-sm">
+        <span className="text-primary font-mono text-sm font-bold">
           {String(timeLeft.minutes).padStart(2, "0")}m
         </span>
         <span className="text-muted">:</span>
-        <span className="font-bold font-mono text-primary text-sm">
+        <span className="text-primary font-mono text-sm font-bold">
           {String(timeLeft.seconds).padStart(2, "0")}s
         </span>
       </div>
@@ -139,11 +139,11 @@ export default function GiveawayBanner() {
   }
 
   return (
-    <div className="fixed top-0 right-0 left-0 z-[60] border-subtle border-b bg-background/95 backdrop-blur-sm">
+    <div className="border-subtle bg-background/95 fixed top-0 right-0 left-0 z-[60] border-b backdrop-blur-sm">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-4 px-4 py-4 md:px-6">
         <div className="flex items-center gap-3">
           <span className="text-sm">🎉</span>
-          <span className="font-medium text-primary text-sm">
+          <span className="text-primary text-sm font-medium">
             {status === "pending"
               ? "Win a FREE website!"
               : "Win a FREE website!"}
@@ -153,7 +153,7 @@ export default function GiveawayBanner() {
         <div className="flex items-center gap-4">
           {timeLeft && (
             <div className="flex items-center gap-2">
-              <span className="hidden text-muted text-xs md:inline">
+              <span className="text-muted hidden text-xs md:inline">
                 {status === "pending" ? "Starts in:" : "Ends in:"}
               </span>
               <CountdownDisplay compact timeLeft={timeLeft} />
@@ -161,7 +161,7 @@ export default function GiveawayBanner() {
           )}
 
           <Link
-            className="inline-flex items-center gap-1 rounded-sm border border-subtle px-3 py-1.5 font-medium text-primary text-xs transition-opacity duration-300 hover:opacity-70"
+            className="border-subtle text-primary inline-flex items-center gap-1 rounded-sm border px-3 py-1.5 text-xs font-medium transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
             {status === "pending" ? "Learn More" : "Enter Now"}

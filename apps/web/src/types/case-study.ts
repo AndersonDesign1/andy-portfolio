@@ -1,3 +1,33 @@
+export interface CaseStoryMedia {
+  frame: "browser" | "phone";
+  label: string;
+  poster?: string;
+  slot: "hero" | "steps";
+  src?: string;
+  webm?: string;
+}
+
+/** The case study as told on the page, in Anderson's own voice. */
+export interface CaseStory {
+  compare: string;
+  extra?: string;
+  media?: CaseStoryMedia[];
+  overview: string;
+  stats: { after: string; before: string; label: string; note: string }[];
+  steps: {
+    body: string;
+    heading: string;
+    name: string;
+    weeks?: number;
+    /** How long the step took. Left out when it simply kept going. */
+    when?: string;
+  }[];
+  title: string;
+  tools: string;
+  when: string;
+  why: string;
+}
+
 export interface CaseStudy {
   approach: {
     collaboration: string;
@@ -43,6 +73,7 @@ export interface CaseStudy {
     technologies: string[];
     title: string;
   };
+  story?: CaseStory;
   results: {
     achievements: string[];
     beforeAfter: {

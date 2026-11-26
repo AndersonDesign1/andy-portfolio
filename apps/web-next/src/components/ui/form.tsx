@@ -3,14 +3,8 @@
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import React from "react";
-import {
-  Controller,
-  type ControllerProps,
-  type FieldPath,
-  type FieldValues,
-  FormProvider,
-  useFormContext,
-} from "react-hook-form";
+import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
+import { Controller, FormProvider, useFormContext } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -94,6 +88,7 @@ const FormLabel = React.forwardRef<
   const { error, formItemId } = useFormField();
 
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: shadcn FormLabel gets its text from children in props and its control from htmlFor
     <Label
       className={cn(error && "text-destructive", className)}
       htmlFor={formItemId}
@@ -155,7 +150,7 @@ const FormMessage = React.forwardRef<
 
   return (
     <p
-      className={cn("font-medium text-destructive text-sm", className)}
+      className={cn("text-destructive text-sm font-medium", className)}
       id={formMessageId}
       ref={ref}
       {...props}

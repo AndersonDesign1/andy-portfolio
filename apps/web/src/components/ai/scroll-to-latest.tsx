@@ -11,11 +11,7 @@ import { cn } from "@/lib/utils";
 /** Within this many pixels of the end counts as "at the bottom". */
 const BOTTOM_SLACK = 24;
 
-/**
- * Shared by both scroll areas. `data-lenis-prevent` hands wheel and trackpad
- * gestures back to the browser: the page's Lenis smooth scroll otherwise
- * swallows them, and a nested scroll area can't be scrolled at all.
- */
+/** Shared by both scroll areas. */
 const SCROLL_AREA =
   "ai-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain focus-visible:outline-none";
 
@@ -63,7 +59,6 @@ export const ScrollToLatest = ({
       <section
         aria-label={label}
         className={SCROLL_AREA}
-        data-lenis-prevent
         ref={scrollRef}
         tabIndex={0}
       >
@@ -123,8 +118,16 @@ export const AnchoredScroll = ({
   const following = useRef(false);
   const [edges, setEdges] = useState<Edges>(NO_EDGES);
 
+  /** The question the view last reset for. */
+  const shownAnchor = useRef<string | number | undefined | null>(null);
+
   // A new question: start reading from the top, not following.
   useLayoutEffect(() => {
+    if (shownAnchor.current === anchorKey) {
+      return;
+    }
+
+    shownAnchor.current = anchorKey;
     const area = scrollRef.current;
 
     following.current = false;
@@ -219,7 +222,6 @@ export const AnchoredScroll = ({
           edges.above && "ai-fade-top",
           edges.below && "ai-fade-bottom"
         )}
-        data-lenis-prevent
         ref={scrollRef}
         tabIndex={0}
       >

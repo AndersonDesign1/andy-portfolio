@@ -4,16 +4,16 @@
 
 Bun + Turbo monorepo (`andy-portfolio`), Astro-primary after cutover:
 
-| App | Path | Dev port | Role |
-| --- | --- | --- | --- |
-| Web (primary) | `apps/web` | `3000` | Astro 7 + React islands + `@astrojs/vercel` — live on Vercel |
-| Web (archive) | `apps/web-next` | `3001` | Next.js 16.4 — workspace, local only, same Graft CMS |
-| Shared CMS | `packages/content` | — | Graft schema + MDX for both apps |
-| Student tutor AI | `packages/ai-tutor` | — | Prompts, Neon AI Gateway → OpenRouter fallback, Postgres spend caps. See its README |
+| App              | Path                | Dev port | Role                                                                                |
+| ---------------- | ------------------- | -------- | ----------------------------------------------------------------------------------- |
+| Web (primary)    | `apps/web`          | `3000`   | Astro 7 + React islands + `@astrojs/vercel` — live on Vercel                        |
+| Web (archive)    | `apps/web-next`     | `3001`   | Next.js 16.4 — workspace, local only, same Graft CMS                                |
+| Shared CMS       | `packages/content`  | —        | Graft schema + MDX for both apps                                                    |
+| Student tutor AI | `packages/ai-tutor` | —        | Prompts, Neon AI Gateway → OpenRouter fallback, Postgres spend caps. See its README |
 
 ### Package manager
 
-Bun pinned to `bun@1.4.0` in root `package.json` (Cloud Agent / CI / Vercel should match). Startup update script runs `bun install`. Keep the text `bun.lock` in sync — Bun 1.3+ uses `bun.lock` (not `bun.lockb`); a stale/hand-patched lockfile breaks `--frozen-lockfile` and Vercel installs.
+Bun pinned to `bun@1.4.5` in root `package.json` (Cloud Agent / CI / Vercel should match). Startup update script runs `bun install`. Keep the text `bun.lock` in sync — Bun 1.3+ uses `bun.lock` (not `bun.lockb`); a stale/hand-patched lockfile breaks `--frozen-lockfile` and Vercel installs.
 
 ### Common commands
 
@@ -29,10 +29,12 @@ Astro typecheck uses `@astrojs/check` via `bun run --filter=@andy-portfolio/web 
 
 ### Astro app notes (`apps/web`)
 
-- Ultracite **7.10.3** + **Oxlint** / **Oxfmt** (`apps/web/oxlint.config.ts`, `oxfmt.config.ts`) with `ultracite/oxlint/{core,astro,react}` plus `oxlint-plugin-react-doctor`. Lint/fix: `bun run --filter=@andy-portfolio/web lint` / `lint:fix` (aliases for `ultracite check` / `fix`). Next uses Biome.
+- Ultracite **8.3.1** + **Oxlint 1.94** / **Oxfmt** (`apps/web/oxlint.config.ts`, `oxfmt.config.ts`) with `ultracite/oxlint/{core,astro,react}` plus `oxlint-plugin-react-doctor`. Lint/fix: `bun run --filter=@andy-portfolio/web lint` / `lint:fix` (aliases for `ultracite check` / `fix`). Next uses Biome.
 - Oxlint TS configs need **Node ^20.19 or ≥22.18** on `PATH` (loading `oxlint.config.ts` / `oxfmt.config.ts`). If `node -v` is older (e.g. VM default 22.14), use nvm Node 22.23+ first: `export PATH="$(dirname "$(nvm which 22)"):$PATH"`.
 - Prefetch is on (`prefetch.prefetchAll` + `defaultStrategy: "viewport"` in `apps/web/astro.config.mjs`). View transitions use `<ClientRouter />` in `base-layout.astro`. Do **not** `transition:persist` the `AppShell` that wraps the page `<slot />` — persisted islands keep stale children across navigations. Navbar listens for `astro:page-load` to keep the active link correct.
 - **CMS is Graft (static).** Schema and MDX live in `packages/content`. Blog images under each app's `public/blog/<slug>/`. Projects / case studies use public-root paths. `graft compile` writes `packages/content/.graft/index.db` (gitignored). Dev and Vercel build run `bun run --filter=@andy-portfolio/content compile` then the app build. Graft’s SQLite FTS needs **Node ≥22.16** (`engines.node` stays `22.x` so Vercel does not jump to 24). Graft Studio (`graft studio`) is Postgres-tier — not used here.
+- **Site structure (round three redesign):** the header, footer, Ask pill, Spotify line and media slots are plain Astro components in `src/components/site/`, styled by `src/styles/site.css` (everything in `@layer components`, so Tailwind utilities on the blog / AI / giveaway pages still win). One script, `src/scripts/site.ts`, runs their behaviour on `astro:page-load` and cleans up on `astro:before-swap`. Featured work, the archive lines, work history and education live in `src/data/work.ts`. Case study copy lives in Graft (`story` on case studies, see `MEDIA.md` for the video slots). React is only used for the contact form and the AI pages.
+- TypeScript stays on **6.0.x**: `@astrojs/check` doesn't support TS 7 yet.
 - Contact uses Astro Actions (`src/actions/index.ts` → `sendEmail`). Same-origin CSRF applies; curl must send a matching `Origin`.
 - **BotID (Astro ≠ Next):** client `initBotId` must protect `POST /_actions/sendEmail` (Astro Actions RPC), **not** `POST /contact` (that was Next Server Actions). `apps/web/vercel.json` must include the BotID challenge/proxy rewrites from the botid “Other Frameworks” docs. Do **not** recreate the BotID project for this — path + rewrites are enough.
 - Email inbound webhook (`/api/webhook/email`) **requires** `RESEND_WEBHOOK_SECRET` and validates Svix `svix-id` / `svix-timestamp` / `svix-signature` (fail closed).
@@ -50,13 +52,13 @@ Next is a **workspace** so `bun dev` / `bun lint` / `bun build` include it. It i
 
 - Next **16.4.6** with `cacheComponents: true` and `partialPrefetching: true`.
 - Blog / projects / case studies read the shared Graft index (`@usegraft/sdk-next`, `MdxBody` for post bodies).
-- Nested `biome.jsonc` is **`"root": true`**. `root: false` walks up to the repo Biome config, whose `!!apps/web-next/**` force-ignore then lints zero files. Root Biome still **force-ignores** `!!apps/web-next/**` so `bun run format` does not rewrite the archive. Align `@biomejs/biome` with root **2.5.9**.
+- Nested `biome.jsonc` is **`"root": true`**. `root: false` walks up to the repo Biome config, whose `!!apps/web-next/**` force-ignore then lints zero files. Root Biome still **force-ignores** `!!apps/web-next/**` so `bun run format` does not rewrite the archive. Align `@biomejs/biome` with root **2.6.8**.
 
 ### Env / egress gotchas
 
 - Resend from this Cloud Agent network may be Cloudflare-blocked (HTTP 1010); validate contact email from a Vercel preview if local submit fails.
 - Spotify idle `{isPlaying:false}` is valid.
-- Astro React islands are separate trees: any island using Motion `m.*` must wrap with `MotionRoot` (`apps/web/src/components/motion-root.tsx`). AppShell already provides LazyMotion for navbar/Spotify.
+- Astro React islands are separate trees: any island using Motion `m.*` must wrap with `MotionRoot` (`apps/web/src/components/motion-root.tsx`). (AppShell is gone: the site chrome is plain Astro now.)
 - After file edits in `apps/web`, `apps/web/.cursor/hooks.json` `afterFileEdit` runs `bun run fix` (`ultracite fix`). Commit autofixes or CI lint fails. **This is the only hooks file in the repo** — do not add a root or web-next Ultracite hook (`bun x ultracite` cannot resolve web’s Oxlint stack). Next lint is `biome check`.
 - `apps/web/CLAUDE.md` is a **symlink** to `AGENTS.md` (git mode 120000). Windows checkouts without `core.symlinks` materialize it as a text file containing the literal string `AGENTS.md`; formatting it appends a newline and rewrites the symlink target to `AGENTS.md\n`, breaking it on macOS/Linux/CI. It is listed in `ignorePatterns` in `apps/web/oxfmt.config.ts` — do not remove that entry. Before the entry existed, the format phase failed, and because `ultracite check` aborts before linting, **oxlint and all anti-slop rules were silently skipped** by `bun run lint`.
 - Astro `glob()` loader `base` must be a path **relative to `apps/web`** (see `src/content.config.ts`). An absolute Windows path (`C:\...`) fails `astro check`/`build` with "The URL must be of scheme file", because Astro resolves `base` with `new URL()`.
@@ -66,11 +68,11 @@ Next is a **workspace** so `bun dev` / `bun lint` / `bun build` include it. It i
 
 All 18 upstream rules are enabled at `error`. The list lives in one place, `tools/oxlint/anti-slop.shared.mts`, and every workspace below imports it. All are wired into `bun run lint` (turbo):
 
-| Workspace | Config | Rules |
-| --- | --- | --- |
-| `apps/web` | `oxlint.config.ts` | Full Ultracite Oxlint stack + `antiSlopRules` |
+| Workspace           | Config              | Rules                                                |
+| ------------------- | ------------------- | ---------------------------------------------------- |
+| `apps/web`          | `oxlint.config.ts`  | Full Ultracite Oxlint stack + `antiSlopRules`        |
 | `packages/ai-tutor` | `oxlint.config.mts` | `antiSlopOnlyConfig` (anti-slop only; Biome formats) |
-| `packages/content` | `oxlint.config.mts` | `antiSlopOnlyConfig` |
+| `packages/content`  | `oxlint.config.mts` | `antiSlopOnlyConfig`                                 |
 
 `apps/web-next` is **not** covered (Biome only). A dry run found 179 findings there, 161 of them autofixable spacing.
 
@@ -80,7 +82,7 @@ All 18 upstream rules are enabled at `error`. The list lives in one place, `tool
 
 ### Biome (root / packages / tools)
 
-Root Biome presets live under **`ultracite/biome/*`** only and need **Biome >= 2.5**. Root is on **2.5.9**; do not downgrade below 2.5.
+Root Biome presets live under **`ultracite/biome/*`** only and need **Biome >= 2.5**. Root is on **2.6.8**; do not downgrade below 2.5.
 
 `ultracite` is a **root devDependency** solely so these `extends` resolve — it is not otherwise used at the root.
 
@@ -100,7 +102,7 @@ Scope: root `biome.jsonc` force-ignores three trees. The extended Ultracite pres
 
 1. Set the Vercel project **Root Directory** to `apps/web` (Astro). Framework should be **Astro** (`apps/web/vercel.json` sets `"framework": "astro"` — overrides a leftover Next.js preset).
 2. Node: app `engines.node` is `22.x` (avoid open `>=22` ranges that jump to 24.x on Vercel).
-3. Install uses repo-root `bun install --frozen-lockfile` via `apps/web/vercel.json` (Bun **1.4.0**).
+3. Install uses repo-root `bun install --frozen-lockfile` via `apps/web/vercel.json` (Bun **1.4.5**).
 4. Live content is MDX in git (`packages/content`); a push rebuilds. `apps/web` `build` compiles Graft then Astro — root Turbo `bun build` also builds Next locally and must not be the Vercel command.
 5. Confirm env vars on the Astro project (`RESEND_*`, `SPOTIFY_*`, BotID/Vercel analytics as needed). No Sanity vars.
 

@@ -58,6 +58,8 @@ export const ShareButton = ({
   const [state, setState] = useState<ShareState>({ type: "idle" });
   const [copied, setCopied] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  /** A link is being made: a second click (or Enter) mustn't make another. */
+  const sharing = useRef(false);
 
   /** The link already made for this exact chat, so sharing twice reuses it. */
   const made = useRef<{
@@ -96,6 +98,10 @@ export const ShareButton = ({
   }, [copied]);
 
   const share = async () => {
+    if (sharing.current) {
+      return;
+    }
+
     // Reused only while it has more than an hour left.
     if (
       made.current?.key === key &&
@@ -106,6 +112,7 @@ export const ShareButton = ({
       return;
     }
 
+    sharing.current = true;
     setState({ type: "creating" });
 
     try {
@@ -115,25 +122,25 @@ export const ShareButton = ({
         method: "POST",
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const link = await readLink(response);
+        made.current = {
+          key,
+          ...link,
+          expiresAt: Date.now() + link.hours * 60 * 60 * 1000,
+        };
+        setState({ ...link, type: "ready" });
+      } else {
         setState({ message: await failureText(response), type: "error" });
-
-        return;
       }
-
-      const link = await readLink(response);
-      made.current = {
-        key,
-        ...link,
-        expiresAt: Date.now() + link.hours * 60 * 60 * 1000,
-      };
-      setState({ ...link, type: "ready" });
     } catch {
       setState({
         message: "Couldn't create a link. Check your connection and try again.",
         type: "error",
       });
     }
+
+    sharing.current = false;
   };
 
   const close = () => setState({ type: "idle" });

@@ -79,14 +79,14 @@ function SpotifySkeleton() {
   return (
     <div className="fixed right-6 bottom-6 z-50">
       <button
-        className="group flex animate-pulse items-center gap-3 rounded-full border border-subtle bg-background/95 py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px]"
+        className="group border-subtle bg-background/95 flex animate-pulse items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px]"
         disabled
         type="button"
       >
-        <div className="size-8 rounded-full bg-muted" />
+        <div className="bg-muted size-8 rounded-full" />
         <div className="flex flex-col gap-1.5">
-          <div className="h-2 w-16 rounded bg-muted" />
-          <div className="h-2.5 w-24 rounded bg-muted" />
+          <div className="bg-muted h-2 w-16 rounded" />
+          <div className="bg-muted h-2.5 w-24 rounded" />
         </div>
       </button>
     </div>
@@ -104,7 +104,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
   return (
     <m.div
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="absolute right-0 bottom-full mb-4 w-72 rounded-sm border border-subtle bg-primary p-6 shadow-2xl"
+      className="border-subtle bg-primary absolute right-0 bottom-full mb-4 w-72 rounded-sm border p-6 shadow-2xl"
       exit={{ opacity: 0, scale: 0.95, y: 10 }}
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
     >
@@ -141,16 +141,16 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
               key={trackName}
               transition={{ duration: 0.2 }}
             >
-              <h4 className="truncate font-semibold text-primary">
+              <h4 className="text-primary truncate font-semibold">
                 {trackName}
               </h4>
-              <p className="truncate text-secondary text-sm">{artistNames}</p>
+              <p className="text-secondary truncate text-sm">{artistNames}</p>
             </m.div>
           </AnimatePresence>
         </div>
       </div>
 
-      <div className="mb-6 flex flex-col gap-2 font-mono text-muted text-xs uppercase tracking-wider">
+      <div className="text-muted mb-6 flex flex-col gap-2 font-mono text-xs tracking-wider uppercase">
         <div className="flex justify-between">
           <span>Album</span>
           <span className="max-w-[120px] truncate text-right">{albumName}</span>
@@ -159,7 +159,7 @@ function SpotifyExpandedCard({ track }: { track: SpotifyTrack }) {
 
       <Button
         asChild
-        className="h-auto w-full py-3 font-mono text-xs uppercase tracking-widest"
+        className="h-auto w-full py-3 font-mono text-xs tracking-widest uppercase"
         variant="outline"
       >
         <a href={spotifyUrl} rel="noopener noreferrer" target="_blank">
@@ -183,7 +183,7 @@ function SpotifyMiniPlayer({
 
   return (
     <button
-      className="group flex items-center gap-3 rounded-full border border-subtle bg-background/95 py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] transition-all duration-300 hover:border-primary focus:outline-none focus:ring-0"
+      className="group border-subtle bg-background/95 hover:border-primary flex items-center gap-3 rounded-full border py-2 pr-4 pl-2 shadow-sm backdrop-blur-[10px] transition-all duration-300 focus:ring-0 focus:outline-none"
       onClick={onClick}
       type="button"
     >
@@ -197,12 +197,12 @@ function SpotifyMiniPlayer({
           src={thumbnailImage}
           width={32}
         />
-        <div className="absolute inset-0 z-10 m-auto size-2 rounded-full border border-subtle bg-primary" />
+        <div className="border-subtle bg-primary absolute inset-0 z-10 m-auto size-2 rounded-full border" />
       </div>
 
       <div className="flex flex-col items-start gap-1 overflow-hidden text-left">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] text-muted uppercase leading-tight tracking-widest">
+          <span className="text-muted font-mono text-[10px] leading-tight tracking-widest uppercase">
             {track.isPlaying ? "Now Playing" : "Last Played"}
           </span>
           <MusicBars isPlaying={track.isPlaying ?? false} variant="dark" />
@@ -210,7 +210,7 @@ function SpotifyMiniPlayer({
         <AnimatePresence mode="wait">
           <m.span
             animate={{ opacity: 1, y: 0 }}
-            className="block max-w-[140px] truncate font-medium text-primary text-xs leading-tight transition-colors group-hover:text-accent"
+            className="text-primary group-hover:text-accent block max-w-[140px] truncate text-xs leading-tight font-medium transition-colors"
             exit={{ opacity: 0, y: -5 }}
             initial={{ opacity: 0, y: 5 }}
             key={trackName}

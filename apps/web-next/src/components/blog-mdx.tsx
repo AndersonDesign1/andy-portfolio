@@ -14,7 +14,7 @@ export const blogMdxComponents = {
     if (isInternal && href) {
       return (
         <Link
-          className="text-primary underline decoration-subtle underline-offset-4 transition-colors duration-150 hover:decoration-primary"
+          className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"
           href={href}
         >
           {children}
@@ -23,7 +23,7 @@ export const blogMdxComponents = {
     }
     return (
       <a
-        className="text-primary underline decoration-subtle underline-offset-4 transition-colors duration-150 hover:decoration-primary"
+        className="text-primary decoration-subtle hover:decoration-primary underline underline-offset-4 transition-colors duration-150"
         href={href}
         rel="noreferrer noopener"
         target="_blank"
@@ -36,12 +36,12 @@ export const blogMdxComponents = {
   blockquote: ({
     children,
   }: JSX.IntrinsicElements["blockquote"]): JSX.Element => (
-    <blockquote className="border-primary border-l-2 py-2 pl-6 text-primary text-xl italic">
+    <blockquote className="border-primary text-primary border-l-2 py-2 pl-6 text-xl italic">
       {children}
     </blockquote>
   ),
   code: ({ children }: JSX.IntrinsicElements["code"]): JSX.Element => (
-    <code className="rounded bg-secondary/10 px-1.5 py-0.5 font-mono text-primary text-sm">
+    <code className="bg-secondary/10 text-primary rounded px-1.5 py-0.5 font-mono text-sm">
       {children}
     </code>
   ),
@@ -66,7 +66,7 @@ export const blogMdxComponents = {
     }
     return (
       <figure className="flex flex-col gap-4 py-6 md:py-10">
-        <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
+        <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
           <Image
             alt={alt ?? ""}
             className="h-auto w-full object-contain"
@@ -80,23 +80,23 @@ export const blogMdxComponents = {
     );
   },
   ol: ({ children }: JSX.IntrinsicElements["ol"]): JSX.Element => (
-    <ol className="flex list-outside list-decimal flex-col gap-2 pl-4 text-lg text-secondary">
+    <ol className="text-secondary flex list-outside list-decimal flex-col gap-2 pl-4 text-lg">
       {children}
     </ol>
   ),
   p: ({ children }: JSX.IntrinsicElements["p"]): JSX.Element => (
-    <p className="text-lg text-secondary leading-relaxed">{children}</p>
+    <p className="text-secondary text-lg leading-relaxed">{children}</p>
   ),
   pre: ({ children }: JSX.IntrinsicElements["pre"]): JSX.Element => (
-    <pre className="overflow-x-auto rounded-sm border border-subtle bg-secondary/10 p-4">
+    <pre className="border-subtle bg-secondary/10 overflow-x-auto rounded-sm border p-4">
       {children}
     </pre>
   ),
   strong: ({ children }: JSX.IntrinsicElements["strong"]): JSX.Element => (
-    <strong className="font-semibold text-primary">{children}</strong>
+    <strong className="text-primary font-semibold">{children}</strong>
   ),
   ul: ({ children }: JSX.IntrinsicElements["ul"]): JSX.Element => (
-    <ul className="flex list-outside list-disc flex-col gap-2 pl-4 text-lg text-secondary">
+    <ul className="text-secondary flex list-outside list-disc flex-col gap-2 pl-4 text-lg">
       {children}
     </ul>
   ),

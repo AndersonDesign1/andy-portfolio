@@ -1,0 +1,91 @@
+---
+import { ArrowRight01Icon, GithubIcon, Linkedin02Icon, NewTwitterIcon } from "@hugeicons/core-free-icons";
+import Icon from "./icon.astro";
+import { SOCIAL_LINKS } from "../../lib/site";
+import CopyEmail from "./copy-email.astro";
+
+interface Props {
+  /** Leave out the "Got a project?" block (the contact page already is one). */
+  hideCta?: boolean;
+}
+
+const { hideCta = false } = Astro.props;
+
+// Build time: the site is static, so this is the year it was last published.
+const builtAt = () => new Date();
+const year = builtAt().getFullYear();
+
+const iconFor = {
+  GitHub: GithubIcon,
+  LinkedIn: Linkedin02Icon,
+  X: NewTwitterIcon,
+} as const;
+---
+
+<footer class:list={["site-foot", { "no-cta": hideCta }]}>
+  <div class="wrap">
+    {
+      !hideCta && (
+        <div class="cta field12">
+          <h2>Want to work together?</h2>
+          <p>
+            If you're building a new product, turning a design into code, or
+            wiring AI agents into your workflow, send me a message.
+          </p>
+          <div class="actions">
+            <a class="btn solid" href="/contact">
+              Get in touch <span class="arr"><Icon icon={ArrowRight01Icon} /></span>
+            </a>
+            <CopyEmail look="go" />
+          </div>
+        </div>
+      )
+    }
+    <div class="foot-row">
+      <div class="soc">
+        {
+          SOCIAL_LINKS.map((link) => (
+            <a
+              aria-label={link.label}
+              class="soc-link"
+              href={link.href}
+              rel="noopener"
+              target="_blank"
+              title={link.label}
+            >
+              <Icon icon={iconFor[link.label]} size={18} />
+            </a>
+          ))
+        }
+      </div>
+      <div class="fine small">
+        <span>© {year} Anderson Joseph</span>
+        <span>Nigeria <time class="clock" data-lagos-clock>--:--</time></span>
+        <a
+          aria-label="Powered by Graft"
+          class="graft-badge"
+          href="https://graft.page?utm_source=powered-by-graft"
+          rel="noopener"
+          target="_blank"
+        >
+          <img
+            alt=""
+            class="graft-for-light"
+            decoding="async"
+            height="22"
+            loading="lazy"
+            src="https://graft.page/badges/powered-by-graft.svg"
+          />
+          <img
+            alt=""
+            class="graft-for-dark"
+            decoding="async"
+            height="22"
+            loading="lazy"
+            src="https://graft.page/badges/powered-by-graft-light.svg"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

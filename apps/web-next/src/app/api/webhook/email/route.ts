@@ -70,7 +70,7 @@ function buildForwardedHtml(
   html?: string,
   text?: string
 ): string {
-  const content = html || text?.replace(/\n/g, "<br/>") || "No content";
+  const content = html || text?.replace(/\n/gu, "<br/>") || "No content";
   return `
     <div style="margin-bottom: 20px; padding: 15px; background-color: #f5f5f5; border-radius: 8px;">
       <p style="margin: 0 0 10px 0;"><strong>Original From:</strong> ${from}</p>

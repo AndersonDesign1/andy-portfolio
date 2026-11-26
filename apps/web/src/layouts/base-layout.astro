@@ -1,11 +1,17 @@
 ---
+import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 import { ClientRouter } from "astro:transitions";
 import "@fontsource-variable/inter/wght.css";
-import AppShell from "../components/app-shell.tsx";
-import BotIdInit from "../components/botid-init.tsx";
+import AskPill from "../components/site/ask-pill.astro";
+import SiteFooter from "../components/site/site-footer.astro";
+import SiteHeader from "../components/site/site-header.astro";
+import ZoomView from "../components/site/zoom-view.astro";
 import { buildPageMeta } from "../lib/seo";
+import { SOCIAL_LINKS } from "../lib/site";
 import type { OgVariant } from "../lib/seo";
 import "../styles/global.css";
+import "../styles/site.css";
 
 interface Props {
   description?: string;
@@ -30,6 +36,54 @@ const viewport = `width=device-width, initial-scale=1, viewport-fit=cover${
 
 const meta = buildPageMeta({ description, og, title });
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const { pathname } = Astro.url;
+
+/** Full-screen tool pages: no footer and no Ask pill. */
+const focus = /^\/ai\/?$/u.test(pathname);
+
+// The contact page is already a form, and on phones the pill sat over Send.
+const askPill = !(focus || /^\/contact\/?$/u.test(pathname));
+const article = og?.kind === "case-study" || og?.kind === "blog";
+
+const person = {
+  "@type": "Person",
+  name: "Anderson Joseph",
+  sameAs: SOCIAL_LINKS.map((link) => link.href),
+  url: Astro.site?.toString(),
+};
+
+const articleData = () => ({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  author: person,
+  description: meta.description,
+  headline: og?.kind === "home" ? "" : og?.title,
+  image: meta.ogImage,
+  mainEntityOfPage: canonical,
+});
+
+const homeData = () => ({
+  "@context": "https://schema.org",
+  "@graph": [
+    { ...person, "@id": `${Astro.site}#me`, description: meta.description },
+    {
+      "@type": "WebSite",
+      author: { "@id": `${Astro.site}#me` },
+      name: "Anderson Joseph",
+      url: Astro.site?.toString(),
+    },
+  ],
+});
+
+let structured: object | null = null;
+
+if (article) {
+  structured = articleData();
+} else if (og?.kind === "home") {
+  structured = homeData();
+}
+
+const hideCta = /^\/contact\/?$/u.test(pathname);
 ---
 
 <!doctype html>
@@ -50,7 +104,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta content="1200" property="og:image:width">
     <meta content="630" property="og:image:height">
     <meta content={meta.title} property="og:image:alt">
-    <meta content="website" property="og:type">
+    <meta content={article ? "article" : "website"} property="og:type">
+    {structured && <script is:inline set:html={JSON.stringify(structured)} type="application/ld+json" />}
     <meta content={canonical} property="og:url">
     <meta content="Anderson Joseph" property="og:site_name">
     <meta content="summary_large_image" name="twitter:card">
@@ -61,38 +116,55 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <ClientRouter />
     <script is:inline>
       (() => {
-        try {
-          const t = localStorage.getItem("andy-theme");
+        const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
-          const d =
-            t === "dark" ||
-            ((!t || t === "system") &&
-              window.matchMedia("(prefers-color-scheme: dark)").matches);
+        const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-          const c = document.documentElement.classList;
-          c.remove("light", "dark");
-          c.add(d ? "dark" : "light");
-        } catch {
-          // Theme initialization must not block first paint.
-        }
+        const apply = (root) => {
+          root.classList.toggle("motion", !calm.matches);
+
+          try {
+            const t = localStorage.getItem("andy-theme");
+            const mode = t === "dark" || t === "light" ? t : "system";
+            const d = mode === "dark" || (mode === "system" && darkScheme.matches);
+
+            root.dataset.themeMode = mode;
+            root.classList.remove("light", "dark");
+            root.classList.add(d ? "dark" : "light");
+          } catch {
+            // Theme initialization must not block first paint.
+          }
+        };
+
+        apply(document.documentElement);
+        // View transitions swap in the next page's <html>: theme it before it paints.
+        document.addEventListener("astro:before-swap", (event) =>
+          apply(event.newDocument.documentElement)
+        );
       })();
     </script>
   </head>
   <body
-    class="font-sans antialiased"
+    class="site font-sans antialiased"
     style="font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;"
   >
     <a
-      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"
       href="#content"
     >
       Skip to content
     </a>
-    <BotIdInit client:load />
-    <AppShell client:load pathname={Astro.url.pathname}>
-      <div id="content" tabindex="-1" transition:animate="fade">
-        <slot />
-      </div>
-    </AppShell>
+    <SiteHeader pathname={pathname} />
+    <main id="content" tabindex="-1" transition:animate="fade">
+      <slot />
+    </main>
+    {!focus && <SiteFooter hideCta={hideCta} />}
+    {askPill && <AskPill />}
+    {!focus && <ZoomView />}
+    <Analytics />
+    <SpeedInsights />
+    <script>
+      import "../scripts/site.ts";
+    </script>
   </body>
 </html>

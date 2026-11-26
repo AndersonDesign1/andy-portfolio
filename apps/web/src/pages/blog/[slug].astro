@@ -1,8 +1,8 @@
 ---
 import { getEntry, render } from "astro:content";
-import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { blogMdxComponents } from "../../components/blog-mdx.tsx";
+import Icon from "../../components/site/icon.astro";
 import BaseLayout from "../../layouts/base-layout.astro";
 import { getGraft } from "../../lib/graft";
 
@@ -16,8 +16,11 @@ export const getStaticPaths = async () => {
   }));
 };
 
+const WORDS_PER_MINUTE = 230;
+
 const { slug } = Astro.params;
-const post = slug ? await getGraft().getContent("posts", slug) : null;
+const graft = getGraft();
+const post = slug ? await graft.getContent("posts", slug) : null;
 const entry = slug ? await getEntry("posts", slug) : undefined;
 
 if (!(post && entry && slug)) {
@@ -34,8 +37,23 @@ const { categories, excerpt, mainImage, publishedAt, seoDescription, seoTitle, t
 const displayDate = new Date(publishedAt).toLocaleDateString("en-US", {
   day: "numeric",
   month: "long",
+  timeZone: "Africa/Lagos",
   year: "numeric",
 });
+
+const words = (entry.body ?? "").split(/\s+/u).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / WORDS_PER_MINUTE));
+
+// The next post to read: the one after this, or the newest when this is the last.
+const allPosts = await graft.listContent("posts");
+
+const others = allPosts.toSorted(
+  (left, right) =>
+    Date.parse(right.data.publishedAt) - Date.parse(left.data.publishedAt)
+);
+
+const at = others.findIndex((other) => other.slug === slug);
+const next = others.length > 1 ? others[(at + 1) % others.length] : undefined;
 ---
 
 <BaseLayout
@@ -43,65 +61,46 @@ const displayDate = new Date(publishedAt).toLocaleDateString("en-US", {
   og={{ kind: "blog", title }}
   title={seoTitle || title}
 >
-  <section class="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
-    <div class="mx-auto max-w-screen-md px-6">
-      <a
-        class="text-muted hover:text-primary inline-flex items-center gap-2 font-mono text-sm transition-colors"
-        href="/blog"
-      >
-        <HugeiconsIcon
-          color="currentColor"
-          icon={ArrowLeft01Icon}
-          size={16}
-          strokeWidth={1.5}
-        />
-        Back to Writing
-      </a>
-      <div class="pt-12">
-        <article>
-          <div class="border-subtle border-b pb-8">
-            <h1 class="text-primary pb-8 text-4xl leading-tight font-bold tracking-tighter md:text-6xl">
-              {title}
-            </h1>
-            <div class="text-muted flex flex-wrap items-center gap-6 font-mono text-sm">
-              <span>{displayDate}</span>
-              {
-                categories && categories.length > 0 && (
-                  <div class="flex items-center gap-2">
-                    <span>/</span>
-                    <span>{categories.join(", ")}</span>
-                  </div>
-                )
-              }
-            </div>
-          </div>
-
-          {
-            mainImage && (
-              <figure class="pt-16 pb-12 md:pb-16">
-                <div class="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
-                  <img
-                    alt={mainImage.alt || title}
-                    class="h-auto w-full object-cover"
-                    height={600}
-                    src={mainImage.src}
-                    width={1200}
-                  />
-                </div>
-                {mainImage.caption && (
-                  <figcaption class="text-muted pt-4 text-center font-mono text-sm">
-                    {mainImage.caption}
-                  </figcaption>
-                )}
-              </figure>
-            )
-          }
-
-          <div class="flex max-w-none flex-col gap-6">
-            <Content components={blogMdxComponents} />
-          </div>
-        </article>
+  <article class="wrap">
+    <a class="cs-back" href="/blog"><span class="arr"><Icon icon={ArrowLeft01Icon} /></span> All my writing</a>
+    <header class="cs-head field12">
+      <h1>{title}</h1>
+      {excerpt && <p class="ov">{excerpt}</p>}
+      <div class="cs-meta">
+        <time datetime={publishedAt}>{displayDate}</time>
+        <span>{minutes} min read</span>
+        {categories && categories.length > 0 && <span>{categories.join(", ")}</span>}
       </div>
+    </header>
+
+    {
+      mainImage && (
+        <figure class="post-fig">
+          <img
+            alt={mainImage.alt || title}
+            height={600}
+            src={mainImage.src}
+            width={1200}
+          />
+          {mainImage.caption && <figcaption>{mainImage.caption}</figcaption>}
+        </figure>
+      )
+    }
+
+    <div class="prose">
+      <Content components={blogMdxComponents} />
     </div>
-  </section>
+
+    {
+      next && (
+        <a class="cs-next" href={`/blog/${next.slug}`}>
+          <span class="small">Read next</span>
+          <b>
+            {next.data.title}
+            <span class="arr"><Icon icon={ArrowRight01Icon} /></span>
+          </b>
+        </a>
+      )
+    }
+  </article>
 </BaseLayout>

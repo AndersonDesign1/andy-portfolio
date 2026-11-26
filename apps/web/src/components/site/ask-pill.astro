@@ -1,0 +1,44 @@
+---
+/**
+ * "Ask my AI": a small pill that opens a box for one question, then sends it
+ * to /ai?q=…, where the real chat answers it. Without JavaScript the form
+ * still posts to /ai with the question.
+ */
+import { ArrowUp02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { ASK_SUGGESTIONS } from "../../lib/site";
+import Icon from "./icon.astro";
+---
+
+<div class="ask" data-ask>
+  <button aria-controls="ask-panel" aria-expanded="false" class="ask-closed" data-ask-open type="button">
+    <span aria-hidden="true" class="mini-orb"></span>
+    <span class="ask-label"
+      ><span class="base">Ask my AI</span><span aria-hidden="true" class="hint" data-ask-hint
+        >{ASK_SUGGESTIONS[1]}</span
+      ></span
+    >
+    <span aria-hidden="true" class="kbd">/</span>
+  </button>
+  <form action="/ai" class="ask-open" data-ask-form id="ask-panel" method="get">
+    <div class="ask-top">
+      <span aria-hidden="true" class="mini-orb"></span>Ask Andy's AI
+      <button aria-label="Close" class="x" data-ask-close type="button">
+        <Icon icon={Cancel01Icon} size={14} />
+      </button>
+    </div>
+    <textarea
+      aria-label="Your question"
+      maxlength="2000"
+      name="q"
+      placeholder="Ask about my work, products, code, or AI agents"
+      rows="3"></textarea>
+    <div class="ask-foot">
+      <div class="sugg">
+        {ASK_SUGGESTIONS.map((suggestion) => <button type="button">{suggestion}</button>)}
+      </div>
+      <button aria-label="Ask" class="ask-send" disabled type="submit">
+        <Icon icon={ArrowUp02Icon} strokeWidth={1.8} />
+      </button>
+    </div>
+  </form>
+</div>

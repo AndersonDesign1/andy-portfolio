@@ -43,7 +43,7 @@ function escapeHtml(text: string): string {
     "<": "&lt;",
     ">": "&gt;",
   };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+  return text.replace(/[&<>"']/gu, (m) => map[m]);
 }
 
 export async function sendEmail(
@@ -99,7 +99,7 @@ export async function sendEmail(
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const safeSubject = escapeHtml(subject || "");
-  const safeMessage = escapeHtml(message).replace(/\n/g, "<br/>");
+  const safeMessage = escapeHtml(message).replace(/\n/gu, "<br/>");
 
   try {
     const { CONTACT_EMAIL, RESEND_API_KEY } = getResendEnv();

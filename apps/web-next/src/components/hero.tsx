@@ -47,12 +47,12 @@ const socialLinks = [
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-[70vh] items-end bg-primary pt-40 pb-20 md:pt-48 md:pb-32">
+    <section className="bg-primary relative flex min-h-[70vh] items-end pt-40 pb-20 md:pt-48 md:pb-32">
       <div className="mx-auto w-full max-w-screen-lg px-6 md:px-12">
         <div className="flex flex-col gap-8">
           {/* Role */}
           <a
-            className="flex items-center gap-2.5 self-start font-mono text-secondary text-xs uppercase tracking-widest transition-colors duration-200 ease-out hover:text-primary"
+            className="text-secondary hover:text-primary flex items-center gap-2.5 self-start font-mono text-xs tracking-widest uppercase transition-colors duration-200 ease-out"
             href="https://welupdigital.com"
             rel="noopener noreferrer"
             target="_blank"
@@ -66,7 +66,7 @@ export default function Hero() {
           </a>
 
           {/* Name - Extreme Scale */}
-          <h1 className="hero-title -ml-[0.05em] font-bold text-[5rem] text-primary leading-[0.9] tracking-tighter md:text-[8rem] lg:text-[10rem]">
+          <h1 className="hero-title text-primary -ml-[0.05em] text-[5rem] leading-[0.9] font-bold tracking-tighter md:text-[8rem] lg:text-[10rem]">
             Anderson
             <br />
             Joseph
@@ -74,7 +74,7 @@ export default function Hero() {
 
           <div className="flex flex-col justify-between gap-12 pt-8 md:flex-row md:items-end md:pt-16">
             {/* Bio - Short and impactful */}
-            <p className="hero-subtitle max-w-md text-lg text-secondary leading-relaxed md:text-xl">
+            <p className="hero-subtitle text-secondary max-w-md text-lg leading-relaxed md:text-xl">
               Building digital products with a focus on growth, interaction, and
               precise engineering.
             </p>
@@ -85,7 +85,7 @@ export default function Hero() {
                 ({ icon, customIcon: CustomIcon, href, label }) => (
                   <a
                     aria-label={label}
-                    className="text-muted transition-all duration-200 ease-out hover:-translate-y-[3px] hover:text-accent"
+                    className="text-muted hover:text-accent transition-all duration-200 ease-out hover:-translate-y-[3px]"
                     href={href}
                     key={label}
                     rel="noopener noreferrer"
@@ -102,10 +102,7 @@ export default function Hero() {
                           />
                         );
                       }
-                      if (CustomIcon) {
-                        return <CustomIcon className="size-6" />;
-                      }
-                      return null;
+                      return <CustomIcon className="size-6" />;
                     })()}
                   </a>
                 )

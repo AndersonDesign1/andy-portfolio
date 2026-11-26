@@ -5,21 +5,21 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[80vh] flex-col items-center justify-center bg-background px-6">
+    <div className="bg-background flex min-h-[80vh] flex-col items-center justify-center px-6">
       <div className="relative flex flex-col items-center gap-4 text-center">
         {/* Large subtle background 404 */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-bold text-[12rem] text-foreground/[0.03] leading-none md:text-[20rem]"
+          className="text-foreground/[0.03] pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] leading-none font-bold select-none md:text-[20rem]"
         >
           404
         </span>
 
-        <h1 className="z-10 font-bold text-4xl text-primary tracking-tight md:text-5xl">
+        <h1 className="text-primary z-10 text-4xl font-bold tracking-tight md:text-5xl">
           Page not found
         </h1>
 
-        <p className="z-10 max-w-sm text-secondary text-sm md:text-base">
+        <p className="text-secondary z-10 max-w-sm text-sm md:text-base">
           The page you&apos;re looking for doesn&apos;t exist. It might have
           been moved or deleted…
         </p>

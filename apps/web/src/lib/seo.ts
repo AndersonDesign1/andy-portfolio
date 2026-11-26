@@ -6,8 +6,8 @@ export type OgVariant =
 const baseUrl = "https://www.andersonjoseph.com";
 
 export const buildPageMeta = ({
-  title = "Anderson Joseph | Full Stack Developer & SEO Expert",
-  description = "Building digital products with a focus on growth, interaction, and precise engineering.",
+  title = "Anderson Joseph | Product Engineer",
+  description = "Anderson Joseph builds fast web interfaces, full-stack products, and tools for people and AI agents.",
   og,
 }: {
   title?: string;
@@ -37,6 +37,8 @@ export const buildPageMeta = ({
     canonical: baseUrl,
     description,
     ogImage: ogUrl.toString(),
-    title,
+    title: title.includes("Anderson Joseph")
+      ? title
+      : `${title} | Anderson Joseph`,
   };
 };

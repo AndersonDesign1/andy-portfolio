@@ -23,4 +23,4 @@ export const SCROLL_DURATION = 1.2;
 export const SCROLL_EASING_CONSTANT = 1.001;
 export const SCROLL_EASING_EXPONENT = -10;
 
-export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;

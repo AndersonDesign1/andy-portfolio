@@ -51,7 +51,7 @@ export default function Navbar() {
       <nav
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "border-subtle border-b bg-primary/95 py-6 backdrop-blur-sm"
+            ? "border-subtle bg-primary/95 border-b py-6 backdrop-blur-sm"
             : "py-6"
         }`}
       >
@@ -85,7 +85,7 @@ export default function Navbar() {
                   <li key={label}>
                     <Link
                       aria-current={isActive ? "page" : undefined}
-                      className={`font-medium text-sm transition-colors duration-200 ${
+                      className={`text-sm font-medium transition-colors duration-200 ${
                         isActive
                           ? "text-primary"
                           : "text-muted hover:text-accent"
@@ -100,7 +100,7 @@ export default function Navbar() {
               })}
             </ul>
 
-            <div className="flex items-center gap-4 border-subtle border-l pl-4">
+            <div className="border-subtle flex items-center gap-4 border-l pl-4">
               <ThemeToggle />
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function Navbar() {
         {isOpen && (
           <m.div
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[200] flex flex-col bg-background md:hidden"
+            className="bg-background fixed inset-0 z-[200] flex flex-col md:hidden"
             exit={{ opacity: 0 }}
             id="mobile-menu"
             initial={{ opacity: 0 }}
@@ -171,7 +171,7 @@ export default function Navbar() {
                   >
                     <Link
                       aria-current={isActive ? "page" : undefined}
-                      className={`font-medium text-2xl transition-colors duration-200 ${
+                      className={`text-2xl font-medium transition-colors duration-200 ${
                         isActive
                           ? "text-primary"
                           : "text-muted hover:text-primary"

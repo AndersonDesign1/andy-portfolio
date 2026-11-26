@@ -1,34 +1,114 @@
 ---
-import CtaSection from "../components/cta-section.tsx";
-import Hero from "../components/hero.tsx";
-import ProjectsGrid from "../components/projects-grid.tsx";
-import SkillsSection from "../components/skills-section.tsx";
-import WorkHistory from "../components/work-history.tsx";
+import { ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import CopyEmail from "../components/site/copy-email.astro";
+import Icon from "../components/site/icon.astro";
+import NowPlaying from "../components/site/now-playing.astro";
+import ProjectStack from "../components/site/project-stack.astro";
+import { EDUCATION, FEATURED_WORK, WORK_HISTORY } from "../data/work";
 import BaseLayout from "../layouts/base-layout.astro";
-import { getGraft } from "../lib/graft";
-import { compareOrder, toProject } from "../lib/portfolio";
-import type { Project } from "../types/project";
+import { RESUME_URL } from "../lib/site";
 
 export const prerender = true;
-
-const documents = await getGraft().listContent("projects");
-const featured: Project[] = [];
-
-for (const document of documents) {
-  const project = toProject(document);
-
-  if (project.featured) {
-    featured.push(project);
-  }
-}
-
-const featuredProjects = featured.toSorted(compareOrder);
 ---
 
 <BaseLayout og={{ kind: "home" }}>
-  <Hero client:visible />
-  <ProjectsGrid client:visible projects={featuredProjects} />
-  <WorkHistory client:visible />
-  <SkillsSection client:visible />
-  <CtaSection client:visible />
+  <div class="wrap">
+    <div class="hero field12">
+      <h1>I build products for people and AI agents.</h1>
+      <p class="lede">
+        I'm Anderson. I work from Nigeria with teams anywhere.
+        I design and build web interfaces, full-stack systems, and tools built
+        for AI agents.
+      </p>
+      <div class="actions">
+        <CopyEmail />
+        <a class="go" href={RESUME_URL} rel="noopener" target="_blank"
+          ><span class="u">My resume</span> <span class="arr"><Icon icon={ArrowUpRight01Icon} /></span></a
+        >
+      </div>
+      <NowPlaying />
+    </div>
+  </div>
+
+  <section aria-label="Selected work" class="sec">
+    <div class="wrap">
+      <ProjectStack items={FEATURED_WORK} />
+      <div class="stack-after">
+        <a class="go" href="/projects"
+          ><span class="u">Everything I've worked on</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
+        >
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="What I do" class="sec">
+    <div class="wrap">
+      <div class="says field12">
+        <p class="big">Most of my work sits in three places.</p>
+        <div class="prs">
+          <div class="pr">
+            <h3>How it feels</h3>
+            <p>
+              Interfaces that feel quick and obvious to use, with the layout, type and
+              motion built in code, not handed off.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>What's underneath</h3>
+            <p>
+              The product behind the screen, built from the interface down to the
+              data behind it.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>Built for AI agents</h3>
+            <p>
+              Structured content, tools and workflows built from the first
+              commit, so both people and AI agents can use what I ship.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Experience and education" class="sec">
+    <div class="wrap">
+      <div class="lists field12">
+        <div class="list exp">
+          <p class="lead">Where I've worked</p>
+          <ul>
+            {
+              WORK_HISTORY.map((item) => (
+                <li>
+                  <b>{item.name}</b>
+                  <span class="d">{item.when}</span>
+                  <span class="r">{item.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="after">
+            <a class="go" href={RESUME_URL} rel="noopener" target="_blank"
+              ><span class="u">The full resume</span> <span class="arr"><Icon icon={ArrowUpRight01Icon} /></span></a
+            >
+          </div>
+        </div>
+        <div class="list edu">
+          <p class="lead">What I've studied</p>
+          <ul>
+            {
+              EDUCATION.map((item) => (
+                <li>
+                  <b>{item.name}</b>
+                  <span class="d">{item.when}</span>
+                  <span class="r">{item.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

@@ -1,5 +1,8 @@
 ---
-import ProjectsShowcase from "../components/projects-showcase.tsx";
+import { ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "../components/site/icon.astro";
+import ProjectStack from "../components/site/project-stack.astro";
+import { archiveLineFor, FEATURED_WORK } from "../data/work";
 import BaseLayout from "../layouts/base-layout.astro";
 import { getGraft } from "../lib/graft";
 import { compareOrder, toProject } from "../lib/portfolio";
@@ -8,8 +11,50 @@ export const prerender = true;
 
 const documents = await getGraft().listContent("projects");
 const projects = documents.map(toProject).toSorted(compareOrder);
+
+// Everything that isn't featured up top, with a line from data/work.ts.
+const archive = projects.flatMap((project) => {
+  const line = archiveLineFor(project.slug);
+
+  if (!line) {
+    return [];
+  }
+
+  const href = project.links.caseStudy ?? project.links.live;
+
+  return href ? [{ ...line, external: !project.links.caseStudy, href }] : [];
+});
 ---
 
-<BaseLayout description="Selected work by Anderson Joseph." title="Projects">
-  <ProjectsShowcase client:load projects={projects} />
+<BaseLayout description="Products, stores, and open-source tools Anderson Joseph has built and grown." title="Work">
+  <div class="wrap">
+    <div class="head field12">
+      <h1>Things I've built and grown</h1>
+      <p>
+        The projects I'd show you first, with what I built and what changed. The
+        rest are further down.
+      </p>
+    </div>
+    <ProjectStack eagerCount={2} items={FEATURED_WORK} />
+    <section aria-label="More work" class="rest">
+      <p class="lead">And the rest, newest first.</p>
+      <div>
+        {
+          archive.map((item) => (
+            <a
+              class="arow"
+              href={item.href}
+              rel={item.external ? "noopener" : undefined}
+              target={item.external ? "_blank" : undefined}
+            >
+              <b>{item.name}</b>
+              <span class="k">{item.kind}</span>
+              <span class="r tnum">{item.result}</span>
+              <span aria-hidden="true" class="arr">{item.external ? <Icon icon={ArrowUpRight01Icon} /> : <Icon icon={ArrowRight01Icon} />}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
 </BaseLayout>

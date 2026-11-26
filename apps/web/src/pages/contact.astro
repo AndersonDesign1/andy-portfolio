@@ -1,8 +1,26 @@
 ---
 import ContactForm from "../components/contact-form.tsx";
+import CopyEmail from "../components/site/copy-email.astro";
 import BaseLayout from "../layouts/base-layout.astro";
 ---
 
-<BaseLayout description="Get in touch with Anderson Joseph." title="Contact">
-  <ContactForm client:load />
+<BaseLayout
+  description="Get in touch with Anderson Joseph. Send a direct message straight to his inbox or copy his email."
+  title="Contact"
+>
+  <div class="wrap">
+    <div class="head field12">
+      <h1>Get in touch.</h1>
+      <p>
+        This goes straight to my inbox, not a bot. Send a message below or copy
+        my email directly.
+      </p>
+      <div class="actions">
+        <CopyEmail />
+      </div>
+    </div>
+    <div class="pb-24">
+      <ContactForm client:load />
+    </div>
+  </div>
 </BaseLayout>

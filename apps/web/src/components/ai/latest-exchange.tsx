@@ -24,7 +24,7 @@ interface LatestExchangeProps {
 }
 
 const ICON_BUTTON =
-  "text-muted hover:text-primary hover:bg-secondary/60 inline-flex size-11 items-center justify-center rounded-sm transition-colors disabled:opacity-40 sm:size-8";
+  "inline-flex size-11 items-center justify-center rounded-full text-[var(--mute)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--fg)] disabled:opacity-40 sm:size-8";
 
 /** Copy the reply text, with a brief tick to confirm. */
 const CopyButton = ({ text }: { text: string }) => {
@@ -85,8 +85,8 @@ export const LatestExchange = ({
     <div className="flex min-h-0 w-full flex-1 flex-col gap-3">
       <AnchoredScroll
         anchorKey={question?.id}
-        className="border-subtle flex-1 rounded-md border"
-        contentClassName="flex flex-col gap-5 p-4 md:p-5"
+        className="flex-1 rounded-[22px] bg-[var(--raised)] shadow-[0_24px_60px_-34px_var(--shadow),inset_0_0_0_1px_rgb(128_128_128/0.12)]"
+        contentClassName="flex flex-col gap-5 p-5 md:p-6"
         label="Latest answer"
       >
         {question && (
@@ -113,7 +113,7 @@ export const LatestExchange = ({
 
       <div className="flex shrink-0 items-center justify-between gap-2">
         <button
-          className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors sm:min-h-8"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-xs text-[var(--mute)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--fg)] sm:min-h-8"
           onClick={onOpenConversation}
           type="button"
         >
@@ -123,7 +123,7 @@ export const LatestExchange = ({
         <div className="flex items-center gap-1">
           <ShareButton busy={busy} messages={messages} />
           <button
-            className="text-muted hover:text-primary hover:bg-secondary/60 inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors disabled:opacity-40 sm:min-h-8"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-xs text-[var(--mute)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--fg)] disabled:opacity-40 sm:min-h-8"
             disabled={busy}
             onClick={onReset}
             type="button"

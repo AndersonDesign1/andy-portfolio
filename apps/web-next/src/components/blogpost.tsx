@@ -28,10 +28,10 @@ const BlogPost = ({ post }: { post: BlogPostView }) => {
   });
 
   return (
-    <section className="min-h-screen bg-primary pt-40 pb-24 md:pt-48">
+    <section className="bg-primary min-h-screen pt-40 pb-24 md:pt-48">
       <div className="mx-auto max-w-screen-md px-6">
         <Link
-          className="inline-flex items-center gap-2 font-mono text-muted text-sm transition-colors hover:text-primary"
+          className="text-muted hover:text-primary inline-flex items-center gap-2 font-mono text-sm transition-colors"
           href="/blog"
         >
           <HugeiconsIcon
@@ -45,11 +45,11 @@ const BlogPost = ({ post }: { post: BlogPostView }) => {
         <div className="pt-12">
           <article>
             <div className="border-subtle border-b pb-8">
-              <h1 className="pb-8 font-bold text-4xl text-primary leading-tight tracking-tighter md:text-6xl">
+              <h1 className="text-primary pb-8 text-4xl leading-tight font-bold tracking-tighter md:text-6xl">
                 {title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-6 font-mono text-muted text-sm">
+              <div className="text-muted flex flex-wrap items-center gap-6 font-mono text-sm">
                 <span>{displayDate}</span>
                 {(categories?.length ?? 0) > 0 && (
                   <div className="flex items-center gap-2">
@@ -62,7 +62,7 @@ const BlogPost = ({ post }: { post: BlogPostView }) => {
 
             {mainImage ? (
               <figure className="pt-16 pb-12 md:pb-16">
-                <div className="relative w-full overflow-hidden rounded-sm bg-secondary/5">
+                <div className="bg-secondary/5 relative w-full overflow-hidden rounded-sm">
                   <Image
                     alt={mainImage.alt || title}
                     className="h-auto w-full object-cover"
@@ -74,7 +74,7 @@ const BlogPost = ({ post }: { post: BlogPostView }) => {
                   />
                 </div>
                 {mainImage.caption ? (
-                  <figcaption className="pt-4 text-center font-mono text-muted text-sm">
+                  <figcaption className="text-muted pt-4 text-center font-mono text-sm">
                     {mainImage.caption}
                   </figcaption>
                 ) : null}

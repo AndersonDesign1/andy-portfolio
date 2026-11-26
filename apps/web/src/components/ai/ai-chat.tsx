@@ -3,18 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 
 import { AiTutorial } from "@/components/ai/ai-tutorial";
+import { MAX_CHARS } from "@/components/ai/chat-limits";
 import { markGuideSeen, useGuideSeen } from "@/components/ai/chat-storage";
-import { Composer, MAX_CHARS } from "@/components/ai/composer";
+import { Composer } from "@/components/ai/composer";
 import { ConversationDrawer } from "@/components/ai/conversation-drawer";
 import { EmptyState } from "@/components/ai/empty-state";
 import { LatestExchange } from "@/components/ai/latest-exchange";
-import { usePreloadReplyRenderer } from "@/components/ai/message-list";
 import type { OrbState } from "@/components/ai/orb";
 import { OrbButton } from "@/components/ai/orb-button";
 import { OrbDock, WideActions } from "@/components/ai/orb-dock";
+import { usePreloadReplyRenderer } from "@/components/ai/reply-renderer";
 import { useChatSession } from "@/components/ai/use-chat-session";
 import { useDictation } from "@/components/ai/use-dictation";
 import { useOrbPress } from "@/components/ai/use-orb-press";
+import { useUrlQuestion } from "@/components/ai/use-url-question";
 import { VoiceStatus } from "@/components/ai/voice-status";
 import type { VoicePhase } from "@/components/ai/voice-status";
 import { cn } from "@/lib/utils";
@@ -30,11 +32,11 @@ const ORB_STATE: Record<VoicePhase, OrbState> = {
 /**
  * The /ai page, voice first: hold the orb to ask, check the transcript in the
  * text box, then send. The text box takes the orb's place only while there's
- * something to check or type, and sending closes it again. On phones the orb
- * sits at the bottom, under the thumb; on desktop it moves there once a
- * conversation starts. Only the latest answer stays on the
- * page; the full conversation opens in a drawer. A short guide opens once
- * per tab.
+ * something to check or type, and sending closes it again. The orb sits at
+ * the bottom on every screen, and gets smaller once a conversation starts.
+ * Only the latest answer stays on the page; the full conversation opens in a
+ * drawer. A short guide opens once per tab. A question passed as `?q=` (from
+ * the Ask pill on the other pages) is asked straight away.
  */
 export const AiChat = () => {
   const chat = useChatSession();
@@ -53,7 +55,13 @@ export const AiChat = () => {
     setGuideAutoOpened(true);
   }
 
-  const tutorialOpen = helpOpen || (guideAutoOpened && !tutorialClosed);
+  /** Arrived from the Ask pill with a question: answer it instead of opening the guide. */
+  const urlQuestion = useUrlQuestion();
+  const askedFromUrl = urlQuestion.pending;
+
+  const tutorialOpen =
+    helpOpen || (guideAutoOpened && !tutorialClosed && !askedFromUrl);
+
   /** A voice transcript is waiting in the text box for the visitor to check and send. */
   const [draftFromVoice, setDraftFromVoice] = useState(false);
 
@@ -165,6 +173,15 @@ export const AiChat = () => {
 
   usePreloadReplyRenderer();
 
+  // Asked once the saved chat is back, so it lands after it.
+  useEffect(() => {
+    const question = chat.ready ? urlQuestion.take() : null;
+
+    if (question) {
+      chat.send(question);
+    }
+  }, [chat, urlQuestion]);
+
   // Seen as soon as it opens by itself, so a reload before closing it
   // doesn't bring it back in this tab.
   useEffect(() => {
@@ -186,11 +203,10 @@ export const AiChat = () => {
   const openComposer = () => setTyping(true);
 
   return (
-    <section className="mx-auto flex h-dvh w-full max-w-screen-md flex-col items-center gap-3 px-4 pt-16 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 md:gap-4 md:px-12 md:pt-28 md:pb-4">
+    <section className="mx-auto flex h-[calc(100dvh-64px-env(safe-area-inset-top))] w-full max-w-screen-md flex-col items-center gap-3 px-4 pt-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 md:gap-4 md:px-12 md:pb-4">
       {/*
-        The orb: at the bottom on phones; on wider screens at the top until a
-        conversation starts, then at the bottom too. Once there's a
-        conversation the text box takes its place on every screen size.
+        The orb sits at the bottom on every screen size. Once there's a
+        conversation the text box takes its place.
       */}
       <OrbDock
         conversation={!empty}
@@ -240,7 +256,6 @@ export const AiChat = () => {
       <div
         className={cn(
           "order-1 flex min-h-0 w-full flex-1 flex-col items-center",
-          empty && "md:order-2",
           empty && "justify-center gap-6"
         )}
       >
@@ -300,7 +315,7 @@ export const AiChat = () => {
           )
         )}
         {empty && (
-          <p className="text-muted text-center text-[11px] whitespace-nowrap md:text-xs">
+          <p className="text-muted text-center text-xs whitespace-nowrap">
             AI can make mistakes. Check important info.
           </p>
         )}

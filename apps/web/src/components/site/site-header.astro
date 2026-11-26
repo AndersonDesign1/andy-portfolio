@@ -1,0 +1,81 @@
+---
+import {
+  Cancel01Icon,
+  ComputerIcon,
+  Menu01Icon,
+  Moon02Icon,
+  Sun01Icon,
+} from "@hugeicons/core-free-icons";
+import Icon from "./icon.astro";
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+
+const links = [
+  { href: "/projects", label: "Work", match: /^\/(?:projects|case-studies)(?:\/|$)/u },
+  { href: "/about", label: "About", match: /^\/about\/?$/u },
+  { href: "/blog", label: "Blog", match: /^\/blog(?:\/|$)/u },
+  { href: "/ai", label: "AI", match: /^\/ai\/?$/u },
+  { href: "/contact", label: "Contact", match: /^\/contact\/?$/u },
+];
+
+const menuLinks = [{ href: "/", label: "Home", match: /^\/$/u }, ...links];
+---
+
+<header class="site-top">
+  <div class="wrap">
+    <a aria-current={pathname === "/" ? "page" : undefined} class="mark" href="/">
+      Anderson Joseph
+    </a>
+    <nav aria-label="Main" class="site-nav">
+      {
+        links.map((link) => (
+          <a aria-current={link.match.test(pathname) ? "page" : undefined} href={link.href}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="top-tools">
+      <button aria-label="Switch theme" class="theme" data-theme-toggle title="Theme" type="button">
+        <Icon class="ic-system" icon={ComputerIcon} />
+        <Icon class="ic-light" icon={Sun01Icon} />
+        <Icon class="ic-dark" icon={Moon02Icon} />
+      </button>
+      <button
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        aria-label="Open menu"
+        class="theme menu-btn"
+        data-menu-open
+        type="button"
+      >
+        <Icon icon={Menu01Icon} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div aria-label="Menu" aria-modal="true" class="m-menu" data-menu hidden id="mobile-menu" role="dialog">
+  <div class="m-menu-top">
+    <button aria-label="Close menu" class="theme" data-menu-close type="button">
+      <Icon icon={Cancel01Icon} />
+    </button>
+  </div>
+  <nav aria-label="Mobile" class="m-menu-links">
+    {
+      menuLinks.map((link, index) => (
+        <a
+          aria-current={link.match.test(pathname) ? "page" : undefined}
+          href={link.href}
+          style={`--i: ${index}`}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</div>

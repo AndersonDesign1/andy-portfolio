@@ -7,7 +7,7 @@ import { getResendEnv } from "@/lib/env";
 
 const getResend = () => new Resend(getResendEnv().RESEND_API_KEY);
 
-const WORD_COUNT_REGEX = /\s+/;
+const WORD_COUNT_REGEX = /\s+/u;
 
 const entrySchema = z.object({
   description: z
@@ -36,7 +36,7 @@ function escapeHtml(text: string): string {
     "<": "&lt;",
     ">": "&gt;",
   };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+  return text.replace(/[&<>"']/gu, (m) => map[m]);
 }
 
 const websiteTypeLabels: Record<string, string> = {
@@ -77,7 +77,7 @@ export async function submitGiveawayEntry(
   const safeProjectName = projectName
     ? escapeHtml(projectName)
     : "Not provided";
-  const safeDescription = escapeHtml(description).replace(/\n/g, "<br/>");
+  const safeDescription = escapeHtml(description).replace(/\n/gu, "<br/>");
 
   try {
     const resend = getResend();

@@ -115,10 +115,12 @@ export const useChatSession = () => {
       } else {
         updateReply({ content: STOPPED_TEXT, failed: true });
       }
-    } finally {
-      abortRef.current = null;
-      setStatus("idle");
     }
+
+    // After the try rather than in a finally (React Compiler can't lower one);
+    // the catch above swallows everything, so this always runs.
+    abortRef.current = null;
+    setStatus("idle");
   };
 
   /**
@@ -191,5 +193,5 @@ export const useChatSession = () => {
   // Leaving the page stops an in-flight reply.
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  return { busy, clear, messages, retry, send, status, stop };
+  return { busy, clear, messages, ready: restored, retry, send, status, stop };
 };

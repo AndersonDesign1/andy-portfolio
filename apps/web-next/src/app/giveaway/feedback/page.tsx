@@ -3,7 +3,8 @@
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
-import { type FormEvent, useState, useTransition } from "react";
+import type { FormEvent } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { submitGiveawayFeedback } from "@/app/actions/submit-giveaway-feedback";
@@ -13,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 
-const WORD_COUNT_REGEX = /\s+/;
+const WORD_COUNT_REGEX = /\s+/u;
 
 const feedbackSchema = z.object({
   benefits: z
@@ -74,23 +75,23 @@ export default function GiveawayFeedbackPage() {
 
   if (isSubmitted) {
     return (
-      <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
+      <section className="bg-primary min-h-screen pt-32 pb-24 md:pt-48">
         <div className="mx-auto w-full max-w-screen-md px-6 text-center md:px-12">
           <div className="giveaway-feedback-success flex flex-col items-center justify-center gap-6">
-            <div className="rounded-full bg-secondary/10 p-4">
+            <div className="bg-secondary/10 rounded-full p-4">
               <span className="text-4xl">🎉</span>
             </div>
-            <h1 className="font-bold text-4xl text-primary md:text-5xl">
+            <h1 className="text-primary text-4xl font-bold md:text-5xl">
               Thank You!
             </h1>
-            <p className="mx-auto max-w-lg text-lg text-secondary">
+            <p className="text-secondary mx-auto max-w-lg text-lg">
               Your feedback has been received. This information will help me
               verify that you're a perfect candidate for the free website. I'll
               be reviewing everything soon!
             </p>
             <div className="pt-8">
               <Link
-                className="inline-flex items-center gap-2 border-primary border-b pb-1 text-primary transition-opacity hover:opacity-70"
+                className="border-primary text-primary inline-flex items-center gap-2 border-b pb-1 transition-opacity hover:opacity-70"
                 href="/"
               >
                 <HugeiconsIcon
@@ -109,12 +110,12 @@ export default function GiveawayFeedbackPage() {
   }
 
   return (
-    <section className="min-h-screen bg-primary pt-32 pb-24 md:pt-48">
+    <section className="bg-primary min-h-screen pt-32 pb-24 md:pt-48">
       <div className="mx-auto flex w-full max-w-screen-md flex-col gap-12 px-6 md:px-12">
         {/* Back Link */}
         <div className="giveaway-feedback-back-link">
           <Link
-            className="inline-flex items-center gap-2 text-secondary text-sm transition-opacity duration-300 hover:opacity-70"
+            className="text-secondary inline-flex items-center gap-2 text-sm transition-opacity duration-300 hover:opacity-70"
             href="/giveaway"
           >
             <HugeiconsIcon
@@ -128,10 +129,10 @@ export default function GiveawayFeedbackPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <h1 className="font-bold text-4xl text-primary leading-tight md:text-5xl">
+          <h1 className="text-primary text-4xl leading-tight font-bold md:text-5xl">
             Help Me Build Your Vision
           </h1>
-          <p className="text-lg text-secondary leading-relaxed">
+          <p className="text-secondary text-lg leading-relaxed">
             I want to make sure the winner gets a website that truly impacts
             their goals. Please fill out this quick form to tell me more about
             what you need.
@@ -141,7 +142,7 @@ export default function GiveawayFeedbackPage() {
         <form className="flex flex-col gap-12" onSubmit={handleSubmit}>
           {/* Basics */}
           <div className="flex flex-col gap-6">
-            <h2 className="border-subtle border-b pb-2 font-semibold text-primary text-xl">
+            <h2 className="border-subtle text-primary border-b pb-2 text-xl font-semibold">
               The Basics
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
@@ -150,7 +151,7 @@ export default function GiveawayFeedbackPage() {
                   Name (Optional)
                 </Label>
                 <Input
-                  className="border-subtle bg-transparent focus-visible:border-foreground focus-visible:ring-0"
+                  className="border-subtle focus-visible:border-foreground bg-transparent focus-visible:ring-0"
                   id="name"
                   name="name"
                   placeholder="Your Name"
@@ -161,7 +162,7 @@ export default function GiveawayFeedbackPage() {
                   Email Address *
                 </Label>
                 <Input
-                  className="border-subtle bg-transparent focus-visible:border-foreground focus-visible:ring-0"
+                  className="border-subtle focus-visible:border-foreground bg-transparent focus-visible:ring-0"
                   id="email"
                   name="email"
                   placeholder="you@example.com"
@@ -174,7 +175,7 @@ export default function GiveawayFeedbackPage() {
 
           {/* Project Details */}
           <div className="flex flex-col gap-6">
-            <h2 className="border-subtle border-b pb-2 font-semibold text-primary text-xl">
+            <h2 className="border-subtle text-primary border-b pb-2 text-xl font-semibold">
               Project Details
             </h2>
 
@@ -184,7 +185,7 @@ export default function GiveawayFeedbackPage() {
                 80 words)
               </Label>
               <Textarea
-                className="min-h-[100px] resize-y border-subtle bg-transparent focus-visible:border-foreground focus-visible:ring-0"
+                className="border-subtle focus-visible:border-foreground min-h-[100px] resize-y bg-transparent focus-visible:ring-0"
                 id="brandDescription"
                 name="brandDescription"
                 placeholder="e.g. I need a portfolio to show my design work... (Please be descriptive)"
@@ -197,7 +198,7 @@ export default function GiveawayFeedbackPage() {
                 What specific features do you want? *
               </Label>
               <Textarea
-                className="min-h-[100px] resize-y border-subtle bg-transparent focus-visible:border-foreground focus-visible:ring-0"
+                className="border-subtle focus-visible:border-foreground min-h-[100px] resize-y bg-transparent focus-visible:ring-0"
                 id="features"
                 name="features"
                 placeholder="e.g. A gallery, a contact form, a blog..."
@@ -206,8 +207,14 @@ export default function GiveawayFeedbackPage() {
             </div>
 
             <div className="flex flex-col gap-5">
-              <Label className="text-primary">Do you have a domain name?</Label>
+              <p
+                className="text-primary text-sm font-medium"
+                id="domain-status-label"
+              >
+                Do you have a domain name?
+              </p>
               <RadioGroup
+                aria-labelledby="domain-status-label"
                 className="flex flex-col gap-4"
                 defaultValue="no"
                 name="domainStatus"
@@ -215,7 +222,7 @@ export default function GiveawayFeedbackPage() {
                 <div className="flex items-center gap-3">
                   <RadioGroupItem id="domain-yes" value="yes" />
                   <Label
-                    className="font-normal text-secondary"
+                    className="text-secondary font-normal"
                     htmlFor="domain-yes"
                   >
                     Yes, I already have one
@@ -224,7 +231,7 @@ export default function GiveawayFeedbackPage() {
                 <div className="flex items-center gap-3">
                   <RadioGroupItem id="domain-no" value="no" />
                   <Label
-                    className="font-normal text-secondary"
+                    className="text-secondary font-normal"
                     htmlFor="domain-no"
                   >
                     No, not yet
@@ -233,7 +240,7 @@ export default function GiveawayFeedbackPage() {
                 <div className="flex items-center gap-3">
                   <RadioGroupItem id="domain-help" value="need_help" />
                   <Label
-                    className="font-normal text-secondary"
+                    className="text-secondary font-normal"
                     htmlFor="domain-help"
                   >
                     No, and I need help choosing one
@@ -247,7 +254,7 @@ export default function GiveawayFeedbackPage() {
                 How will this website benefit you? * (min 30 words)
               </Label>
               <Textarea
-                className="min-h-[100px] resize-y border-subtle bg-transparent focus-visible:border-foreground focus-visible:ring-0"
+                className="border-subtle focus-visible:border-foreground min-h-[100px] resize-y bg-transparent focus-visible:ring-0"
                 id="benefits"
                 name="benefits"
                 placeholder="e.g. It will help me get more clients by showcasing my work more professionally..."
@@ -257,7 +264,7 @@ export default function GiveawayFeedbackPage() {
           </div>
 
           <Button
-            className="w-full border border-subtle bg-transparent px-8 py-6 text-primary transition-opacity hover:opacity-70 md:w-auto"
+            className="border-subtle text-primary w-full border bg-transparent px-8 py-6 transition-opacity hover:opacity-70 md:w-auto"
             disabled={isPending}
             type="submit"
           >

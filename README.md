@@ -4,9 +4,9 @@ Personal portfolio and blog. Bun + Turbo monorepo with **two site versions** and
 
 ## Two site versions
 
-| Version | Path | Port | Role |
-| --- | --- | --- | --- |
-| **Astro 7** | `apps/web` | 3000 | Live site on Vercel |
+| Version          | Path            | Port | Role                                             |
+| ---------------- | --------------- | ---- | ------------------------------------------------ |
+| **Astro 7**      | `apps/web`      | 3000 | Live site on Vercel                              |
 | **Next.js 16.4** | `apps/web-next` | 3001 | Local archive — same Graft content, not deployed |
 
 `bun dev` starts both. Vercel Root Directory is `apps/web`; do not add a Vercel project for Next.
@@ -51,16 +51,16 @@ Both apps compile Graft (`packages/content`) then serve the same posts, projects
 
 ## Commands
 
-| Command | Action |
-| --- | --- |
-| `bun dev` | Turbo dev (Astro 3000 + Next 3001) |
-| `bun build` | Build both apps (Vercel uses the Astro app script only) |
-| `bun lint` | Lint workspaces (Astro Ultracite + Next Biome) |
-| `bun run --filter=@andy-portfolio/web lint:fix` | Autofix Astro lint/format |
-| `bun run --filter=@andy-portfolio/web typecheck` | `astro check` |
-| `bun run --filter=@andy-portfolio/web-next typecheck` | `tsc --noEmit` |
-| `bun run --filter=@andy-portfolio/content compile` | Rebuild the Graft SQLite index |
-| `bunx react-doctor@latest -y --verbose --no-score` | Advisory React Doctor scan (from `apps/web`) |
+| Command                                               | Action                                                  |
+| ----------------------------------------------------- | ------------------------------------------------------- |
+| `bun dev`                                             | Turbo dev (Astro 3000 + Next 3001)                      |
+| `bun build`                                           | Build both apps (Vercel uses the Astro app script only) |
+| `bun lint`                                            | Lint workspaces (Astro Ultracite + Next Biome)          |
+| `bun run --filter=@andy-portfolio/web lint:fix`       | Autofix Astro lint/format                               |
+| `bun run --filter=@andy-portfolio/web typecheck`      | `astro check`                                           |
+| `bun run --filter=@andy-portfolio/web-next typecheck` | `tsc --noEmit`                                          |
+| `bun run --filter=@andy-portfolio/content compile`    | Rebuild the Graft SQLite index                          |
+| `bunx react-doctor@latest -y --verbose --no-score`    | Advisory React Doctor scan (from `apps/web`)            |
 
 ## Graft CMS (`packages/content`)
 

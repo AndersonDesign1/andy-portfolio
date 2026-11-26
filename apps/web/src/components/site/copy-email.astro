@@ -1,0 +1,29 @@
+---
+/** Copies the email address, with a check that swaps in for a moment. Wired up in site-scripts.ts. */
+import { Copy01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
+import { CONTACT_EMAIL } from "../../lib/site";
+import Icon from "./icon.astro";
+
+interface Props {
+  /** "solid" is the filled pill; "go" is the quiet text link. */
+  look?: "go" | "solid";
+  /** Show the address beside the label (hidden on narrow phones). */
+  showAddress?: boolean;
+}
+
+const { look = "solid", showAddress = false } = Astro.props;
+---
+
+<button
+  aria-label="Copy email address"
+  class:list={[look === "solid" ? "btn solid" : "go", "copy"]}
+  data-copy={CONTACT_EMAIL}
+  type="button"
+>
+  <span aria-hidden="true" class="ic">
+    <Icon class="cp" icon={Copy01Icon} />
+    <Icon class="ok" icon={Tick02Icon} />
+  </span>
+  <span class="lbl">Copy email</span>
+  {showAddress && <span class="addr">{CONTACT_EMAIL}</span>}
+</button>

@@ -1,11 +1,136 @@
 ---
-import AboutPage from "../components/about-page.tsx";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import Icon from "../components/site/icon.astro";
 import BaseLayout from "../layouts/base-layout.astro";
+
+export const prerender = true;
+
+const chapters = [
+  {
+    body: "I won a scholarship to learn one tech skill for a year. I picked development because I wanted to know how computers work, and that curiosity never left.",
+    facts: [],
+    heading: "A scholarship, and a choice",
+    label: "A scholarship",
+    year: "Start",
+  },
+  {
+    body: "Welup Digital hired me as their <b>first developer</b>. I built client sites from scratch, moved into full web apps, and taught web development at Welup Academy.",
+    facts: ["Since Sept 2021", "Welup Academy"],
+    heading: "My first job, at Welup Digital",
+    label: "Welup Digital",
+    year: "2021",
+  },
+  {
+    body: "The first Welup Digital site taught me the hard way: my endpoint kept getting DDoSed, the pages got slow, and nothing ranked. I rebuilt the platform with a CMS the team could edit and took over <b>SEO for Welup Digital and its clients</b>.",
+    facts: ["Traffic up 300% after the relaunch", "50% faster"],
+    heading: "A site nobody finds doesn't exist",
+    label: "Getting found",
+    year: "2023",
+  },
+  {
+    body: "I spent six months at PromptEarn on SEO and affiliate growth. Fixing speed halved the bounce rate, organic traffic rose <b>250%</b>, and affiliates grew from <b>40,000 to 93,000</b>.",
+    facts: ["May to Oct 2024", "Bounce rate halved"],
+    heading: "Growth, with numbers",
+    label: "PromptEarn",
+    year: "2024",
+  },
+  {
+    body: "I moved Tare Gems from manual WhatsApp orders to an automated store, built storefronts and a site builder at Flik, and shipped client web apps at Zumera.",
+    facts: ["Flik", "Tare Gems", "Zumera"],
+    heading: "Products, end to end",
+    label: "Products",
+    year: "2025",
+  },
+  {
+    body: "Today I build products end to end, work on frontends with teams like MykroGrid, and make open-source tools like <b>Graft</b> and <b>Smol</b>. This site runs on Graft.",
+    facts: ["Open source", "MIT licensed"],
+    heading: "Products, and my own tools",
+    label: "Now",
+    year: "Now",
+  },
+];
 ---
 
 <BaseLayout
-  description="About Anderson Joseph — full stack developer and SEO expert."
+  description="How Anderson Joseph got here: a scholarship, Welup Digital, SEO and growth, end-to-end products, and open-source tools like Graft and Smol."
   title="About"
 >
-  <AboutPage client:visible />
+  <div class="wrap">
+    <div class="head field12">
+      <h1>How I got here</h1>
+      <p>
+        I'm Anderson, and I work from Nigeria.
+        It started with a one-year scholarship and wanting to know how computers
+        work.
+      </p>
+    </div>
+    <div class="story">
+      <aside aria-label="Chapters" class="year" data-line="0.45" data-rail=".chapter">
+        <div aria-hidden="true" class="num" data-year-num><span>{chapters[0]?.year}</span></div>
+        <div class="track">
+          {
+            chapters.map((chapter, index) => (
+              <button class:list={["rail-btn", { on: index === 0 }]} type="button">
+                <i />
+                {chapter.label}
+              </button>
+            ))
+          }
+        </div>
+      </aside>
+      <div class="chapters">
+        {
+          chapters.map((chapter) => (
+            <section class="chapter" data-year={chapter.year}>
+              <h2>{chapter.heading}</h2>
+              <p set:html={chapter.body} />
+              {chapter.facts.length > 0 && (
+                <div class="facts">
+                  {chapter.facts.map((fact) => (
+                    <span>{fact}</span>
+                  ))}
+                </div>
+              )}
+            </section>
+          ))
+        }
+      </div>
+    </div>
+    <div class="sec">
+      <div class="belief field12">
+        <blockquote>
+          I like figuring out how things work, and then making them work better.
+        </blockquote>
+        <div class="prs">
+          <div class="pr">
+            <h3>Solve the real annoyance</h3>
+            <p>
+              Good software removes daily friction, like turning WhatsApp order
+              messages into an automatic checkout.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>Keep it plain</h3>
+            <p>
+              Teaching at Welup Academy taught me to skip jargon so teams always
+              know what is changing and why.
+            </p>
+          </div>
+          <div class="pr">
+            <h3>Think past launch</h3>
+            <p>
+              Speed, clean structure, and tools that work for both your team and
+              AI agents matter long after launch day.
+            </p>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn solid" href="/projects">See my work</a>
+          <a class="go" href="/contact"
+            ><span class="u">Or say hello</span> <span class="arr"><Icon icon={ArrowRight01Icon} /></span></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </BaseLayout>

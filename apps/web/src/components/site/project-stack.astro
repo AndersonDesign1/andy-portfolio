@@ -1,0 +1,49 @@
+---
+import { ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import type { FeaturedWork } from "../../data/work";
+import Icon from "./icon.astro";
+import WorkFigure from "./work-figure.astro";
+
+interface Props {
+  eagerCount?: number;
+  items: FeaturedWork[];
+}
+
+const { eagerCount = 1, items } = Astro.props;
+const external = (href: string) => href.startsWith("http");
+---
+
+<div class="proj-stack" data-proj-stack>
+  {
+    items.map((work, index) => (
+      <a
+        class="proj-card"
+        href={work.href}
+        rel={external(work.href) ? "noopener" : undefined}
+        style={`--i: ${index}`}
+        target={external(work.href) ? "_blank" : undefined}
+      >
+        <div class="proj-card-inner field12">
+          <div class="proj-media">
+            <WorkFigure eager={index < eagerCount} work={work} />
+          </div>
+          <div class="proj-info">
+            <span class="small tnum">{work.year}</span>
+            <h2>{work.title}</h2>
+            <p set:html={work.outcome} />
+            <span class="go">
+              <span class="u">{work.go}</span>{" "}
+              <span class="arr">
+                {external(work.href) ? (
+                  <Icon icon={ArrowUpRight01Icon} />
+                ) : (
+                  <Icon icon={ArrowRight01Icon} />
+                )}
+              </span>
+            </span>
+          </div>
+        </div>
+      </a>
+    ))
+  }
+</div>
