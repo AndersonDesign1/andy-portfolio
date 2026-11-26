@@ -677,11 +677,13 @@
       position: static;
       height: auto;
     }
-    .media.browser .screen:has(> img) {
+    /* (extra .frame: these must win over the .media rules further down) */
+    .media.browser .frame .screen:has(> img) {
       aspect-ratio: auto;
     }
-    .media .screen > img {
+    .media .frame .screen > img {
       position: static;
+      display: block;
       height: auto;
     }
   }
@@ -1594,8 +1596,16 @@
       flex: 0 0 86%;
       scroll-snap-align: start;
     }
-    .gal-arrow,
-    .gal-thumbs {
+    /* Slides keep one shape, so pictures not loaded yet still hold their place. */
+    .gal-stage .fig:has(> img) {
+      aspect-ratio: 16 / 10;
+    }
+    .gal-stage .fig > img {
+      position: absolute;
+      height: 100%;
+    }
+    .gal-viewer .gal-arrow,
+    .gal-viewer .gal-thumbs {
       display: none;
     }
   }

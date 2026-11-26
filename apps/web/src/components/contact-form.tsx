@@ -434,7 +434,7 @@ const ContactForm = () => {
 
   return (
     <div className="max-w-[720px] overflow-hidden rounded-[22px] bg-[var(--raised)] shadow-[0_24px_60px_-32px_var(--shadow),inset_0_0_0_1px_rgb(128_128_128/0.14)]">
-      <div className="flex items-center gap-3 border-b border-[rgb(128_128_128/0.12)] px-5 py-4">
+      <div className="flex items-center gap-3 px-5 py-4">
         <span
           aria-hidden="true"
           className="inline-grid size-9 shrink-0 place-items-center rounded-full bg-[var(--surface)] text-xs font-semibold text-[var(--fg)]"
@@ -454,11 +454,7 @@ const ContactForm = () => {
         <div ref={endRef} />
       </div>
 
-      <form
-        className="grid gap-3.5 border-t border-[rgb(128_128_128/0.12)] p-5"
-        noValidate
-        onSubmit={handleSubmit}
-      >
+      <form className="grid gap-3.5 p-5" noValidate onSubmit={handleSubmit}>
         <div
           aria-hidden="true"
           style={{
